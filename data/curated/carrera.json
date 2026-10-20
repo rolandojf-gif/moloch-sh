@@ -1,0 +1,153 @@
+{
+  "_doc": "La carrera: seis frentes. «hechos» son afirmaciones de fuentes externas, cada una con URL, fecha del dato (null si la fuente no la da) y fecha de consulta; «verificacion» dice si el texto se leyó en la propia fuente o sólo a través de un buscador. «indicadores» son claves de data/indicadores.json, que genera el recolector. «lectura» es interpretación del observatorio, formulada como hipótesis: su estado (abierta, confirmada o debilitada) sólo cambia añadiendo una entrada fechada al historial, nunca reescribiendo la anterior.",
+  "schema": 1,
+  "actualizado": "2026-10-20",
+  "frentes": [
+    {
+      "id": "computo",
+      "titulo": "Chips, memoria y centros de datos",
+      "pregunta": "¿Qué capacidad existe y qué parte sigue sólo anunciada?",
+      "indicadores": ["dc.now", "dc.plan", "chips.cum", "chips.byDesignerCountry", "chips.makers"],
+      "hechos": [
+        { "texto": "Epoch estima chips entregados, no instalados: una entrega no garantiza que el chip esté ya funcionando en un centro de datos.", "fuente": "Epoch AI, «AI chip sales» (preguntas frecuentes)", "url": "https://epoch.ai/data/ai-chip-sales", "fecha": "2026-10-19", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "El intervalo de confianza del 90 % de esas estimaciones abarca aproximadamente un factor 2.", "fuente": "Epoch AI, «AI chip sales» (preguntas frecuentes)", "url": "https://epoch.ai/data/ai-chip-sales", "fecha": "2026-10-19", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "La memoria y el ancho de banda todavía no están incluidos en los datos de ventas de chips de Epoch.", "fuente": "Epoch AI, «AI chip sales» (preguntas frecuentes)", "url": "https://epoch.ai/data/ai-chip-sales", "fecha": "2026-10-19", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "Epoch sigue los grandes centros de datos de IA con imágenes de satélite, permisos y documentos públicos; la potencia futura de su calendario es una estimación a partir de obras y anuncios.", "fuente": "Epoch AI, «AI data centers»", "url": "https://epoch.ai/data/data-centers", "fecha": null, "consulta": "2026-10-20", "verificacion": "lectura directa" }
+      ],
+      "faltan": ["Memoria (HBM): ninguna fuente abierta y actualizada que el observatorio pueda citar.", "Centros que Epoch no sigue: las cifras de potencia no son el total mundial."],
+      "lectura": {
+        "hipotesis": "La capacidad anunciada crece más deprisa que la que entra en servicio: la carrera se juega antes en contratos y anuncios que en chips funcionando, y esa diferencia es el margen con el que cada laboratorio consigue financiación.",
+        "estado": "abierta",
+        "desde": "2026-10-20",
+        "gana": "Quien anuncia antes capta capital, chips y talento: los laboratorios punteros, los fabricantes de chips y los promotores de centros.",
+        "pierde": "Un laboratorio que frenara perdería su sitio en los pedidos de chips y en la cola de conexión eléctrica, que no se recupera rápido.",
+        "desplaza": "El riesgo de sobreconstrucción pasa a inversores, deuda y proveedores de energía; la escasez de chips y memoria, a quien compra después.",
+        "reforzaria": "Que el calendario de Epoch retrase entradas en servicio, o que los chips entregados crezcan mucho más que la potencia en funcionamiento.",
+        "debilitaria": "Que la potencia en servicio siga el calendario anunciado y los chips entregados se correspondan con centros operativos.",
+        "historial": [{ "fecha": "2026-10-20", "estado": "abierta", "nota": "Formulada al abrir la sección; sin evaluar todavía." }]
+      }
+    },
+    {
+      "id": "energia",
+      "titulo": "Electricidad y conexiones",
+      "pregunta": "¿Qué proyectos se retrasan por suministro o por la red?",
+      "indicadores": ["dc.plan", "dc.top", "chips.tdp"],
+      "hechos": [
+        { "texto": "Los centros de datos consumieron unos 415 TWh en 2024, alrededor del 1,5 % de la electricidad mundial; en el escenario base de la IEA llegan a unos 945 TWh en 2030.", "fuente": "IEA, «Energy and AI»", "url": "https://www.iea.org/reports/energy-and-ai", "fecha": "2025-04", "consulta": "2026-10-20", "verificacion": "buscador" },
+        { "texto": "La demanda eléctrica de los centros de datos creció un 17 % en 2025; la de los centros dedicados a IA, en torno a un 50 %.", "fuente": "IEA, «Key Questions on Energy and AI»", "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary", "fecha": "2026-04-16", "consulta": "2026-10-20", "verificacion": "buscador" },
+        { "texto": "Para pasar de chips a electricidad, Epoch estima que la potencia de una instalación ronda el doble del consumo nominal (TDP) de sus chips.", "fuente": "Epoch AI, «AI chip sales» (preguntas frecuentes)", "url": "https://epoch.ai/data/ai-chip-sales", "fecha": "2026-10-19", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "Según las notas de Epoch, Prometheus (Meta) depende de dos plantas de gas propias, Socrates South y Socrates North, previstas para noviembre de 2026, y Colossus 2 (xAI) de turbinas y baterías propias.", "fuente": "Epoch AI, «AI data centers»", "url": "https://epoch.ai/data/data-centers", "fecha": null, "consulta": "2026-10-20", "verificacion": "lectura directa" }
+      ],
+      "faltan": ["Retrasos atribuidos a la red o al suministro: no hay todavía una fuente sistemática; el calendario de Epoch da fechas estimadas, no causas.", "Electricidad de la IA por separado: la IEA publica sobre todo cifras de todos los centros de datos. Su web no admite lectura automática, así que sus cifras se comprueban a través de un buscador."],
+      "lectura": {
+        "hipotesis": "La electricidad, más que los chips, marca el ritmo de la nueva capacidad en 2026 y 2027, y los grandes centros recurren a generación propia para no esperar a la red.",
+        "estado": "abierta",
+        "desde": "2026-10-20",
+        "gana": "Quien asegura electricidad propia o una conexión anticipada (gas, turbinas, baterías, contratos con centrales) y quien le vende esa energía.",
+        "pierde": "Frenar deja chips pagados sin conectar y cede la ventaja temporal a quien sí consigue potencia.",
+        "desplaza": "Precios eléctricos, emisiones y refuerzos de red recaen sobre otros consumidores y sobre las zonas donde se construyen los centros.",
+        "reforzaria": "Más centros con generación propia o retrasos atribuidos expresamente a la conexión; la demanda de los centros de IA creciendo por encima del resto en los datos de la IEA.",
+        "debilitaria": "Entradas en servicio puntuales conectadas a la red, o retrasos explicados por los chips y no por la energía.",
+        "historial": [{ "fecha": "2026-10-20", "estado": "abierta", "nota": "Formulada al abrir la sección; sin evaluar todavía." }]
+      }
+    },
+    {
+      "id": "agentes",
+      "titulo": "Fiabilidad de agentes",
+      "pregunta": "¿Cuánto trabajo exige todavía supervisión o corrección?",
+      "indicadores": ["metr.sota", "metr.ratio", "bench.sweBest"],
+      "hechos": [
+        { "texto": "El horizonte temporal mide cuánto le llevarían las tareas a un experto humano, no cuánto tiempo puede trabajar el agente sin supervisión.", "fuente": "METR, «Time horizons» (preguntas frecuentes)", "url": "https://metr.org/time-horizons", "fecha": "2026-09-08", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "METR ya no actualiza activamente su página de horizontes temporales; la última actualización es del 8 de septiembre de 2026.", "fuente": "METR, «Time horizons»", "url": "https://metr.org/time-horizons", "fecha": "2026-09-08", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "En el estudio de METR con grupo de control, los desarrolladores tardaron un 19 % más con IA a principios de 2025 (intervalo: +2 % a +39 %). A finales de 2025 tardaron un 18 % menos (−38 % a +9 %) los participantes originales y un 4 % menos (−15 % a +9 %) los nuevos. METR considera poco fiable esta segunda cifra por efectos de selección (entre un 30 y un 50 % de las tareas quedaron fuera) y la toma como cota inferior de la aceleración.", "fuente": "METR, «Uplift update»", "url": "https://metr.org/blog/2026-02-24-uplift-update", "fecha": "2026-02-24", "consulta": "2026-10-20", "verificacion": "lectura directa" }
+      ],
+      "faltan": ["Una medición independiente que sustituya a la de METR cuando su serie deje de cubrir los modelos nuevos.", "Datos de campo sobre cuánto trabajo de agentes se revisa o se rehace."],
+      "lectura": {
+        "hipotesis": "La fiabilidad crece más despacio que la capacidad: lo que un agente completa 4 de cada 5 veces queda muy por debajo de lo que completa la mitad de las veces, y esa distancia es trabajo de supervisión humana.",
+        "estado": "abierta",
+        "desde": "2026-10-20",
+        "gana": "Quien vende agentes por tarea o sustituye puestos de entrada cobra antes de que llegue la fiabilidad.",
+        "pierde": "Frenar el despliegue retrasa ingresos y los datos de uso con los que se entrena la versión siguiente.",
+        "desplaza": "Verificar, corregir y asumir los errores (seguridad, deuda técnica) pasa al usuario, al cliente y a los equipos que heredan el trabajo.",
+        "reforzaria": "Que la relación entre los horizontes al 80 % y al 50 % de METR no suba, o que estudios con grupo de control encuentren aceleraciones pequeñas.",
+        "debilitaria": "Que esa relación se acerque a 1, o que mediciones de campo independientes muestren aceleraciones grandes y estables.",
+        "historial": [{ "fecha": "2026-10-20", "estado": "abierta", "nota": "Formulada al abrir la sección. La serie de METR ya no se actualiza: si no aparece otra medición independiente, esta hipótesis puede quedarse sin forma de comprobarse." }]
+      }
+    },
+    {
+      "id": "evaluacion",
+      "titulo": "Datos y evaluación",
+      "pregunta": "¿Mejoran capacidades transferibles o se saturan las pruebas?",
+      "indicadores": ["bench.saturated", "bench.tasks", "eci.rate12m"],
+      "hechos": [
+        { "texto": "Epoch considera que dos modelos tienen la misma capacidad si su ECI difiere en menos de 1 punto.", "fuente": "Epoch AI, «Chinese AI models have lagged the US frontier by 7 months on average since 2023»", "url": "https://epoch.ai/data-insights/us-vs-china-eci", "fecha": "2026-01-06", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "METR considera poco fiables las mediciones de horizonte temporal por encima de 16 horas (nota del 8 de mayo de 2026, a propósito de Claude Mythos Preview): la propia prueba se queda corta.", "fuente": "METR, «Time horizons»", "url": "https://metr.org/time-horizons", "fecha": "2026-05-08", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "Los autores de AI 2027 advierten de que sus predicciones de pruebas para 2026 serán más difíciles de medir.", "fuente": "AI Futures Project, «Grading AI 2027's 2025 predictions»", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "Las cifras de SWE-bench Verified de este observatorio son ejecuciones propias de Epoch, no las que declaran los laboratorios.", "fuente": "Epoch AI, «SWE-bench Verified»", "url": "https://epoch.ai/benchmarks/swe-bench-verified", "fecha": null, "consulta": "2026-10-20", "verificacion": "lectura directa" }
+      ],
+      "faltan": ["Contaminación de datos de prueba: no hay una medida pública sistemática."],
+      "lectura": {
+        "hipotesis": "Las pruebas públicas se saturan antes de medir lo que importa (trabajo largo y fiable), y la evaluación pasa a depender de cifras declaradas por los propios laboratorios.",
+        "estado": "abierta",
+        "desde": "2026-10-20",
+        "gana": "Los laboratorios controlan el relato sobre su capacidad cuando no hay una prueba independiente que lo contradiga.",
+        "pierde": "Esperar a evaluaciones independientes retrasa lanzamientos y titulares.",
+        "desplaza": "El coste de comprobar recae en evaluadores independientes, reguladores y usuarios, que deciden con menos información.",
+        "reforzaria": "Más evaluaciones de Epoch por encima del 90 % y series independientes que dejan de actualizarse, como la de METR.",
+        "debilitaria": "Pruebas nuevas e independientes que conservan margen y se actualizan con cada modelo, y un ECI que sigue separando modelos.",
+        "historial": [{ "fecha": "2026-10-20", "estado": "abierta", "nota": "Formulada al abrir la sección; sin evaluar todavía." }]
+      }
+    },
+    {
+      "id": "economia",
+      "titulo": "Economía y adopción",
+      "pregunta": "¿El uso produce valor suficiente para sostener el gasto?",
+      "indicadores": ["companies.leader", "companies.revenue", "companies.usage", "dc.capex"],
+      "hechos": [
+        { "texto": "Epoch distingue tipos de ingresos (por ejemplo, anualizados a partir del ritmo de un mes) y asigna a cada informe un nivel de confianza; el observatorio muestra ambos junto a cada cifra.", "fuente": "Epoch AI, «AI companies»", "url": "https://epoch.ai/data/ai-companies", "fecha": null, "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "Según el ajuste de los autores de AI 2027, los ingresos anualizados del laboratorio líder se han multiplicado por 10 por cada 15 puntos de ECI ganados.", "fuente": "AI Futures Project, «Q2.5 2026 Timelines Update»", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "Según los autores de AI 2027, Claude Code superaba los 2.500 millones de dólares de ingresos anualizados a principios de febrero de 2026.", "fuente": "AI Futures Project, «Q1 2026 Timelines Update»", "url": "https://blog.aifutures.org/p/q1-2026-timelines-update", "fecha": "2026-04-02", "consulta": "2026-10-20", "verificacion": "lectura directa" }
+      ],
+      "faltan": ["Márgenes y coste de servir los modelos: los laboratorios no los publican de forma comparable.", "Gasto de capital del sector completo: Epoch da el coste de los centros que sigue, no el total."],
+      "lectura": {
+        "hipotesis": "Los ingresos crecen deprisa pero se concentran en muy pocos laboratorios, mientras buena parte del gasto en centros lo financian terceros: si el crecimiento se frena, la factura recae en quien financió la infraestructura y no en quien vende el modelo.",
+        "estado": "abierta",
+        "desde": "2026-10-20",
+        "gana": "Los laboratorios líderes, los fabricantes de chips y los propietarios de centros, mientras el crecimiento justifique las valoraciones.",
+        "pierde": "Frenar pondría a prueba valoraciones basadas en el crecimiento y contratos de capacidad ya comprometidos.",
+        "desplaza": "El riesgo financiero pasa a inversores, deuda y proveedores; los costes energéticos, a la red.",
+        "reforzaria": "Que los ingresos se concentren aún más en el primero o los dos primeros laboratorios, o que el coste de los centros crezca más que los ingresos.",
+        "debilitaria": "Que más empresas entren entre las de mayores ingresos y que el uso se traduzca en ingresos fuera de los laboratorios.",
+        "historial": [{ "fecha": "2026-10-20", "estado": "abierta", "nota": "Formulada al abrir la sección; sin evaluar todavía." }]
+      }
+    },
+    {
+      "id": "coordinacion",
+      "titulo": "Coordinación",
+      "pregunta": "¿Hay compromisos verificables o sólo declaraciones?",
+      "indicadores": ["eci.gapLabs", "eci.gapUsCn", "eci.gapClosedOpen"],
+      "hechos": [
+        { "texto": "Las obligaciones del Reglamento de IA de la UE para proveedores de modelos de uso general se aplican desde el 2 de agosto de 2025; la Comisión puede hacerlas cumplir, con multas, desde el 2 de agosto de 2026, y los modelos comercializados antes del 2 de agosto de 2025 tienen hasta el 2 de agosto de 2027.", "fuente": "Comisión Europea, «Guidelines for providers of general-purpose AI models»", "url": "https://digital-strategy.ec.europa.eu/en/policies/guidelines-gpai-providers", "fecha": "2026-04-28", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "29 países firmaron en Shanghái, el 16 de julio de 2026, el acuerdo fundacional de WAICO, la organización internacional de IA promovida por China. Ninguna economía del G7 ni ningún Estado de la UE se ha unido, y todavía no ha adoptado compromisos vinculantes ni normas.", "fuente": "CSIS, «The State of AI Global Governance and Its Implications for the U.S.-China Summit»", "url": "https://www.csis.org/analysis/state-ai-global-governance-and-its-implications-us-china-summit", "fecha": "2026-09-21", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "Pax Silica, la coalición de EE. UU. centrada en la cadena de suministro de IA y semiconductores, pasó de 11 firmantes (diciembre de 2025) a 24 (junio de 2026). No es una organización formal ni un marco de gobernanza.", "fuente": "CSIS (mismo informe)", "url": "https://www.csis.org/analysis/state-ai-global-governance-and-its-implications-us-china-summit", "fecha": "2026-09-21", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "Según CSIS, no existe ningún medio técnico establecido para que EE. UU. o China comprueben que el otro cumple un compromiso sobre las capacidades o las pruebas de sus modelos.", "fuente": "CSIS (mismo informe)", "url": "https://www.csis.org/analysis/state-ai-global-governance-and-its-implications-us-china-summit", "fecha": "2026-09-21", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "CSIS informa de que agentes autónomos de varias empresas han escapado de la contención durante pruebas.", "fuente": "CSIS (mismo informe)", "url": "https://www.csis.org/analysis/state-ai-global-governance-and-its-implications-us-china-summit", "fecha": "2026-09-21", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "El 29 de septiembre de 2026, la Casa Blanca y seis empresas de IA firmaron un acuerdo voluntario de una página (White House Accord on Super Intelligence): controles internos, un equipo interno que los vigile, un auditor externo independiente y un comité independiente del consejo. El acuerdo no propone convertirlo en ley de inmediato.", "fuente": "Crowell & Moring, «White House Announces AI Responsibility Accord, Executive Orders, and Super Intelligence Task Force»", "url": "https://www.crowell.com/en/insights/client-alerts/white-house-announces-ai-responsibility-accord-executive-orders-and-super-intelligence-task-force", "fecha": "2026-10-07", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "Los firmantes se comprometen a reunirse periódicamente para fijar estándares; ya hay demandas antimonopolio que alegan coordinación entre empresas para pautar el ritmo de desarrollo de la IA.", "fuente": "Crowell & Moring (misma nota)", "url": "https://www.crowell.com/en/insights/client-alerts/white-house-announces-ai-responsibility-accord-executive-orders-and-super-intelligence-task-force", "fecha": "2026-10-07", "consulta": "2026-10-20", "verificacion": "lectura directa" },
+        { "texto": "En la reunión preparatoria de la cumbre de septiembre entre Trump y Xi, EE. UU. y China hablaron de crear un «US-China AI Dialogue»; EE. UU. propuso un mecanismo de notificación de incidentes y ambas partes acordaron volver a reunirse.", "fuente": "The Star (Reuters)", "url": "https://www.thestar.com.my/business/business-news/2026/09/22/talks-on-trade-very-successful-says-bessent", "fecha": "2026-09-22", "consulta": "2026-10-20", "verificacion": "buscador" }
+      ],
+      "faltan": ["Resultado de la cumbre EE. UU.–China del 24 de septiembre de 2026 sobre IA: no se ha encontrado un comunicado oficial.", "Verificación de cómputo o de entrenamientos entre países: no existe ningún mecanismo en funcionamiento del que informar."],
+      "lectura": {
+        "hipotesis": "La coordinación existente es declarativa: ningún compromiso firmado entre rivales incluye verificación técnica, y los dos bloques (Pax Silica y WAICO) compiten por escribir las reglas, no por limitarse.",
+        "estado": "abierta",
+        "desde": "2026-10-20",
+        "gana": "Cada bloque y sus laboratorios: acelerar asegura posición mientras nadie pueda comprobar que el rival también frena.",
+        "pierde": "Quien frenara en solitario perdería posición sin garantía de que el otro haga lo mismo; es la trampa de Moloch.",
+        "desplaza": "El riesgo de incidentes (agentes fuera de control, ciberataques) recae sobre terceros y sobre los países que no están en ningún bloque.",
+        "reforzaria": "Nuevos acuerdos sin mecanismo de verificación, o demandas antimonopolio que frenen la coordinación entre empresas.",
+        "debilitaria": "Un mecanismo de notificación de incidentes entre EE. UU. y China en funcionamiento, verificación del cómputo, o una sanción de la UE aplicada a un proveedor de modelos de uso general.",
+        "historial": [{ "fecha": "2026-10-20", "estado": "abierta", "nota": "Formulada al abrir la sección; sin evaluar todavía." }]
+      }
+    }
+  ]
+}

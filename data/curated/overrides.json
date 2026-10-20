@@ -1,0 +1,23 @@
+{
+  "_doc": "Emparejamientos manuales OpenRouter → Artificial Analysis cuando la coincidencia automática por nombre falla o es ambigua. Clave: id de OpenRouter. Valor: slug exacto de AA, o null para impedir el emparejamiento.",
+  "aa": {},
+  "_doc_hf": "Repositorios de pesos en Hugging Face que OpenRouter no enlaza. El recolector sólo los acepta si la API de Hugging Face confirma que existen y son públicos.",
+  "hf": {
+    "minimax/minimax-m1": "MiniMaxAI/MiniMax-M1",
+    "mistralai/mistral-large-2512": "mistralai/Mistral-Large-3-675B-Instruct-2512"
+  },
+  "_doc_epoch": "Emparejamientos manuales OpenRouter → Epoch AI cuando el nombre no coincide. Clave: id de OpenRouter. Valor: columna «Model» o «Display name» exacta de eci_scores.csv, o null para impedir el emparejamiento.",
+  "epoch": {
+    "deepseek/deepseek-v4-pro": "DeepSeek-V4-Pro",
+    "deepseek/deepseek-v4-flash": "DeepSeek-V4-Flash",
+    "deepseek/deepseek-r1-0528": "DeepSeek-R1 (May 2025)",
+    "moonshotai/kimi-k2": "Kimi K2 (Jul 2025)",
+    "qwen/qwen3-235b-a22b-2507": "Qwen3-235B-A22B-Instruct (Jul 2025)",
+    "qwen/qwen3-235b-a22b-thinking-2507": "Qwen3-235B-A22B-Thinking (Jul 2025)",
+    "qwen/qwen3-30b-a3b-instruct-2507": "Qwen3-30B-A3B-Instruct (Jul 2025)",
+    "mistralai/mistral-small-3.2-24b-instruct": "Mistral Small 3.2",
+    "google/gemini-2.5-pro": "Gemini 2.5 Pro (Jun 2025)",
+    "google/gemini-2.5-pro-preview": "Gemini 2.5 Pro (Jun 2025)",
+    "google/gemini-2.5-flash": "Gemini 2.5 Flash (Jun 2025)"
+  }
+}
