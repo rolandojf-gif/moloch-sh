@@ -6,10 +6,30 @@ jobs:
     steps:
       - run: |
           set +e
-          echo "=== links use-this-data"; curl -sSL https://epoch.ai/benchmarks/use-this-data | grep -oE 'href="[^"]+"' | grep -iE 'zip|csv|eci|download' | sort -u
-          echo "=== links eci"; curl -sSL https://epoch.ai/benchmarks/eci | grep -oE '(href|src)="[^"]+"' | grep -iE 'zip|csv|json|data' | sort -u | head -30
-          echo "=== AA attribution section"; curl -sSL https://artificialanalysis.ai/data-api/docs | python3 -c "import re,sys,html;t=sys.stdin.read();t=re.sub(r'<script.*?</script>|<style.*?</style>','',t,flags=re.S);t=html.unescape(re.sub(r'<[^>]+>',' ',t));t=re.sub(r'\s+',' ',t);i=t.find('Attribution and licensing Use of');print(t[i:i+2500])"
-          echo "=== AA openapi"; for u in https://artificialanalysis.ai/api/v2/openapi.json https://artificialanalysis.ai/data-api/openapi.json https://artificialanalysis.ai/openapi.json; do curl -sSL -o /tmp/o -w "$u %{http_code} %{content_type} %{size_download}\n" $u; done
-          curl -sSL https://artificialanalysis.ai/data-api/docs | grep -oE 'href="[^"]*openapi[^"]*"' | sort -u
-          echo "=== AA free no key"; curl -sS -w ' %{http_code}\n' https://artificialanalysis.ai/api/v2/language/models/free | head -c 400
-          echo "=== AA terms"; curl -sSL https://artificialanalysis.ai/docs/legal/Terms-of-Use 2>/dev/null | head -c 100; echo
+          echo "=== eci_scores"; curl -sSL -o /tmp/e.csv -w '%{http_code} %{size_download}\n' https://epoch.ai/data/eci_scores.csv; wc -l /tmp/e.csv; head -5 /tmp/e.csv | cut -c1-700; echo; tail -3 /tmp/e.csv | cut -c1-700
+          python3 - <<'PY'
+          import csv
+          r=list(csv.DictReader(open('/tmp/e.csv')))
+          print('COLS',list(r[0].keys()))
+          for k in r[0]:
+              if 'date' in k.lower(): 
+                  rs=sorted(r,key=lambda x:x[k] or '',reverse=True)[:12]
+                  for x in rs: print({kk:x[kk][:60] for kk in x})
+                  break
+          PY
+          echo "=== openapi free"; curl -sSL -o /tmp/o.json -w '%{http_code} %{content_type} %{size_download}\n' https://artificialanalysis.ai/api/v2/openapi
+          python3 - <<'PY'
+          import json
+          try:
+              o=json.load(open('/tmp/o.json'))
+          except Exception as e:
+              print('not json', open('/tmp/o.json').read()[:300]); raise SystemExit
+          for p,v in o.get('paths',{}).items():
+              if 'language/models' in p: print(p, list(v.keys()))
+          p=o['paths'].get('/language/models/free') or o['paths'].get('/api/v2/language/models/free')
+          print(json.dumps(p)[:4000])
+          comps=o.get('components',{}).get('schemas',{})
+          for n,s in comps.items():
+              if 'ree' in n or 'LanguageModel' in n: print(n, json.dumps(s)[:2500])
+          PY
+          echo "=== terms links"; curl -sSL https://artificialanalysis.ai/data-api/docs | grep -oE 'href="[^"]*(terms|legal)[^"]*"' | sort -u
