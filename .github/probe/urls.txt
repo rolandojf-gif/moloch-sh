@@ -12,3 +12,6 @@ https://epoch.ai/data/data-centers-documentation/downloads
 https://epoch.ai/data/ai-companies-documentation/downloads
 https://epoch.ai/data/data-centers-documentation
 https://www.iea.org/reports/energy-and-ai/executive-summary
+https://epoch.ai/data
+https://www.iea.org/reports/energy-and-ai/energy-demand-from-ai
+https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/

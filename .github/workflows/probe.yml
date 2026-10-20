@@ -7,16 +7,24 @@ on:
 permissions:
   contents: read
 jobs:
-  probe:
+  list:
     runs-on: ubuntu-latest
+    outputs:
+      idx: ${{ steps.n.outputs.idx }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: n
+        run: echo "idx=$(grep -v '^#' .github/probe/urls.txt | grep -c . | xargs seq -s, 1 | sed 's/^/[/;s/$/]/')" >> "$GITHUB_OUTPUT"
+  probe:
+    needs: list
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        i: ${{ fromJSON(needs.list.outputs.idx) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node .github/probe/probe.mjs
-      - uses: actions/upload-artifact@v4
-        with:
-          name: probe-out
-          path: probe-out
-          retention-days: 3
+      - run: node .github/probe/probe.mjs ${{ matrix.i }}
