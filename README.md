@@ -27,7 +27,7 @@ Ninguna cifra está escrita a mano en el código. `scripts/collect.mjs` consulta
 
 Fuentes:
 
-- **OpenRouter** (`/api/v1/models` y `/endpoints`, sin clave): precios, contexto, proveedores, velocidad y espera por proveedor, enlace a pesos.
+- **OpenRouter** (`/api/v1/models` y `/endpoints`, sin clave): precios, contexto, proveedores, velocidad y espera por proveedor, enlace a pesos. Entran los modelos de los laboratorios de `data/curated/labs.json`, por su variante base; si OpenRouter sólo ofrece una variante (por ejemplo `:free`), ésa representa al modelo. El registro de cada recogida lista las altas recientes que se quedan fuera.
 - **Hugging Face** (`/api/models`, sin clave): existencia del repositorio de pesos, licencia y fecha.
 - **Epoch AI** (`eci_scores.csv` y `benchmarks.csv`, sin clave, CC BY 4.0): capacidad con el Epoch Capabilities Index y su intervalo, programación con las ejecuciones propias de Epoch de SWE-bench Verified, fecha del modelo, clasificación de apertura y la frontera abierta/cerrada por fecha. Cita: Epoch AI, ‘Capabilities & benchmarking’, epoch.ai.
 - **Epoch AI, otros conjuntos** (CSV, sin clave, CC BY 4.0): centros de datos y sus calendarios de potencia, ventas de chips de IA por fabricante y diseñador, e ingresos y uso declarados por las empresas. Son estimaciones de Epoch a partir de fuentes públicas; el recolector no las corrige.

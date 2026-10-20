@@ -117,21 +117,20 @@ async function loadOpenRouter(labs) {
   for (const m of all) {
     const id = baseId(m.id);
     const isRecent = (m.created || 0) >= recent;
-    if (id !== m.id) {                           // sólo la variante base
-      if (isRecent && !ids.has(id)) orphan.push(m.id);
-      continue;
-    }
     const author = id.split('/')[0];
     if (!labs[author]) { if (isRecent) untracked.push(m.id); continue; }
+    // Sólo la variante base; si OpenRouter sólo ofrece una variante (p. ej. «:free»), ésa representa al modelo con el id base.
+    if (id !== m.id && ids.has(id)) continue;
     if ((m.created || 0) < cutoff) continue;
     if (seen.has(id)) continue;
     seen.add(id);
-    out.push(m);
+    if (id !== m.id) { orphan.push(m.id); out.push({ ...m, id, orVariant: m.id }); }
+    else out.push(m);
   }
   log(`OpenRouter: ${all.length} modelos, ${out.length} en el catálogo`);
   // Para responder a «¿por qué no aparece X?»: altas recientes que el catálogo descarta.
   if (untracked.length) log(`OpenRouter: altas de ${NEW_DAYS} días de autores no seguidos (curated/labs.json): ${untracked.join(', ')}`);
-  if (orphan.length) log(`OpenRouter: altas de ${NEW_DAYS} días sólo como variante, sin modelo base: ${orphan.join(', ')}`);
+  if (orphan.length) log(`OpenRouter: modelos que sólo existen como variante (entran con el id base): ${orphan.join(', ')}`);
   return out;
 }
 
@@ -319,7 +318,7 @@ function speedFromEndpoints(endpoints) {
 }
 
 function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
-  const orUrl = `https://openrouter.ai/${m.id}`;
+  const orUrl = `https://openrouter.ai/${m.orVariant || m.id}`;
   const createdISO = m.created ? new Date(m.created * 1000).toISOString().slice(0, 10) : null;
   const author = m.id.split('/')[0];
   const hfId = m.hugging_face_id || m._hfOverride || null;
@@ -412,7 +411,8 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
 
   return {
     id: m.id,
-    name: (m.name || m.id).replace(/^[^:]+:\s*/, ''),
+    name: (m.name || m.id).replace(/^[^:]+:\s*/, '').replace(/\s*\(free\)$/i, ''),
+    orVariant: m.orVariant || null,
     lab: { id: author, name: lab.name, country: lab.country, url: lab.url, src: 'curated' },
     identity: lab.stealth ? 'sin confirmar' : 'confirmada',
     hfId: lab.stealth ? null : hfId,
@@ -436,7 +436,7 @@ function diff(models, base) {
   const items = [];
   const prev = base ? base.models : null;
   const cutoff = new Date(NOW.getTime() - NEW_DAYS * 86400e3).toISOString().slice(0, 10);
-  const orSrc = m => ({ name: 'OpenRouter', url: `https://openrouter.ai/${m.id}`, got: NOW_ISO });
+  const orSrc = m => ({ name: 'OpenRouter', url: `https://openrouter.ai/${m.orVariant || m.id}`, got: NOW_ISO });
 
   for (const m of models) {
     const p = prev ? prev[m.id] : undefined;
@@ -444,7 +444,7 @@ function diff(models, base) {
       // Sin instantánea previa sólo cuentan las altas recientes; con ella, un alta antigua indica un laboratorio o ventana nuevos, no un lanzamiento.
       if (!m.orCreated.v || m.orCreated.v < cutoff) continue;
       items.push({ kind: 'nuevo', model: m.id, date: m.orCreated.v, src: orSrc(m),
-        what: `${m.name} (${m.lab.name}) aparece en el catálogo de OpenRouter.`,
+        what: `${m.name} (${m.lab.name}) aparece en el catálogo de OpenRouter${m.orVariant ? `, de momento sólo como variante ${m.orVariant.slice(m.orVariant.lastIndexOf(':'))}` : ''}.`,
         data: { weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, eci: m.epoch?.eci?.v ?? null, identity: m.identity } });
       continue;
     }
@@ -534,7 +534,7 @@ async function main() {
     if (!m.hugging_face_id && hfOverrides[m.id]) m._hfOverride = hfOverrides[m.id];
     const hfRepo = m.hugging_face_id || m._hfOverride;
     const [endpoints, hf] = await Promise.all([
-      loadEndpoints(m.id),
+      loadEndpoints(m.orVariant || m.id),
       (hfRepo && !lab.stealth) ? loadHF(hfRepo) : Promise.resolve(null)
     ]);
     if (hf && !hf.ok && !hf.notFound) status.hf.failed++;
