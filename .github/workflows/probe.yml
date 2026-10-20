@@ -6,24 +6,14 @@ jobs:
     steps:
       - run: |
           set +e
-          pip install -q pyyaml >/dev/null 2>&1
-          curl -sSL -o /tmp/o.yaml https://artificialanalysis.ai/api/v2/openapi
+          curl -sSL -o /tmp/b.csv https://epoch.ai/data/benchmarks.csv
+          curl -sSL -o /tmp/z.zip https://epoch.ai/data/benchmark_data.zip; unzip -l /tmp/z.zip | head -60
           python3 - <<'PY'
-          import yaml,json
-          o=yaml.safe_load(open('/tmp/o.yaml'))
-          print([p for p in o['paths'] if 'language' in p])
-          p=o['paths']['/language/models/free']['get']
-          print(json.dumps({k:p[k] for k in p if k!='responses'})[:1500])
-          sch=p['responses']['200']['content']['application/json']['schema']
-          def res(s,d=0):
-              if d>6: return '...'
-              if isinstance(s,dict):
-                  if '$ref' in s:
-                      n=s['$ref'].split('/')[-1]; return {'REF '+n: res(o['components']['schemas'][n],d+1)}
-                  return {k:res(v,d+1) for k,v in s.items() if k not in ('description','example','examples')}
-              if isinstance(s,list): return [res(x,d+1) for x in s]
-              return s
-          print(json.dumps(res(sch))[:7000])
+          import csv,collections
+          r=list(csv.DictReader(open('/tmp/b.csv')))
+          print(len(r))
+          recent=[x for x in r if (x.get('Version release date') or '')>='2026-06-01']
+          c=collections.Counter(x['task'] for x in recent)
+          print('tasks among models released since 2026-06:',c.most_common(40))
+          ms=collections.Counter(x['Model'] for x in recent); print(len(ms), list(ms)[:60])
           PY
-          echo "=== terms"; sudo apt-get install -y -qq poppler-utils >/dev/null 2>&1
-          for u in https://artificialanalysis.ai/docs/legal/Terms-of-Use.pdf https://artificialanalysiscdn.com/legal/ProDataPlatformTerms.pdf; do curl -sSL -o /tmp/t.pdf "$u"; echo "--- $u"; pdftotext /tmp/t.pdf - | tr -s '\n ' | grep -i -B2 -A4 -E 'free|redistribut|attribution|publicly|internal' | head -60; done
