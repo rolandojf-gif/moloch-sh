@@ -4,7 +4,8 @@ import { frontier } from './charts.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const state = { w: 'all', sort: 'ii', q: '', open: new Set(), cmp: [] };
+const state = { w: 'all', sort: 'ii', q: '', open: new Set(), cmp: [], all: false };
+const PAGE = 40;
 let D;
 
 const yesNo = v => v === true ? 'sí' : v === false ? 'no' : null;
@@ -82,9 +83,13 @@ function renderTable() {
   const list = rows();
   const ver = D.catalog.aaIndexVersion ? ` v${D.catalog.aaIndexVersion}` : '';
   $('#mx-ii-h').textContent = `Índice de inteligencia${ver}`;
-  $('#mx-caption').innerHTML = `${list.length} modelos · precios en USD por millón de tokens (OpenRouter) · índices de Artificial Analysis${ver ? '' : ' (versión no registrada)'} · pulsa una fila para ver contexto, licencia, caché y proveedores.`;
+  $('#mx-caption').innerHTML = `${list.length} modelos${!state.all && !state.q && list.length > PAGE ? ` (se muestran ${PAGE})` : ''} · precios en USD por millón de tokens (OpenRouter) · índices de Artificial Analysis${ver ? '' : ' (versión no registrada)'} · pulsa una fila para ver contexto, licencia, caché y proveedores.`;
   if (!list.length) { $('#mx-body').innerHTML = '<tr><td colspan="7"><div class="empty">Ningún modelo coincide con el filtro.</div></td></tr>'; return; }
-  $('#mx-body').innerHTML = list.map(m => {
+  const shown = state.all || state.q ? list : list.slice(0, PAGE);
+  $('#mx-more')?.remove();
+  if (shown.length < list.length) $('.table-wrap').insertAdjacentHTML('afterend', `<button type="button" class="show-all" id="mx-more">Mostrar los ${list.length} modelos</button>`);
+  $('#mx-more')?.addEventListener('click', () => { state.all = true; renderTable(); });
+  $('#mx-body').innerHTML = shown.map(m => {
     const open = state.open.has(m.id);
     const checked = state.cmp.includes(m.id);
     const dis = !checked && state.cmp.length >= 3;
@@ -156,6 +161,7 @@ async function renderFrontier() {
 
 export function renderModelos(d) {
   D = d;
+  if (!d.catalog.models.some(m => ii(m) !== null)) { state.sort = 'date'; $('#mx-sort').value = 'date'; }
   $('#mx-weights').addEventListener('click', e => {
     const b = e.target.closest('[data-w]'); if (!b) return;
     state.w = b.dataset.w;

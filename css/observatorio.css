@@ -178,6 +178,7 @@ h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orang
 .legend { display: flex; gap: 16px; flex-wrap: wrap; font: 600 12px var(--f-mono); margin-top: 8px; color: var(--muted); }
 .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px; }
 .reading { margin-top: 12px; border-left: 4px solid var(--orange); padding: 6px 12px; font-size: 14.5px; background: var(--card-2); }
+.reading:empty { display: none; }
 .reading .lbl { font: 700 10.5px var(--f-mono); text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
 .chart-empty { padding: 26px 8px; color: var(--muted); font-size: 14.5px; }
 
@@ -223,6 +224,8 @@ tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .cmp-grid .rh { font: 700 10.5px var(--f-mono); text-transform: uppercase; color: var(--muted); }
 .cmp-grid .ch { font-weight: 700; border-bottom: 2px solid var(--ink); }
 .cmp-grid .best { background: rgba(204, 255, 0, .25); font-weight: 600; }
+
+.show-all { margin-top: 12px; font: 700 12px var(--f-mono); text-transform: uppercase; border: 2px solid var(--ink); background: var(--card); box-shadow: var(--shadow-sm); padding: 9px 12px; }
 
 /* ── Lanzamientos ─────────────────────────────────────────────────────── */
 .timeline { display: flex; flex-direction: column; gap: 10px; }
