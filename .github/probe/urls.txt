@@ -1,7 +1,4 @@
-csv https://epoch.ai/data/ai_chip_sales_timelines_by_chip.csv
-csv https://epoch.ai/data/ai_chip_sales_organizations.csv
-csv https://epoch.ai/data/data_centers/data_center_timelines.csv
-html https://blog.aifutures.org/p/q1-2026-timelines-update
-html https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions
-csv https://epoch.ai/data/benchmarks.csv
-csv https://epoch.ai/data/ai_companies_revenue_reports.csv
+html https://digital-strategy.ec.europa.eu/en/policies/guidelines-gpai-providers
+html https://www.csis.org/analysis/state-ai-global-governance-and-its-implications-us-china-summit
+html https://www.crowell.com/en/insights/client-alerts/white-house-announces-ai-responsibility-accord-executive-orders-and-super-intelligence-task-force
+html https://epoch.ai/data-insights/us-vs-china-eci
