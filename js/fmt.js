@@ -7,6 +7,8 @@ let SOURCES = {};
 export function setSources(s) { SOURCES = s || {}; }
 
 export const ND = '<span class="nd">sin datos</span>';
+/* Artificial Analysis no permite republicar sus datos sin permiso: sólo se enlaza su clasificación. */
+export const AA_LEADERBOARD = '<a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener">clasificación de Artificial Analysis</a>';
 
 export function fmtDate(iso) {
   if (!iso) return '—';

@@ -1,7 +1,25 @@
 {
- "generated": "2026-10-20T19:03:22Z",
+ "generated": "2026-10-20T19:25:29Z",
  "since": null,
  "items": [
+  {
+   "kind": "nuevo",
+   "model": "minimax/minimax-m3.1-flash",
+   "date": "2026-10-19",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/minimax/minimax-m3.1-flash:free",
+    "got": "2026-10-20T19:25:29Z"
+   },
+   "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
+   "data": {
+    "weights": "cerrados",
+    "in": 0,
+    "out": 0,
+    "eci": null,
+    "identity": "confirmada"
+   }
+  },
   {
    "kind": "nuevo",
    "model": "deepseek/deepseek-v4.1-flash-1017",
@@ -9,7 +27,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
-    "got": "2026-10-20T19:03:22Z"
+    "got": "2026-10-20T19:25:29Z"
    },
    "what": "DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -22,12 +40,30 @@
   },
   {
    "kind": "nuevo",
+   "model": "meta/muse-spark-open",
+   "date": "2026-10-15",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/meta/muse-spark-open",
+    "got": "2026-10-20T19:25:29Z"
+   },
+   "what": "Muse Spark Open (Meta) aparece en el catálogo de OpenRouter.",
+   "data": {
+    "weights": "abiertos",
+    "in": 1.25,
+    "out": 4.25,
+    "eci": 155.11,
+    "identity": "confirmada"
+   }
+  },
+  {
+   "kind": "nuevo",
    "model": "nvidia/nemotron-3.5-super-vl",
    "date": "2026-10-15",
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/nvidia/nemotron-3.5-super-vl",
-    "got": "2026-10-20T19:03:22Z"
+    "got": "2026-10-20T19:25:29Z"
    },
    "what": "Nemotron 3.5 Super VL (NVIDIA) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -45,7 +81,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-argon",
-    "got": "2026-10-20T19:03:22Z"
+    "got": "2026-10-20T19:25:29Z"
    },
    "what": "Gemini 4 Argon (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -58,12 +94,48 @@
   },
   {
    "kind": "nuevo",
+   "model": "meta/muse-wonder",
+   "date": "2026-10-12",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/meta/muse-wonder",
+    "got": "2026-10-20T19:25:29Z"
+   },
+   "what": "Muse Wonder (Meta) aparece en el catálogo de OpenRouter.",
+   "data": {
+    "weights": "cerrados",
+    "in": 4,
+    "out": 20,
+    "eci": 161.85,
+    "identity": "confirmada"
+   }
+  },
+  {
+   "kind": "nuevo",
+   "model": "stepfun/step-5-preview",
+   "date": "2026-10-08",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/stepfun/step-5-preview",
+    "got": "2026-10-20T19:25:29Z"
+   },
+   "what": "Step 5 Preview (StepFun) aparece en el catálogo de OpenRouter.",
+   "data": {
+    "weights": "abiertos",
+    "in": 1,
+    "out": 2.7,
+    "eci": null,
+    "identity": "confirmada"
+   }
+  },
+  {
+   "kind": "nuevo",
    "model": "anthropic/claude-haiku-5.5",
    "date": "2026-10-07",
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/anthropic/claude-haiku-5.5",
-    "got": "2026-10-20T19:03:22Z"
+    "got": "2026-10-20T19:25:29Z"
    },
    "what": "Claude Haiku 5.5 (Anthropic) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -81,7 +153,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-nano-banana-2.1",
-    "got": "2026-10-20T19:03:22Z"
+    "got": "2026-10-20T19:25:29Z"
    },
    "what": "Nano Banana 2.1 (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -99,7 +171,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/mistralai/mistral-large-4-0",
-    "got": "2026-10-20T19:03:22Z"
+    "got": "2026-10-20T19:25:29Z"
    },
    "what": "Mistral Large 4 (Mistral AI) aparece en el catálogo de OpenRouter.",
    "data": {

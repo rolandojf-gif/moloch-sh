@@ -1,5 +1,5 @@
 /* Vista «Modelos»: comparador, ficha desplegable, comparación de hasta tres y evolución de la frontera. */
-import { esc, fact, src, usd, num, tokens, fmtDate, country, blended, ii, coding, speed, ND } from './fmt.js';
+import { esc, fact, src, usd, num, tokens, fmtDate, country, blended, ii, coding, speed, ND, AA_LEADERBOARD } from './fmt.js';
 import { frontier } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -62,7 +62,7 @@ function detail(m) {
     ['Alta en OpenRouter', fact(m.orCreated, v => fmtDate(v))],
     ['Repositorio de pesos', m.hfCreated ? fact(m.hfCreated, v => fmtDate(v)) : ND],
     ['Fecha del modelo (Epoch)', m.epoch ? fact(m.epoch.release, v => fmtDate(v)) : ND],
-    ['Capacidad (ECI)', m.epoch ? `${fact(m.epoch.eci, v => num(v))}<span class="m-sub">intervalo ${num(m.epoch.eci.ci?.[0])}–${num(m.epoch.eci.ci?.[1])} · como «${esc(m.epoch.name)}» en Epoch${m.epoch.how && m.epoch.how !== 'nombre' ? ` (${esc(m.epoch.how)})` : ''}</span>` : 'sin puntuación en Epoch AI'],
+    ['Capacidad (ECI)', m.epoch ? `${fact(m.epoch.eci, v => num(v))}<span class="m-sub">intervalo ${num(m.epoch.eci.ci?.[0])}–${num(m.epoch.eci.ci?.[1])} · como «${esc(m.epoch.name)}» en Epoch${m.epoch.how && m.epoch.how !== 'nombre' ? ` (${esc(m.epoch.how)})` : ''}</span>` : `sin puntuación en Epoch AI todavía; consulta la ${AA_LEADERBOARD}`],
     ['Acceso según Epoch', m.epoch ? fact(m.epoch.access) : ND],
     ['SWE-bench Verified', m.epoch ? fact(m.epoch.swe, v => num(v) + ' %') + (m.epoch.swe.note ? `<span class="m-sub">${esc(m.epoch.swe.note)}</span>` : '') : ND],
     ...(aa ? [['Artificial Analysis', `<a href="${esc(aa.url)}" target="_blank" rel="noopener">${esc(aa.name)}</a>: índice ${fact(aa.intelligence, v => num(v))}`]] : [])
