@@ -5,9 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          for u in https://epoch.ai/data/benchmarks.csv https://epoch.ai/data/benchmarks.zip https://epoch.ai/data/eci.csv https://epoch.ai/benchmarks/use-this-data https://artificialanalysis.ai/data-api/docs https://artificialanalysis.ai/data-api; do
-            echo "=== $u"; curl -sSL -A 'Mozilla/5.0' -o /tmp/f -w '%{http_code} %{content_type} %{size_download}\n' "$u"; file /tmp/f
-            if file /tmp/f | grep -qi zip; then unzip -l /tmp/f | head -40; mkdir -p /tmp/z && unzip -o -q /tmp/f -d /tmp/z && for c in /tmp/z/*.csv /tmp/z/*/*.csv; do [ -f "$c" ] && { echo "--- $c $(wc -l < "$c")"; head -3 "$c" | cut -c1-600; }; done; 
-            elif file /tmp/f | grep -qi -E 'csv|text' && ! grep -qi '<html' /tmp/f; then head -4 /tmp/f | cut -c1-800;
-            else python3 -c "import re,sys,html;t=open('/tmp/f',errors='ignore').read();t=re.sub(r'<script.*?</script>|<style.*?</style>','',t,flags=re.S);t=html.unescape(re.sub(r'<[^>]+>',' ',t));t=re.sub(r'\s+',' ',t);print(t[:6000])"; fi
-          done
+          set +e
+          echo "=== links use-this-data"; curl -sSL https://epoch.ai/benchmarks/use-this-data | grep -oE 'href="[^"]+"' | grep -iE 'zip|csv|eci|download' | sort -u
+          echo "=== links eci"; curl -sSL https://epoch.ai/benchmarks/eci | grep -oE '(href|src)="[^"]+"' | grep -iE 'zip|csv|json|data' | sort -u | head -30
+          echo "=== AA attribution section"; curl -sSL https://artificialanalysis.ai/data-api/docs | python3 -c "import re,sys,html;t=sys.stdin.read();t=re.sub(r'<script.*?</script>|<style.*?</style>','',t,flags=re.S);t=html.unescape(re.sub(r'<[^>]+>',' ',t));t=re.sub(r'\s+',' ',t);i=t.find('Attribution and licensing Use of');print(t[i:i+2500])"
+          echo "=== AA openapi"; for u in https://artificialanalysis.ai/api/v2/openapi.json https://artificialanalysis.ai/data-api/openapi.json https://artificialanalysis.ai/openapi.json; do curl -sSL -o /tmp/o -w "$u %{http_code} %{content_type} %{size_download}\n" $u; done
+          curl -sSL https://artificialanalysis.ai/data-api/docs | grep -oE 'href="[^"]*openapi[^"]*"' | sort -u
+          echo "=== AA free no key"; curl -sS -w ' %{http_code}\n' https://artificialanalysis.ai/api/v2/language/models/free | head -c 400
+          echo "=== AA terms"; curl -sSL https://artificialanalysis.ai/docs/legal/Terms-of-Use 2>/dev/null | head -c 100; echo
