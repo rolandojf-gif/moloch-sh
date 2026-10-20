@@ -53,7 +53,18 @@ export function scatter(el, points, { threshold = null, labels = new Set(), yLab
 }
 
 /* Líneas de líder abierto y cerrado a lo largo del tiempo, cortadas por versión del índice. */
-export function frontier(el, series) {
+/* Marcas de tiempo en inicios de mes (paso de 1, 3, 6 o 12 meses), como mucho 7. */
+function monthTicks(tmin, tmax) {
+  const a = new Date(tmin), months = (tmax - tmin) / (30.44 * 86400e3);
+  const stepM = [1, 3, 6, 12, 24].find(k => months / k <= 6) || 24;
+  let y = a.getUTCFullYear(), m = Math.ceil(a.getUTCMonth() / stepM) * stepM;
+  if (a.getUTCDate() > 1 && m === a.getUTCMonth()) m += stepM;
+  const out = [];
+  for (let d = Date.UTC(y, m, 1); d <= tmax; m += stepM, d = Date.UTC(y, m, 1)) if (d >= tmin) out.push(d);
+  return out;
+}
+
+export function frontier(el, series, { step = false, yLabel = '' } = {}) {
   const pts = series.filter(p => p.open !== null || p.closed !== null);
   if (pts.length < 2) return false;
   const W = 860, H = 300, L = 48, R = 16, T = 14, B = 40;
@@ -68,21 +79,27 @@ export function frontier(el, series) {
   for (const v of niceTicks(ymin, ymax)) s += `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}"/>`;
   s += '</g><g class="axis">';
   for (const v of niceTicks(ymin, ymax)) s += `<text x="${L - 8}" y="${Y(v) + 4}" text-anchor="end">${num(v, 0)}</text>`;
-  const step = Math.max(1, Math.ceil(pts.length / 6));
-  pts.forEach((p, i) => { if (i % step === 0 || i === pts.length - 1) s += `<text x="${X(t(p))}" y="${H - B + 18}" text-anchor="${i === 0 ? 'start' : i === pts.length - 1 ? 'end' : 'middle'}">${esc(fmtDate(p.date))}</text>`; });
+  for (const tk of monthTicks(tmin, tmax)) {
+    const x = X(tk);
+    const anchor = x < L + 30 ? 'start' : x > W - R - 30 ? 'end' : 'middle';
+    s += `<text x="${x.toFixed(1)}" y="${H - B + 18}" text-anchor="${anchor}">${esc(new Date(tk).toLocaleDateString('es-ES', { month: 'short', year: 'numeric', timeZone: 'UTC' }))}</text>`;
+  }
+  if (yLabel) s += `<text class="lbl" x="12" y="${(T + H - B) / 2}" text-anchor="middle" transform="rotate(-90 12 ${(T + H - B) / 2})">${esc(yLabel)}</text>`;
   s += '</g>';
   for (const key of ['open', 'closed']) {
     let d = '', prevV;
     for (const p of pts) {
       if (p[key] === null) { prevV = undefined; continue; }
-      const cmd = (prevV === undefined || p.version !== prevV) ? 'M' : 'L';   // nueva versión del índice = nuevo tramo
-      d += `${cmd}${X(t(p)).toFixed(1)},${Y(p[key]).toFixed(1)} `;
+      const newSeg = prevV === undefined || p.version !== prevV;   // nueva versión del índice = nuevo tramo
+      d += newSeg ? `M${X(t(p)).toFixed(1)},${Y(p[key]).toFixed(1)} `
+        : step ? `H${X(t(p)).toFixed(1)} V${Y(p[key]).toFixed(1)} ` : `L${X(t(p)).toFixed(1)},${Y(p[key]).toFixed(1)} `;
       prevV = p.version;
     }
+    if (step && d) d += `H${X(tmax).toFixed(1)}`;
     s += `<path class="ln-${key}" d="${d}"/>`;
-    for (const p of pts) if (p[key] !== null) s += `<circle class="pt-${key}" cx="${X(t(p)).toFixed(1)}" cy="${Y(p[key]).toFixed(1)}" r="4"><title>${esc(`${fmtDate(p.date)} · ${key === 'open' ? 'abierto' : 'cerrado'}: ${p[key]} (${p[key + 'Name'] || ''}) · índice ${p.version || 'versión no registrada'}`)}</title></circle>`;
+    for (const p of pts) if (p[key] !== null) s += `<circle class="pt-${key}" cx="${X(t(p)).toFixed(1)}" cy="${Y(p[key]).toFixed(1)}" r="4"><title>${esc(`${fmtDate(p.date)} · ${key === 'open' ? 'abierto' : 'cerrado'}: ${p[key]} (${p[key + 'Name'] || ''})`)}</title></circle>`;
   }
-  s += '</svg><div class="legend"><span><i style="background:var(--open)"></i>Mejor con pesos abiertos</span><span><i style="background:var(--closed)"></i>Mejor cerrado</span><span>Un corte en la línea indica cambio de versión del índice</span></div>';
+  s += '</svg><div class="legend"><span><i style="background:var(--open)"></i>Mejor con pesos abiertos</span><span><i style="background:var(--closed)"></i>Mejor cerrado</span></div>';
   el.innerHTML = s;
   return true;
 }

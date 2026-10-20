@@ -31,9 +31,9 @@ function cardFor(m, curated) {
   const latest = dates[dates.length - 1];
   const delta = Object.values(st).find(s => s.delta)?.delta;
   const evalTxt = ii(m) !== null
-    ? `sí: índice ${num(ii(m))}${src(m.aa.intelligence)} en Artificial Analysis (${esc(m.aa.name)})`
-    : 'no consta en Artificial Analysis';
-  const aaRel = m.aa?.release?.v ? ` · lanzamiento según AA: ${esc(fmtDate(m.aa.release.v))}${src(m.aa.release)}` : '';
+    ? `sí: ECI ${num(ii(m))}${src(m.epoch.eci)} en Epoch AI`
+    : 'no consta en el índice de Epoch AI';
+  const aaRel = m.epoch?.release?.v ? ` · fecha del modelo según Epoch: ${esc(fmtDate(m.epoch.release.v))}${src(m.epoch.release)}` : '';
   const identity = m.identity === 'confirmada' ? '' : ' <span class="tag">Identidad sin confirmar</span>';
   return {
     date: latest, weights: m.weights.v,

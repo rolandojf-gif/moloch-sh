@@ -22,6 +22,7 @@ for (const m of c.models || []) {
   for (const k of ['in', 'out', 'cacheRead', 'cacheWrite']) checkFact(m.price?.[k], `${w}.price.${k}`);
   if (![null, 'abiertos', 'cerrados'].includes(m.weights?.v)) errors.push(`${w}: pesos con valor no permitido ${m.weights?.v}`);
   if (m.identity !== 'confirmada' && m.lab?.country) errors.push(`${w}: identidad sin confirmar con país asignado`);
+  if (m.epoch) for (const k of ['eci', 'release', 'access', 'swe']) checkFact(m.epoch[k], `${w}.epoch.${k}`);
   if (m.aa) for (const k of ['intelligence', 'coding', 'tps', 'ttft', 'release']) checkFact(m.aa[k], `${w}.aa.${k}`);
   if (m.price?.in?.v > 1000 || m.price?.out?.v > 1000) errors.push(`${w}: precio fuera de rango`);
 }

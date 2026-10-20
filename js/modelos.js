@@ -61,9 +61,11 @@ function detail(m) {
     ['Precio combinado 3:1', blended(m) !== null ? usd(blended(m)) + ' / M' + src(m.price.in) : ND],
     ['Alta en OpenRouter', fact(m.orCreated, v => fmtDate(v))],
     ['Repositorio de pesos', m.hfCreated ? fact(m.hfCreated, v => fmtDate(v)) : ND],
-    ['Lanzamiento según AA', aa ? fact(aa.release, v => fmtDate(v)) : ND],
-    ['Evaluación AA', aa ? `<a href="${esc(aa.url)}" target="_blank" rel="noopener">${esc(aa.name)}</a><span class="m-sub">emparejado por ${esc(aa.how)}</span>` : 'sin emparejar con Artificial Analysis'],
-    ['Espera hasta la respuesta (AA)', aa ? fact(aa.ttfa, v => num(v, 1) + ' s') : ND]
+    ['Fecha del modelo (Epoch)', m.epoch ? fact(m.epoch.release, v => fmtDate(v)) : ND],
+    ['Capacidad (ECI)', m.epoch ? `${fact(m.epoch.eci, v => num(v))}<span class="m-sub">intervalo ${num(m.epoch.eci.ci?.[0])}–${num(m.epoch.eci.ci?.[1])} · como «${esc(m.epoch.name)}» en Epoch</span>` : 'sin puntuación en Epoch AI'],
+    ['Acceso según Epoch', m.epoch ? fact(m.epoch.access) : ND],
+    ['SWE-bench Verified', m.epoch ? fact(m.epoch.swe, v => num(v) + ' %') + (m.epoch.swe.note ? `<span class="m-sub">${esc(m.epoch.swe.note)}</span>` : '') : ND],
+    ...(aa ? [['Artificial Analysis', `<a href="${esc(aa.url)}" target="_blank" rel="noopener">${esc(aa.name)}</a>: índice ${fact(aa.intelligence, v => num(v))}`]] : [])
   ];
   const provTable = eps.length ? `
     <table class="subt"><caption class="sr-only">Proveedores en OpenRouter</caption>
@@ -81,9 +83,7 @@ function detail(m) {
 
 function renderTable() {
   const list = rows();
-  const ver = D.catalog.aaIndexVersion ? ` v${D.catalog.aaIndexVersion}` : '';
-  $('#mx-ii-h').textContent = `Índice de inteligencia${ver}`;
-  $('#mx-caption').innerHTML = `${list.length} modelos${!state.all && !state.q && list.length > PAGE ? ` (se muestran ${PAGE})` : ''} · precios en USD por millón de tokens (OpenRouter) · índices de Artificial Analysis${ver ? '' : ' (versión no registrada)'} · pulsa una fila para ver contexto, licencia, caché y proveedores.`;
+  $('#mx-caption').innerHTML = `${list.length} modelos${!state.all && !state.q && list.length > PAGE ? ` (se muestran ${PAGE})` : ''} · precios en USD por millón de tokens (OpenRouter) · capacidad: Epoch Capabilities Index; programación: % de SWE-bench Verified resuelto según Epoch (CC BY 4.0) · pulsa una fila para ver contexto, licencia, caché y proveedores.`;
   if (!list.length) { $('#mx-body').innerHTML = '<tr><td colspan="7"><div class="empty">Ningún modelo coincide con el filtro.</div></td></tr>'; return; }
   const shown = state.all || state.q ? list : list.slice(0, PAGE);
   $('#mx-more')?.remove();
@@ -97,8 +97,8 @@ function renderTable() {
       <td class="c-sel" data-label="Comparar"><input type="checkbox" aria-label="Comparar ${esc(m.name)}" data-cmp="${esc(m.id)}"${checked ? ' checked' : ''}${dis ? ' disabled' : ''}></td>
       <td class="c-name"><div class="m-name">${esc(m.name)}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></td>
       <td data-label="Pesos">${weightsBadge(m)}${m.license.v && m.weights.v === 'abiertos' ? `<span class="m-sub">${esc(m.license.v)}</span>` : ''}</td>
-      <td class="num" data-label="Índice de inteligencia${esc(ver)}">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>` : ND}</td>
-      <td class="num" data-label="Programación">${m.aa ? fact(m.aa.coding, v => num(v)) : ND}</td>
+      <td class="num" data-label="Capacidad (ECI)">${m.epoch ? `<span class="big">${fact(m.epoch.eci, v => num(v))}</span>` : ND}</td>
+      <td class="num" data-label="SWE-bench Verified">${m.epoch ? fact(m.epoch.swe, v => num(v) + ' %') : ND}</td>
       <td class="num" data-label="Velocidad">${speedCell(m)}</td>
       <td class="num" data-label="Entrada / salida">${fact(m.price.in, usd)}<span class="m-sub">${fact(m.price.out, usd)}</span></td>
     </tr>${open ? `<tr class="detail"><td colspan="7">${detail(m)}</td></tr>` : ''}`;
@@ -115,8 +115,8 @@ function renderCompare() {
     ['Pesos', m => weightsBadge(m)],
     ['Licencia', m => fact(m.license)],
     ['País del laboratorio', m => esc(country(m.lab.country))],
-    ['Índice de inteligencia', m => m.aa ? fact(m.aa.intelligence, v => num(v)) : ND, m => ii(m), 'max'],
-    ['Programación', m => m.aa ? fact(m.aa.coding, v => num(v)) : ND, m => coding(m), 'max'],
+    ['Capacidad (ECI)', m => m.epoch ? fact(m.epoch.eci, v => num(v)) : ND, m => ii(m), 'max'],
+    ['SWE-bench Verified', m => m.epoch ? fact(m.epoch.swe, v => num(v) + ' %') : ND, m => coding(m), 'max'],
     ['Velocidad (tok/s)', (m, i) => sp[i] ? `${num(sp[i].tps, 0)}${src(sp[i].f)} <span class="m-sub">${esc(sp[i].provider)}</span>` : ND, (m, i) => sp[i]?.tps ?? null, 'max'],
     ['Espera inicial', (m, i) => sp[i] && sp[i].ttft !== null && sp[i].ttft !== undefined ? `${num(sp[i].ttft, 2)} s${src(sp[i].ft)}` : ND, (m, i) => sp[i]?.ttft ?? null, 'min'],
     ['Entrada / M', m => fact(m.price.in, usd), m => m.price.in.v, 'min'],
@@ -142,21 +142,19 @@ function renderCompare() {
   $('#cmp-clear').addEventListener('click', () => { state.cmp = []; renderCompare(); renderTable(); });
 }
 
-async function renderFrontier() {
+function renderFrontier() {
   const el = $('#mx-frontier');
-  const dates = D.catalog.history || [];
-  const snaps = (await Promise.all(dates.map(dt => fetch(`data/history/${dt}.json`).then(r => r.ok ? r.json() : null).catch(() => null)))).filter(Boolean);
-  const series = snaps.map(s => ({
-    date: s.date, version: s.aaIndexVersion,
-    open: s.leaders?.open?.ii ?? null, closed: s.leaders?.closed?.ii ?? null,
-    openName: s.models?.[s.leaders?.open?.id]?.n, closedName: s.models?.[s.leaders?.closed?.id]?.n
+  const f = D.catalog.epochFrontier;
+  const series = (f?.points || []).map(p => ({
+    date: p.date, version: 'eci',
+    open: p.open?.v ?? null, closed: p.closed?.v ?? null, openName: p.open?.name, closedName: p.closed?.name
   }));
-  const drawn = frontier(el, series);
-  const withData = series.filter(p => p.open !== null || p.closed !== null);
-  if (!drawn) {
-    el.innerHTML = `<div class="chart-empty">${withData.length ? `La serie empieza el ${esc(fmtDate(withData[0].date))}. Hacen falta al menos dos recogidas con índice para dibujar la evolución.` : 'Sin datos: ninguna recogida incluye todavía el índice de Artificial Analysis.'}</div>`;
+  if (!frontier(el, series, { step: true, yLabel: 'Epoch Capabilities Index (ECI)' })) {
+    el.innerHTML = '<div class="chart-empty">Sin datos: Epoch AI no estaba disponible en la recogida.</div>';
   }
-  $('#mx-frontier-note').innerHTML = '<span class="lbl">Cómo leerlo</span>La distancia se mide en puntos del índice de Artificial Analysis y sólo entre recogidas con la misma versión del índice; AA cambia la metodología entre versiones, así que la línea se corta en cada cambio. Unos puntos de diferencia no equivalen a meses de retraso. El histórico sólo cubre las recogidas de este observatorio.';
+  const last = series[series.length - 1];
+  const gap = last && last.open !== null && last.closed !== null ? Math.round((last.closed - last.open) * 10) / 10 : null;
+  $('#mx-frontier-note').innerHTML = `<span class="lbl">Cómo leerlo</span>Cada línea es el mejor ECI alcanzado hasta esa fecha por un modelo con pesos abiertos y por uno cerrado, entre los ${f?.n ?? 'sin datos'} modelos que puntúa Epoch AI (incluidos los que no están en OpenRouter). Fuente: <a href="${esc(f?.url || 'https://epoch.ai/benchmarks/eci')}" target="_blank" rel="noopener">Epoch AI</a>, CC BY 4.0, consulta ${esc((f?.got || '').slice(0, 10))}.${gap !== null ? ` Distancia actual: ${num(gap)} puntos ECI (${esc(last.closedName)} frente a ${esc(last.openName)}).` : ''} Unos puntos de diferencia no equivalen a meses de retraso.`;
 }
 
 export function renderModelos(d) {

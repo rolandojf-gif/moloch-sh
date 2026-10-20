@@ -9,7 +9,9 @@
    Fuentes:
      OpenRouter  /api/v1/models y /endpoints   (sin clave)  precios, contexto, proveedores, velocidad por proveedor
      Hugging Face /api/models/<repo>           (sin clave)  existencia de pesos, licencia, fecha del repositorio
-     Artificial Analysis /api/v2/data/llms/models (requiere AA_API_KEY) índices, velocidad y fecha de lanzamiento
+     Epoch AI     eci_scores.csv y benchmarks.csv (CC BY 4.0) índice de capacidades ECI, SWE-bench Verified, apertura
+     Artificial Analysis /api/v2/language/models/free (AA_API_KEY y AA_REDISTRIBUTION=permitida)
+                  Su licencia gratuita no permite republicar datos tabulados; sin permiso expreso no se usa.
 
    Reglas:
      - Ninguna cifra se inventa ni se rellena. Si una fuente no la da, el campo queda null («sin datos»).
@@ -33,11 +35,13 @@ const NEW_DAYS = 14;                                           // «novedad» si
 const PRICE_CHANGE_MIN = 0.05;                                 // cambios de precio por debajo del 5 % no se listan
 const FIXTURES = process.env.FIXTURES;
 const AA_KEY = process.env.AA_API_KEY || '';
+const AA_ALLOWED = process.env.AA_REDISTRIBUTION === 'permitida';
 
 const SOURCES = {
   openrouter: { name: 'OpenRouter', url: 'https://openrouter.ai/models', api: 'https://openrouter.ai/api/v1/models' },
   hf: { name: 'Hugging Face', url: 'https://huggingface.co/models', api: 'https://huggingface.co/api/models' },
-  aa: { name: 'Artificial Analysis', url: 'https://artificialanalysis.ai/leaderboards/models', api: 'https://artificialanalysis.ai/api/v2/data/llms/models' },
+  epoch: { name: 'Epoch AI', url: 'https://epoch.ai/benchmarks/eci', api: 'https://epoch.ai/data/eci_scores.csv', bench: 'https://epoch.ai/data/benchmarks.csv', license: 'CC BY 4.0', cite: "Epoch AI, 'Capabilities & benchmarking', epoch.ai" },
+  aa: { name: 'Artificial Analysis', url: 'https://artificialanalysis.ai/leaderboards/models', api: 'https://artificialanalysis.ai/api/v2/language/models/free', legacy: 'https://artificialanalysis.ai/api/v2/data/llms/models' },
   curated: { name: 'Curado manualmente', url: null }
 };
 
@@ -47,23 +51,27 @@ async function readJSON(p, fallback = null) {
   try { return JSON.parse(await readFile(p, 'utf8')); } catch { return fallback; }
 }
 
-async function getJSON(url, headers = {}) {
+const getJSON = (url, headers) => getRaw(url, headers, false);
+const getText = (url, headers) => getRaw(url, headers, true);
+
+async function getRaw(url, headers = {}, asText = false) {
   if (FIXTURES) {
-    const key = url.replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '_').slice(0, 180) + '.json';
+    const key = url.replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '_').slice(0, 180) + (asText ? '.txt' : '.json');
     const p = path.join(FIXTURES, key);
     if (!existsSync(p)) throw new Error(`fixture ausente: ${key}`);
-    return JSON.parse(await readFile(p, 'utf8'));
+    const t = await readFile(p, 'utf8');
+    return asText ? t : JSON.parse(t);
   }
   let lastErr;
   for (let i = 0; i < 3; i++) {
     try {
       const res = await fetch(url, { headers: { 'user-agent': 'moloch-sh-observatorio/1.0 (+https://github.com/rolandojf-gif/moloch-sh)', ...headers } });
       if (res.status === 404) { const e = new Error(`404 ${url}`); e.status = 404; throw e; }
-      if (!res.ok) throw new Error(`${res.status} ${url}`);
-      return await res.json();
+      if (!res.ok) { const e = new Error(`${res.status} ${url}`); e.status = res.status; throw e; }
+      return asText ? await res.text() : await res.json();
     } catch (e) {
       lastErr = e;
-      if (e.status === 404) throw e;
+      if ([401, 403, 404, 410].includes(e.status)) throw e;
       await new Promise(r => setTimeout(r, 1500 * (i + 1)));
     }
   }
@@ -143,12 +151,84 @@ async function loadHF(repo) {
   }
 }
 
+/* ── Epoch AI ───────────────────────────────────────────────────────────── */
+function parseCSV(text) {
+  const rows = []; let row = [], cell = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) {
+      if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; }
+      else cell += c;
+    } else if (c === '"') q = true;
+    else if (c === ',') { row.push(cell); cell = ''; }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && text[i + 1] === '\n') i++;
+      row.push(cell); rows.push(row); row = []; cell = '';
+    } else cell += c;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  const head = rows.shift() || [];
+  return rows.filter(r => r.length > 1).map(r => Object.fromEntries(head.map((h, i) => [h.trim(), (r[i] ?? '').trim()])));
+}
+
+const key = s => norm(s).replace(/\s+/g, '');
+const num = s => { const n = Number(s); return s !== '' && Number.isFinite(n) ? n : null; };
+
+/* ECI: un índice por modelo con intervalo; SWE-bench Verified: ejecuciones propias de Epoch (mejor variante por modelo). */
+async function loadEpoch() {
+  const out = { eci: new Map(), swe: new Map(), rows: [] };
+  const eci = parseCSV(await getText(SOURCES.epoch.api));
+  for (const r of eci) {
+    const v = num(r.eci);
+    if (v === null) continue;
+    const row = {
+      name: r['Display name'] || r.Model, eci: v, lo: num(r.eci_ci_low), hi: num(r.eci_ci_high), date: r.date || null,
+      org: r.Organization || null, country: r['Country (of organization)'] || null,
+      access: r['Model accessibility'] || null, group: r['Accessibility group'] || null
+    };
+    out.rows.push(row);
+    // Variantes que colapsan en la misma clave (p. ej. «(high)», «(low)»): se queda la de mayor ECI y su nombre se muestra.
+    for (const k of new Set([key(r.Model), key(r['Display name'])])) if (k && (!out.eci.has(k) || out.eci.get(k).eci < v)) out.eci.set(k, row);
+  }
+  try {
+    const bench = parseCSV(await getText(SOURCES.epoch.bench));
+    for (const r of bench) {
+      if (!/^swe-bench verified$/i.test(r.task || '') || (r.Status && r.Status !== 'Success')) continue;
+      const v = num(r['Best score (across scorers)']);
+      if (v === null) continue;
+      const k = key(r.Model);
+      const prev = out.swe.get(k);
+      if (!prev || v > prev.v) out.swe.set(k, { v, version: r.id_model_version || r.model, date: (r.started_at || '').slice(0, 10) || null });
+    }
+  } catch (e) { log(`Epoch benchmarks falló: ${e.message}`); out.sweFailed = true; }
+  log(`Epoch: ${out.rows.length} modelos con ECI, ${out.swe.size} con SWE-bench Verified`);
+  return out;
+}
+
+/* Frontera por fecha según Epoch: máximo acumulado del ECI en cada grupo de apertura. */
+function epochFrontier(rows) {
+  const pts = [];
+  const best = { open: null, closed: null };
+  const sorted = rows.filter(r => r.date && (r.group === 'Open weights' || r.group === 'Closed weights')).sort((a, b) => a.date.localeCompare(b.date));
+  for (const r of sorted) {
+    const g = r.group === 'Open weights' ? 'open' : 'closed';
+    if (!best[g] || r.eci > best[g].v) {
+      best[g] = { v: r.eci, name: r.name };
+      pts.push({ date: r.date, open: best.open, closed: best.closed });
+    }
+  }
+  return pts;
+}
+
 /* ── Artificial Analysis ────────────────────────────────────────────────── */
 async function loadAA() {
-  if (!AA_KEY && !FIXTURES) { log('AA_API_KEY ausente: índices sin datos'); return null; }
+  if (!AA_KEY && !FIXTURES) { log('AA_API_KEY ausente'); return null; }
+  if (!AA_ALLOWED && !FIXTURES) { log('AA_REDISTRIBUTION no es «permitida»: no se publican datos de AA'); return null; }
   try {
-    const res = await getJSON(SOURCES.aa.api, { 'x-api-key': AA_KEY });
-    const rows = res.data || [];
+    let res;
+    try { res = await getJSON(SOURCES.aa.api, { 'x-api-key': AA_KEY }); }
+    catch (e) { if (e.status === 404 || e.status === 410) res = await getJSON(SOURCES.aa.legacy, { 'x-api-key': AA_KEY }); else throw e; }
+    const rows = (res.data || []).map(r => ({ ...r, ...(r.performance || {}) }));
     log(`Artificial Analysis: ${rows.length} modelos`);
     return rows;
   } catch (e) {
@@ -197,7 +277,7 @@ function speedFromEndpoints(endpoints) {
   return rows;
 }
 
-function buildModel(m, lab, endpoints, hf, aaMatch, prev) {
+function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
   const orUrl = `https://openrouter.ai/${m.id}`;
   const createdISO = m.created ? new Date(m.created * 1000).toISOString().slice(0, 10) : null;
   const author = m.id.split('/')[0];
@@ -218,6 +298,14 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev) {
   } else {
     weights = fact(null, 'hf', `https://huggingface.co/${hfId}`, TODAY, { note: 'el repositorio enlazado no responde' });
     license = fact(null, 'hf', null);
+  }
+  // Epoch clasifica la apertura de cada modelo; sustituye a la inferencia, nunca a una comprobación en Hugging Face.
+  const eKey = epochOv && Object.prototype.hasOwnProperty.call(epochOv, m.id) ? (epochOv[m.id] ? key(epochOv[m.id]) : null) : key(m.name);
+  const eRow = ep && ep !== 'keep' && eKey ? ep.eci.get(eKey) : null;
+  if (eRow && weights.inferred && (eRow.group === 'Open weights' || eRow.group === 'Closed weights')) {
+    const open = eRow.group === 'Open weights';
+    weights = fact(open ? 'abiertos' : 'cerrados', 'epoch', SOURCES.epoch.url, TODAY, { note: `clasificación de Epoch: ${eRow.access}` });
+    license = open ? fact(null, 'epoch', SOURCES.epoch.url, TODAY, { note: `Epoch: ${eRow.access}; OpenRouter no enlaza el repositorio` }) : fact('propietaria', 'epoch', SOURCES.epoch.url, TODAY, { note: `Epoch: ${eRow.access}` });
   }
   if (lab.stealth) {
     weights = fact(null, 'openrouter', orUrl, TODAY, { note: 'modelo anónimo' });
@@ -249,11 +337,25 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev) {
       slug: r.slug, name: r.name, how: aaMatch.how, url: aaUrl,
       intelligence: fact(ev.artificial_analysis_intelligence_index, 'aa', aaUrl),
       coding: fact(ev.artificial_analysis_coding_index, 'aa', aaUrl),
+      version: r.intelligence_index_version || (r.evaluations && r.evaluations.intelligence_index_version) || null,
       tps: fact(r.median_output_tokens_per_second || null, 'aa', aaUrl, TODAY, { note: 'mediana de AA para el proveedor de referencia del laboratorio' }),
       ttft: fact(r.median_time_to_first_token_seconds || null, 'aa', aaUrl),
       ttfa: fact(r.median_time_to_first_answer_token || null, 'aa', aaUrl, TODAY, { note: 'incluye el razonamiento previo a la respuesta' }),
       release: fact(r.release_date || null, 'aa', aaUrl, r.release_date || TODAY),
       blended: fact(r.pricing ? r.pricing.price_1m_blended_3_to_1 ?? null : null, 'aa', aaUrl, TODAY, { note: 'mezcla 3:1 entrada/salida de AA' })
+    };
+  }
+
+  let epoch = null;
+  if (ep === 'keep') epoch = prev && prev.epoch ? JSON.parse(JSON.stringify(prev.epoch, (k, v) => (v && typeof v === 'object' && 'v' in v) ? { ...v, stale: true } : v)) : null;
+  else if (eRow && !lab.stealth) {
+    const s = ep.swe.get(eKey);
+    epoch = {
+      name: eRow.name,
+      eci: fact(eRow.eci, 'epoch', SOURCES.epoch.url, TODAY, { ci: [eRow.lo, eRow.hi], note: `intervalo ${eRow.lo}–${eRow.hi}` }),
+      release: fact(eRow.date, 'epoch', SOURCES.epoch.url, eRow.date || TODAY, { note: 'fecha del modelo según Epoch' }),
+      access: fact(eRow.access, 'epoch', SOURCES.epoch.url),
+      swe: s ? fact(Math.round(s.v * 1000) / 10, 'epoch', 'https://epoch.ai/benchmarks/swe-bench-verified', s.date || TODAY, { note: `SWE-bench Verified, ejecución de Epoch, variante ${s.version}` }) : fact(null, 'epoch', 'https://epoch.ai/benchmarks/swe-bench-verified')
     };
   }
 
@@ -273,6 +375,7 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev) {
     price,
     endpoints: eps,
     endpointsMeta: epsMeta,
+    epoch,
     aa
   };
 }
@@ -291,7 +394,7 @@ function diff(models, base) {
       if (!m.orCreated.v || m.orCreated.v < cutoff) continue;
       items.push({ kind: 'nuevo', model: m.id, date: m.orCreated.v, src: orSrc(m),
         what: `${m.name} (${m.lab.name}) aparece en el catálogo de OpenRouter.`,
-        data: { weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, ii: m.aa?.intelligence?.v ?? null, identity: m.identity } });
+        data: { weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, eci: m.epoch?.eci?.v ?? null, identity: m.identity } });
       continue;
     }
     for (const k of ['in', 'out']) {
@@ -306,10 +409,10 @@ function diff(models, base) {
       items.push({ kind: 'pesos', model: m.id, date: m.hfCreated?.v || TODAY, src: { name: 'Hugging Face', url: m.weights.url, got: NOW_ISO },
         what: `${m.name}: pesos descargables en Hugging Face (licencia ${m.license.v || 'sin datos'}).`, data: { license: m.license.v } });
     }
-    const pb = m.aa?.intelligence?.v;
-    if ((p.ii === null || p.ii === undefined) && pb !== null && pb !== undefined) {
-      items.push({ kind: 'evaluacion', model: m.id, date: TODAY, src: { name: 'Artificial Analysis', url: m.aa.url, got: NOW_ISO },
-        what: `${m.name}: primera evaluación independiente en Artificial Analysis (índice ${pb}).`, data: { ii: pb } });
+    const pb = m.epoch?.eci?.v;
+    if ((p.eci === null || p.eci === undefined) && pb !== null && pb !== undefined) {
+      items.push({ kind: 'evaluacion', model: m.id, date: TODAY, src: { name: 'Epoch AI', url: SOURCES.epoch.url, got: NOW_ISO },
+        what: `${m.name}: primera puntuación en el índice ECI de Epoch AI (${pb}).`, data: { eci: pb } });
     }
   }
   if (prev) {
@@ -323,12 +426,12 @@ function diff(models, base) {
 }
 
 function leaders(models) {
-  const scored = models.filter(m => m.aa?.intelligence?.v !== null && m.aa?.intelligence?.v !== undefined && m.identity === 'confirmada');
-  const best = w => scored.filter(m => m.weights.v === w).sort((a, b) => b.aa.intelligence.v - a.aa.intelligence.v)[0] || null;
+  const scored = models.filter(m => m.epoch?.eci?.v !== null && m.epoch?.eci?.v !== undefined && m.identity === 'confirmada');
+  const best = w => scored.filter(m => m.weights.v === w).sort((a, b) => b.epoch.eci.v - a.epoch.eci.v)[0] || null;
   const o = best('abiertos'), c = best('cerrados');
   return {
-    open: o ? { id: o.id, ii: o.aa.intelligence.v } : null,
-    closed: c ? { id: c.id, ii: c.aa.intelligence.v } : null
+    open: o ? { id: o.id, eci: o.epoch.eci.v } : null,
+    closed: c ? { id: c.id, eci: c.epoch.eci.v } : null
   };
 }
 
@@ -339,7 +442,8 @@ function snapshot(models) {
       n: m.name,
       w: m.weights.v === 'abiertos' ? 'o' : m.weights.v === 'cerrados' ? 'c' : null,
       in: m.price.in.v, out: m.price.out.v,
-      ii: m.aa?.intelligence?.v ?? null, ci: m.aa?.coding?.v ?? null
+      eci: m.epoch?.eci?.v ?? null, swe: m.epoch?.swe?.v ?? null,
+      ii: m.aa?.intelligence?.v ?? null
     };
   }
   return out;
@@ -361,10 +465,14 @@ async function main() {
   catch (e) { console.error('[collect] OpenRouter falló; no se escribe nada:', e.message); process.exit(2); }
 
   const aaRows = await loadAA();
+  let ep;
+  try { ep = await loadEpoch(); } catch (e) { log(`Epoch falló: ${e.message}`); ep = 'keep'; }
+  const epochOv = ovFile.epoch || {};
   const status = {
     openrouter: { ok: true, got: NOW_ISO },
     hf: { ok: true, got: NOW_ISO, failed: 0 },
-    aa: aaRows === null ? { ok: false, reason: 'sin clave de API' } : aaRows === undefined ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores', lastOk: prevCatalog?.status?.aa?.got || prevCatalog?.status?.aa?.lastOk || null } : { ok: true, got: NOW_ISO }
+    epoch: ep === 'keep' ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores' } : { ok: true, got: NOW_ISO, ...(ep.sweFailed ? { note: 'SWE-bench no disponible en esta recogida' } : {}) },
+    aa: aaRows === null ? { ok: false, optional: true, reason: !AA_KEY ? 'no conectado' : 'sin permiso de redistribución' } : aaRows === undefined ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores', lastOk: prevCatalog?.status?.aa?.got || prevCatalog?.status?.aa?.lastOk || null } : { ok: true, got: NOW_ISO }
   };
 
   const models = [];
@@ -381,9 +489,20 @@ async function main() {
     if (hf && !hf.ok && !hf.notFound) status.hf.failed++;
     if (hf && hf.notFound && m._hfOverride) log(`override HF sin repositorio: ${m.id} → ${m._hfOverride}`);
     const aaMatch = aaRows === undefined ? 'keep' : matchAA(m, lab, aaRows, overrides);
-    models.push(buildModel(m, lab, endpoints, hf, aaMatch, prev));
+    models.push(buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv));
   }
   if (status.hf.failed) status.hf.ok = status.hf.failed < models.length / 4;
+
+  // Diagnóstico de emparejamiento con Epoch (sólo en el registro): ayuda a completar overrides.epoch.
+  if (ep !== 'keep') {
+    const used = new Set(models.map(m => m.epoch?.name).filter(Boolean));
+    const since = new Date(NOW.getTime() - WINDOW_DAYS * 86400e3).toISOString().slice(0, 10);
+    const missEp = ep.rows.filter(r => r.date >= since && !used.has(r.name)).map(r => r.name);
+    const missOr = models.filter(m => !m.epoch?.eci && m.identity === 'confirmada').map(m => `${m.id} «${m.name}»`);
+    log(`Epoch: ${used.size} modelos emparejados; ${missEp.length} recientes de Epoch sin pareja en el catálogo`);
+    if (missEp.length) log(`  Epoch sin pareja: ${missEp.slice(0, 80).join(' | ')}`);
+    if (missOr.length) log(`  catálogo sin ECI (${missOr.length}): ${missOr.slice(0, 120).join(' | ')}`);
+  }
 
   models.sort((a, b) => (b.orCreated.v || '').localeCompare(a.orCreated.v || ''));
 
@@ -409,10 +528,12 @@ async function main() {
     sources: SOURCES,
     status,
     aaIndexVersion: curated.aaIndexVersion ?? null,
+    epochFrontier: ep === 'keep' ? (prevCatalog?.epochFrontier || null) : { points: epochFrontier(ep.rows), got: NOW_ISO, src: 'epoch', url: SOURCES.epoch.url, n: ep.rows.length },
     method: {
+      capability: 'La capacidad se mide con el Epoch Capabilities Index (ECI), que combina muchos benchmarks en una escala común con intervalo de confianza; datos de Epoch AI con licencia CC BY 4.0. La programación usa SWE-bench Verified ejecutado por Epoch. El emparejamiento con OpenRouter es por nombre exacto normalizado.',
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',
       weights: '«Abiertos» exige un repositorio público en Hugging Face enlazado por OpenRouter. Sin enlace, «cerrados». La licencia procede de la ficha de Hugging Face.',
-      speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana de Artificial Analysis cuando existe y, aparte, la de cada proveedor de OpenRouter en los últimos 30 minutos de la recogida.',
+      speed: 'La velocidad depende de quién sirve el modelo. La API abierta de OpenRouter no publica latencia ni rendimiento, y la licencia gratuita de Artificial Analysis no permite republicar sus datos en tablas, así que de momento no hay fuente publicable.',
       window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días.`
     },
     models,
@@ -430,7 +551,7 @@ async function main() {
   evLog.events.sort((a, b) => b.date.localeCompare(a.date));
   await writeFile(logPath, JSON.stringify(evLog, null, 1) + '\n');
   await writeFile(path.join(DATA, 'changes.json'), JSON.stringify({ generated: NOW_ISO, since: baseDate, items: changeItems }, null, 1) + '\n');
-  log(`escrito: ${models.length} modelos, ${changeItems.length} cambios, AA ${status.aa.ok ? 'ok' : status.aa.reason}`);
+  log(`escrito: ${models.length} modelos (${models.filter(m => m.epoch?.eci?.v).length} con ECI), ${changeItems.length} cambios, AA ${status.aa.ok ? 'ok' : status.aa.reason}`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

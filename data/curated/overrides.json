@@ -5,5 +5,7 @@
   "hf": {
     "minimax/minimax-m1": "MiniMaxAI/MiniMax-M1",
     "mistralai/mistral-large-2512": "mistralai/Mistral-Large-3-675B-Instruct-2512"
-  }
+  },
+  "_doc_epoch": "Emparejamientos manuales OpenRouter → Epoch AI cuando el nombre no coincide. Clave: id de OpenRouter. Valor: columna «Model» o «Display name» exacta de eci_scores.csv, o null para impedir el emparejamiento.",
+  "epoch": {}
 }

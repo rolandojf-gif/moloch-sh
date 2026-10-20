@@ -2,7 +2,7 @@
 
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-const SRC_ABBR = { openrouter: 'OR', aa: 'AA', hf: 'HF', curated: 'CUR' };
+const SRC_ABBR = { openrouter: 'OR', aa: 'AA', hf: 'HF', epoch: 'EP', curated: 'CUR' };
 let SOURCES = {};
 export function setSources(s) { SOURCES = s || {}; }
 
@@ -79,8 +79,10 @@ export function blended(m) {
   const i = m.price?.in?.v, o = m.price?.out?.v;
   return (i === null || i === undefined || o === null || o === undefined) ? null : (3 * i + o) / 4;
 }
-export const ii = m => m.aa?.intelligence?.v ?? null;
-export const coding = m => m.aa?.coding?.v ?? null;
+/* Capacidad: Epoch Capabilities Index (CC BY 4.0). Programación: SWE-bench Verified ejecutado por Epoch. */
+export const ii = m => m.epoch?.eci?.v ?? null;
+export const coding = m => m.epoch?.swe?.v ?? null;
+export const capFact = m => m.epoch?.eci ?? null;
 
 /* Velocidad: mediana de AA si existe; si no, el proveedor de OpenRouter más rápido, nombrado. */
 export function speed(m) {

@@ -93,8 +93,8 @@ button { cursor: pointer; }
 .navtab:hover { background: rgba(204, 255, 0, .3); }
 .navtab[aria-current="page"] { background: var(--lime); color: #121211; }
 .navtab[aria-current="page"] i { color: #121211; }
-.navtab.off { color: var(--muted); cursor: not-allowed; }
-.navtab.off:hover { background: transparent; }
+.navtab.soon { color: var(--muted); }
+.navtab.soon[aria-current="page"] { color: #121211; }
 
 .seg { display: inline-flex; flex-wrap: wrap; border: 2px solid var(--ink); box-shadow: var(--shadow-sm); background: var(--card); }
 .seg-btn { font: 700 11.5px/1.2 var(--f-mono); padding: 8px 11px; border: 0; border-right: 2px solid var(--ink); background: transparent; text-transform: uppercase; }
@@ -143,6 +143,13 @@ h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orang
 .tag.k-evaluacion { background: var(--card); }
 .tag.k-retirada { background: var(--asphalt); color: #E8E7E1; }
 .empty { background: var(--card); border: 2px dashed var(--ink); padding: 18px; font-size: 15px; }
+/* Secciones en preparación: describen el contenido previsto, sin cifras */
+.soon-tag { background: var(--card-2); }
+.plan { list-style: none; counter-reset: plan; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.plan li { counter-increment: plan; background: var(--card); border: 2px dashed var(--ink); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.plan li::before { content: counter(plan, decimal-leading-zero); font: 700 11px var(--f-mono); color: var(--orange-ink); }
+.plan b { font: 700 17px/1.2 var(--f-head); }
+.plan span { color: var(--muted); font-size: 14.5px; }
 .more { margin-top: 14px; }
 .more summary { cursor: pointer; font: 700 12px var(--f-mono); text-transform: uppercase; }
 .changes { list-style: none; padding: 0; margin: 10px 0 0; border-top: 2px solid var(--ink); }

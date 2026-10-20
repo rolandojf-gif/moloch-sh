@@ -6,7 +6,7 @@ import { renderLanzamientos } from './lanzamientos.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const VIEWS = ['hoy', 'modelos', 'lanzamientos'];
+const VIEWS = ['hoy', 'modelos', 'lanzamientos', 'carrera', 'ai2027'];
 
 async function getJSON(url) {
   const res = await fetch(url, { cache: 'no-cache' });
@@ -34,7 +34,7 @@ function renderFreshness(d) {
   const cls = age <= 1.5 ? 'st-ok' : age <= 7 ? 'st-warn' : 'st-bad';
   const ageTxt = age < 1 ? `hace ${Math.max(1, Math.round(age * 24))} h` : `hace ${Math.floor(age)} d`;
   const warn = age > 7 ? ' · DATOS DESACTUALIZADOS' : age > 1.5 ? ' · comprobar la recogida' : '';
-  const st = Object.entries(c.status || {}).map(([k, s]) => {
+  const st = Object.entries(c.status || {}).filter(([, s]) => !s.optional).map(([k, s]) => {
     const name = c.sources?.[k]?.name || k;
     return s.ok ? `<span class="st-ok">● ${esc(name)}</span>` : `<span class="st-bad" title="${esc(s.reason || '')}">○ ${esc(name)}: ${esc(s.reason || 'sin datos')}</span>`;
   }).join('');
@@ -44,12 +44,13 @@ function renderFreshness(d) {
 function renderMethod(d) {
   const c = d.catalog;
   const items = Object.values(c.method || {}).map(t => `<li>${esc(t)}</li>`).join('');
-  const srcs = Object.entries(c.sources || {}).filter(([, s]) => s.url).map(([k, s]) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a> (${esc({ openrouter: 'OR', aa: 'AA', hf: 'HF' }[k] || k)})</li>`).join('');
+  const srcs = Object.entries(c.sources || {}).filter(([, s]) => s.url).map(([k, s]) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a> (${esc({ openrouter: 'OR', aa: 'AA', hf: 'HF', epoch: 'EP' }[k] || k)})${s.license ? `, licencia ${esc(s.license)}` : ''}${k === 'aa' && c.status?.aa?.optional ? ': no se usa; su licencia gratuita no permite republicar datos en tablas' : ''}</li>`).join('');
   $('#method-body').innerHTML = `
-    <p>Cada cifra lleva una marca de fuente (OR, AA, HF). Al pasar el cursor o enfocarla se ven la fecha del dato y la fecha de consulta; al pulsarla se abre la fuente. Una marca en ámbar indica que la última consulta falló y se muestra el último valor válido. Si una fuente no da el dato, aparece «sin datos».</p>
+    <p>Cada cifra lleva una marca de fuente (OR, HF, EP). Al pasar el cursor o enfocarla se ven la fecha del dato y la fecha de consulta; al pulsarla se abre la fuente. Una marca en ámbar indica que la última consulta falló y se muestra el último valor válido. Si una fuente no da el dato, aparece «sin datos».</p>
     <ul>${items}</ul>
     <p>Fuentes:</p><ul>${srcs}</ul>
     <p>País, licencia y disponibilidad de pesos son campos independientes. El país es la sede del laboratorio; los modelos anónimos figuran como «identidad sin confirmar» y no se atribuyen a ningún laboratorio.</p>
+    <p>Capacidad y programación: Epoch AI, ‘Capabilities &amp; benchmarking’. Publicado en <a href="https://epoch.ai/benchmarks" target="_blank" rel="noopener">epoch.ai</a>, licencia CC BY 4.0.</p>
     <p>Los datos se generan con <code>scripts/collect.mjs</code>; el código y el histórico están en el repositorio.</p>`;
 }
 
