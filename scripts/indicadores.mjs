@@ -153,8 +153,11 @@ function benchBlock(bench, ctx) {
 async function dcBlock(ctx) {
   const { getText, parseCSV, fact, TODAY } = ctx;
   const dcs = parseCSV(await getText(URLS.dc));
+  // Epoch anota la confianza de cada nombre con etiquetas («Amazon #confident»): se traducen y se quita la de «seguro».
+  const TAG = { confident: '', likely: ' (probable)', speculative: ' (especulativo)' };
+  const who = s => (s || '').replace(/\s*#(\w+)/g, (_, t) => TAG[t.toLowerCase()] ?? ` (${t})`).trim() || null;
   const rows = dcs.map(r => ({
-    name: col(r, 'Name'), owner: col(r, 'Owner') || null, users: col(r, 'Users') || null, country: col(r, 'Country') || null,
+    name: col(r, 'Name'), owner: who(col(r, 'Owner')), users: who(col(r, 'Users')), country: col(r, 'Country') || null,
     mw: n(col(r, 'Current power')), h100e: n(col(r, 'Current H100 equivalents')), capex: n(col(r, 'Current total capital cost'))
   })).filter(r => r.name);
   const sum = (xs, k) => xs.reduce((a, x) => a + (x[k] || 0), 0);
@@ -182,11 +185,11 @@ async function dcBlock(ctx) {
   return {
     now: fact(rows.length ? Math.round(sum(rows, 'mw')) : null, 'epoch', PAGES.dc, TODAY, {
       n: rows.length, h100e: Math.round(sum(rows, 'h100e')), capexB: r1(sum(rows, 'capex')),
-      note: 'potencia actual (MW) de los centros que sigue Epoch; no es el total mundial'
+      note: 'potencia de TI actual (MW) de los centros que sigue Epoch; no es el total mundial'
     }),
     countries: [...countries.values()].map(c => ({ ...c, mw: Math.round(c.mw), h100e: Math.round(c.h100e) })).sort((a, b) => b.mw - a.mw),
     top,
-    plan: fact(plan ? plan.end2027.mw : null, 'epoch', URLS.dcTimelines, TODAY, { ...(plan || {}), note: 'estimación de Epoch a partir de obras, permisos y anuncios; incluye fechas futuras' })
+    plan: fact(plan ? plan.end2027.mw : null, 'epoch', URLS.dcTimelines, TODAY, { ...(plan || {}), note: 'estimación de Epoch a partir de obras, permisos y anuncios; incluye fechas futuras; columna «Power (MW)» del calendario' })
   };
 }
 

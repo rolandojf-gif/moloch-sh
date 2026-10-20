@@ -8,6 +8,8 @@ const mh100 = v => v >= 1e6 ? `${num(v / 1e6, 1)} M H100e` : `${num(Math.round(v
 export const usdB = v => `${num(v / 1e9, v >= 1e10 ? 0 : 1)} mil millones de $`;
 const who = b => b ? `${esc(b.model)}${b.org ? ` (${esc(b.org.split(',')[0])})` : ''}` : 'sin datos';
 const COUNTRY = { US: 'EE. UU.', CN: 'China', otros: 'otros' };
+/* Epoch da el país de cada centro en inglés. */
+const PAIS = { 'United States': 'EE. UU.', 'United States of America': 'EE. UU.', China: 'China', Malaysia: 'Malasia', 'United Arab Emirates': 'EAU', 'Saudi Arabia': 'Arabia Saudí', 'United Kingdom': 'Reino Unido', Norway: 'Noruega', Japan: 'Japón', 'South Korea': 'Corea del Sur', Germany: 'Alemania', France: 'Francia', Spain: 'España', Canada: 'Canadá', Singapore: 'Singapur', Taiwan: 'Taiwán', Qatar: 'Catar', Sweden: 'Suecia', Finland: 'Finlandia', Netherlands: 'Países Bajos' };
 
 /* Hecho «hermano» para listas y valores derivados que no son un hecho propio: misma fuente y fechas. */
 const like = (f, v, extra = {}) => f ? { src: f.src, url: f.url, asOf: f.asOf, got: f.got, stale: f.stale, ...extra, v } : null;
@@ -66,7 +68,7 @@ const REG = {
   },
   'dc.now': (I) => {
     const f = I.dc?.now;
-    return { label: 'Potencia en servicio en los centros que sigue Epoch', value: fact(f, mw), sub: f?.v != null ? `${num(f.n, 0)} centros · ${mh100(f.h100e)}. No es el total mundial.` : '' };
+    return { label: 'Potencia de TI en servicio en los centros que sigue Epoch', value: fact(f, mw), sub: f?.v != null ? `${num(f.n, 0)} centros · ${mh100(f.h100e)}. Potencia de los equipos, sin refrigeración ni pérdidas. No es el total mundial.` : '' };
   },
   'dc.capex': (I) => {
     const f = I.dc?.now;
@@ -78,12 +80,12 @@ const REG = {
     return {
       label: 'Calendario estimado de potencia',
       value: `${mw(f.today.mw)} hoy → ${mw(f.end2026.mw)} a fin de 2026 → ${mw(f.end2027.mw)} a fin de 2027${src(f)}`,
-      sub: `Estimación de Epoch para ${num(f.centres, 0)} centros a partir de obras, permisos y anuncios; ${num(f.futureRows, 0)} registros con fecha futura, hasta ${esc(fmtDate(f.lastDate))}.`
+      sub: `Estimación de Epoch para ${num(f.centres, 0)} centros a partir de obras, permisos y anuncios, hasta ${esc(fmtDate(f.lastDate))}. Suma otra columna de Epoch («Power (MW)»)${I.dc?.now?.v != null ? `, que hoy da ${mw(f.today.mw)} frente a ${mw(I.dc.now.v)} de potencia de TI` : ''}: probablemente incluye refrigeración y pérdidas (inferencia del observatorio).`
     };
   },
   'dc.top': (I) => {
     const f = I.dc?.now, rows = I.dc?.top || [];
-    return { label: 'Centros con más potencia en servicio', list: rows.map(r => `${esc(r.name)}${r.owner ? ` · ${esc(r.owner)}` : ''}${r.country ? ` · ${esc(r.country)}` : ''}: <b>${mw(r.mw)}</b>${src(like(f, r.mw))}`), sub: rows.length ? '' : ND };
+    return { label: 'Centros con más potencia en servicio', list: rows.map(r => `${esc(r.name)}${r.owner ? ` · ${esc(r.owner)}` : ''}${r.country ? ` · ${esc(PAIS[r.country] || r.country)}` : ''}: <b>${mw(r.mw)}</b>${src(like(f, r.mw))}`), sub: rows.length ? '' : ND };
   },
   'chips.cum': (I) => {
     const f = I.chips?.cum;

@@ -313,6 +313,7 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
 .tally .legend i { width: 14px; height: 14px; border: 2px solid var(--ink); vertical-align: -2px; }
 .tally .legend i.seg-v-todavia-no-evaluable { border-style: dashed; }
 .tally .legend i.seg-v-none { border-style: dotted; }
+.tally .legend i.seg-v-sin-evidencia-suficiente { background: repeating-linear-gradient(135deg, var(--card) 0 3px, var(--muted) 3px 5px); }
 /* Escala de valoración: sin semántica de «bueno» o «malo» */
 .val { display: inline-block; font: 700 10.5px/1.2 var(--f-mono); text-transform: uppercase; padding: 4px 6px; border: 2px solid var(--ink); }
 .v-adelantado, .seg-v-adelantado { background: var(--orange); color: #121211; }

@@ -225,6 +225,7 @@
             { "tipo": "medida", "indicador": "dc.plan" },
             { "tipo": "medida", "texto": "La demanda eléctrica de los centros dedicados a IA creció en torno a un 50 % en 2025.", "fuente": "IEA, «Key Questions on Energy and AI» (comprobado a través de un buscador)", "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary", "fecha": "2026-04-16" }
           ],
+          "comparabilidad": "El escenario habla de demanda de potencia en el pico. El calendario de Epoch suma la columna «Power (MW)», que hoy queda por encima de la potencia de TI de los mismos centros y probablemente es la potencia total de la instalación (inferencia del observatorio). En ambos casos sólo cubre los centros que sigue Epoch, no el total mundial.",
           "valoraciones": [
             { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido. Epoch sólo cubre los centros que sigue y la IEA da sobre todo la electricidad de todos los centros de datos, no sólo de IA: puede acabar en «sin evidencia suficiente»." }
           ]
