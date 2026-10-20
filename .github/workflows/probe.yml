@@ -6,14 +6,13 @@ jobs:
     steps:
       - run: |
           set +e
-          curl -sSL -o /tmp/b.csv https://epoch.ai/data/benchmarks.csv
-          curl -sSL -o /tmp/z.zip https://epoch.ai/data/benchmark_data.zip; unzip -l /tmp/z.zip | head -60
-          python3 - <<'PY'
-          import csv,collections
-          r=list(csv.DictReader(open('/tmp/b.csv')))
-          print(len(r))
-          recent=[x for x in r if (x.get('Version release date') or '')>='2026-06-01']
-          c=collections.Counter(x['task'] for x in recent)
-          print('tasks among models released since 2026-06:',c.most_common(40))
-          ms=collections.Counter(x['Model'] for x in recent); print(len(ms), list(ms)[:60])
+          curl -sSL -o /tmp/z.zip https://epoch.ai/data/benchmark_data.zip; mkdir /tmp/z; unzip -q /tmp/z.zip -d /tmp/z; cat /tmp/z/README.md
+          for f in terminalbench_external swe_bench_verified frontiercode_external cursorbench_external frontierswe_external; do echo "=== $f"; python3 - "$f" <<'PY'
+          import csv,sys
+          r=list(csv.DictReader(open(f'/tmp/z/{sys.argv[1]}.csv')))
+          print(list(r[0].keys()))
+          dk=[k for k in r[0] if 'date' in k.lower()]
+          r.sort(key=lambda x: x.get(dk[0]) or '', reverse=True)
+          for x in r[:12]: print({k:(v[:50]) for k,v in x.items() if v})
           PY
+          done
