@@ -110,19 +110,28 @@ async function loadOpenRouter(labs) {
   const res = await getJSON(SOURCES.openrouter.api);
   const all = res.data || [];
   const cutoff = NOW.getTime() / 1000 - WINDOW_DAYS * 86400;
+  const recent = NOW.getTime() / 1000 - NEW_DAYS * 86400;
+  const ids = new Set(all.map(m => m.id));
   const seen = new Set();
-  const out = [];
+  const out = [], untracked = [], orphan = [];
   for (const m of all) {
     const id = baseId(m.id);
-    if (id !== m.id) continue;                   // sólo la variante base
+    const isRecent = (m.created || 0) >= recent;
+    if (id !== m.id) {                           // sólo la variante base
+      if (isRecent && !ids.has(id)) orphan.push(m.id);
+      continue;
+    }
     const author = id.split('/')[0];
-    if (!labs[author]) continue;
+    if (!labs[author]) { if (isRecent) untracked.push(m.id); continue; }
     if ((m.created || 0) < cutoff) continue;
     if (seen.has(id)) continue;
     seen.add(id);
     out.push(m);
   }
   log(`OpenRouter: ${all.length} modelos, ${out.length} en el catálogo`);
+  // Para responder a «¿por qué no aparece X?»: altas recientes que el catálogo descarta.
+  if (untracked.length) log(`OpenRouter: altas de ${NEW_DAYS} días de autores no seguidos (curated/labs.json): ${untracked.join(', ')}`);
+  if (orphan.length) log(`OpenRouter: altas de ${NEW_DAYS} días sólo como variante, sin modelo base: ${orphan.join(', ')}`);
   return out;
 }
 

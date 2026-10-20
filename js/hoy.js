@@ -14,7 +14,7 @@ function leader(models, w) {
   return scored(models).filter(m => m.weights.v === w).sort((a, b) => ii(b) - ii(a))[0] || null;
 }
 
-/* Relevancia: pesos y modelos evaluados primero; cambios de precio según su tamaño; retiradas al final. */
+/* Relevancia, para ordenar los cambios de una misma fecha: pesos y modelos evaluados primero; cambios de precio según su tamaño; retiradas al final. */
 function relevance(item, byId) {
   const m = byId.get(item.model);
   switch (item.kind) {
@@ -66,10 +66,11 @@ function consequence(item, d) {
 }
 
 function renderNews(d) {
-  const items = (d.changes.items || []).slice().sort((a, b) => relevance(b, d.byId) - relevance(a, d.byId) || (b.date || '').localeCompare(a.date || ''));
+  // Lo más reciente primero: un modelo de hace dos semanas con ECI no debe tapar el de ayer que aún no tiene evaluación.
+  const items = (d.changes.items || []).slice().sort((a, b) => (b.date || '').localeCompare(a.date || '') || relevance(b, d.byId) - relevance(a, d.byId));
   $('#hoy-period').innerHTML = d.changes.since
     ? `Cambios entre la recogida del ${esc(fmtDate(d.changes.since))} y la del ${esc(fmtDate(d.catalog.generated))}.`
-    : `Primera recogida: se listan las altas de los últimos 14 días en OpenRouter. Los cambios de precio se detectan a partir de la siguiente.`;
+    : `Primera recogida: se listan las altas de los últimos 14 días en OpenRouter, de la más reciente a la más antigua. Los cambios de precio se detectan a partir de la siguiente.`;
   if (!items.length) {
     $('#hoy-news').innerHTML = `<div class="empty">Sin cambios relevantes${d.changes.since ? ` desde el ${esc(fmtDate(d.changes.since))}` : ''}. Ningún modelo nuevo, cambio de precio de al menos un 5 %, pesos nuevos ni retiradas en los laboratorios seguidos.</div>`;
     $('#hoy-all').hidden = true;
