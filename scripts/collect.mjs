@@ -172,36 +172,62 @@ function parseCSV(text) {
 }
 
 const key = s => norm(s).replace(/\s+/g, '');
+const EPOCH_AMBIGUOUS = [];   // sólo para el registro
+
+/* Emparejamiento con Epoch: primero el nombre completo (con lo que va entre paréntesis);
+   después una clave laxa, sólo si no la comparten dos filas de Epoch. Así «DeepSeek V3.2 Exp»
+   no hereda la nota de «DeepSeek-V3.2», ni «Gemini 2.5 Flash» la de una de sus tres versiones fechadas. */
+const fullKey = s => String(s || '').toLowerCase().replace(/^[^:]+:\s*/, '').replace(/[^a-z0-9.]+/g, '');
+const looseKey = s => String(s || '').toLowerCase().replace(/^[^:]+:\s*/, '').replace(/\(.*?\)/g, ' ')
+  .replace(/[^a-z0-9.]+/g, ' ').replace(/\b(preview|instruct|it|latest)\b/g, ' ').replace(/\s+/g, '');
+function nameIndex(rows, namesOf, better) {
+  const full = new Map(), loose = new Map();
+  for (const r of rows) for (const n of new Set(namesOf(r).filter(Boolean))) {
+    const f = fullKey(n), l = looseKey(n);
+    if (f && (!full.has(f) || better(r, full.get(f)))) full.set(f, r);
+    if (l) { const c = loose.get(l) || []; if (!c.includes(r)) c.push(r); loose.set(l, c); }
+  }
+  return {
+    exact: n => full.get(fullKey(n)) || null,
+    find(n) {
+      const f = full.get(fullKey(n));
+      if (f) return { row: f, how: 'nombre' };
+      const c = loose.get(looseKey(n)) || [];
+      return c.length === 1 ? { row: c[0], how: 'nombre aproximado' } : { row: null, ambiguous: c.length > 1 ? c : null };
+    }
+  };
+}
 const num = s => { const n = Number(s); return s !== '' && Number.isFinite(n) ? n : null; };
 
 /* ECI: un índice por modelo con intervalo; SWE-bench Verified: ejecuciones propias de Epoch (mejor variante por modelo). */
 async function loadEpoch() {
-  const out = { eci: new Map(), swe: new Map(), rows: [] };
+  const out = { rows: [] };
   const eci = parseCSV(await getText(SOURCES.epoch.api));
   for (const r of eci) {
     const v = num(r.eci);
     if (v === null) continue;
-    const row = {
-      name: r['Display name'] || r.Model, eci: v, lo: num(r.eci_ci_low), hi: num(r.eci_ci_high), date: r.date || null,
+    out.rows.push({
+      name: r['Display name'] || r.Model, model: r.Model || null, eci: v, lo: num(r.eci_ci_low), hi: num(r.eci_ci_high), date: r.date || null,
       org: r.Organization || null, country: r['Country (of organization)'] || null,
       access: r['Model accessibility'] || null, group: r['Accessibility group'] || null
-    };
-    out.rows.push(row);
-    // Variantes que colapsan en la misma clave (p. ej. «(high)», «(low)»): se queda la de mayor ECI y su nombre se muestra.
-    for (const k of new Set([key(r.Model), key(r['Display name'])])) if (k && (!out.eci.has(k) || out.eci.get(k).eci < v)) out.eci.set(k, row);
+    });
   }
+  out.eci = nameIndex(out.rows, r => [r.model, r.name], (a, b) => a.eci > b.eci);
+  out.swe = nameIndex([], () => []);
+  let nSwe = 0;
   try {
-    const bench = parseCSV(await getText(SOURCES.epoch.bench));
-    for (const r of bench) {
+    const best = new Map();
+    for (const r of parseCSV(await getText(SOURCES.epoch.bench))) {
       if (!/^swe-bench verified$/i.test(r.task || '') || (r.Status && r.Status !== 'Success')) continue;
       const v = num(r['Best score (across scorers)']);
-      if (v === null) continue;
-      const k = key(r.Model);
-      const prev = out.swe.get(k);
-      if (!prev || v > prev.v) out.swe.set(k, { v, version: r.id_model_version || r.model, date: (r.started_at || '').slice(0, 10) || null });
+      if (v === null || !r.Model) continue;
+      const prev = best.get(r.Model);
+      if (!prev || v > prev.v) best.set(r.Model, { model: r.Model, v, version: r.id_model_version || r.Model, date: (r.started_at || '').slice(0, 10) || null });
     }
+    out.swe = nameIndex([...best.values()], r => [r.model], (a, b) => a.v > b.v);
+    nSwe = best.size;
   } catch (e) { log(`Epoch benchmarks falló: ${e.message}`); out.sweFailed = true; }
-  log(`Epoch: ${out.rows.length} modelos con ECI, ${out.swe.size} con SWE-bench Verified`);
+  log(`Epoch: ${out.rows.length} modelos con ECI, ${nSwe} con SWE-bench Verified`);
   return out;
 }
 
@@ -300,8 +326,18 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
     license = fact(null, 'hf', null);
   }
   // Epoch clasifica la apertura de cada modelo; sustituye a la inferencia, nunca a una comprobación en Hugging Face.
-  const eKey = epochOv && Object.prototype.hasOwnProperty.call(epochOv, m.id) ? (epochOv[m.id] ? key(epochOv[m.id]) : null) : key(m.name);
-  const eRow = ep && ep !== 'keep' && eKey ? ep.eci.get(eKey) : null;
+  let eRow = null, eHow = null;
+  if (ep && ep !== 'keep' && !lab.stealth) {
+    if (epochOv && Object.prototype.hasOwnProperty.call(epochOv, m.id)) {
+      eRow = epochOv[m.id] ? ep.eci.exact(epochOv[m.id]) : null;
+      eHow = 'emparejamiento manual';
+      if (epochOv[m.id] && !eRow) log(`override Epoch sin fila: ${m.id} → ${epochOv[m.id]}`);
+    } else {
+      const hit = ep.eci.find(m.name);
+      eRow = hit.row; eHow = hit.how;
+      if (hit.ambiguous) EPOCH_AMBIGUOUS.push(`${m.id} → ${hit.ambiguous.map(r => r.name).join(' / ')}`);
+    }
+  }
   if (eRow && weights.inferred && (eRow.group === 'Open weights' || eRow.group === 'Closed weights')) {
     const open = eRow.group === 'Open weights';
     weights = fact(open ? 'abiertos' : 'cerrados', 'epoch', SOURCES.epoch.url, TODAY, { note: `clasificación de Epoch: ${eRow.access}` });
@@ -349,9 +385,9 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
   let epoch = null;
   if (ep === 'keep') epoch = prev && prev.epoch ? JSON.parse(JSON.stringify(prev.epoch, (k, v) => (v && typeof v === 'object' && 'v' in v) ? { ...v, stale: true } : v)) : null;
   else if (eRow && !lab.stealth) {
-    const s = ep.swe.get(eKey);
+    const s = (eRow.model && ep.swe.find(eRow.model).row) || ep.swe.find(eRow.name).row;
     epoch = {
-      name: eRow.name,
+      name: eRow.name, how: eHow,
       eci: fact(eRow.eci, 'epoch', SOURCES.epoch.url, TODAY, { ci: [eRow.lo, eRow.hi], note: `intervalo ${eRow.lo}–${eRow.hi}` }),
       release: fact(eRow.date, 'epoch', SOURCES.epoch.url, eRow.date || TODAY, { note: 'fecha del modelo según Epoch' }),
       access: fact(eRow.access, 'epoch', SOURCES.epoch.url),
@@ -502,6 +538,7 @@ async function main() {
     log(`Epoch: ${used.size} modelos emparejados; ${missEp.length} recientes de Epoch sin pareja en el catálogo`);
     if (missEp.length) log(`  Epoch sin pareja: ${missEp.slice(0, 80).join(' | ')}`);
     if (missOr.length) log(`  catálogo sin ECI (${missOr.length}): ${missOr.slice(0, 120).join(' | ')}`);
+    if (EPOCH_AMBIGUOUS.length) log(`  ambiguos, sin emparejar (${EPOCH_AMBIGUOUS.length}): ${EPOCH_AMBIGUOUS.join(' | ')}`);
   }
 
   models.sort((a, b) => (b.orCreated.v || '').localeCompare(a.orCreated.v || ''));
