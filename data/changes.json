@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-20T18:59:36Z",
+ "generated": "2026-10-20T19:03:22Z",
  "since": null,
  "items": [
   {
@@ -9,7 +9,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
-    "got": "2026-10-20T18:59:36Z"
+    "got": "2026-10-20T19:03:22Z"
    },
    "what": "DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -27,7 +27,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/nvidia/nemotron-3.5-super-vl",
-    "got": "2026-10-20T18:59:36Z"
+    "got": "2026-10-20T19:03:22Z"
    },
    "what": "Nemotron 3.5 Super VL (NVIDIA) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -45,7 +45,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-argon",
-    "got": "2026-10-20T18:59:36Z"
+    "got": "2026-10-20T19:03:22Z"
    },
    "what": "Gemini 4 Argon (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -63,7 +63,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/anthropic/claude-haiku-5.5",
-    "got": "2026-10-20T18:59:36Z"
+    "got": "2026-10-20T19:03:22Z"
    },
    "what": "Claude Haiku 5.5 (Anthropic) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -81,7 +81,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-nano-banana-2.1",
-    "got": "2026-10-20T18:59:36Z"
+    "got": "2026-10-20T19:03:22Z"
    },
    "what": "Nano Banana 2.1 (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -99,7 +99,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/mistralai/mistral-large-4-0",
-    "got": "2026-10-20T18:59:36Z"
+    "got": "2026-10-20T19:03:22Z"
    },
    "what": "Mistral Large 4 (Mistral AI) aparece en el catálogo de OpenRouter.",
    "data": {
