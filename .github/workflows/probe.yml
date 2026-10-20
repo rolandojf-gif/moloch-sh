@@ -29,4 +29,5 @@ jobs:
           node-version: '22'
       - run: node .github/probe/probe.mjs ${{ matrix.i }}
         env:
-          COLS: 'Status,Operational status,Company,task,Benchmark,benchmark,Source,source,Country,Owner,Users,Project,Name'
+          COLS: 'task,Company,Designer,Manufacturer,Chip type,Organization,Construction status,Confidence'
+          MINMAX: 'Date,Start date,End date,Quarter,date,started_at'

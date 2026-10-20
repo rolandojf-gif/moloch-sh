@@ -33,6 +33,14 @@ try {
     out.push(`COLUMNS (${head.length}): ${head.join(' | ')}`);
     out.push(`ROWS: ${rows.length - 1}`);
     for (const x of rows.slice(1, 6)) out.push('ROW: ' + head.map((h, i) => `${h}=${(x[i] || '').slice(0, 120)}`).filter(s => !s.endsWith('=')).join(' ; '));
+    const today = new Date().toISOString().slice(0, 10);
+    for (const col of (process.env.MINMAX || '').split(',').filter(Boolean)) {
+      const i = head.indexOf(col); if (i < 0) continue;
+      const vals = rows.slice(1).map(x => x[i]).filter(Boolean).sort();
+      const fut = rows.slice(1).filter(x => (x[i] || '') > today);
+      out.push(`MINMAX ${col}: min=${vals[0]} max=${vals[vals.length - 1]} n=${vals.length} posteriores_a_hoy=${fut.length}`);
+      for (const x of fut.slice(0, 6)) out.push('FUT: ' + head.map((h, j) => `${h}=${(x[j] || '').slice(0, 80)}`).filter(s => !s.endsWith('=')).join(' ; '));
+    }
     const env = process.env.COLS;
     if (env) for (const col of env.split(',')) { const i = head.indexOf(col); if (i >= 0) { const cnt = {}; for (const x of rows.slice(1)) cnt[x[i]] = (cnt[x[i]] || 0) + 1; out.push(`VALUES ${col}: ` + Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 80).map(([k, v]) => `${k}(${v})`).join(' | ')); } }
   } else if (mode === 'archive') {
