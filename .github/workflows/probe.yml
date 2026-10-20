@@ -6,30 +6,24 @@ jobs:
     steps:
       - run: |
           set +e
-          echo "=== eci_scores"; curl -sSL -o /tmp/e.csv -w '%{http_code} %{size_download}\n' https://epoch.ai/data/eci_scores.csv; wc -l /tmp/e.csv; head -5 /tmp/e.csv | cut -c1-700; echo; tail -3 /tmp/e.csv | cut -c1-700
+          pip install -q pyyaml >/dev/null 2>&1
+          curl -sSL -o /tmp/o.yaml https://artificialanalysis.ai/api/v2/openapi
           python3 - <<'PY'
-          import csv
-          r=list(csv.DictReader(open('/tmp/e.csv')))
-          print('COLS',list(r[0].keys()))
-          for k in r[0]:
-              if 'date' in k.lower(): 
-                  rs=sorted(r,key=lambda x:x[k] or '',reverse=True)[:12]
-                  for x in rs: print({kk:x[kk][:60] for kk in x})
-                  break
+          import yaml,json
+          o=yaml.safe_load(open('/tmp/o.yaml'))
+          print([p for p in o['paths'] if 'language' in p])
+          p=o['paths']['/language/models/free']['get']
+          print(json.dumps({k:p[k] for k in p if k!='responses'})[:1500])
+          sch=p['responses']['200']['content']['application/json']['schema']
+          def res(s,d=0):
+              if d>6: return '...'
+              if isinstance(s,dict):
+                  if '$ref' in s:
+                      n=s['$ref'].split('/')[-1]; return {'REF '+n: res(o['components']['schemas'][n],d+1)}
+                  return {k:res(v,d+1) for k,v in s.items() if k not in ('description','example','examples')}
+              if isinstance(s,list): return [res(x,d+1) for x in s]
+              return s
+          print(json.dumps(res(sch))[:7000])
           PY
-          echo "=== openapi free"; curl -sSL -o /tmp/o.json -w '%{http_code} %{content_type} %{size_download}\n' https://artificialanalysis.ai/api/v2/openapi
-          python3 - <<'PY'
-          import json
-          try:
-              o=json.load(open('/tmp/o.json'))
-          except Exception as e:
-              print('not json', open('/tmp/o.json').read()[:300]); raise SystemExit
-          for p,v in o.get('paths',{}).items():
-              if 'language/models' in p: print(p, list(v.keys()))
-          p=o['paths'].get('/language/models/free') or o['paths'].get('/api/v2/language/models/free')
-          print(json.dumps(p)[:4000])
-          comps=o.get('components',{}).get('schemas',{})
-          for n,s in comps.items():
-              if 'ree' in n or 'LanguageModel' in n: print(n, json.dumps(s)[:2500])
-          PY
-          echo "=== terms links"; curl -sSL https://artificialanalysis.ai/data-api/docs | grep -oE 'href="[^"]*(terms|legal)[^"]*"' | sort -u
+          echo "=== terms"; sudo apt-get install -y -qq poppler-utils >/dev/null 2>&1
+          for u in https://artificialanalysis.ai/docs/legal/Terms-of-Use.pdf https://artificialanalysiscdn.com/legal/ProDataPlatformTerms.pdf; do curl -sSL -o /tmp/t.pdf "$u"; echo "--- $u"; pdftotext /tmp/t.pdf - | tr -s '\n ' | grep -i -B2 -A4 -E 'free|redistribut|attribution|publicly|internal' | head -60; done
