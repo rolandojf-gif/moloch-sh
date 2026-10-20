@@ -1,5 +1,5 @@
 /* Vista «Hoy»: qué ha cambiado, cuatro indicadores y capacidad frente a precio. */
-import { esc, fact, src, provLine, usd, num, fmtDate, blended, ii, capFact, ND } from './fmt.js';
+import { esc, fact, src, provLine, usd, num, fmtDate, blended, ii, capFact, ND, AA_LEADERBOARD } from './fmt.js';
 import { scatter } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -48,7 +48,7 @@ function consequence(item, d) {
         : `ECI ${num(score)}: a ${num(-diff)} puntos del mejor ${block === 'abiertos' ? 'abierto' : 'cerrado'} (${esc(lead.name)}). Puesto ${rank} de ${scored(models).length} en el catálogo.`);
     } else parts.push(`ECI ${num(score)}. Puesto ${rank} de ${scored(models).length} en el catálogo.`);
   } else if (item.kind === 'nuevo') {
-    parts.push('Sin puntuación de capacidad independiente todavía (Epoch AI).');
+    parts.push(`Sin puntuación de capacidad independiente todavía en Epoch AI. Puede que ya figure en la ${AA_LEADERBOARD}.`);
   }
   if (item.kind === 'precio') {
     const pct = item.data.pct;

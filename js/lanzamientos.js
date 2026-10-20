@@ -1,5 +1,5 @@
 /* Vista «Lanzamientos»: por modelo, qué etapas constan (anuncio, acceso restringido, API pública, pesos) y con qué fuente. */
-import { esc, src, provLine, fmtDate, num, ii } from './fmt.js';
+import { esc, src, provLine, fmtDate, num, ii, AA_LEADERBOARD } from './fmt.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -32,7 +32,7 @@ function cardFor(m, curated) {
   const delta = Object.values(st).find(s => s.delta)?.delta;
   const evalTxt = ii(m) !== null
     ? `sí: ECI ${num(ii(m))}${src(m.epoch.eci)} en Epoch AI`
-    : 'no consta en el índice de Epoch AI';
+    : `no consta todavía en el índice de Epoch AI (consulta la ${AA_LEADERBOARD})`;
   const aaRel = m.epoch?.release?.v ? ` · fecha del modelo según Epoch: ${esc(fmtDate(m.epoch.release.v))}${src(m.epoch.release)}` : '';
   const identity = m.identity === 'confirmada' ? '' : ' <span class="tag">Identidad sin confirmar</span>';
   return {
