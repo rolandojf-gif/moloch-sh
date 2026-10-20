@@ -1,40 +1,50 @@
-# MOLOCH.SH // Arbitrage & Telemetry Kernel v2.6
+# MOLOCH.SH · Observatorio de la carrera por la IA
 
-Dashboard estático (sin build ni dependencias) que audita el coste real por tarea agéntica de la cohorte abierta/china MoE frente al suelo y la frontera propietarios de EE. UU.: precipicios de contexto >100K, inflación de razonamiento, swaps silenciosos de alias y presión de quema de bancos de suscripción.
+Sitio estático (HTML, CSS y JavaScript sin build) para entrar, entender qué ha cambiado y comprobar los datos: qué modelos han salido, cómo se comparan los abiertos con los cerrados, cuánto cuestan y dónde verificarlo.
 
-## Ejecutar en local
+## Vistas
 
-Los módulos ES necesitan servirse por http (no funciona con `file://`):
+| Vista | Pregunta | Estado |
+| --- | --- | --- |
+| Hoy | ¿Qué ha cambiado y por qué importa? | fase 1 |
+| Modelos | ¿Cómo se comparan abiertos y cerrados? | fase 1 |
+| Lanzamientos | ¿Qué ha salido realmente? | fase 1 |
+| La carrera | ¿Qué acelera o frena el avance? | fase 2 |
+| AI 2027 | ¿Cómo encaja la realidad con aquel escenario? | fase 2 |
 
-```bash
-python3 -m http.server 8765
-# o: npx http-server -p 8765 -c-1 .
-```
+## Datos y procedencia
 
-Abre http://localhost:8765.
+Ninguna cifra está escrita a mano en el código. `scripts/collect.mjs` consulta las fuentes y genera:
 
-## Desplegar en Netlify
-
-```bash
-netlify deploy --prod
-```
-
-`netlify.toml` publica la raíz (`publish = "."`) y fija CSP y cabeceras de seguridad. También puedes arrastrar la carpeta a Netlify Drop.
-
-## Estructura
-
-| Archivo | Rol |
+| Archivo | Contenido |
 | --- | --- |
-| `index.html` | Marcado de todas las vistas y modales |
-| `css/anvil.css` | Neo-brutalismo industrial (tokens, X-RAY, responsive) |
-| `js/seed-data.js` | Semilla 2026-10-19, kernel de coste auditado, Prompt v2.0 |
-| `js/chaos-oscilloscope.js` | Osciloscopio 60 FPS, radar de cohorte, radar de alias, sismógrafo |
-| `js/gemini-ingestor.js` | Ingesta vía Gemini (JSON schema) + parser local determinista |
-| `js/audio-synth.js` | Sintetizador Web Audio procedural |
-| `js/main.js` | Estado, render, router, banco, ⌘K, logros |
+| `data/catalog.json` | Catálogo actual. Cada cifra es `{ v, src, url, asOf, got }`: valor, fuente, enlace, fecha del dato y fecha de consulta. |
+| `data/changes.json` | Diferencias con la última recogida de un día anterior. |
+| `data/events-log.json` | Registro acumulado de cambios de precio, pesos nuevos, retiradas y primeras evaluaciones. |
+| `data/history/AAAA-MM-DD.json` | Instantánea diaria compacta para las series históricas. |
+| `data/curated/*.json` | Lo único que se edita a mano: laboratorios seguidos (con país), emparejamientos con AA, anuncios con URL y versión del índice de AA. |
 
-## Datos
+Fuentes:
 
-Precios, AA, coste/tarea y volúmenes son la semilla aportada a 2026-10-19 y no se verifican. Los supuestos del kernel (verbosidad CoT por modelo, 70 % de cache-hit, cache-write 1.25× de Anthropic, ×2.4 de reintentos fp8, rampa de contexto) están documentados en el bloque **AUDIT FORMULA** de la propia app.
+- **OpenRouter** (`/api/v1/models` y `/endpoints`, sin clave): precios, contexto, proveedores, velocidad y espera por proveedor, enlace a pesos.
+- **Hugging Face** (`/api/models`, sin clave): existencia del repositorio de pesos, licencia y fecha.
+- **Artificial Analysis** (`/api/v2/data/llms/models`, requiere `AA_API_KEY`): índices de inteligencia y programación, velocidad mediana y fecha de lanzamiento. Sin clave, esos campos aparecen como «sin datos».
 
-La clave de Gemini se guarda sólo en `localStorage` del navegador.
+Reglas: si una fuente no da un dato, el campo queda `null` y la interfaz muestra «sin datos». Si una consulta falla, se conserva el último valor válido marcado como antiguo. Si falla OpenRouter, no se escribe nada. `scripts/validate.mjs` rechaza un catálogo con cifras sin fuente o fechas.
+
+País, licencia y disponibilidad de pesos son campos separados. «Abiertos» exige un repositorio público en Hugging Face enlazado desde OpenRouter. Los modelos anónimos figuran como «identidad sin confirmar».
+
+## Recogida
+
+El flujo `.github/workflows/collect.yml` ejecuta el recolector, valida y confirma los JSON. En esta fase se lanza a mano (Actions → Recogida de datos → Run workflow) o al cambiar el recolector o los datos curados. Para activar los índices, añade el secreto `AA_API_KEY` en Settings → Secrets and variables → Actions.
+
+En local:
+
+```bash
+node scripts/collect.mjs && node scripts/validate.mjs
+python3 -m http.server 8765   # los módulos ES no funcionan con file://
+```
+
+## Despliegue
+
+`netlify.toml` publica la raíz y fija la CSP (sólo conexiones al propio dominio).

@@ -1,431 +1,151 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="auto">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MOLOCH.SH // Arbitrage &amp; Telemetry Kernel v2.6</title>
-<meta name="description" content="Kernel determinista de arbitraje LLM: coste real por tarea agéntica, trampas de facturación >100K, swaps silenciosos y bancos de suscripción. Semilla 2026-10-19.">
+<title>MOLOCH.SH · Observatorio de la carrera por la IA</title>
+<meta name="description" content="Qué ha salido, qué mejora, cuánto cuesta y dónde comprobarlo: modelos abiertos y cerrados con fuente y fecha en cada cifra.">
 <meta name="theme-color" content="#0F0F0E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FF5722'/%3E%3Crect x='1' y='1' width='30' height='30' fill='none' stroke='%23121211' stroke-width='2'/%3E%3Ctext x='5' y='22' font-family='monospace' font-weight='700' font-size='15' fill='%23121211'%3E%3E_%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap">
-<link rel="stylesheet" href="css/anvil.css">
-<script type="module" src="js/main.js"></script>
+<link rel="stylesheet" href="css/observatorio.css">
+<script src="js/theme-init.js"></script>
+<script type="module" src="js/app.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Saltar al contenido</a>
 
-<!-- A · Live telemetry bar -->
-<header class="ticker" aria-label="Telemetría en vivo">
-  <div class="rec" title="Frames por segundo medidos y tiempo de sesión">
-    <span class="rec-dot" aria-hidden="true"></span>
-    <span>REC <b id="fps">60</b> FPS</span>
-    <span class="rec-sep" aria-hidden="true">|</span>
-    <span id="session-timer">00:00:00</span>
-  </div>
-  <div class="ticker-viewport"><div class="ticker-track" id="ticker-track"></div></div>
-  <div class="ticker-utc">UTC <b data-k="utc">--:--:--</b></div>
-</header>
-
-<!-- B · Navigation -->
-<nav class="topnav" aria-label="Principal">
-  <a class="brand" href="#control-plane" data-nav="control-plane">
-    <span class="brand-icon" aria-hidden="true"><span>&gt;_</span><small>v2.6</small></span>
+<header class="topnav">
+  <a class="brand" href="#hoy">
+    <span class="brand-icon" aria-hidden="true">&gt;_</span>
     <span class="brand-text">
       <strong>MOLOCH<em>.SH</em></strong>
-      <small>v2.6 // DETERMINISTIC LLM<br>ARBITRAGE KERNEL</small>
+      <small>Observatorio de la carrera por la IA</small>
     </span>
-    <span class="seed-badge">[SEED:<br>2026-10-19]</span>
   </a>
 
-  <div class="navtabs" role="tablist" aria-label="Módulos">
-    <button class="navtab" role="tab" data-nav="control-plane"><i>01.</i><span>CONTROL<br>PLANE</span></button>
-    <button class="navtab" role="tab" data-nav="cohort-matrix"><i>02.</i><span>COHORT<br>MATRIX</span></button>
-    <button class="navtab" role="tab" data-nav="bank"><i>03.</i><span>BANK RESET<br>ARBITRAGE</span></button>
-    <button class="navtab" role="tab" data-nav="stealth-radar"><i>04.</i><span>STEALTH &amp;<br>ALIAS RADAR</span></button>
-    <button class="navtab" role="tab" data-nav="incident-timeline"><i>05.</i><span>INCIDENT<br>TIMELINE</span></button>
-    <button class="navtab" role="tab" data-nav="prompt"><i>06.</i><span>TASK<br>PROMPT v2.0</span></button>
-  </div>
+  <nav class="navtabs" aria-label="Secciones">
+    <a class="navtab" href="#hoy" data-view="hoy"><i>01</i><span>Hoy</span></a>
+    <a class="navtab" href="#modelos" data-view="modelos"><i>02</i><span>Modelos</span></a>
+    <a class="navtab" href="#lanzamientos" data-view="lanzamientos"><i>03</i><span>Lanzamientos</span></a>
+    <span class="navtab off" aria-disabled="true" title="Próxima fase"><i>04</i><span>La carrera</span></span>
+    <span class="navtab off" aria-disabled="true" title="Próxima fase"><i>05</i><span>AI 2027</span></span>
+  </nav>
 
-  <div class="utils">
-    <button class="btn util" id="btn-xray" aria-pressed="false" title="Alterna precio nominal y coste agéntico auditado">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
-      <span>X-RAY<br><b data-k="xray-state">OFF</b></span>
-    </button>
-    <button class="btn util lime" id="btn-sfx" aria-pressed="true" title="Sintetizador Web Audio">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>
-      <span>SFX:<b data-k="sfx-state">ON</b></span>
-    </button>
-    <button class="btn util amber" id="btn-ach" title="Logros desbloqueados">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4M12 13v4M8 20h8"/></svg>
-      <span><b data-k="ach-count">0/7</b></span>
-    </button>
-    <button class="btn util" id="btn-cmd" title="Paleta de comandos (Ctrl/⌘ + K)">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6Z"/></svg>
-      <span>⌘K</span>
-    </button>
-    <button class="btn util orange" id="btn-gemini" title="Configurar Gemini Flash">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg>
-      <span>GEMINI FLASH:<br><b data-k="gemini-state">LINK API</b></span>
-    </button>
+  <div class="seg theme" role="group" aria-label="Tema">
+    <button class="seg-btn" data-theme-set="auto" aria-pressed="true">Auto</button>
+    <button class="seg-btn" data-theme-set="light" aria-pressed="false">Claro</button>
+    <button class="seg-btn" data-theme-set="dark" aria-pressed="false">Oscuro</button>
   </div>
-</nav>
+</header>
+
+<div class="freshness" id="freshness" role="status" aria-live="polite">Cargando datos…</div>
 
 <main id="main">
-  <!-- C + D · Control plane -->
-  <section class="layout" id="control-plane" data-section="control-plane">
-    <div class="hero">
-      <a class="flash-brief" href="#stealth-radar" data-nav="stealth-radar">
-        <span class="fb-star" aria-hidden="true">★</span>
-        <span class="fb-text">FLASH BRIEF [19 OCT 2026]: STEALTH/SPACE-BUNNY-ALPHA UNMASKED AS MINIMAX M3.1 FLASH ($0.15/$0.60) + DEEPSEEK V4.1-FLASH SILENT 1017 BUILD LIVE</span>
-        <span class="fb-cta">READ SIGNAL →</span>
-      </a>
-
-      <h1 class="headline">
-        <span class="hl-line">DETERMINISTIC</span>
-        <span class="hl-line"><span class="slab">[ARBITRAGE KERNEL]</span></span>
-        <span class="hl-line">FOR MOLOCHIAN MARKETS.</span>
-      </h1>
-
-      <p class="subcopy">
-        El precio por millón de tokens es marketing; el coste por tarea resuelta es física.
-        <strong>MOLOCH.SH</strong> audita el coste empírico de trayectorias agénticas reales frente a las
-        trampas de precio propietarias de EE. UU.: precipicios de contexto &gt;100K, inflación de razonamiento,
-        swaps silenciosos de alias y estrangulamiento de bancos de suscripción. Todo con una semilla
-        fijada y matemáticas deterministas.
-      </p>
-
-      <!-- Multi-tab terminal -->
-      <div class="terminal" id="terminal">
-        <div class="term-bar">
-          <div class="term-tabs" role="tablist" aria-label="Terminal">
-            <button class="ttab" role="tab" data-tt="ingest" aria-selected="true">01. INGEST DAILY SIGNAL (GEMINI FLASH)</button>
-            <button class="ttab" role="tab" data-tt="router" aria-selected="false">02. WORKLOAD ROUTER</button>
-            <button class="ttab" role="tab" data-tt="bank" aria-selected="false">03. BANK RESET ARBITRAGE</button>
-            <button class="ttab" role="tab" data-tt="prompt" aria-selected="false">04. TASK PROMPT v2.0</button>
-          </div>
-        </div>
-
-        <!-- 01 · Ingest -->
-        <div class="term-panel" data-tp="ingest" role="tabpanel">
-          <div class="term-line"><span class="ps">$</span> moloch ingest --source daily-signal --engine <b class="hl-lime" data-k="ing-engine">LOCAL-DETERMINISTIC</b></div>
-          <label class="sr-only" for="ing-text">Señal diaria</label>
-          <textarea id="ing-text" class="term-input" rows="7" spellcheck="false" placeholder="Pega aquí la salida en español de tu tarea programada diaria (formato Prompt v2.0 o texto libre: changelogs, benchmarks, rankings)…"></textarea>
-          <div class="term-actions">
-            <button class="tbtn orange" id="ing-parse">► PARSE &amp; MUTATE VIA GEMINI FLASH</button>
-            <button class="tbtn lime" id="ing-sim">SIMULATE TODAY'S 19-OCT SIGNAL</button>
-            <button class="tbtn danger" id="ing-reset">↺ RESET TO CLEAN SEED</button>
-            <button class="tbtn" id="ing-export">⤓ moloch-state.json</button>
-            <label class="tbtn" for="ing-import">⤒ IMPORT</label>
-            <input type="file" id="ing-import" accept="application/json,.json" hidden>
-          </div>
-          <pre class="term-out" id="ing-out" aria-live="polite"></pre>
-        </div>
-
-        <!-- 02 · Router -->
-        <div class="term-panel" data-tp="router" role="tabpanel" hidden>
-          <div class="term-line"><span class="ps">$</span> moloch route --ctx <b class="hl-lime" data-k="rt-ctx">140K</b> --steps <b class="hl-lime" data-k="rt-steps">14</b> --tariff <b class="hl-lime" data-k="rt-tariff">PEAK</b></div>
-          <div class="fields">
-            <label class="field">
-              <span>PRESET</span>
-              <select id="rt-preset"></select>
-            </label>
-            <label class="field">
-              <span>TASK</span>
-              <input id="rt-text" type="text" maxlength="140" placeholder="Describe la tarea…">
-            </label>
-            <label class="field">
-              <span>CONTEXT · <b data-k="rt-ctx">140K</b> tokens</span>
-              <input id="rt-ctx" type="range" min="10000" max="500000" step="5000" value="140000">
-            </label>
-            <label class="field">
-              <span>AGENTIC STEPS · <b data-k="rt-steps">14</b></span>
-              <input id="rt-steps" type="range" min="1" max="25" step="1" value="14">
-            </label>
-          </div>
-          <div class="rt-grid">
-            <div class="rt-col">
-              <h4>(A) BURN FIXED SUBSCRIPTION BANK</h4>
-              <div id="rt-bank"></div>
-            </div>
-            <div class="rt-col">
-              <h4>(B) OPENROUTER / API ROUTING</h4>
-              <div id="rt-api"></div>
-            </div>
-          </div>
-          <div class="verdict" id="rt-verdict" aria-live="polite"></div>
-        </div>
-
-        <!-- 03 · Bank reset -->
-        <div class="term-panel" data-tp="bank" id="bank" data-section="bank" role="tabpanel" hidden>
-          <div class="term-line"><span class="ps">$</span> moloch bank --tool <b class="hl-lime" data-k="bk-tool">codex</b> --reset-in <b class="hl-lime" data-k="bk-hours">48h</b> --quota <b class="hl-lime" data-k="bk-quota">60%</b></div>
-          <div class="seg dark" role="group" aria-label="Herramienta" id="bk-tools"></div>
-          <div class="fields">
-            <label class="field">
-              <span>HOURS UNTIL BANK RESET · <b data-k="bk-hours">48h</b></span>
-              <input id="bk-hours" type="range" min="1" max="168" step="1" value="48">
-            </label>
-            <label class="field">
-              <span>REMAINING QUOTA · <b data-k="bk-quota">60%</b></span>
-              <input id="bk-quota" type="range" min="0" max="100" step="1" value="60">
-            </label>
-          </div>
-          <div class="gauge" aria-hidden="true">
-            <div class="gauge-fill" id="bk-gauge"></div>
-            <div class="gauge-mid"></div>
-            <span class="gauge-l">DEFICIT</span><span class="gauge-r">USE-IT-OR-LOSE-IT</span>
-          </div>
-          <div class="bk-stats" id="bk-stats"></div>
-          <div class="zone" id="bk-zone" aria-live="polite"></div>
-          <div class="term-actions">
-            <button class="tbtn" data-bank-preset="6,80">T-6h · 80%</button>
-            <button class="tbtn" data-bank-preset="48,50">T-48h · 50%</button>
-            <button class="tbtn" data-bank-preset="120,15">T-120h · 15%</button>
-            <button class="tbtn" data-bank-preset="2,35">T-2h · 35%</button>
-          </div>
-        </div>
-
-        <!-- 04 · Prompt -->
-        <div class="term-panel" data-tp="prompt" id="prompt" data-section="prompt" role="tabpanel" hidden>
-          <div class="prompt-head">
-            <div class="stale" id="stale"></div>
-            <button class="tbtn lime" id="copy-prompt">⧉ COPY PROMPT</button>
-          </div>
-          <pre class="prompt-text" id="prompt-text" tabindex="0"></pre>
-        </div>
-      </div>
-
-      <div class="cta-row">
-        <button class="btn btn-xl orange" id="cta-route">ROUTE THIS WORKLOAD <span aria-hidden="true">→</span></button>
-        <button class="btn btn-xl" id="cta-cliff"><span class="warn-ico" aria-hidden="true">⚠</span> INJECT &gt;100K CONTEXT CLIFF</button>
-      </div>
-
-      <!-- E · KPI cards -->
-      <div class="kpis" id="kpis"></div>
+  <!-- 01 · Hoy -->
+  <section class="view" id="view-hoy" data-view="hoy" aria-labelledby="h-hoy">
+    <div class="view-head">
+      <h1 id="h-hoy">Qué ha cambiado</h1>
+      <p class="lede" id="hoy-period"></p>
     </div>
+    <div class="news" id="hoy-news"></div>
+    <details class="more" id="hoy-all"><summary></summary><ul class="changes" id="hoy-all-list"></ul></details>
 
-    <!-- D · MOLOCH_OS console -->
-    <aside class="console" id="moloch-os" aria-label="MOLOCH_OS consola de telemetría">
-      <div class="con-head">
-        <span class="con-sq" aria-hidden="true"><i></i><i></i><i></i></span>
-        <h2>MOLOCH_OS // TELEMETRY &amp; CHAOS CONSOLE</h2>
-        <span class="con-badge">▲ THESIS VERIFICATION ACTIVE</span>
-      </div>
-      <div class="con-tabs" role="tablist" aria-label="Consola">
-        <button class="ctab" role="tab" data-ct="wave" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h4l3-7 4 14 3-7h6"/></svg>01. COST WAVEFORM</button>
-        <button class="ctab" role="tab" data-ct="trap" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7v5c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-4Z"/></svg>02. TRAP INJECTOR</button>
-        <button class="ctab" role="tab" data-ct="radar" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 12 18 6"/><circle cx="12" cy="12" r="4"/></svg>03. COHORT RADAR</button>
-        <button class="ctab" role="tab" data-ct="log" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 7 5 5-5 5M12 19h8"/></svg>04. AUDIT LOG</button>
-      </div>
-      <div class="con-row">
-        <span class="con-row-l">
-          <span class="dim">TRAJECTORY:</span>
-          <span class="chips" id="steps-chips">
-            <button class="chip" data-steps="4">4 CALLS</button>
-            <button class="chip" data-steps="12">12 CALLS</button>
-            <button class="chip" data-steps="25">25 CALLS</button>
-          </span>
-        </span>
-        <span class="con-row-r" data-k="con-tariff">DEEPSEEK: --</span>
-      </div>
+    <h2 class="sec">Indicadores</h2>
+    <div class="kpis" id="hoy-kpis"></div>
+    <p class="note" id="hoy-kpi-note"></p>
 
-      <div class="con-display">
-        <div class="con-display-head">
-          <span><span class="dim">WAVEFORM //</span> <b data-k="wave-title">REAL COST PER RESOLVED TASK ($, LOG)</b></span>
-          <span class="fault-tag" id="fault-tag">NOMINAL BASELINE</span>
-        </div>
-        <div class="con-view" data-cv="wave">
-          <canvas id="scope" class="scope" aria-label="Osciloscopio de coste por tarea frente a contexto"></canvas>
-          <div class="legend" id="scope-legend"></div>
-        </div>
-        <div class="con-view" data-cv="trap" hidden>
-          <div class="trap-wrap" id="trap-matrix"></div>
-        </div>
-        <div class="con-view" data-cv="radar" hidden>
-          <canvas id="radar" class="scope tall" aria-label="Radar de cohorte: AA frente a coste auditado"></canvas>
-        </div>
-        <div class="con-view" data-cv="log" hidden>
-          <ol class="audit-log" id="audit-log"></ol>
-        </div>
-      </div>
-
-      <div class="injector">
-        <div class="inj-head">
-          <span>SELECT REAL-TIME BILLING FAULT TO INJECT:</span>
-          <button class="restore" id="restore">↺ RESTORE BASELINE</button>
-        </div>
-        <div class="inj-grid" id="inj-grid">
-          <button class="fault" data-fault="cliff" aria-pressed="false">
-            <b>[&gt;100K CONTEXT CLIFF]</b>
-            <small>Haiku 5.5 $0.10/$0.50 → $0.50/$2.50</small>
-            <span class="fault-ico" aria-hidden="true">⚠</span>
-          </button>
-          <button class="fault" data-fault="bloat" aria-pressed="false">
-            <b>[3.5x REASONING BLOAT]</b>
-            <small>18,000 thinking tok vs CoT 1017</small>
-            <span class="fault-ico" aria-hidden="true">⚠</span>
-          </button>
-          <button class="fault" data-fault="subsidy" aria-pressed="false">
-            <b>[SUBSIDY RUG-PULL]</b>
-            <small>GLM promo 9 SEP · Space Bunny post-free</small>
-            <span class="fault-ico" aria-hidden="true">⚠</span>
-          </button>
-          <button class="fault" data-fault="fp8" aria-pressed="false">
-            <b>[FP8 PROVIDER DEGRADATION]</b>
-            <small>2.4x tool-call retries vs mxfp4 nativo</small>
-            <span class="fault-ico" aria-hidden="true">⚠</span>
-          </button>
-        </div>
-        <div class="con-ticker" id="con-ticker" aria-live="polite"></div>
-      </div>
-      <div class="con-foot">
-        <span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> SEED 2026-10-19 // HASH-LOCKED</span>
-        <span class="lime-txt">ZERO DEPS // DETERMINISTIC</span>
-      </div>
-    </aside>
+    <h2 class="sec">Capacidad frente a precio</h2>
+    <div class="panel">
+      <div class="chart" id="hoy-scatter"></div>
+      <div class="reading" id="hoy-reading"></div>
+    </div>
   </section>
 
-  <!-- F · Cohort matrix -->
-  <section class="module" id="cohort-matrix" data-section="cohort-matrix">
-    <header class="mod-head">
-      <span class="mod-num">02.</span>
-      <div>
-        <h2>COHORT MATRIX</h2>
-        <p>Cohorte abierta/china MoE frente al suelo y la frontera propietarios de EE. UU. Haz clic en las cabeceras para ordenar. Con <b>X-RAY</b> activo, la columna nominal pasa a mostrar el $/1M efectivo de la trayectoria auditada.</p>
+  <!-- 02 · Modelos -->
+  <section class="view" id="view-modelos" data-view="modelos" aria-labelledby="h-modelos" hidden>
+    <div class="view-head">
+      <h1 id="h-modelos">Modelos abiertos y cerrados</h1>
+      <p class="lede">Comparación por API, identificando quién sirve cada modelo. El coste de ejecutarlo en hardware propio queda fuera.</p>
+    </div>
+
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Apertura" id="mx-weights">
+        <button class="seg-btn" data-w="all" aria-pressed="true">Todos</button>
+        <button class="seg-btn" data-w="abiertos" aria-pressed="false">Abiertos</button>
+        <button class="seg-btn" data-w="cerrados" aria-pressed="false">Cerrados</button>
       </div>
-    </header>
-    <div class="matrix-controls">
-      <div class="seg" role="group" aria-label="Bloque" id="mx-block">
-        <button class="seg-btn" data-block="all" aria-pressed="true">ALL</button>
-        <button class="seg-btn" data-block="open" aria-pressed="false">OPEN / CHINESE MoE</button>
-        <button class="seg-btn" data-block="us" aria-pressed="false">US PROPRIETARY FLOOR &amp; FRONTIER</button>
-      </div>
-      <div class="seg" role="group" aria-label="Rotación" id="mx-rot">
-        <button class="seg-btn" data-rot="all" aria-pressed="true">ANY</button>
-        <button class="seg-btn" data-rot="PROMOTED" aria-pressed="false">PROMOTED</button>
-        <button class="seg-btn" data-rot="ACTIVE" aria-pressed="false">ACTIVE</button>
-        <button class="seg-btn" data-rot="WATCHLIST" aria-pressed="false">WATCHLIST</button>
-      </div>
-      <label class="search">
-        <span class="sr-only">Filtrar</span>
-        <input id="mx-search" type="search" placeholder="filtrar modelo / nota…" autocomplete="off">
+      <label class="ctl">Ordenar por
+        <select id="mx-sort">
+          <option value="ii">Capacidad</option>
+          <option value="coding">Programación</option>
+          <option value="price">Precio</option>
+          <option value="tps">Velocidad</option>
+          <option value="date">Más reciente</option>
+        </select>
+      </label>
+      <label class="ctl grow">Buscar
+        <input id="mx-q" type="search" placeholder="Modelo o laboratorio" autocomplete="off">
       </label>
     </div>
+
+    <div class="compare" id="mx-compare" hidden></div>
+
     <div class="table-wrap">
-      <table class="matrix" id="matrix">
+      <table class="mx" id="mx-table">
+        <caption id="mx-caption"></caption>
         <thead>
           <tr>
-            <th data-sort="name" scope="col">MODEL &amp; ARCHITECTURE</th>
-            <th data-sort="aa" scope="col" class="num">AA v4.3.2</th>
-            <th data-sort="nominal" scope="col" class="num" id="th-nominal">NOMINAL $/1M<br><small>IN / OUT / CACHE</small></th>
-            <th data-sort="costTask" scope="col" class="num">COST/TASK<br><small>AA SEED</small></th>
-            <th data-sort="audited" scope="col" class="num">AUDITED &gt;100K<br><small>AGENTIC $/TASK</small></th>
-            <th data-sort="volume" scope="col" class="num">OPENROUTER<br><small>T TOK/WK · Δ%</small></th>
-            <th scope="col">QUANT / SILICON</th>
-            <th data-sort="rotation" scope="col">ROTATION</th>
+            <th scope="col" class="c-sel"><span class="sr-only">Comparar</span></th>
+            <th scope="col">Modelo</th>
+            <th scope="col">Pesos</th>
+            <th scope="col" class="num" id="mx-ii-h">Índice de inteligencia</th>
+            <th scope="col" class="num">Programación</th>
+            <th scope="col" class="num">Velocidad</th>
+            <th scope="col" class="num">Precio entrada / salida</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="mx-body"></tbody>
       </table>
     </div>
-    <details class="formula">
-      <summary>AUDIT FORMULA // X-RAY KERNEL</summary>
-      <pre id="formula-text"></pre>
-    </details>
-  </section>
 
-  <!-- Stealth & alias radar -->
-  <section class="module" id="stealth-radar" data-section="stealth-radar">
-    <header class="mod-head">
-      <span class="mod-num">04.</span>
-      <div>
-        <h2>STEALTH &amp; ALIAS RADAR</h2>
-        <p>Slugs que no son lo que dicen ser: modelos stealth, swaps silenciosos de build, snapshots fijados y tarifas escalonadas invisibles en la tarjeta nominal. Pulsa un blip o una tarjeta.</p>
-      </div>
-    </header>
-    <div class="radar-grid">
-      <div class="radar-box"><canvas id="alias-radar" class="alias-canvas" aria-label="Radar de alias"></canvas></div>
-      <div class="alias-list" id="alias-list"></div>
+    <h2 class="sec">Evolución de la frontera abierta y cerrada</h2>
+    <div class="panel">
+      <div class="chart" id="mx-frontier"></div>
+      <div class="reading" id="mx-frontier-note"></div>
     </div>
   </section>
 
-  <!-- Incident timeline -->
-  <section class="module" id="incident-timeline" data-section="incident-timeline">
-    <header class="mod-head">
-      <span class="mod-num">05.</span>
-      <div>
-        <h2>THESIS SEISMOGRAPH</h2>
-        <p>Registro cronológico de incidentes de precio, stealth y cuantización desde el 26 AUG 2026. Las ingestas de Gemini Flash y las entradas manuales se añaden aquí.</p>
+  <!-- 03 · Lanzamientos -->
+  <section class="view" id="view-lanzamientos" data-view="lanzamientos" aria-labelledby="h-lanz" hidden>
+    <div class="view-head">
+      <h1 id="h-lanz">Qué ha salido realmente</h1>
+      <p class="lede">Anuncio, acceso restringido, API pública y pesos descargables son acontecimientos distintos. Cada modelo muestra cuáles constan, cuándo y según quién.</p>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Apertura" id="ln-weights">
+        <button class="seg-btn" data-w="all" aria-pressed="true">Todos</button>
+        <button class="seg-btn" data-w="abiertos" aria-pressed="false">Abiertos</button>
+        <button class="seg-btn" data-w="cerrados" aria-pressed="false">Cerrados</button>
       </div>
-      <div class="mod-actions">
-        <button class="btn" id="log-signal">+ LOG NEW SIGNAL</button>
-        <button class="btn lime" id="goto-ingest">⚡ INGEST VIA GEMINI</button>
+      <div class="seg" role="group" aria-label="Periodo" id="ln-range">
+        <button class="seg-btn" data-d="30" aria-pressed="false">30 días</button>
+        <button class="seg-btn" data-d="90" aria-pressed="true">90 días</button>
+        <button class="seg-btn" data-d="0" aria-pressed="false">Todo</button>
       </div>
-    </header>
-    <div class="seismo-box"><canvas id="seismo" class="seismo" aria-label="Sismógrafo de incidentes"></canvas></div>
-    <ol class="timeline" id="timeline"></ol>
+    </div>
+    <div id="ln-list" class="timeline"></div>
   </section>
 </main>
 
-<footer class="footer">
-  <div class="foot-brand"><span class="brand-icon sm" aria-hidden="true"><span>&gt;_</span></span> MOLOCH.SH v2.6 // ARBITRAGE &amp; TELEMETRY KERNEL</div>
-  <div class="foot-meta">Static · zero build · zero dependencies · Netlify-ready. Datos de mercado: semilla aportada por el usuario a 2026-10-19; el kernel no los verifica. <span class="kbd">Ctrl</span>/<span class="kbd">⌘</span>+<span class="kbd">K</span> abre la paleta.</div>
+<footer class="foot">
+  <details id="method">
+    <summary>Método y fuentes</summary>
+    <div id="method-body"></div>
+  </details>
+  <p class="foot-line">MOLOCH.SH · las cifras proceden de las fuentes enlazadas; los textos marcados como lectura son interpretación.</p>
 </footer>
-
-<div class="toasts" id="toasts" aria-live="polite"></div>
-
-<!-- Gemini modal -->
-<dialog class="modal" id="dlg-gemini" aria-labelledby="dlg-gemini-title">
-  <form method="dialog" class="modal-body" id="gemini-form">
-    <div class="modal-head"><h3 id="dlg-gemini-title">⚡ GEMINI FLASH // LINK API</h3><button class="x" value="cancel" aria-label="Cerrar">×</button></div>
-    <p class="modal-note">La clave se guarda sólo en el <code>localStorage</code> de este navegador y se envía únicamente a <code>generativelanguage.googleapis.com</code>. Cualquier script que corra en este origen podría leerla: usa una clave restringida por API y por referrer.</p>
-    <label class="field light"><span>GEMINI API KEY</span><input id="gm-key" type="password" autocomplete="off" spellcheck="false" placeholder="AIza…"></label>
-    <label class="field light"><span>MODEL SLUG</span><input id="gm-model" type="text" spellcheck="false" list="gm-models" placeholder="gemini-2.5-flash"></label>
-    <datalist id="gm-models"><option value="gemini-2.5-flash"><option value="gemini-3.8-flash"><option value="gemini-2.5-flash-lite"></datalist>
-    <div class="modal-actions">
-      <button class="btn" value="cancel">CANCEL</button>
-      <button class="btn danger" id="gm-clear" type="button">UNLINK</button>
-      <button class="btn orange" id="gm-save" value="save">SAVE &amp; LINK</button>
-    </div>
-  </form>
-</dialog>
-
-<!-- Manual signal modal -->
-<dialog class="modal" id="dlg-signal" aria-labelledby="dlg-signal-title">
-  <form method="dialog" class="modal-body" id="signal-form">
-    <div class="modal-head"><h3 id="dlg-signal-title">+ LOG NEW SIGNAL</h3><button class="x" value="cancel" formnovalidate aria-label="Cerrar">×</button></div>
-    <div class="fields two">
-      <label class="field light"><span>DATE (UTC)</span><input id="sg-date" type="date" required></label>
-      <label class="field light"><span>SEVERITY</span>
-        <select id="sg-sev"><option value="1">1 · ruido</option><option value="2" selected>2 · señal</option><option value="3">3 · relevante</option><option value="4">4 · estructural</option><option value="5">5 · ruptura de régimen</option></select>
-      </label>
-    </div>
-    <label class="field light"><span>TITLE</span><input id="sg-title" type="text" maxlength="140" required placeholder="p. ej. Kimi K3 recorta precio a $0.12/$0.48"></label>
-    <label class="field light"><span>DETAIL</span><textarea id="sg-detail" rows="3" maxlength="600"></textarea></label>
-    <label class="field light"><span>TAGS (coma)</span><input id="sg-tags" type="text" maxlength="80" placeholder="PRICE, OPEN"></label>
-    <div class="modal-actions">
-      <button class="btn" value="cancel" formnovalidate>CANCEL</button>
-      <button class="btn orange" value="save">APPEND TO SEISMOGRAPH</button>
-    </div>
-  </form>
-</dialog>
-
-<!-- Command palette -->
-<dialog class="modal palette" id="dlg-palette" aria-label="Paleta de comandos">
-  <div class="modal-body">
-    <input id="pal-input" type="text" placeholder="Escribe un comando… (x-ray, cliff, bank, prompt…)" autocomplete="off" spellcheck="false" aria-controls="pal-list">
-    <ul id="pal-list" role="listbox"></ul>
-    <div class="pal-foot"><span><span class="kbd">↑</span><span class="kbd">↓</span> navegar</span><span><span class="kbd">↵</span> ejecutar</span><span><span class="kbd">esc</span> cerrar</span></div>
-  </div>
-</dialog>
-
-<!-- Achievements -->
-<dialog class="modal" id="dlg-ach" aria-labelledby="dlg-ach-title">
-  <form method="dialog" class="modal-body">
-    <div class="modal-head"><h3 id="dlg-ach-title">🏆 ACHIEVEMENTS</h3><button class="x" value="cancel" aria-label="Cerrar">×</button></div>
-    <ol class="ach-list" id="ach-list"></ol>
-  </form>
-</dialog>
 </body>
 </html>

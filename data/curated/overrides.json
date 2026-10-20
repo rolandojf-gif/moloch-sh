@@ -1,0 +1,4 @@
+{
+  "_doc": "Emparejamientos manuales OpenRouter → Artificial Analysis cuando la coincidencia automática por nombre falla o es ambigua. Clave: id de OpenRouter. Valor: slug exacto de AA, o null para impedir el emparejamiento.",
+  "aa": {}
+}

@@ -1,0 +1,4 @@
+{
+  "_doc": "Acontecimientos que el recolector no puede deducir: anuncios, previews restringidas, retiradas. Cada entrada exige 'url' de la fuente primaria (anuncio del laboratorio, documentación o repositorio). Tipos: anuncio | preview | api | pesos | precio | retirada. 'model' es el id de OpenRouter si existe. 'delta' resume qué aporta frente a la versión anterior, según la fuente.",
+  "events": []
+}

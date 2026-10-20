@@ -1,0 +1,4 @@
+{
+  "_doc": "Metadatos de fuentes que las API no exponen. aaIndexVersion: versión vigente del Artificial Analysis Intelligence Index según su página de metodología (https://artificialanalysis.ai/methodology/intelligence-benchmarking). Debe actualizarse a mano cuando AA cambie de versión; null se muestra como «versión no registrada».",
+  "aaIndexVersion": null
+}
