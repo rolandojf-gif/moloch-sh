@@ -1,0 +1,29 @@
+name: Sonda AA (temporal)
+# Lee las condiciones legales públicas de Artificial Analysis y su robots.txt. No toca los datos.
+on:
+  push:
+    branches: [probe-aa]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - run: sudo apt-get install -y -qq poppler-utils > /dev/null
+      - run: |
+          for u in \
+            https://artificialanalysis.ai/robots.txt \
+            https://artificialanalysis.ai/docs/legal/Terms-of-Use.pdf \
+            https://artificialanalysis.ai/docs/legal/Data-Platform-Terms.pdf \
+            https://artificialanalysiscdn.com/legal/ProDataPlatformTerms.pdf \
+            https://artificialanalysiscdn.com/legal/Terms-of-Use.pdf \
+            https://artificialanalysis.ai/terms \
+            https://artificialanalysis.ai/terms-of-use \
+            https://artificialanalysis.ai/data-api ; do
+            echo "=================== $u"
+            curl -sSL -A 'moloch-sh-probe (github.com/rolandojf-gif/moloch-sh)' -o f -w 'HTTP %{http_code} %{content_type} %{url_effective}\n' "$u" || { echo 'fallo'; continue; }
+            if file f | grep -q PDF; then pdftotext -layout f - | sed 's/[[:space:]]\+$//' | cat -s
+            elif file f | grep -qi html; then python3 -c "import re,sys,html;t=open('f',encoding='utf-8',errors='ignore').read();t=re.sub(r'(?s)<(script|style)[^>]*>.*?</\1>',' ',t);t=html.unescape(re.sub(r'<[^>]+>',' ',t));t=re.sub(r'\s+',' ',t);i=t.lower().find('redistribut');print(t[:1500]);print('...');[print('>>',t[max(0,m.start()-600):m.start()+900]) for m in list(re.finditer(r'(?i)redistribut|scrap|automated|attribution|internal use',t))[:8]]"
+            else head -c 6000 f; fi
+          done
