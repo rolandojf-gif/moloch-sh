@@ -3,6 +3,7 @@ name: Sonda AA (temporal)
 on:
   push:
     branches: [probe-aa]
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -12,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: hoy-orden-novedades
+          ref: main
       - uses: actions/checkout@v4
         with:
           path: sonda
