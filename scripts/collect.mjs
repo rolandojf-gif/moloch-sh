@@ -118,7 +118,7 @@ async function loadEndpoints(id) {
   try {
     const res = await getJSON(`https://openrouter.ai/api/v1/models/${id}/endpoints`);
     const eps = (res.data && res.data.endpoints) || [];
-    if (eps.length && !loadEndpoints.logged) { loadEndpoints.logged = true; log('campos de endpoint:', JSON.stringify(eps[0]).slice(0, 900)); }
+    if (eps.length && !loadEndpoints.logged) { loadEndpoints.logged = true; log('campos de endpoint:', Object.keys(eps[0]).join(','), JSON.stringify(Object.fromEntries(Object.entries(eps[0]).filter(([k]) => /lat|through|speed|tps|perf|stat/i.test(k))))); }
     return eps;
   } catch (e) {
     log(`endpoints ${id}: ${e.message}`);
