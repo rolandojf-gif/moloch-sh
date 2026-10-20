@@ -83,7 +83,7 @@ const money = n => `${n.toLocaleString('es-ES', { maximumFractionDigits: 4 })} $
 const pctl = x => (x && typeof x === 'object') ? (x.p50 ?? null) : (Number.isFinite(x) ? x : null);
 
 function baseId(id) {
-  return id.replace(/:(free|extended|beta|thinking|nitro|floor|online)$/, '');
+  return id.replace(/:[a-z0-9-]+$/, '');          // :free, :batch, :thinking… son variantes de servicio, no modelos
 }
 
 const norm = s => String(s || '').toLowerCase()
@@ -117,7 +117,9 @@ async function loadOpenRouter(labs) {
 async function loadEndpoints(id) {
   try {
     const res = await getJSON(`https://openrouter.ai/api/v1/models/${id}/endpoints`);
-    return (res.data && res.data.endpoints) || [];
+    const eps = (res.data && res.data.endpoints) || [];
+    if (eps.length && !loadEndpoints.logged) { loadEndpoints.logged = true; log('campos de endpoint:', JSON.stringify(eps[0]).slice(0, 900)); }
+    return eps;
   } catch (e) {
     log(`endpoints ${id}: ${e.message}`);
     return null;
@@ -200,7 +202,7 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev) {
   const orUrl = `https://openrouter.ai/${m.id}`;
   const createdISO = m.created ? new Date(m.created * 1000).toISOString().slice(0, 10) : null;
   const author = m.id.split('/')[0];
-  const hfId = m.hugging_face_id || null;
+  const hfId = m.hugging_face_id || m._hfOverride || null;
 
   // Pesos: abiertos sólo si hay repositorio público en Hugging Face enlazado por OpenRouter y la consulta lo confirma.
   let weights, license;
@@ -211,9 +213,9 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev) {
   } else if (hfId && hf && !hf.ok && !hf.notFound && prev && prev.weights) {
     weights = { ...prev.weights, stale: true };
     license = prev.license ? { ...prev.license, stale: true } : fact(null, 'hf', null);
-  } else if (!hfId) {
-    weights = fact('cerrados', 'openrouter', orUrl, TODAY, { note: 'OpenRouter no enlaza pesos públicos' });
-    license = fact('propietaria', 'openrouter', orUrl, TODAY, { note: 'inferido: sin pesos publicados' });
+  } else if (!hfId || (m._hfOverride && hf && hf.notFound)) {
+    weights = fact('cerrados', 'openrouter', orUrl, TODAY, { inferred: true, note: 'inferido: OpenRouter no enlaza pesos públicos; puede corregirse en data/curated/overrides.json' });
+    license = fact('propietaria', 'openrouter', orUrl, TODAY, { inferred: true, note: 'inferido: sin pesos enlazados' });
   } else {
     weights = fact(null, 'hf', `https://huggingface.co/${hfId}`, TODAY, { note: 'el repositorio enlazado no responde' });
     license = fact(null, 'hf', null);
@@ -347,7 +349,9 @@ function snapshot(models) {
 async function main() {
   const labs = await readJSON(path.join(DATA, 'curated/labs.json'), {});
   delete labs._doc;
-  const overrides = (await readJSON(path.join(DATA, 'curated/overrides.json'), {})).aa || {};
+  const ovFile = await readJSON(path.join(DATA, 'curated/overrides.json'), {});
+  const overrides = ovFile.aa || {};
+  const hfOverrides = ovFile.hf || {};
   const curatedEvents = (await readJSON(path.join(DATA, 'curated/events.json'), { events: [] })).events || [];
   const prevCatalog = await readJSON(path.join(DATA, 'catalog.json'));
   const prevMap = new Map((prevCatalog ? prevCatalog.models : []).map(m => [m.id, m]));
@@ -369,11 +373,14 @@ async function main() {
     const author = m.id.split('/')[0];
     const lab = labs[author];
     const prev = prevMap.get(m.id);
+    if (!m.hugging_face_id && hfOverrides[m.id]) m._hfOverride = hfOverrides[m.id];
+    const hfRepo = m.hugging_face_id || m._hfOverride;
     const [endpoints, hf] = await Promise.all([
       loadEndpoints(m.id),
-      (m.hugging_face_id && !lab.stealth) ? loadHF(m.hugging_face_id) : Promise.resolve(null)
+      (hfRepo && !lab.stealth) ? loadHF(hfRepo) : Promise.resolve(null)
     ]);
     if (hf && !hf.ok && !hf.notFound) status.hf.failed++;
+    if (hf && hf.notFound && m._hfOverride) log(`override HF sin repositorio: ${m.id} → ${m._hfOverride}`);
     const aaMatch = aaRows === undefined ? 'keep' : matchAA(m, lab, aaRows, overrides);
     models.push(buildModel(m, lab, endpoints, hf, aaMatch, prev));
   }
@@ -414,7 +421,7 @@ async function main() {
     history: histFiles.map(f => f.slice(0, 10))
   };
 
-  await writeFile(path.join(DATA, 'catalog.json'), JSON.stringify(catalog, null, 1) + '\n');
+  await writeFile(path.join(DATA, 'catalog.json'), JSON.stringify(catalog) + '\n');
   // Registro acumulado de acontecimientos detectados (precio, pesos, retiradas, primeras evaluaciones)
   const logPath = path.join(DATA, 'events-log.json');
   const evLog = await readJSON(logPath, { _doc: 'Acontecimientos detectados por el recolector al comparar recogidas sucesivas. Generado; no editar a mano.', events: [] });

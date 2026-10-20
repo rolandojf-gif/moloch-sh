@@ -10,7 +10,7 @@ let D;
 const yesNo = v => v === true ? 'sí' : v === false ? 'no' : null;
 const weightsBadge = m => {
   const v = m.weights.v;
-  return `<span class="w ${v || 'nd'}">${v || 'sin datos'}</span>${src(m.weights)}`;
+  return `<span class="w ${v || 'nd'}">${v || 'sin datos'}</span>${src(m.weights)}${m.weights.inferred ? '<span class="m-sub" title="OpenRouter no enlaza pesos; se asume cerrado">inferido</span>' : ''}`;
 };
 
 function sortKey(m) {

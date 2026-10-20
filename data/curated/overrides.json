@@ -1,4 +1,9 @@
 {
   "_doc": "Emparejamientos manuales OpenRouter → Artificial Analysis cuando la coincidencia automática por nombre falla o es ambigua. Clave: id de OpenRouter. Valor: slug exacto de AA, o null para impedir el emparejamiento.",
-  "aa": {}
+  "aa": {},
+  "_doc_hf": "Repositorios de pesos en Hugging Face que OpenRouter no enlaza. El recolector sólo los acepta si la API de Hugging Face confirma que existen y son públicos.",
+  "hf": {
+    "minimax/minimax-m1": "MiniMaxAI/MiniMax-M1",
+    "mistralai/mistral-large-2512": "mistralai/Mistral-Large-3-675B-Instruct-2512"
+  }
 }
