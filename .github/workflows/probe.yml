@@ -28,3 +28,5 @@ jobs:
         with:
           node-version: '22'
       - run: node .github/probe/probe.mjs ${{ matrix.i }}
+        env:
+          COLS: 'Status,Operational status,Company,task,Benchmark,benchmark,Source,source,Country,Owner,Users,Project,Name'
