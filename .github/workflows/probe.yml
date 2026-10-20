@@ -1,0 +1,22 @@
+# Temporal (fase 2): sonda de fuentes. Se elimina antes de fusionar.
+name: Sonda de fuentes
+on:
+  push:
+    branches: [observatorio-fase2]
+    paths: ['.github/probe/**']
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node .github/probe/probe.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: probe-out
+          path: probe-out
+          retention-days: 3
