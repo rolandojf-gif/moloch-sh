@@ -5,6 +5,7 @@
      data/catalog.json        catálogo actual: cada cifra lleva fuente, URL, fecha del dato y fecha de consulta
      data/changes.json        diferencias con la recogida anterior (novedades, cambios de precio, pesos nuevos)
      data/history/<fecha>.json instantánea compacta para series históricas
+     data/indicadores.json     cifras de «La carrera» y «AI 2027» (scripts/indicadores.mjs)
 
    Fuentes:
      OpenRouter  /api/v1/models y /endpoints   (sin clave)  precios, contexto, proveedores, velocidad por proveedor
@@ -12,6 +13,7 @@
      Epoch AI     eci_scores.csv y benchmarks.csv (CC BY 4.0) índice de capacidades ECI, SWE-bench Verified, apertura
      Artificial Analysis /api/v2/language/models/free (AA_API_KEY y AA_REDISTRIBUTION=permitida)
                   Su licencia gratuita no permite republicar datos tabulados; sin permiso expreso no se usa.
+     Epoch AI y METR, para los indicadores: véase scripts/indicadores.mjs.
 
    Reglas:
      - Ninguna cifra se inventa ni se rellena. Si una fuente no la da, el campo queda null («sin datos»).
@@ -24,6 +26,7 @@
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { collectIndicators, indicatorSnapshot } from './indicadores.mjs';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DATA = path.join(ROOT, 'data');
@@ -42,6 +45,7 @@ const SOURCES = {
   hf: { name: 'Hugging Face', url: 'https://huggingface.co/models', api: 'https://huggingface.co/api/models' },
   epoch: { name: 'Epoch AI', url: 'https://epoch.ai/benchmarks/eci', api: 'https://epoch.ai/data/eci_scores.csv', bench: 'https://epoch.ai/data/benchmarks.csv', license: 'CC BY 4.0', cite: "Epoch AI, 'Capabilities & benchmarking', epoch.ai" },
   aa: { name: 'Artificial Analysis', url: 'https://artificialanalysis.ai/leaderboards/models', api: 'https://artificialanalysis.ai/api/v2/language/models/free', legacy: 'https://artificialanalysis.ai/api/v2/data/llms/models' },
+  metr: { name: 'METR', url: 'https://metr.org/time-horizons', api: 'https://metr.org/assets/benchmark_results_1_1.yaml', license: '© METR; sólo se cita el último punto' },
   curated: { name: 'Curado manualmente', url: null }
 };
 
@@ -214,10 +218,12 @@ async function loadEpoch() {
   }
   out.eci = nameIndex(out.rows, r => [r.model, r.name], (a, b) => a.eci > b.eci);
   out.swe = nameIndex([], () => []);
+  out.bench = [];
   let nSwe = 0;
   try {
     const best = new Map();
-    for (const r of parseCSV(await getText(SOURCES.epoch.bench))) {
+    out.bench = parseCSV(await getText(SOURCES.epoch.bench));
+    for (const r of out.bench) {
       if (!/^swe-bench verified$/i.test(r.task || '') || (r.Status && r.Status !== 'Success')) continue;
       const v = num(r['Best score (across scorers)']);
       if (v === null || !r.Model) continue;
@@ -548,10 +554,15 @@ async function main() {
   const histFiles = (await readdir(path.join(DATA, 'history'))).filter(f => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort();
   const earlier = histFiles.filter(f => f.slice(0, 10) < TODAY);
   const base = earlier.length ? await readJSON(path.join(DATA, 'history', earlier[earlier.length - 1])) : null;
+  // Indicadores de «La carrera» y «AI 2027»
+  const prevInd = await readJSON(path.join(DATA, 'indicadores.json'));
+  const indicators = await collectIndicators({ getText, parseCSV, fact, log, NOW_ISO, TODAY }, ep, prevInd);
+
   const snap = {
     date: TODAY, got: NOW_ISO,
     aaIndexVersion: curated.aaIndexVersion ?? null,
     leaders: leaders(models),
+    ind: indicatorSnapshot(indicators.ind),
     models: snapshot(models)
   };
   await writeFile(path.join(DATA, 'history', `${TODAY}.json`), JSON.stringify(snap) + '\n');
@@ -579,6 +590,13 @@ async function main() {
   };
 
   await writeFile(path.join(DATA, 'catalog.json'), JSON.stringify(catalog) + '\n');
+  await writeFile(path.join(DATA, 'indicadores.json'), JSON.stringify({
+    schema: 1, generated: NOW_ISO,
+    sources: { epoch: SOURCES.epoch, metr: SOURCES.metr },
+    status: indicators.status,
+    ind: indicators.ind,
+    checks: indicators.checks
+  }) + '\n');
   // Registro acumulado de acontecimientos detectados (precio, pesos, retiradas, primeras evaluaciones)
   const logPath = path.join(DATA, 'events-log.json');
   const evLog = await readJSON(logPath, { _doc: 'Acontecimientos detectados por el recolector al comparar recogidas sucesivas. Generado; no editar a mano.', events: [] });

@@ -2,7 +2,7 @@
 
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-const SRC_ABBR = { openrouter: 'OR', aa: 'AA', hf: 'HF', epoch: 'EP', curated: 'CUR' };
+const SRC_ABBR = { openrouter: 'OR', aa: 'AA', hf: 'HF', epoch: 'EP', metr: 'METR', curated: 'CUR' };
 let SOURCES = {};
 export function setSources(s) { SOURCES = s || {}; }
 

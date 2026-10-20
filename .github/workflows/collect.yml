@@ -1,8 +1,10 @@
 name: Recogida de datos
 
-# Fase 1: ejecución manual o al cambiar el recolector o los datos curados.
-# La programación periódica (cron) queda para la fase 2.
+# Recogida diaria programada (GitHub sólo ejecuta el cron en la rama principal), manual,
+# o al cambiar el recolector o los datos curados en una rama de trabajo (para su vista previa).
 on:
+  schedule:
+    - cron: '17 5 * * *'
   workflow_dispatch:
   push:
     branches-ignore: [main]
@@ -42,4 +44,5 @@ jobs:
           git add data
           if git diff --cached --quiet; then echo 'Sin cambios'; exit 0; fi
           git commit -m "datos: recogida $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase --autostash
           git push

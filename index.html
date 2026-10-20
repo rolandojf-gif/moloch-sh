@@ -30,8 +30,8 @@
     <a class="navtab" href="#hoy" data-view="hoy"><i>01</i><span>Hoy</span></a>
     <a class="navtab" href="#modelos" data-view="modelos"><i>02</i><span>Modelos</span></a>
     <a class="navtab" href="#lanzamientos" data-view="lanzamientos"><i>03</i><span>Lanzamientos</span></a>
-    <a class="navtab soon" href="#carrera" data-view="carrera" title="En preparación"><i>04</i><span>La carrera</span></a>
-    <a class="navtab soon" href="#ai2027" data-view="ai2027" title="En preparación"><i>05</i><span>AI 2027</span></a>
+    <a class="navtab" href="#carrera" data-view="carrera"><i>04</i><span>La carrera</span></a>
+    <a class="navtab" href="#ai2027" data-view="ai2027"><i>05</i><span>AI 2027</span></a>
   </nav>
 
   <div class="seg theme" role="group" aria-label="Tema">
@@ -139,39 +139,47 @@
     <div id="ln-list" class="timeline"></div>
   </section>
 
-  <!-- 04 · La carrera (fase 2: sólo descripción, sin datos) -->
+  <!-- 04 · La carrera -->
   <section class="view" id="view-carrera" data-view="carrera" aria-labelledby="h-carrera" hidden>
     <div class="view-head">
-      <span class="tag soon-tag">En preparación</span>
       <h1 id="h-carrera">Qué acelera o frena el avance</h1>
-      <p class="lede">Esta sección todavía no tiene datos. Describe lo que contendrá cuando se publique.</p>
+      <p class="lede">Seis frentes. En cada uno, primero los datos y los hechos con su fuente; después, una «Lectura Moloch» marcada como interpretación y formulada como hipótesis que puede confirmarse, debilitarse o quedar abierta.</p>
     </div>
-    <ol class="plan">
-      <li><b>Chips, memoria y centros de datos</b><span>¿Qué capacidad existe y qué parte sigue sólo anunciada?</span></li>
-      <li><b>Electricidad y conexiones</b><span>¿Qué proyectos se retrasan por suministro o por la red?</span></li>
-      <li><b>Fiabilidad de agentes</b><span>¿Cuánto trabajo exige todavía supervisión o corrección?</span></li>
-      <li><b>Datos y evaluación</b><span>¿Mejoran capacidades transferibles o se saturan las pruebas?</span></li>
-      <li><b>Economía y adopción</b><span>¿El uso produce valor suficiente para sostener el gasto?</span></li>
-      <li><b>Coordinación</b><span>¿Hay compromisos verificables o sólo declaraciones?</span></li>
-    </ol>
-    <p class="note">Cada ficha mostrará primero hechos con fuente, fecha del dato y fecha de consulta (Epoch AI para hardware y centros de datos, la IEA para electricidad y red, evaluadores independientes para agentes). Después, una «Lectura Moloch» breve marcada como interpretación: quién gana acelerando, qué pierde si frena y qué costes desplaza. Cada lectura se formula como hipótesis que puede confirmarse, debilitarse o quedar abierta.</p>
+
+    <h2 class="sec">Distancias en la frontera</h2>
+    <div class="kpis" id="ca-kpis"></div>
+    <div class="panel gap-panel">
+      <div class="chart" id="ca-gaps"></div>
+      <div class="reading" id="ca-gaps-note"></div>
+    </div>
+
+    <h2 class="sec">Frentes</h2>
+    <nav class="jump" id="ca-index" aria-label="Frentes"></nav>
+    <div class="fronts" id="ca-fronts"></div>
   </section>
 
-  <!-- 05 · AI 2027 (fase 2: sólo descripción, sin datos) -->
+  <!-- 05 · AI 2027 -->
   <section class="view" id="view-ai2027" data-view="ai2027" aria-labelledby="h-ai2027" hidden>
     <div class="view-head">
-      <span class="tag soon-tag">En preparación</span>
       <h1 id="h-ai2027">Cómo encaja la realidad con AI 2027</h1>
-      <p class="lede">Esta sección todavía no tiene datos. Será un seguimiento del escenario publicado por el AI Futures Project, que describe uno de varios futuros posibles y tiene dos desenlaces.</p>
+      <p class="lede">Seguimiento de un escenario que sus autores presentan como uno de varios futuros posibles. Cada hito conserva la predicción original; las revisiones posteriores aparecen fechadas a su lado, sin sustituirla.</p>
     </div>
-    <ol class="plan">
-      <li><b>Programación autónoma</b><span>Tareas completadas, dificultad y fiabilidad.</span></li>
-      <li><b>IA acelerando la investigación en IA</b><span>Mejoras de productividad medidas, separadas de las declaraciones internas.</span></li>
-      <li><b>Infraestructura</b><span>Capacidad operativa, ampliaciones y retrasos.</span></li>
-      <li><b>Viabilidad económica</b><span>Ingresos, adopción y costes, con definiciones comparables.</span></li>
-      <li><b>Competencia y coordinación</b><span>Concentración, apertura de modelos y medidas verificables de cooperación.</span></li>
-    </ol>
-    <p class="note">Cada hito mostrará la predicción original, su plazo, la evidencia disponible y una valoración: adelantado, compatible, retrasado, todavía no evaluable o sin evidencia suficiente. Las revisiones posteriores de los autores aparecerán fechadas junto a la predicción original, sin sustituirla.</p>
+    <div class="a7-top">
+      <div class="panel" id="a7-scn"></div>
+      <div class="panel" id="a7-pace"></div>
+    </div>
+
+    <h2 class="sec">Valoraciones de los hitos</h2>
+    <div class="panel tally" id="a7-tally"></div>
+    <p class="note">Escala común: adelantado, compatible, retrasado, todavía no evaluable o sin evidencia suficiente. Las valoraciones de los autores son sus palabras, situadas por el observatorio en esta escala. Las del observatorio son fijas o se calculan en cada recogida con una regla explícita. «Adelantado» o «retrasado» describen el ritmo frente al escenario, no si eso es bueno o malo.</p>
+    <details class="vig" id="a7-vig"></details>
+
+    <h2 class="sec">Cinco líneas</h2>
+    <nav class="jump" id="a7-index" aria-label="Líneas"></nav>
+    <div id="a7-lines"></div>
+
+    <h2 class="sec">Registro de revisiones del escenario</h2>
+    <ol class="revlog" id="a7-rev"></ol>
   </section>
 </main>
 
@@ -180,7 +188,7 @@
     <summary>Método y fuentes</summary>
     <div id="method-body"></div>
   </details>
-  <p class="foot-line">MOLOCH.SH · las cifras proceden de las fuentes enlazadas; los textos marcados como lectura son interpretación. Capacidad: <a href="https://epoch.ai/benchmarks/eci" target="_blank" rel="noopener">Epoch AI</a> (CC BY 4.0). Precios: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>.</p>
+  <p class="foot-line">MOLOCH.SH · las cifras proceden de las fuentes enlazadas; los textos marcados como lectura son interpretación. Capacidad, chips, centros e ingresos: <a href="https://epoch.ai/" target="_blank" rel="noopener">Epoch AI</a> (CC BY 4.0). Precios: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>. Horizonte temporal: <a href="https://metr.org/time-horizons" target="_blank" rel="noopener">METR</a>.</p>
 </footer>
 </body>
 </html>

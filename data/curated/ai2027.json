@@ -1,0 +1,451 @@
+{
+  "_doc": "Seguimiento de AI 2027. Cada hito conserva la predicción original («prediccion», y «cita» cuando el texto es literal); las revisiones de los autores se añaden fechadas en «revisiones» y nunca sustituyen la original. «evidencia» separa lo medido, lo declarado por laboratorios y lo que valoran los autores. «evidencia».tipo: medida (dato de un tercero independiente), declarada (cifra de un laboratorio o empresa sobre sí mismo), valoración de los autores o contexto (otro hecho con fuente). «valoraciones»: una de los autores (sus palabras, situadas por el observatorio en la escala común) y una del observatorio, fija o derivada de una regla de scripts/indicadores.mjs («regla»). Escala: adelantado, compatible, retrasado, todavía no evaluable, sin evidencia suficiente.",
+  "schema": 1,
+  "actualizado": "2026-10-20",
+  "escenario": {
+    "titulo": "AI 2027",
+    "autores": "Daniel Kokotajlo, Scott Alexander, Thomas Larsen, Eli Lifland y Romeo Dean (AI Futures Project)",
+    "publicado": "2025-04-03",
+    "url": "https://ai-2027.com/",
+    "cita": "we tried to be as concrete and quantitative as possible, even though this means depicting one of many possible futures",
+    "desenlaces": [
+      { "nombre": "Desaceleración", "url": "https://ai-2027.com/slowdown" },
+      { "nombre": "Carrera", "url": "https://ai-2027.com/race" }
+    ],
+    "nota": "OpenBrain y DeepCent son empresas ficticias. El relato es común hasta octubre de 2027 y después se divide en dos finales. Los autores aclararon el 22 de noviembre de 2025 que 2027 era su año más probable al publicar, y que sus medianas eran algo más tardías."
+  },
+  "ritmo": {
+    "nota": "Estimación de los autores de la velocidad de la realidad respecto al escenario. No es la probabilidad de que el escenario se cumpla.",
+    "puntos": [
+      { "fecha": "2026-02-12", "valor": "≈65 %", "detalle": "Entre el 58 y el 66 % según el método de agregación, en su evaluación de las predicciones de 2025.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+      { "fecha": "2026-07", "valor": "≈75 %", "detalle": "Nota añadida a esa misma evaluación: con datos de julio de 2026, más cerca del 75 %.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+      { "fecha": "2026-08-16", "valor": "70–90 %", "detalle": "«Reality seems to be going at roughly 70-90% the speed of AI 2027», según qué métricas se incluyan y cómo se agreguen.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
+    ]
+  },
+  "revisiones": [
+    { "fecha": "2025-04-23", "tipo": "texto", "texto": "Suben las proyecciones de potencia a diciembre de 2027: IA mundial de 39 a 60 GW, EE. UU. de 31,5 a 50 GW y empresa líder de 5,4 a 10 GW.", "url": "https://ai-2027.com/about" },
+    { "fecha": "2025-07", "tipo": "texto", "texto": "Nota en el suplemento de plazos: la actualización del 7 de mayo de 2025 retrasa la mediana año y medio, aunque 2027 sigue siendo una posibilidad seria para el programador sobrehumano.", "url": "https://ai-2027.com/research/timelines-forecast" },
+    { "fecha": "2025-11-22", "tipo": "texto", "texto": "Aclaración en el prólogo: 2027 era el año más probable (la moda) al publicar; las medianas eran algo más tardías.", "url": "https://ai-2027.com/" },
+    { "fecha": "2025-12-19", "tipo": "texto", "texto": "Finales de 2026: el Departamento de Defensa pasa de «empezar a contratar» a OpenBrain a «empezar a ampliar de forma significativa» esa contratación.", "url": "https://ai-2027.com/about" },
+    { "fecha": "2025-12-31", "tipo": "texto", "texto": "Los suplementos de plazos y despegue enlazan el nuevo AI Futures Model.", "url": "https://www.aifuturesmodel.com/" },
+    { "fecha": "2026-01-19", "tipo": "texto", "texto": "Corrección: la aprobación neta de OpenBrain en abril de 2025 no era del −25 % sino de cerca del +15 %.", "url": "https://ai-2027.com/about" },
+    { "fecha": "2026-01-27", "tipo": "texto", "texto": "Corrección: las medianas de los autores al publicar iban de 2028 a 2032, no hasta 2035.", "url": "https://ai-2027.com/about" },
+    { "fecha": "2026-02-12", "tipo": "valoracion", "texto": "Evaluación de las predicciones de 2025: ritmo cuantitativo en torno al 65 % del escenario.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+    { "fecha": "2026-03-05", "tipo": "texto", "texto": "Ingresos anuales de OpenBrain en 2026: de 45.000 a 35.000 millones de dólares; la cifra anterior partía de ingresos anualizados antiguos y no cuadraba con el panel lateral.", "url": "https://ai-2027.com/about" },
+    { "fecha": "2026-04-02", "tipo": "valoracion", "texto": "Actualización de plazos del primer trimestre: la mediana de Kokotajlo para el programador automatizado pasa de finales de 2029 a mediados de 2028; la de Lifland, de principios de 2032 a mediados de 2030.", "url": "https://blog.aifutures.org/p/q1-2026-timelines-update" },
+    { "fecha": "2026-07-07", "tipo": "texto", "texto": "Nota 75: el cómputo citado pasa de 100 a 10 millones de H100e, un error de un orden de magnitud.", "url": "https://ai-2027.com/about" },
+    { "fecha": "2026-08-16", "tipo": "valoracion", "texto": "La realidad va al 70–90 % de la velocidad del escenario. Desde ahora, sus previsiones son condicionales a avanzar tan rápido como sea técnicamente posible.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
+  ],
+  "vigencia": [
+    { "fuente": "METR, horizontes temporales", "url": "https://metr.org/time-horizons", "fecha": "2026-09-08", "texto": "La página ya no se actualiza activamente (última actualización: 8 de septiembre de 2026) y METR no da por fiables las mediciones por encima de 16 horas. El horizonte es la duración de las tareas para un experto humano, no las horas que el agente trabaja solo. Los hitos que dependen de esta serie pueden quedarse sin medida." },
+    { "fuente": "Epoch AI, brecha EE. UU.–China en meses", "url": "https://epoch.ai/data-insights/us-vs-china-eci", "fecha": "2026-01-06", "texto": "Los autores de AI 2027 citan este análisis (unos 7 meses), cuyos datos se actualizaron por última vez el 6 de enero de 2026. El observatorio recalcula la distancia en cada recogida a partir del ECI y la expresa en puntos, no en meses." },
+    { "fuente": "AI 2027, potencia en 2026", "url": "https://ai-2027.com/research/compute-forecast", "fecha": "2025-04-03", "texto": "El panel de métricas de 2026 da 38 GW de potencia de IA mundial (pico); la tabla del suplemento de cómputo, 29 GW de necesidad total de los centros de IA. Son cifras distintas del mismo trabajo y se muestran las dos." },
+    { "fuente": "Encuestas internas de laboratorios", "url": "https://www-cdn.anthropic.com/08ab9158070959f88f296514c21b7facce6f52bc.pdf#page=44", "fecha": "2026-04", "texto": "La aceleración de 4× de la encuesta interna de Anthropic la declaran sus propios empleados. Se muestra como «declarada», separada de las mediciones con grupo de control." },
+    { "fuente": "Ritmo según los autores", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16", "texto": "El 70–90 % es la estimación de los autores de la velocidad de la realidad respecto al escenario, no la probabilidad de que el escenario se cumpla." }
+  ],
+  "lineas": [
+    {
+      "id": "programacion",
+      "titulo": "Programación autónoma",
+      "comprobar": "Si los agentes completan tareas de programación largas y con qué fiabilidad: SWE-bench Verified ejecutado por Epoch y el horizonte temporal de METR mientras se publique. Un horizonte de tres semanas no significa tres semanas trabajando solo.",
+      "hitos": [
+        {
+          "id": "swe85",
+          "titulo": "85 % en SWE-bench Verified",
+          "seccion": "Mid 2025: Stumbling Agents (nota al pie)",
+          "url": "https://ai-2027.com/",
+          "prediccion": "Los mejores agentes de mediados de 2025 resuelven el 85 % de SWE-bench Verified.",
+          "cita": null,
+          "plazo": "2025-06-30",
+          "plazo_texto": "mediados de 2025",
+          "revisiones": [
+            { "fecha": "2026-08-16", "texto": "Los autores retiran las predicciones de pruebas de mediados de 2025 de su cálculo de ritmo. La predicción original se mantiene aquí.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
+          ],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "bench.sweMid2025" },
+            { "tipo": "medida", "indicador": "bench.swe85" },
+            { "tipo": "valoración de los autores", "texto": "Toman como mejor resultado el 74,5 % de Claude Opus 4.1, frente al 85 % previsto.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "retrasado", "fecha": "2026-02-12", "texto": "74,5 % frente al 85 % previsto.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+            { "quien": "observatorio", "regla": "swe85" }
+          ]
+        },
+        {
+          "id": "horizonte3s",
+          "titulo": "Horizonte de unas tres semanas de trabajo",
+          "seccion": "Trayectoria de 2026 según los autores",
+          "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions",
+          "prediccion": "A finales de 2026, el mejor agente completa con un 80 % de éxito tareas que a un experto humano le llevarían unas tres semanas de trabajo (unas 120 horas, contando semanas de 40 horas; conversión del observatorio).",
+          "cita": null,
+          "plazo": "2026-12-31",
+          "plazo_texto": "finales de 2026",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "metr.sota" },
+            { "tipo": "valoración de los autores", "texto": "En febrero de 2026 situaban el horizonte al 80 % en 1,04 veces su trayectoria central.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "todavía no evaluable", "fecha": "2026-02-12", "texto": "Lo plantean como objetivo para finales de 2026 y advierten de que será más difícil de medir.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+            { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido. Puede quedarse sin medida: METR ya no actualiza la serie y no da por fiables valores por encima de 16 horas." }
+          ]
+        },
+        {
+          "id": "sc2027",
+          "titulo": "Programador sobrehumano",
+          "seccion": "March 2027: Algorithmic Breakthroughs",
+          "url": "https://ai-2027.com/",
+          "prediccion": "OpenBrain desarrolla internamente un programador sobrehumano: hace el trabajo del mejor programador humano en tareas de investigación en IA, más rápido y lo bastante barato como para ejecutar muchas copias.",
+          "cita": "Superhuman coder (SC): An AI system that can do the job of the best human coder on tasks involved in AI research but faster, and cheaply enough to run lots of copies. Mar 2027",
+          "plazo": "2027-03-31",
+          "plazo_texto": "marzo de 2027",
+          "revisiones": [
+            { "fecha": "2025-07", "texto": "La actualización del 7 de mayo de 2025 retrasa la mediana año y medio; 2027 sigue siendo una posibilidad seria.", "url": "https://ai-2027.com/research/timelines-forecast" },
+            { "fecha": "2025-11-22", "texto": "2027 era el año más probable al publicar; las medianas, algo más tardías.", "url": "https://ai-2027.com/" },
+            { "fecha": "2026-01-27", "texto": "Medianas de los autores al publicar: de 2028 a 2032 (corregido; antes decía hasta 2035).", "url": "https://ai-2027.com/about" },
+            { "fecha": "2026-04-02", "texto": "Para el programador automatizado, un hito algo menos exigente: mediana de Kokotajlo a mediados de 2028 y de Lifland a mediados de 2030.", "url": "https://blog.aifutures.org/p/q1-2026-timelines-update" },
+            { "fecha": "2026-08-16", "texto": "Si la realidad sigue al 75 % del ritmo del escenario, programador automatizado a mediados de 2027; al 60 %, a principios de 2028. Previsiones condicionales a avanzar tan rápido como sea técnicamente posible.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
+          ],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "metr.sota" },
+            { "tipo": "medida", "indicador": "bench.sweBest" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "todavía no evaluable", "fecha": "2026-08-16", "texto": "Kokotajlo ve el escenario «roughly on track», algo más lento (en torno al 75 %).", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" },
+            { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido. No hay una medida pública directa del hito: depende de lo que los laboratorios hagan internamente." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "investigacion",
+      "titulo": "IA acelerando la investigación en IA",
+      "comprobar": "Cuánto acelera la IA el progreso de los propios laboratorios. Las mediciones con grupo de control se separan de las encuestas y declaraciones internas, y la velocidad individual al programar, del progreso algorítmico de un laboratorio.",
+      "hitos": [
+        {
+          "id": "mult15",
+          "titulo": "Progreso algorítmico un 50 % más rápido",
+          "seccion": "Early 2026: Coding Automation",
+          "url": "https://ai-2027.com/",
+          "prediccion": "Con Agent-1 en uso interno, OpenBrain avanza en algoritmos un 50 % más rápido que sin asistentes de IA: una semana con IA equivale a semana y media sin ella.",
+          "cita": "Overall, they are making algorithmic progress 50% faster than they would without AI assistants—and more importantly, faster than their competitors.",
+          "plazo": "2026-04-30",
+          "plazo_texto": "principios de 2026",
+          "revisiones": [
+            { "fecha": "2026-08-16", "texto": "Los autores rebajan su estimación de la aceleración real al inicio del escenario y pasan a estimar por separado la de uso público y la interna.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
+          ],
+          "evidencia": [
+            { "tipo": "medida", "texto": "Estudio de METR con grupo de control: a finales de 2025, los desarrolladores tardaron un 18 % menos con IA (intervalo: −38 % a +9 %). METR lo considera poco fiable por efectos de selección y probablemente una cota inferior.", "fuente": "METR", "url": "https://metr.org/blog/2026-02-24-uplift-update", "fecha": "2026-02-24" },
+            { "tipo": "declarada", "texto": "Encuesta interna de Anthropic de abril de 2026: aceleración de 4× al programar (media geométrica), declarada por los propios empleados.", "fuente": "Anthropic, citado por AI Futures Project", "url": "https://www-cdn.anthropic.com/08ab9158070959f88f296514c21b7facce6f52bc.pdf#page=44", "fecha": "2026-04" },
+            { "tipo": "valoración de los autores", "texto": "Kokotajlo estima la aceleración actual al programar en unas 2×, y toma el 1,04× que deduce del estudio de METR como cota inferior.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "retrasado", "fecha": "2026-02-12", "texto": "La aceleración de la I+D de software por la IA va por detrás de lo previsto.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+            { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "Lo medido es la velocidad individual al programar, no el progreso algorítmico de un laboratorio, y las cifras altas son autodeclaradas." }
+          ]
+        },
+        {
+          "id": "mult19",
+          "titulo": "Aceleración de 1,9× en la I+D de IA",
+          "seccion": "Trayectoria de 2026 según los autores",
+          "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions",
+          "prediccion": "A finales de 2026, la IA multiplica por 1,9 el ritmo de la I+D en IA del laboratorio líder.",
+          "cita": null,
+          "plazo": "2026-12-31",
+          "plazo_texto": "finales de 2026",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "declarada", "texto": "Según encuestas a empleados de Anthropic, la aceleración declarada al programar pasó de 1,25× a 4× en siete meses.", "fuente": "AI Futures Project, a partir de encuestas de Anthropic", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "todavía no evaluable", "fecha": "2026-02-12", "texto": "Objetivo para finales de 2026.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+            { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido. Sin una medición independiente del progreso algorítmico, es probable que acabe en «sin evidencia suficiente»." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "infraestructura",
+      "titulo": "Infraestructura",
+      "comprobar": "Capacidad en servicio frente a anunciada: potencia y H100e de los centros que Epoch sigue por satélite y permisos, y chips entregados, que no es lo mismo que instalados.",
+      "hitos": [
+        {
+          "id": "flop27",
+          "titulo": "Entrenamiento de 10^27 FLOP",
+          "seccion": "Late 2025: The World's Most Expensive AI",
+          "url": "https://ai-2027.com/",
+          "prediccion": "El último modelo público de OpenBrain, Agent-0, se ha entrenado con 10^27 FLOP (50 veces el cómputo de GPT-4), y los nuevos centros permitirán entrenar con 10^28.",
+          "cita": "OpenBrain's latest public model—Agent-0—was trained with 10^27 FLOP.",
+          "plazo": "2025-12-31",
+          "plazo_texto": "finales de 2025",
+          "revisiones": [
+            { "fecha": "2026-08-16", "texto": "Los autores retiran las predicciones de cómputo de finales de 2025 de su cálculo de ritmo. La predicción original se mantiene aquí.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
+          ],
+          "evidencia": [
+            { "tipo": "valoración de los autores", "texto": "No consta ningún entrenamiento claramente mayor que el de GPT-4.5 (febrero de 2025), con una incertidumbre que ellos mismos califican de muy amplia.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "retrasado", "fecha": "2026-02-12", "texto": "«Posiblemente» por detrás; el resto del cómputo, en general a ritmo.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+            { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "Los laboratorios no publican el cómputo de entrenamiento de sus modelos punteros." }
+          ]
+        },
+        {
+          "id": "h100e40m",
+          "titulo": "40 millones de H100e disponibles",
+          "seccion": "Suplemento de cómputo",
+          "url": "https://ai-2027.com/research/compute-forecast",
+          "prediccion": "El cómputo de IA disponible en el mundo llega a 40 millones de equivalentes H100 a finales de 2026 y a 100 millones a finales de 2027, con un gasto en centros de IA de 600.000 millones de dólares en 2026.",
+          "cita": "We expect the total stock of AI-relevant compute in the world will grow 2.25x per year over the next three years, from 10M H100e today to 100M H100e by the end of 2027.",
+          "plazo": "2026-12-31",
+          "plazo_texto": "finales de 2026",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "chips.cum" },
+            { "tipo": "medida", "indicador": "dc.now" }
+          ],
+          "comparabilidad": "Las entregas que suma Epoch empiezan en 2022 (Nvidia), 2023 (Google) y 2024 (el resto) y no descuentan chips retirados: no son exactamente el «cómputo disponible» del escenario.",
+          "valoraciones": [
+            { "quien": "autores", "v": "compatible", "fecha": "2026-02-12", "texto": "Sobre las cifras de 2025: el cómputo va en general al ritmo previsto, salvo quizá el mayor entrenamiento.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+            { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido." }
+          ]
+        },
+        {
+          "id": "potencia2026",
+          "titulo": "Potencia de la IA en 2026",
+          "seccion": "KEY METRICS 2026 y suplemento de cómputo",
+          "url": "https://ai-2027.com/",
+          "prediccion": "En 2026 la IA demanda 38 GW de potencia en el mundo (pico), y en EE. UU. el 2,5 % de la capacidad eléctrica (33 GW de 1,34 TW). La tabla del suplemento de cómputo da 29 GW de necesidad total de los centros de IA.",
+          "cita": null,
+          "plazo": "2026-12-31",
+          "plazo_texto": "2026",
+          "revisiones": [
+            { "fecha": "2025-04-23", "texto": "Suben las proyecciones a diciembre de 2027: mundo de 39 a 60 GW, EE. UU. de 31,5 a 50 GW y empresa líder de 5,4 a 10 GW.", "url": "https://ai-2027.com/about" }
+          ],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "dc.plan" },
+            { "tipo": "medida", "texto": "La demanda eléctrica de los centros dedicados a IA creció en torno a un 50 % en 2025.", "fuente": "IEA, «Key Questions on Energy and AI» (comprobado a través de un buscador)", "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary", "fecha": "2026-04-16" }
+          ],
+          "valoraciones": [
+            { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido. Epoch sólo cubre los centros que sigue y la IEA da sobre todo la electricidad de todos los centros de datos, no sólo de IA: puede acabar en «sin evidencia suficiente»." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "economia",
+      "titulo": "Viabilidad económica",
+      "comprobar": "Ingresos del laboratorio líder con la definición de cada fuente (anualizado no es anual), su valoración, y si el gasto en centros se sostiene con esos ingresos.",
+      "hitos": [
+        {
+          "id": "ingresos2025",
+          "titulo": "18.000 millones de ingresos anualizados",
+          "seccion": "Late 2025, trayectoria del escenario según los autores",
+          "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions",
+          "prediccion": "El laboratorio líder llega a unos 18.000 millones de dólares de ingresos anualizados a finales de 2025. Los autores lo comparan con OpenAI.",
+          "cita": null,
+          "plazo": "2025-12-31",
+          "plazo_texto": "finales de 2025",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "companies.openai2025" },
+            { "tipo": "valoración de los autores", "texto": "Unos 20.000 millones anualizados frente a los 18.000 previstos.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "adelantado", "fecha": "2026-02-12", "texto": "Unos 20.000 millones frente a 18.000.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+            { "quien": "observatorio", "regla": "openaiRev2025" }
+          ]
+        },
+        {
+          "id": "valoracion500",
+          "titulo": "Valoración de 500.000 millones",
+          "seccion": "Mid 2025, trayectoria del escenario según los autores",
+          "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions",
+          "prediccion": "El laboratorio líder alcanza una valoración de 500.000 millones de dólares a mediados de 2025.",
+          "cita": null,
+          "plazo": "2025-06-30",
+          "plazo_texto": "mediados de 2025",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "valoración de los autores", "texto": "OpenAI llegó a esa valoración en octubre de 2025.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "retrasado", "fecha": "2026-02-12", "texto": "Alcanzada en octubre de 2025, no a mediados de año.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+            { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "El observatorio no recoge valoraciones de empresas." }
+          ]
+        },
+        {
+          "id": "ingresos2026",
+          "titulo": "Ingresos de OpenBrain en 2026",
+          "seccion": "KEY METRICS 2026",
+          "url": "https://ai-2027.com/",
+          "prediccion": "OpenBrain ingresa 35.000 millones de dólares en el conjunto de 2026 (cifra anual, no anualizada) y gasta 40.000 millones en cómputo; el coste de propiedad de su cómputo activo ronda los 200.000 millones.",
+          "cita": null,
+          "plazo": "2026-12-31",
+          "plazo_texto": "año 2026",
+          "revisiones": [
+            { "fecha": "2026-03-05", "texto": "Cifra de ingresos corregida de 45.000 a 35.000 millones: la anterior partía de ingresos anualizados antiguos y no cuadraba con el panel lateral.", "url": "https://ai-2027.com/about" }
+          ],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "companies.leader" }
+          ],
+          "comparabilidad": "Epoch recoge sobre todo ingresos anualizados; el dato anual de 2026 sólo se conocerá en 2027.",
+          "valoraciones": [
+            { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido." }
+          ]
+        },
+        {
+          "id": "lider55",
+          "titulo": "55.000 millones anualizados y 2,5 billones de valoración",
+          "seccion": "Trayectoria de 2026 según los autores",
+          "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions",
+          "prediccion": "En la trayectoria del escenario, el laboratorio líder llega en 2026 a 55.000 millones de dólares de ingresos anualizados y a una valoración de 2,5 billones.",
+          "cita": null,
+          "plazo": "2026-12-31",
+          "plazo_texto": "2026",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "companies.leader" },
+            { "tipo": "valoración de los autores", "texto": "Hasta ahora, los ingresos se han multiplicado por 10 por cada 15 puntos de ECI.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
+          ],
+          "valoraciones": [
+            { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido. El observatorio no recoge valoraciones de empresas." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "competencia",
+      "titulo": "Competencia y coordinación",
+      "comprobar": "Distancias de capacidad en puntos ECI (nunca en meses) entre laboratorios, países y modelos abiertos y cerrados; si China concentra su cómputo; y si aparecen medidas de cooperación verificables. Los hechos de coordinación están en «La carrera».",
+      "hitos": [
+        {
+          "id": "rivales39",
+          "titulo": "Los rivales, de 3 a 9 meses por detrás",
+          "seccion": "Late 2025: The World's Most Expensive AI",
+          "url": "https://ai-2027.com/",
+          "prediccion": "Los demás laboratorios van de 3 a 9 meses por detrás de OpenBrain.",
+          "cita": "We imagine the others to be 3–9 months behind OpenBrain.",
+          "plazo": "2025-12-31",
+          "plazo_texto": "finales de 2025",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "eci.gapLabs" },
+            { "tipo": "valoración de los autores", "texto": "La ventaja entre las empresas de EE. UU. es de 0 a 2 meses.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "adelantado", "fecha": "2026-02-12", "texto": "La competencia está más igualada de lo previsto: el alcance de los rivales que el escenario sitúa en 2026 ya se ha producido.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
+            { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "El observatorio no convierte distancias en meses. En puntos ECI, la distancia entre los dos primeros laboratorios es la del indicador; si sus intervalos se solapan, no puede afirmarse que haya un líder." }
+          ]
+        },
+        {
+          "id": "abiertoAgent0",
+          "titulo": "Un modelo de pesos abiertos iguala a Agent-0",
+          "seccion": "Early 2026: Coding Automation",
+          "url": "https://ai-2027.com/",
+          "prediccion": "Varios modelos públicos de la competencia igualan o superan a Agent-0, entre ellos uno de pesos abiertos.",
+          "cita": "Several competing publicly released AIs now match or exceed Agent-0, including an open-weights model.",
+          "plazo": "2026-04-30",
+          "plazo_texto": "principios de 2026",
+          "operacionalizacion": "Agent-0 se aproxima por el mejor modelo cerrado publicado hasta el 31 de diciembre de 2025. «Iguala» si el mejor modelo de pesos abiertos publicado hasta el 30 de abril de 2026 queda a menos de 1 punto ECI, el criterio de Epoch para «misma capacidad».",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "eci.agent0" },
+            { "tipo": "medida", "indicador": "eci.gapClosedOpen" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "compatible", "fecha": "2026-08-16", "texto": "Consideran la sección de principios de 2026 «very on-point»; no valoran esta frase por separado.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" },
+            { "quien": "observatorio", "regla": "openAgent0" }
+          ]
+        },
+        {
+          "id": "deepcent6",
+          "titulo": "China, unos seis meses por detrás con el 12 % del cómputo",
+          "seccion": "Mid 2026: China Wakes Up",
+          "url": "https://ai-2027.com/",
+          "prediccion": "China mantiene alrededor del 12 % del cómputo de IA mundial y DeepCent va unos seis meses por detrás de los mejores modelos de OpenBrain.",
+          "cita": "…they are about six months behind the best OpenBrain models.",
+          "plazo": "2026-08-31",
+          "plazo_texto": "mediados de 2026",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "medida", "indicador": "eci.gapUsCn" },
+            { "tipo": "medida", "indicador": "chips.byDesignerCountry" },
+            { "tipo": "valoración de los autores", "texto": "«Basically right»: citan un análisis de Epoch con unos 7 meses de distancia según el ECI. El 12 % «still seems like a reasonable estimate».", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "compatible", "fecha": "2026-08-16", "texto": "La distancia de unos seis meses y el 12 % les parecen razonables.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" },
+            { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "El observatorio expresa la distancia en puntos ECI, no en meses, y no tiene una estimación propia del cómputo chino: las ventas por país del diseñador no dicen dónde se usan los chips." }
+          ]
+        },
+        {
+          "id": "chinaCentraliza",
+          "titulo": "China centraliza su investigación",
+          "seccion": "Mid 2026: China Wakes Up",
+          "url": "https://ai-2027.com/",
+          "prediccion": "China nacionaliza su investigación en IA: un colectivo liderado por DeepCent reúne casi la mitad de su cómputo de IA, y una zona de desarrollo centralizada junto a la central nuclear de Tianwan recibe más del 80 % de los chips nuevos.",
+          "cita": "Almost 50% of China's AI-relevant compute is now working for the DeepCent-led collective, and over 80% of new chips are directed to the CDZ.",
+          "plazo": "2026-08-31",
+          "plazo_texto": "mediados de 2026",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "valoración de los autores", "texto": "«China Wakes Up» no parece haberse producido: lo habrían sabido si el Partido hubiera consolidado los proyectos chinos y priorizado conseguir cómputo.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "retrasado", "fecha": "2026-08-16", "texto": "«It seems that “China Wakes Up” has not yet happened».", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" },
+            { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "No hay datos públicos sobre cómo se reparte el cómputo chino entre organizaciones." }
+          ]
+        },
+        {
+          "id": "sl3",
+          "titulo": "Seguridad de nivel SL3 en el laboratorio líder",
+          "seccion": "Mid 2026: China Wakes Up",
+          "url": "https://ai-2027.com/",
+          "prediccion": "OpenBrain ha elevado su seguridad al nivel SL3 de RAND: protegida frente a amenazas internas y grandes grupos de ciberdelincuencia, aunque no frente a Estados.",
+          "cita": "OpenBrain has improved security to RAND's SL3",
+          "plazo": "2026-08-31",
+          "plazo_texto": "mediados de 2026",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "valoración de los autores", "texto": "Anthropic y OpenAI todavía no están protegidas frente a agentes de IA, así que no merecerían la designación SL3; si se mira sólo la seguridad de los pesos, el panorama podría ser mejor.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
+          ],
+          "valoraciones": [
+            { "quien": "autores", "v": "retrasado", "fecha": "2026-08-16", "texto": "No merecerían todavía la designación SL3.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" },
+            { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "No hay auditorías públicas del nivel de seguridad de los laboratorios." }
+          ]
+        },
+        {
+          "id": "roboAgent2",
+          "titulo": "Robo de los pesos de Agent-2",
+          "seccion": "February 2027: China Steals Agent-2",
+          "url": "https://ai-2027.com/",
+          "prediccion": "China roba los pesos de Agent-2 con una serie de sustracciones rápidas y coordinadas en servidores de OpenBrain.",
+          "cita": null,
+          "plazo": "2027-02-28",
+          "plazo_texto": "febrero de 2027",
+          "revisiones": [],
+          "evidencia": [],
+          "valoraciones": [
+            { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido." }
+          ]
+        },
+        {
+          "id": "tratado",
+          "titulo": "Sin tratado de control de armas de IA",
+          "seccion": "August 2027: The Geopolitics of Superintelligence",
+          "url": "https://ai-2027.com/",
+          "prediccion": "Los diplomáticos estudian cómo sería un tratado de control de armas de IA y cómo vigilarlo, pero se prefiere ampliar la ventaja propia; los acercamientos de China no llegan a nada.",
+          "cita": "How could such an agreement be monitored and enforced? […] And overall, treaties are viewed less favorably than attempts at unilaterally increasing America's lead over China.",
+          "plazo": "2027-08-31",
+          "plazo_texto": "agosto de 2027",
+          "revisiones": [],
+          "evidencia": [
+            { "tipo": "contexto", "texto": "No existe ningún medio técnico establecido para que EE. UU. o China comprueben los compromisos del otro sobre sus modelos (CSIS, 21 de septiembre de 2026). Véase el frente «Coordinación» en La carrera.", "fuente": "CSIS", "url": "https://www.csis.org/analysis/state-ai-global-governance-and-its-implications-us-china-summit", "fecha": "2026-09-21" }
+          ],
+          "valoraciones": [
+            { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido." }
+          ]
+        }
+      ]
+    }
+  ]
+}

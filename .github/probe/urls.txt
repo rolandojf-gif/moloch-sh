@@ -1,4 +1,0 @@
-html https://digital-strategy.ec.europa.eu/en/policies/guidelines-gpai-providers
-html https://www.csis.org/analysis/state-ai-global-governance-and-its-implications-us-china-summit
-html https://www.crowell.com/en/insights/client-alerts/white-house-announces-ai-responsibility-accord-executive-orders-and-super-intelligence-task-force
-html https://epoch.ai/data-insights/us-vs-china-eci

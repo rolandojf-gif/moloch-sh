@@ -103,3 +103,42 @@ export function frontier(el, series, { step = false, yLabel = '' } = {}) {
   el.innerHTML = s;
   return true;
 }
+
+/* Distancias en puntos ECI a lo largo del tiempo (EE. UU. − China y cerrados − abiertos). Sin conversión a meses. */
+export function gaps(el, points) {
+  const pts = (points || []).filter(p => p.usCn !== null || p.closedOpen !== null);
+  if (pts.length < 2) { el.innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>'; return false; }
+  const W = 860, H = 280, L = 48, R = 16, T = 14, B = 40;
+  const t = p => new Date(p.d + 'T00:00:00Z').getTime();
+  const tmin = t(pts[0]), tmax = t(pts[pts.length - 1]);
+  const vals = pts.flatMap(p => [p.usCn, p.closedOpen]).filter(v => v !== null);
+  const ymin = Math.min(0, Math.floor(Math.min(...vals) / 5) * 5), ymax = Math.ceil((Math.max(...vals) + 1) / 5) * 5;
+  const X = v => L + (v - tmin) / (tmax - tmin || 1) * (W - L - R);
+  const Y = v => T + (1 - (v - ymin) / (ymax - ymin || 1)) * (H - T - B);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Distancia en puntos ECI entre EE. UU. y China y entre modelos cerrados y abiertos">`;
+  s += '<g class="grid">';
+  for (const v of niceTicks(ymin, ymax)) s += `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}"/>`;
+  s += '</g><g class="axis">';
+  for (const v of niceTicks(ymin, ymax)) s += `<text x="${L - 8}" y="${Y(v) + 4}" text-anchor="end">${num(v, 0)}</text>`;
+  for (const tk of monthTicks(tmin, tmax)) {
+    const x = X(tk);
+    const anchor = x < L + 30 ? 'start' : x > W - R - 30 ? 'end' : 'middle';
+    s += `<text x="${x.toFixed(1)}" y="${H - B + 18}" text-anchor="${anchor}">${esc(new Date(tk).toLocaleDateString('es-ES', { month: 'short', year: 'numeric', timeZone: 'UTC' }))}</text>`;
+  }
+  s += `<text class="lbl" x="12" y="${(T + H - B) / 2}" text-anchor="middle" transform="rotate(-90 12 ${(T + H - B) / 2})">puntos ECI</text>`;
+  s += '</g>';
+  if (ymin < 0) s += `<line x1="${L}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}" stroke="currentColor" opacity=".5"/>`;
+  for (const [key, cls, name] of [['usCn', 'ln-uscn', 'EE. UU. − China'], ['closedOpen', 'ln-co', 'Cerrados − abiertos']]) {
+    let d = '', pen = false;
+    for (const p of pts) {
+      if (p[key] === null) { pen = false; continue; }
+      d += `${pen ? 'L' : 'M'}${X(t(p)).toFixed(1)},${Y(p[key]).toFixed(1)} `;
+      pen = true;
+    }
+    s += `<path class="${cls}" d="${d}"/>`;
+    for (const p of pts) if (p[key] !== null) s += `<circle class="pt-${cls}" cx="${X(t(p)).toFixed(1)}" cy="${Y(p[key]).toFixed(1)}" r="3"><title>${esc(`${fmtDate(p.d)} · ${name}: ${num(p[key], 1)} puntos`)}</title></circle>`;
+  }
+  s += '</svg><div class="legend"><span><i style="background:var(--orange)"></i>EE. UU. − China</span><span><i style="background:var(--ink)"></i>Cerrados − abiertos</span></div>';
+  el.innerHTML = s;
+  return true;
+}
