@@ -1,10 +1,12 @@
 name: Recogida de datos
 
-# Recogida diaria programada (GitHub sólo ejecuta el cron en la rama principal), manual,
-# o al cambiar el recolector o los datos curados en una rama de trabajo (para su vista previa).
+# Recogida diaria programada a las 05:00 de Madrid todo el año (GitHub sólo ejecuta el cron en la
+# rama principal), manual, o al cambiar el recolector o los datos curados en una rama de trabajo
+# (para su vista previa).
 on:
   schedule:
-    - cron: '17 5 * * *'
+    - cron: '0 5 * * *'
+      timezone: 'Europe/Madrid'
   workflow_dispatch:
   push:
     branches-ignore: [main]
