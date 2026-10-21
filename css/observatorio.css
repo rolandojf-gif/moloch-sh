@@ -304,7 +304,7 @@ tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .rel-date { font: 700 13px var(--f-mono); }
 .rel h3 { margin: 0; font: 700 17px/1.25 var(--f-head); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .stages { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
-.stage { border: 1px solid var(--line); padding: 6px 8px; font-size: 13px; min-width: 0; }
+.stage { border: 1px solid var(--line); padding: 6px 8px; font-size: 13px; min-width: 0; overflow-wrap: anywhere; }
 .stage .lbl { display: block; font: 700 10px var(--f-mono); text-transform: uppercase; color: var(--muted); }
 .stage.yes { border-color: var(--ink); background: var(--card-2); }
 .stage.no { color: var(--muted); }
@@ -505,6 +505,12 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
 }
 @media (max-width: 640px) {
   .topnav { padding: 10px 16px; gap: 10px; }
+  /* Las cinco pestañas, siempre visibles: dos filas en vez de desplazamiento oculto. */
+  .navtabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; }
+  .navtab { justify-content: center; padding: 9px 6px; font-size: 11.5px; border-bottom: 2px solid var(--ink); }
+  .navtab:nth-child(3) { border-right: 0; }
+  .navtab:nth-child(n+4) { border-bottom: 0; }
+  .navtab:last-child { grid-column: span 2; }
   .brand-text strong { font-size: 20px; }
   .seg.theme { margin-left: auto; }
   .freshness { padding: 8px 16px; }

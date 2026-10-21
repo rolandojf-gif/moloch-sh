@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: collect-${{ github.ref }}
@@ -27,8 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
       - name: Recoger
@@ -47,3 +48,28 @@ jobs:
           git commit -m "datos: recogida $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull --rebase --autostash
           git push
+      # En main, un fallo abre (o amplía) una incidencia con la etiqueta «recogida-fallida»: GitHub la notifica
+      # por correo. La siguiente recogida correcta la cierra.
+      - name: Avisar del fallo
+        if: failure() && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          n=$(gh issue list --label recogida-fallida --state open --json number -q '.[0].number')
+          if [ -n "$n" ]; then
+            gh issue comment "$n" --body "Ha vuelto a fallar: $RUN_URL"
+          else
+            gh label create recogida-fallida --color B60205 --description 'La recogida de datos ha fallado' 2>/dev/null || true
+            gh issue create --label recogida-fallida --title 'La recogida de datos ha fallado' \
+              --body "La recogida de $(date -u +%Y-%m-%d) ha fallado y la web sigue con los datos anteriores. Registro: $RUN_URL"
+          fi
+      - name: Cerrar el aviso
+        if: success() && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          for n in $(gh issue list --label recogida-fallida --state open --json number -q '.[].number'); do
+            gh issue close "$n" --comment "Recogida correcta: $RUN_URL"
+          done

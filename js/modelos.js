@@ -15,7 +15,7 @@ function sortKey(m) {
   switch (state.sort) {
     case 'ii': return ii(m);
     case 'eci': return eci(m);
-    case 'price': { const b = blended(m); return b === null ? null : -b; }
+    case 'price': { const b = freeOnly(m) ? null : blended(m); return b === null ? null : -b; }
     case 'tps': return speed(m)?.tps ?? null;
     case 'date': return m.orCreated.v ? new Date(m.orCreated.v).getTime() : null;
   }
@@ -36,6 +36,9 @@ function rows() {
     });
 }
 
+/* Modelos que OpenRouter sólo ofrece como variante gratuita: su «0 $» no es un precio. */
+const freeOnly = m => !!m.orVariant && /:free$/.test(m.orVariant) && !m.price.in.v && !m.price.out.v;
+
 function speedCell(m) {
   const s = speed(m);
   if (!s) return ND;
@@ -55,7 +58,7 @@ function detail(m) {
     ['Contexto', fact(m.ctx, v => tokens(v) + ' tokens')],
     ['Razonamiento', fact(m.reasoning, yesNo)],
     ['Caché (lectura)', m.price.cacheRead.v !== null ? usd(m.price.cacheRead.v) + ' / M' + src(m.price.cacheRead) : ND + src(m.price.cacheRead)],
-    ['Precio combinado 3:1', blended(m) !== null ? usd(blended(m)) + ' / M' + src(m.price.in) + (priceBasis(m) ? `<span class="m-sub">${esc(priceBasis(m))}</span>` : '') : ND],
+    ['Precio combinado 3:1', freeOnly(m) ? `gratis: solo variante ${esc(m.orVariant.slice(m.orVariant.lastIndexOf(':')))}, sin precio de pago todavía` : blended(m) !== null ? usd(blended(m)) + ' / M' + src(m.price.in) + (priceBasis(m) ? `<span class="m-sub">${esc(priceBasis(m))}</span>` : '') : ND],
     ['Alta en OpenRouter', fact(m.orCreated, v => fmtDate(v))],
     ['Repositorio de pesos', m.hfCreated ? fact(m.hfCreated, v => fmtDate(v)) : ND],
     ['Inteligencia (Artificial Analysis)', aa ? `${fact(aa.intelligence, v => num(v))}<span class="m-sub">${esc(aaIndexName(aa.version))} · como <a href="${esc(aa.url)}" target="_blank" rel="noopener">«${esc(aa.name)}»</a> en AA${aa.how && aa.how !== 'nombre exacto' ? ` (${esc(aa.how)})` : ''}</span>` : 'sin puntuación en Artificial Analysis todavía'],
@@ -100,7 +103,7 @@ function renderTable() {
       <td class="num" data-label="Inteligencia (AA)">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfigShort(m) ? `<span class="m-sub" title="Configuración de AA con mayor índice: ${esc(aaConfig(m))}">${esc(aaConfigShort(m))}</span>` : ''}` : ND}</td>
       <td class="num" data-label="ECI (Epoch)">${m.epoch ? `<span class="big">${fact(m.epoch.eci, v => num(v))}</span>` : ND}</td>
       <td class="num" data-label="Velocidad">${speedCell(m)}</td>
-      <td class="num" data-label="Entrada / salida"><span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">salida ${fact(m.price.out, usd)}</span>${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}, el más barato` : ''}</span>` : ''}</td>
+      <td class="num" data-label="Entrada / salida">${freeOnly(m) ? `<span class="big">gratis</span>${src(m.price.in)}<span class="m-sub">solo variante ${esc(m.orVariant.slice(m.orVariant.lastIndexOf(':')))}; sin precio de pago todavía</span>` : `<span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">salida ${fact(m.price.out, usd)}</span>`}${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}, el más barato` : ''}</span>` : ''}</td>
     </tr>${open ? `<tr class="detail"><td colspan="7">${detail(m)}</td></tr>` : ''}`;
   }).join('');
 }
