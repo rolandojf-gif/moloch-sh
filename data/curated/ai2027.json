@@ -1,5 +1,5 @@
 {
-  "_doc": "Seguimiento de AI 2027. «corto» es el rótulo del hito en el calendario. Cada hito conserva la predicción original («prediccion», y «cita» cuando el texto es literal); las revisiones de los autores se añaden fechadas en «revisiones» y nunca sustituyen la original. «evidencia» separa lo medido, lo declarado por laboratorios y lo que valoran los autores. «evidencia».tipo: medida (dato de un tercero independiente), declarada (cifra de un laboratorio o empresa sobre sí mismo), valoración de los autores o contexto (otro hecho con fuente). «valoraciones»: una de los autores (sus palabras, situadas por el observatorio en la escala común) y una del observatorio, fija o derivada de una regla de scripts/indicadores.mjs («regla»). Escala: adelantado, compatible, retrasado, todavía no evaluable, sin evidencia suficiente.",
+  "_doc": "Seguimiento de AI 2027. «corto» es el rótulo del hito en el calendario. Cada hito conserva la predicción original («prediccion», y «cita» cuando el texto es literal); las revisiones de los autores se añaden fechadas en «revisiones» y nunca sustituyen la original. «evidencia» separa lo medido, lo declarado por laboratorios y lo que valoran los autores. «evidencia».momento: «plazo» si la medida se toma en la fecha del hito; si falta, es la situación de hoy. «evidencia».tipo: medida (dato de un tercero independiente), declarada (cifra de un laboratorio o empresa sobre sí mismo), valoración de los autores o contexto (otro hecho con fuente). «valoraciones»: una de los autores (sus palabras, situadas por el observatorio en la escala común) y una del observatorio, fija o derivada de una regla de scripts/indicadores.mjs («regla»). Escala: adelantado, compatible, retrasado, todavía no evaluable, sin evidencia suficiente.",
   "schema": 1,
   "actualizado": "2026-10-20",
   "escenario": {
@@ -63,7 +63,8 @@
             { "fecha": "2026-08-16", "texto": "Los autores retiran las predicciones de pruebas de mediados de 2025 de su cálculo de ritmo. La predicción original se mantiene aquí.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
           ],
           "evidencia": [
-            { "tipo": "medida", "indicador": "bench.sweMid2025" },
+            { "tipo": "medida", "indicador": "bench.sweMid2025", "momento": "plazo" },
+            { "tipo": "medida", "indicador": "bench.sweBest" },
             { "tipo": "medida", "indicador": "bench.swe85" },
             { "tipo": "valoración de los autores", "texto": "Toman como mejor resultado el 74,5 % de Claude Opus 4.1, frente al 85 % previsto.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
           ],
@@ -257,7 +258,7 @@
           "plazo_texto": "finales de 2025",
           "revisiones": [],
           "evidencia": [
-            { "tipo": "medida", "indicador": "companies.openai2025" },
+            { "tipo": "medida", "indicador": "companies.openai2025", "momento": "plazo" },
             { "tipo": "valoración de los autores", "texto": "Unos 20.000 millones anualizados frente a los 18.000 previstos.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
           ],
           "valoraciones": [
@@ -343,6 +344,7 @@
           "plazo_texto": "finales de 2025",
           "revisiones": [],
           "evidencia": [
+            { "tipo": "medida", "indicador": "eci.rivals2025", "momento": "plazo" },
             { "tipo": "medida", "indicador": "eci.gapLabs" },
             { "tipo": "valoración de los autores", "texto": "La ventaja entre las empresas de EE. UU. es de 0 a 2 meses.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
           ],
@@ -364,7 +366,7 @@
           "operacionalizacion": "Agent-0 se aproxima por el mejor modelo cerrado publicado hasta el 31 de diciembre de 2025. «Iguala» si el mejor modelo de pesos abiertos publicado hasta el 30 de abril de 2026 queda a menos de 1 punto ECI, el criterio de Epoch para «misma capacidad».",
           "revisiones": [],
           "evidencia": [
-            { "tipo": "medida", "indicador": "eci.agent0" },
+            { "tipo": "medida", "indicador": "eci.agent0", "momento": "plazo" },
             { "tipo": "medida", "indicador": "eci.gapClosedOpen" }
           ],
           "valoraciones": [
@@ -384,6 +386,7 @@
           "plazo_texto": "mediados de 2026",
           "revisiones": [],
           "evidencia": [
+            { "tipo": "medida", "indicador": "eci.usCn2026", "momento": "plazo" },
             { "tipo": "medida", "indicador": "eci.gapUsCn" },
             { "tipo": "medida", "indicador": "chips.byDesignerCountry" },
             { "tipo": "valoración de los autores", "texto": "«Basically right»: citan un análisis de Epoch con unos 7 meses de distancia según el ECI. El 12 % «still seems like a reasonable estimate».", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }

@@ -45,6 +45,9 @@ function hito(h, ind, checks, today) {
   const a = valOf(h, 'autores', checks), o = valOf(h, 'observatorio', checks);
   const due = h.plazo < today;
   const measured = (h.evidencia || []).filter(e => e.tipo === 'medida' && e.indicador);
+  // Un hito vencido se valora con lo que había en su fecha; lo de hoy va aparte, como contexto.
+  const atDue = measured.filter(e => e.momento === 'plazo'), now = measured.filter(e => e.momento !== 'plazo');
+  const rows = list => list.length && ind ? `<dl class="ind">${list.map(e => indicatorRow(ind, e.indicador)).join('')}</dl>` : '';
   const rest = (h.evidencia || []).filter(e => !(e.tipo === 'medida' && e.indicador));
   const r = (h.revisiones || []).length;
   return `<article class="hito${due && o?.v === 'todavía no evaluable' ? ' overdue' : ''}" id="hito-${esc(h.id)}">
@@ -54,8 +57,10 @@ function hito(h, ind, checks, today) {
       <div class="when">Para <b>${esc(h.plazo_texto)}</b> (${esc(fmtDate(h.plazo))}) · ${esc(when(h, today))}</div>
       <div class="hito-cols">
         <div><span class="lbl">Qué predecía</span><p>${esc(h.prediccion)}</p></div>
-        <div><span class="lbl">Dónde estamos${o?.fecha ? ` (${esc(curDate(o.fecha))})` : ''}</span><p>${esc(o?.texto || 'Sin valoración del observatorio.')}</p>
-          ${measured.length && ind ? `<dl class="ind">${measured.map(e => indicatorRow(ind, e.indicador)).join('')}</dl>` : ''}</div>
+        ${due
+          ? `<div><span class="lbl">Al vencer el plazo (${esc(fmtDate(h.plazo))})</span><p>${esc(o?.texto || 'Sin valoración del observatorio.')}</p>${rows(atDue)}
+          ${now.length ? `<span class="lbl lbl-hoy">Y hoy (${esc(curDate(today))})</span>${rows(now)}` : ''}</div>`
+          : `<div><span class="lbl">Dónde estamos${o?.fecha ? ` (${esc(curDate(o.fecha))})` : ''}</span><p>${esc(o?.texto || 'Sin valoración del observatorio.')}</p>${rows(measured)}</div>`}
       </div>
       <p class="authors"><span class="lbl">Qué dicen los autores</span>${a ? `<span class="val ${cls(a.v)}">${esc(a.v)}</span> ${esc(a.texto || '')}${a.url ? ` <a href="${esc(a.url)}" target="_blank" rel="noopener">Fuente</a>` : ''}` : 'No han publicado una valoración que el observatorio haya encontrado.'}</p>
       <details class="hito-more">

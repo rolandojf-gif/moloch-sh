@@ -406,6 +406,7 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
 .hito-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 10px; }
 .hito-cols p { margin: 0; font-size: 14.5px; }
 .hito-cols dl.ind { margin-top: 8px; }
+.hito-cols .lbl-hoy { margin-top: 16px; }
 .authors { margin: 10px 0 0; font-size: 13.5px; color: var(--muted); }
 .authors .val { margin-right: 4px; }
 .hito .hito-more { padding: 10px 0 0; }

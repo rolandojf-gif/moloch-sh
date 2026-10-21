@@ -78,6 +78,26 @@ function monthEnds(from, to) {
   return out;
 }
 
+/* Situación en la fecha d de un plazo de AI 2027: el mejor modelo de cada grupo publicado hasta d y, para cada rival,
+   el día en que el grupo líder publicó por primera vez un modelo de su nivel. Son fechas observadas: la distancia en
+   puntos no se convierte en meses. */
+function standingAt(rows, keyOf, d, k = 4) {
+  const best = new Map();
+  for (const r of rows) {
+    if (!r.date || r.date > d) continue;
+    const g = keyOf(r);
+    if (g && (!best.has(g) || r.eci > best.get(g).eci)) best.set(g, r);
+  }
+  const top = [...best.entries()].sort((a, b) => b[1].eci - a[1].eci).slice(0, k);
+  if (top.length < 2) return null;
+  const [leadKey, lead] = top[0];
+  const reached = level => rows.filter(r => r.date && r.date <= d && keyOf(r) === leadKey && r.eci >= level).sort((a, b) => a.date.localeCompare(b.date))[0] || null;
+  return {
+    date: d, lead: { key: leadKey, ...brief(lead) },
+    rivals: top.slice(1).map(([key, r]) => ({ key, ...brief(r), gap: r2(lead.eci - r.eci), overlap: lead.lo !== null && r.hi !== null ? lead.lo <= r.hi : null, leaderReached: brief(reached(r.eci)) }))
+  };
+}
+
 /* ── ECI: brechas en puntos ─────────────────────────────────────────────── */
 function eciBlock(rows, ctx) {
   const { fact, TODAY } = ctx;
@@ -311,7 +331,7 @@ function checks(ind, TODAY) {
     const hit = swe.v && swe.v <= '2025-06-30';
     c.swe85 = mid.v === null && !swe.v
       ? { v: 'sin evidencia suficiente', texto: 'Epoch no tiene ejecuciones de SWE-bench Verified para modelos de esa época.' }
-      : { v: hit ? 'compatible' : 'retrasado', texto: hit ? `Un modelo publicado antes del plazo (${swe.model}) llega al 85 % en las ejecuciones de Epoch.` : `Ningún modelo publicado antes del 30 jun 2025 llega al 85 % en las ejecuciones de Epoch (mejor: ${mid.v ?? 'sin datos'} %). ${swe.v ? `El primero que lo alcanza se publicó el ${swe.v}.` : 'Ninguno lo alcanza todavía.'}` };
+      : { v: hit ? 'compatible' : 'retrasado', texto: hit ? `Un modelo publicado antes del plazo (${swe.model}) llega al 85 % en las ejecuciones de Epoch.` : `Ningún modelo publicado antes del 30 jun 2025 llega al 85 % en las ejecuciones de Epoch (mejor: ${mid.v ?? 'sin datos'} %). ${swe.v ? `El primero que lo alcanza se publicó el ${swe.v}.` : 'Ninguno lo alcanza todavía.'}${ind.bench?.sweBest?.v != null ? ` Hoy el mejor es ${ind.bench.sweBest.v} % (${ind.bench.sweBest.model}).` : ''}` };
   }
   const s = ind.eci?.series?.points;
   if (s) {
@@ -353,6 +373,11 @@ export async function collectIndicators(ctx, ep, prev) {
       const b = eciBlock(ep.rows, ctx);
       const byGroup = bestBy(ep.rows, r => r.group === 'Open weights' ? 'open' : r.group === 'Closed weights' ? 'closed' : null);
       b.agent0 = { closed: brief(byGroup('closed', '2025-12-31')), open: brief(byGroup('open', '2026-04-30')) };
+      // Plazos de AI 2027 sobre distancias: «rivales a 3–9 meses» (fin de 2025) y «China a unos 6 meses» (mediados de 2026).
+      const at = (keyOf, d, note) => { const st = standingAt(ep.rows, keyOf, d); return ctx.fact(st ? st.rivals[0].gap : null, 'epoch', PAGES.eci, d, { ...st, note }); };
+      b.rivals2025 = at(r => firstOrg(r.org), '2025-12-31', 'mejor modelo de cada laboratorio publicado hasta el 31 dic 2025; distancia del primero al segundo');
+      b.usCn2026 = at(r => countryCode(r.country), '2026-08-31', 'mejor modelo de una organización de EE. UU. y de una china publicado hasta el 31 ago 2026');
+      for (const f of [b.rivals2025, b.usCn2026]) if (f.lead) ctx.log(`ECI a ${f.date}: ${f.lead.org} ${f.lead.model} ${f.lead.eci} (${f.lead.date}) | ${f.rivals.map(r => `${r.key}: ${r.model} ${r.eci} (${r.date}), −${r.gap} pts, solapan ${r.overlap}, el líder llegó a ese nivel el ${r.leaderReached?.date ?? '—'} con ${r.leaderReached?.model ?? '—'}`).join(' | ')}`);
       return b;
     });
     await run('bench', 'epoch', () => benchBlock(ep.bench || [], ctx));

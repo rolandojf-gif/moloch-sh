@@ -102,6 +102,7 @@ if (a7) {
       for (const r of h.revisiones || []) { need(r, 'fecha', `${w}.revisiones`, DAYMONTH); need(r, 'url', `${w}.revisiones`, URL_RE); need(r, 'texto', `${w}.revisiones`); }
       for (const e of h.evidencia || []) {
         if (!EVID.includes(e.tipo)) errors.push(`${w}: tipo de evidencia no válido ${e.tipo}`);
+        if (e.momento && !['plazo', 'hoy'].includes(e.momento)) errors.push(`${w}: momento no válido ${e.momento}`);
         if (e.indicador) { if (!IND_KEY.test(e.indicador)) errors.push(`${w}: indicador no válido ${e.indicador}`); }
         else { need(e, 'texto', `${w}.evidencia`); need(e, 'url', `${w}.evidencia`, URL_RE); need(e, 'fecha', `${w}.evidencia`, DAYMONTH); }
       }
