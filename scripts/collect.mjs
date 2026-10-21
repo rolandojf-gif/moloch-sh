@@ -34,7 +34,8 @@ const NOW = new Date();
 const NOW_ISO = NOW.toISOString().replace(/\.\d{3}Z$/, 'Z');
 const TODAY = NOW_ISO.slice(0, 10);
 const WINDOW_DAYS = Number(process.env.WINDOW_DAYS || 540);   // antigüedad máxima en OpenRouter para entrar en el catálogo
-const NEW_DAYS = 14;                                           // «novedad» si no hay recogida anterior
+const NEW_DAYS = 14;                                           // altas recientes de autores no seguidos, para el registro
+const HOY_DAYS = 7;                                            // ventana de «Hoy»: modelos nuevos y acontecimientos de la última semana
 const PRICE_CHANGE_MIN = 0.05;                                 // cambios de precio por debajo del 5 % no se listan
 const FIXTURES = process.env.FIXTURES;
 const AA_KEY = process.env.AA_API_KEY || '';
@@ -131,6 +132,8 @@ async function loadOpenRouter(labs) {
   // Para responder a «¿por qué no aparece X?»: altas recientes que el catálogo descarta.
   if (untracked.length) log(`OpenRouter: altas de ${NEW_DAYS} días de autores no seguidos (curated/labs.json): ${untracked.join(', ')}`);
   if (orphan.length) log(`OpenRouter: modelos que sólo existen como variante (entran con el id base): ${orphan.join(', ')}`);
+  // Todo lo que OpenRouter sigue listando, aunque quede fuera de la ventana: salir de la ventana no es una retirada.
+  out.listed = new Set(all.map(m => baseId(m.id)));
   return out;
 }
 
@@ -376,14 +379,37 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
 
   const p = m.pricing || {};
   const params = m.supported_parameters || [];
-  const price = {
-    in: fact(perMillion(p.prompt), 'openrouter', orUrl),
-    out: fact(perMillion(p.completion), 'openrouter', orUrl),
-    cacheRead: fact(perMillion(p.input_cache_read), 'openrouter', orUrl),
-    cacheWrite: fact(perMillion(p.input_cache_write), 'openrouter', orUrl)
-  };
+  const fresh = speedFromEndpoints(endpoints);
+  // Precio: el del propio laboratorio en OpenRouter; si no sirve el modelo, el del proveedor más barato (mezcla 3:1), nombrado.
+  // El precio por modelo de OpenRouter es el de un proveedor de referencia que cambia de un día a otro: sólo se usa sin proveedores.
+  const own = new Set(lab.or_provider || []);
+  const priced = (fresh || []).filter(e => e.in !== null && e.out !== null);
+  const cheapest = rows => rows.slice().sort((a, b) => (3 * a.in + a.out) - (3 * b.in + b.out))[0] || null;
+  const labEp = cheapest(priced.filter(e => own.has(e.provider)));
+  const chosen = labEp || cheapest(priced);
+  let price;
+  if (chosen) {
+    const note = labEp ? `precio del propio laboratorio (${chosen.provider}) en OpenRouter` : `el laboratorio no lo sirve en OpenRouter: proveedor más barato, ${chosen.provider}`;
+    const u = `${orUrl}/providers`;
+    price = {
+      basis: labEp ? 'laboratorio' : 'proveedor', provider: chosen.provider,
+      in: fact(chosen.in, 'openrouter', u, TODAY, { note }),
+      out: fact(chosen.out, 'openrouter', u, TODAY, { note }),
+      cacheRead: fact(chosen.cacheRead ?? null, 'openrouter', u, TODAY, { note }),
+      cacheWrite: fact(null, 'openrouter', u)
+    };
+  } else {
+    const note = 'precio de referencia de OpenRouter; no se pudieron leer sus proveedores';
+    price = {
+      basis: 'referencia', provider: null,
+      in: fact(perMillion(p.prompt), 'openrouter', orUrl, TODAY, { note }),
+      out: fact(perMillion(p.completion), 'openrouter', orUrl, TODAY, { note }),
+      cacheRead: fact(perMillion(p.input_cache_read), 'openrouter', orUrl, TODAY, { note }),
+      cacheWrite: fact(perMillion(p.input_cache_write), 'openrouter', orUrl, TODAY, { note })
+    };
+  }
 
-  const eps = speedFromEndpoints(endpoints) ?? (prev && prev.endpoints ? prev.endpoints.map(e => ({ ...e, stale: true })) : null);
+  const eps = fresh ?? (prev && prev.endpoints ? prev.endpoints.map(e => ({ ...e, stale: true })) : null);
   const epsMeta = endpoints ? { src: 'openrouter', url: orUrl + '/providers', asOf: TODAY, got: NOW_ISO } : (prev && prev.endpointsMeta ? { ...prev.endpointsMeta, stale: true } : null);
 
   let aa = null;
@@ -447,29 +473,25 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
 }
 
 /* ── Diferencias con la última instantánea de un día anterior ──────────── */
-function diff(models, base) {
+function diff(models, base, listed) {
   const items = [];
   const prev = base ? base.models : null;
-  const cutoff = new Date(NOW.getTime() - NEW_DAYS * 86400e3).toISOString().slice(0, 10);
-  const orSrc = m => ({ name: 'OpenRouter', url: `https://openrouter.ai/${m.orVariant || m.id}`, got: NOW_ISO });
   const baseHasAA = !!prev && Object.values(prev).some(p => p.ii !== null && p.ii !== undefined);
+  const delta = (a, b) => a > 0 ? (b - a) / a : (b > 0 ? 1 : 0);
 
   for (const m of models) {
     const p = prev ? prev[m.id] : undefined;
-    if (!p) {
-      // Sin instantánea previa sólo cuentan las altas recientes; con ella, un alta antigua indica un laboratorio o ventana nuevos, no un lanzamiento.
-      if (!m.orCreated.v || m.orCreated.v < cutoff) continue;
-      items.push({ kind: 'nuevo', model: m.id, date: m.orCreated.v, src: orSrc(m),
-        what: `${m.name} (${m.lab.name}) aparece en el catálogo de OpenRouter${m.orVariant ? `, de momento sólo como variante ${m.orVariant.slice(m.orVariant.lastIndexOf(':'))}` : ''}.`,
-        data: { weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, ii: m.aa?.intelligence?.v ?? null, eci: m.epoch?.eci?.v ?? null, identity: m.identity } });
-      continue;
-    }
-    for (const k of ['in', 'out']) {
-      const a = p[k], b = m.price[k].v;
-      if (a > 0 && b !== null && Math.abs(b - a) / a >= PRICE_CHANGE_MIN) {
-        items.push({ kind: 'precio', model: m.id, date: TODAY, src: orSrc(m),
-          what: `${m.name}: el precio de ${k === 'in' ? 'entrada' : 'salida'} pasa de ${money(a)} a ${money(b)} por millón de tokens.`,
-          data: { field: k, from: a, to: b, pct: Math.round((b - a) / a * 1000) / 10, since: base.date } });
+    if (!p) continue;   // las altas salen de la fecha de OpenRouter (novedades()), no de la comparación
+    // Precio: sólo el del propio laboratorio, comparado con su precio de la recogida anterior; una línea por modelo.
+    if (p.pb === 'laboratorio' && m.price.basis === 'laboratorio' && p.in !== null && p.out !== null && m.price.in.v !== null && m.price.out.v !== null) {
+      const ci = delta(p.in, m.price.in.v), co = delta(p.out, m.price.out.v);
+      if (Math.max(Math.abs(ci), Math.abs(co)) >= PRICE_CHANGE_MIN) {
+        const ba = (3 * p.in + p.out) / 4, bb = (3 * m.price.in.v + m.price.out.v) / 4;
+        const verb = bb > ba ? 'sube' : bb < ba ? 'baja' : 'cambia';
+        const part = (k, a, b) => a === b ? `${k} sin cambio (${money(a)})` : `${k} de ${money(a)} a ${money(b)}`;
+        items.push({ kind: 'precio', model: m.id, date: TODAY, src: { name: 'OpenRouter', url: `https://openrouter.ai/${m.orVariant || m.id}/providers`, got: NOW_ISO },
+          what: `${m.price.provider} ${verb} el precio de ${m.name} en OpenRouter: ${part('entrada', p.in, m.price.in.v)} y ${part('salida', p.out, m.price.out.v)} por millón de tokens.`,
+          data: { basis: 'laboratorio', provider: m.price.provider, from: { in: p.in, out: p.out }, to: { in: m.price.in.v, out: m.price.out.v }, pct: Math.round(delta(ba, bb) * 1000) / 10, since: base.date } });
       }
     }
     if (p.w !== 'o' && m.weights.v === 'abiertos') {
@@ -479,19 +501,19 @@ function diff(models, base) {
     const pb = m.epoch?.eci?.v;
     if ((p.eci === null || p.eci === undefined) && pb !== null && pb !== undefined) {
       items.push({ kind: 'evaluacion', model: m.id, date: TODAY, src: { name: 'Epoch AI', url: SOURCES.epoch.url, got: NOW_ISO },
-        what: `${m.name}: primera puntuación en el índice ECI de Epoch AI (${pb}).`, data: { eci: pb } });
+        what: `${m.name}: primera puntuación en el índice ECI de Epoch AI (${pb}).`, data: { field: 'eci', eci: pb } });
     }
     // Primera puntuación de AA, sólo si la recogida anterior ya traía datos de AA (si no, todos los modelos serían «nuevos» en AA).
     const qa = m.aa?.intelligence?.v;
     if (baseHasAA && (p.ii === null || p.ii === undefined) && qa !== null && qa !== undefined) {
       items.push({ kind: 'evaluacion', model: m.id, date: TODAY, src: { name: 'Artificial Analysis', url: m.aa.url, got: NOW_ISO },
-        what: `${m.name}: primera puntuación en el índice de inteligencia de Artificial Analysis (${qa}${m.aa.version ? `, v${m.aa.version}` : ''}).`, data: { ii: qa } });
+        what: `${m.name}: primera puntuación en el índice de inteligencia de Artificial Analysis (${qa}${m.aa.version ? `, v${m.aa.version}` : ''}).`, data: { field: 'ii', ii: qa } });
     }
   }
   if (prev) {
     const now = new Set(models.map(m => m.id));
     for (const [id, p] of Object.entries(prev)) {
-      if (!now.has(id)) items.push({ kind: 'retirada', model: id, date: TODAY, src: { name: 'OpenRouter', url: 'https://openrouter.ai/models', got: NOW_ISO },
+      if (!now.has(id) && !listed.has(id)) items.push({ kind: 'retirada', model: id, date: TODAY, src: { name: 'OpenRouter', url: 'https://openrouter.ai/models', got: NOW_ISO },
         what: `${p.n || id} deja de figurar en el catálogo de OpenRouter.`, data: { name: p.n || null } });
     }
   }
@@ -514,13 +536,22 @@ function leaders(models, version) {
   };
 }
 
+/* Modelos dados de alta en OpenRouter en la ventana de «Hoy», con la fecha de alta. */
+function novedades(models, cutoff) {
+  return models.filter(m => m.orCreated.v && m.orCreated.v >= cutoff).map(m => ({
+    kind: 'nuevo', model: m.id, date: m.orCreated.v, src: { name: 'OpenRouter', url: `https://openrouter.ai/${m.orVariant || m.id}`, got: NOW_ISO },
+    what: `${m.name} (${m.lab.name}) aparece en el catálogo de OpenRouter${m.orVariant ? `, de momento sólo como variante ${m.orVariant.slice(m.orVariant.lastIndexOf(':'))}` : ''}.`,
+    data: { weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, ii: m.aa?.intelligence?.v ?? null, eci: m.epoch?.eci?.v ?? null, identity: m.identity }
+  }));
+}
+
 function snapshot(models) {
   const out = {};
   for (const m of models) {
     out[m.id] = {
       n: m.name,
       w: m.weights.v === 'abiertos' ? 'o' : m.weights.v === 'cerrados' ? 'c' : null,
-      in: m.price.in.v, out: m.price.out.v,
+      in: m.price.in.v, out: m.price.out.v, pb: m.price.basis, pp: m.price.provider,
       eci: m.epoch?.eci?.v ?? null, swe: m.epoch?.swe?.v ?? null,
       ii: m.aa?.intelligence?.v ?? null
     };
@@ -628,7 +659,7 @@ async function main() {
   };
   await writeFile(path.join(DATA, 'history', `${TODAY}.json`), JSON.stringify(snap) + '\n');
   if (!histFiles.includes(`${TODAY}.json`)) histFiles.push(`${TODAY}.json`);
-  const changeItems = diff(models, base);
+  const changeItems = diff(models, base, orModels.listed);
   const baseDate = base ? base.date : null;
 
   const catalog = {
@@ -641,6 +672,7 @@ async function main() {
     method: {
       capability: `En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index${aaVersion ? ` v${aaVersion}` : ''}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.`,
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',
+      price: 'Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado. El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio.',
       weights: '«Abiertos» exige un repositorio público en Hugging Face enlazado por OpenRouter. Sin enlace, «cerrados». La licencia procede de la ficha de Hugging Face.',
       speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la espera inicial incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
       window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días.`
@@ -661,13 +693,21 @@ async function main() {
   // Registro acumulado de acontecimientos detectados (precio, pesos, retiradas, primeras evaluaciones)
   const logPath = path.join(DATA, 'events-log.json');
   const evLog = await readJSON(logPath, { _doc: 'Acontecimientos detectados por el recolector al comparar recogidas sucesivas. Generado; no editar a mano.', events: [] });
+  // Los cambios de precio anteriores al 21 oct 2026 comparaban el precio de referencia de OpenRouter, que salta entre proveedores: se descartan.
+  evLog.events = evLog.events.filter(e => e.kind !== 'precio' || e.data?.basis === 'laboratorio');
+  // Tampoco son retiradas los modelos que OpenRouter sigue listando y sólo salieron de la ventana de antigüedad.
+  evLog.events = evLog.events.filter(e => e.kind !== 'retirada' || !orModels.listed.has(e.model));
   const keyOf = e => [e.kind, e.model, e.date, e.data?.field || ''].join('|');
   const known = new Set(evLog.events.map(keyOf));
   for (const e of changeItems) if (e.kind !== 'nuevo' && !known.has(keyOf(e))) { evLog.events.push(e); known.add(keyOf(e)); }
   evLog.events.sort((a, b) => b.date.localeCompare(a.date));
   await writeFile(logPath, JSON.stringify(evLog, null, 1) + '\n');
-  await writeFile(path.join(DATA, 'changes.json'), JSON.stringify({ generated: NOW_ISO, since: baseDate, items: changeItems }, null, 1) + '\n');
-  log(`escrito: ${models.length} modelos (${models.filter(m => m.epoch?.eci?.v).length} con ECI), ${changeItems.length} cambios, AA ${status.aa.ok ? 'ok' : status.aa.reason}`);
+  // «Hoy»: altas de la última semana más los acontecimientos registrados en ella.
+  const hoyFrom = new Date(NOW.getTime() - (HOY_DAYS - 1) * 86400e3).toISOString().slice(0, 10);
+  // Un acontecimiento entra por su fecha o por la de su detección (unos pesos publicados hace semanas pero detectados hoy).
+  const hoyItems = novedades(models, hoyFrom).concat(evLog.events.filter(e => e.date >= hoyFrom || (e.src?.got || '').slice(0, 10) >= hoyFrom));
+  await writeFile(path.join(DATA, 'changes.json'), JSON.stringify({ generated: NOW_ISO, window: HOY_DAYS, since: hoyFrom, base: baseDate, items: hoyItems }, null, 1) + '\n');
+  log(`escrito: ${models.length} modelos (${models.filter(m => m.epoch?.eci?.v).length} con ECI), ${changeItems.length} acontecimientos nuevos, ${hoyItems.length} en la ventana de Hoy, AA ${status.aa.ok ? 'ok' : status.aa.reason}`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

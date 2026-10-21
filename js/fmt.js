@@ -77,6 +77,10 @@ export function provLine(s) {
 export const COUNTRY = { US: 'EE. UU.', CN: 'China', FR: 'Francia', CA: 'Canadá', IL: 'Israel', GB: 'Reino Unido', DE: 'Alemania', JP: 'Japón', KR: 'Corea del Sur', AE: 'EAU' };
 export const country = c => c ? (COUNTRY[c] || c) : 'sin confirmar';
 
+/* Quién fija el precio mostrado: el propio laboratorio en OpenRouter o, si no lo sirve, el proveedor más barato. Texto sin escapar. */
+export const priceBasis = m => m.price?.basis === 'laboratorio' ? `precio de ${m.price.provider}`
+  : m.price?.basis === 'proveedor' ? `proveedor más barato: ${m.price.provider}`
+  : m.price?.basis === 'referencia' ? 'precio de referencia de OpenRouter' : null;
 /* Precio combinado 3:1 (convención de Artificial Analysis), a partir de los precios de OpenRouter. */
 export function blended(m) {
   const i = m.price?.in?.v, o = m.price?.out?.v;

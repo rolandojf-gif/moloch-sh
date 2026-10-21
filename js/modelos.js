@@ -1,5 +1,5 @@
 /* Vista «Modelos»: comparador, ficha desplegable, comparación de hasta tres y evolución de la frontera. */
-import { esc, fact, src, usd, num, tokens, fmtDate, country, blended, ii, coding, agentic, eci, swe, aaConfig, aaIndexName, speed, ND, AA_LINK } from './fmt.js';
+import { esc, fact, src, usd, num, tokens, fmtDate, country, blended, ii, coding, agentic, eci, swe, aaConfig, aaIndexName, speed, priceBasis, ND, AA_LINK } from './fmt.js';
 import { frontier } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -58,7 +58,7 @@ function detail(m) {
     ['Contexto', fact(m.ctx, v => tokens(v) + ' tokens')],
     ['Razonamiento', fact(m.reasoning, yesNo)],
     ['Caché (lectura)', m.price.cacheRead.v !== null ? usd(m.price.cacheRead.v) + ' / M' + src(m.price.cacheRead) : ND + src(m.price.cacheRead)],
-    ['Precio combinado 3:1', blended(m) !== null ? usd(blended(m)) + ' / M' + src(m.price.in) : ND],
+    ['Precio combinado 3:1', blended(m) !== null ? usd(blended(m)) + ' / M' + src(m.price.in) + (priceBasis(m) ? `<span class="m-sub">${esc(priceBasis(m))}</span>` : '') : ND],
     ['Alta en OpenRouter', fact(m.orCreated, v => fmtDate(v))],
     ['Repositorio de pesos', m.hfCreated ? fact(m.hfCreated, v => fmtDate(v)) : ND],
     ['Inteligencia (Artificial Analysis)', aa ? `${fact(aa.intelligence, v => num(v))}<span class="m-sub">${esc(aaIndexName(aa.version))} · como <a href="${esc(aa.url)}" target="_blank" rel="noopener">«${esc(aa.name)}»</a> en AA${aa.how && aa.how !== 'nombre exacto' ? ` (${esc(aa.how)})` : ''}</span>` : 'sin puntuación en Artificial Analysis todavía'],
@@ -103,7 +103,7 @@ function renderTable() {
       <td class="num" data-label="Inteligencia (AA)">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfig(m) ? `<span class="m-sub">${esc(aaConfig(m))}</span>` : ''}` : ND}</td>
       <td class="num" data-label="ECI (Epoch)">${m.epoch ? fact(m.epoch.eci, v => num(v)) : ND}</td>
       <td class="num" data-label="Velocidad">${speedCell(m)}</td>
-      <td class="num" data-label="Entrada / salida">${fact(m.price.in, usd)}<span class="m-sub">${fact(m.price.out, usd)}</span></td>
+      <td class="num" data-label="Entrada / salida">${fact(m.price.in, usd)}<span class="m-sub">${fact(m.price.out, usd)}</span>${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? ', el más barato' : ''}</span>` : ''}</td>
     </tr>${open ? `<tr class="detail"><td colspan="7">${detail(m)}</td></tr>` : ''}`;
   }).join('');
 }

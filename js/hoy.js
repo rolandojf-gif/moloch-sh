@@ -1,9 +1,11 @@
 /* Vista «Hoy»: qué ha cambiado, cuatro indicadores y capacidad frente a precio. */
-import { esc, fact, src, provLine, usd, num, fmtDate, blended, ii, capFact, eci, aaConfig, aaIndexName, ND, AA_LINK } from './fmt.js';
+import { esc, fact, src, provLine, usd, num, fmtDate, blended, ii, capFact, eci, aaConfig, aaIndexName, priceBasis, ND, AA_LINK } from './fmt.js';
 import { scatter } from './charts.js';
 
 const $ = s => document.querySelector(s);
-const KIND = { nuevo: 'Nuevo modelo', pesos: 'Pesos abiertos', precio: 'Cambio de precio', evaluacion: 'Evaluación independiente', retirada: 'Retirada' };
+const KIND = { nuevo: 'Nuevo modelo', pesos: 'Pesos abiertos', precio: 'Precio del laboratorio', evaluacion: 'Evaluación independiente', retirada: 'Retirada' };
+/* Orden de las tarjetas: modelos nuevos, evaluaciones y pesos antes que precios y retiradas. */
+const TIER = { nuevo: 0, evaluacion: 0, pesos: 0, precio: 1, retirada: 2 };
 const GAPS = [5, 10, 15];
 const blendSnap = s => (s && s.in !== null && s.out !== null && s.in !== undefined && s.out !== undefined) ? (3 * s.in + s.out) / 4 : null;
 
@@ -14,7 +16,7 @@ function leader(models, w) {
   return scored(models).filter(m => m.weights.v === w).sort((a, b) => ii(b) - ii(a))[0] || null;
 }
 
-/* Relevancia, para ordenar los cambios de una misma fecha: pesos y modelos evaluados primero; cambios de precio según su tamaño; retiradas al final. */
+/* Relevancia, para desempatar acontecimientos de un mismo grupo y fecha: pesos y modelos evaluados primero; precios según su tamaño. */
 function relevance(item, byId) {
   const m = byId.get(item.model);
   switch (item.kind) {
@@ -56,7 +58,7 @@ function consequence(item, d) {
   }
   if (item.kind === 'precio') {
     const pct = item.data.pct;
-    parts.push(`${pct < 0 ? 'Baja' : 'Sube'} un ${num(Math.abs(pct))} % desde la recogida del ${fmtDate(item.data.since)}.`);
+    parts.push(`El precio combinado ${pct < 0 ? 'baja' : 'sube'} un ${num(Math.abs(pct))} % respecto a la recogida del ${fmtDate(item.data.since)}.`);
   }
   if (item.kind === 'nuevo' || item.kind === 'precio') {
     const b = blended(m);
@@ -70,17 +72,23 @@ function consequence(item, d) {
 }
 
 function renderNews(d) {
-  // Lo más reciente primero: un modelo de hace dos semanas con puntuación no debe tapar el de ayer que aún no la tiene.
-  const items = (d.changes.items || []).slice().sort((a, b) => (b.date || '').localeCompare(a.date || '') || relevance(b, d.byId) - relevance(a, d.byId));
-  $('#hoy-period').innerHTML = d.changes.since
-    ? `Cambios entre la recogida del ${esc(fmtDate(d.changes.since))} y la del ${esc(fmtDate(d.catalog.generated))}.`
-    : `Primera recogida: se listan las altas de los últimos 14 días en OpenRouter, de la más reciente a la más antigua. Los cambios de precio se detectan a partir de la siguiente.`;
+  // Tarjetas: primero modelos nuevos, evaluaciones y pesos, del más reciente al más antiguo; después precios y retiradas.
+  // Lista completa: cronológica, lo más reciente primero.
+  const byDate = (a, b) => (b.date || '').localeCompare(a.date || '');
+  const all = (d.changes.items || []).slice();
+  const cards = all.slice().sort((a, b) => (TIER[a.kind] ?? 3) - (TIER[b.kind] ?? 3) || byDate(a, b) || relevance(b, d.byId) - relevance(a, d.byId));
+  const items = all.sort((a, b) => byDate(a, b) || (TIER[a.kind] ?? 3) - (TIER[b.kind] ?? 3) || relevance(b, d.byId) - relevance(a, d.byId));
+  const days = d.changes.window || 7;
+  $('#hoy-period').innerHTML = `Últimos ${days} días, desde el ${esc(fmtDate(d.changes.since))}: modelos nuevos en OpenRouter, primeras puntuaciones, pesos abiertos, cambios de precio del propio laboratorio y retiradas.`;
   if (!items.length) {
-    $('#hoy-news').innerHTML = `<div class="empty">Sin cambios relevantes${d.changes.since ? ` desde el ${esc(fmtDate(d.changes.since))}` : ''}. Ningún modelo nuevo, cambio de precio de al menos un 5 %, pesos nuevos ni retiradas en los laboratorios seguidos.</div>`;
+    $('#hoy-news').innerHTML = `<div class="empty">Nada en los últimos ${days} días: ningún modelo nuevo, primera puntuación, pesos nuevos, cambio de precio del laboratorio de al menos un 5 % ni retirada en los laboratorios seguidos.</div>`;
     $('#hoy-all').hidden = true;
     return;
   }
-  $('#hoy-news').innerHTML = items.slice(0, 3).map(it => `
+  // Una tarjeta por modelo: un modelo nuevo con su primera puntuación no ocupa dos.
+  const seen = new Set();
+  const top = cards.filter(it => !seen.has(it.model) && seen.add(it.model)).slice(0, 3);
+  $('#hoy-news').innerHTML = top.map(it => `
     <article class="news-card">
       <span class="tag k-${esc(it.kind)}">${esc(KIND[it.kind] || it.kind)}</span>
       <h3>${esc(d.byId.get(it.model)?.name || it.data?.name || it.model)}</h3>
@@ -88,11 +96,13 @@ function renderNews(d) {
       <p><span class="lbl">Qué cambia</span>${consequence(it, d)}</p>
       ${provLine({ ...it.src, date: it.date })}
     </article>`).join('');
-  const all = $('#hoy-all');
-  all.hidden = items.length <= 3;
-  all.querySelector('summary').textContent = `Ver todos los cambios (${items.length})`;
+  const more = $('#hoy-all');
+  more.hidden = items.length <= top.length;
+  more.querySelector('summary').textContent = `Ver todo lo ocurrido en ${days} días (${items.length})`;
   $('#hoy-all-list').innerHTML = items.map(it => `<li><span>${esc(fmtDate(it.date))}</span><span><b>${esc(KIND[it.kind] || it.kind)}.</b> ${esc(it.what)}</span>${provLine(it.src)}</li>`).join('');
 }
+
+const priceBy = m => priceBasis(m) ? `, ${esc(priceBasis(m))}` : '';
 
 function cheapestAbove(rows, T, getII, getPrice) {
   return rows.filter(r => getII(r) !== null && getII(r) >= T && getPrice(r) !== null && getPrice(r) > 0)
@@ -140,8 +150,10 @@ function renderKPIs(d, gapPts) {
     const best = cheapestAbove(scored(models), T, ii, blended);
     const bestOpen = cheapestAbove(scored(models).filter(m => m.weights.v === 'abiertos'), T, ii, blended);
     let delta = '';
-    if (prev) {
-      const rows = Object.entries(prev.models).map(([id, s]) => ({ id, ...s }));
+    // Sólo se compara con recogidas que ya usaban el mismo criterio de precio (propio laboratorio o proveedor más barato).
+    const prevRows = prev ? Object.entries(prev.models).map(([id, s]) => ({ id, ...s })) : [];
+    if (prevRows.some(r => r.pb)) {
+      const rows = prevRows.filter(r => r.pb);
       const pb = cheapestAbove(rows, T, r => r.ii ?? null, blendSnap);
       if (pb && best) {
         const ch = (blended(best) - blendSnap(pb)) / blendSnap(pb) * 100;
@@ -151,13 +163,13 @@ function renderKPIs(d, gapPts) {
     const sel = `<label>umbral <select id="kpi-pct">${GAPS.map(g => `<option value="${g}"${g === gapPts ? ' selected' : ''}>líder − ${g} pts</option>`).join('')}</select></label>`;
     costCard = `<div class="kpi"><span class="k">Coste con capacidad comparable</span>
       <span class="v">${best ? usd(blended(best)) + src(best.price.in) : ND}</span>
-      <span class="s">${best ? `${esc(best.name)}: el más barato con índice AA ≥ ${num(T)}, precio combinado por millón.` : `Ningún modelo con índice AA ≥ ${num(T)} tiene precio.`}${bestOpen && bestOpen !== best ? ` Abierto más barato: ${esc(bestOpen.name)}, ${usd(blended(bestOpen))}.` : ''}${delta}</span>${sel}</div>`;
+      <span class="s">${best ? `${esc(best.name)}: el más barato con índice AA ≥ ${num(T)}, precio combinado por millón${priceBy(best)}.` : `Ningún modelo con índice AA ≥ ${num(T)} tiene precio.`}${bestOpen && bestOpen !== best ? ` Abierto más barato: ${esc(bestOpen.name)}, ${usd(blended(bestOpen))}.` : ''}${delta}</span>${sel}</div>`;
   } else {
     costCard = `<div class="kpi"><span class="k">Coste con capacidad comparable</span><span class="v">${ND}</span><span class="s">${reason || 'Sin modelos con índice.'}</span></div>`;
   }
 
   $('#hoy-kpis').innerHTML = leadCard(lo, 'open', 'Líder abierto', prevAA?.open) + leadCard(lc, 'closed', 'Líder cerrado', prevAA?.closed) + gapCard + costCard;
-  $('#hoy-kpi-note').innerHTML = `Líderes calculados entre los modelos que se pueden usar por API en OpenRouter y tienen puntuación en el ${esc(aaIndexName(ver))}. Datos de ${AA_LINK}, publicados con su permiso. De cada modelo se toma la configuración de razonamiento de mayor índice. Umbral de capacidad comparable: índice del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con precios de OpenRouter.`;
+  $('#hoy-kpi-note').innerHTML = `Líderes calculados entre los modelos que se pueden usar por API en OpenRouter y tienen puntuación en el ${esc(aaIndexName(ver))}. Datos de ${AA_LINK}, publicados con su permiso. De cada modelo se toma la configuración de razonamiento de mayor índice. Umbral de capacidad comparable: índice del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con el precio que cobra el propio laboratorio en OpenRouter o, si no lo sirve él, el del proveedor más barato, que se indica.`;
   $('#kpi-pct')?.addEventListener('change', e => { renderKPIs(d, Number(e.target.value)); renderScatter(d, Number(e.target.value)); });
 }
 
@@ -189,7 +201,7 @@ function renderScatter(d, gapPts) {
   }
   if (best) bits.push(`Por encima del umbral de ${num(T)} puntos del índice AA, la opción más barata es ${esc(best.name)} (${best.weights.v === 'abiertos' ? 'abierto' : 'cerrado'}), a ${usd(blended(best))} por millón.`);
   if (excluded) bits.push(`${excluded} modelo${excluded > 1 ? 's' : ''} con índice pero sin precio positivo no aparece${excluded > 1 ? 'n' : ''} en el gráfico.`);
-  $('#hoy-reading').innerHTML = `<span class="lbl">Lectura automática a partir de las cifras</span>${bits.join(' ')}<span class="m-sub">Capacidad: ${esc(aaIndexName(d.catalog.aaIndexVersion))}, datos de ${AA_LINK}. Precio: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>.</span>`;
+  $('#hoy-reading').innerHTML = `<span class="lbl">Lectura automática a partir de las cifras</span>${bits.join(' ')}<span class="m-sub">Capacidad: ${esc(aaIndexName(d.catalog.aaIndexVersion))}, datos de ${AA_LINK}. Precio: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>, el del propio laboratorio o, si no lo sirve, el del proveedor más barato.</span>`;
 }
 
 export function renderHoy(d) {

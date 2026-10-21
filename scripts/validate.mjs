@@ -28,6 +28,8 @@ for (const m of c.models || []) {
   if (m.aa) for (const k of ['intelligence', 'coding', 'agentic', 'tps', 'ttft', 'release']) if (m.aa[k] !== undefined) checkFact(m.aa[k], `${w}.aa.${k}`);
   if (m.aa && !c.sources?.aa?.permiso) errors.push(`${w}: datos de Artificial Analysis sin permiso registrado en data/curated/permisos.json`);
   if (m.price?.in?.v > 1000 || m.price?.out?.v > 1000) errors.push(`${w}: precio fuera de rango`);
+  if (!['laboratorio', 'proveedor', 'referencia'].includes(m.price?.basis)) errors.push(`${w}: criterio de precio no permitido ${m.price?.basis}`);
+  if (m.price?.basis !== 'referencia' && !m.price?.provider) errors.push(`${w}: precio sin proveedor indicado`);
 }
 for (const e of c.curatedEvents || []) if (!e.url) errors.push(`evento curado sin URL: ${e.title || e.model}`);
 

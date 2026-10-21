@@ -19,15 +19,15 @@ Ninguna cifra está escrita a mano en el código. `scripts/collect.mjs` consulta
 | Archivo | Contenido |
 | --- | --- |
 | `data/catalog.json` | Catálogo actual. Cada cifra es `{ v, src, url, asOf, got }`: valor, fuente, enlace, fecha del dato y fecha de consulta. |
-| `data/changes.json` | Diferencias con la última recogida de un día anterior. |
-| `data/events-log.json` | Registro acumulado de cambios de precio, pesos nuevos, retiradas y primeras evaluaciones. |
+| `data/changes.json` | Lo que muestra «Hoy»: los últimos 7 días de modelos nuevos, primeras puntuaciones, pesos abiertos, cambios de precio del propio laboratorio y retiradas. |
+| `data/events-log.json` | Registro acumulado de cambios de precio del propio laboratorio, pesos nuevos, retiradas y primeras evaluaciones. |
 | `data/history/AAAA-MM-DD.json` | Instantánea diaria compacta para las series históricas (incluye los indicadores). |
 | `data/indicadores.json` | Indicadores agregados de «La carrera» y «AI 2027» con la misma forma de hecho, el estado de cada fuente y el resultado de las reglas de valoración (`checks`). |
 | `data/curated/*.json` | Lo único que se edita a mano: laboratorios seguidos (con país), emparejamientos con Epoch, Hugging Face y AA, ids de creador de AA, permisos de fuentes, anuncios con URL, los frentes de `carrera.json` y los hitos de `ai2027.json`. |
 
 Fuentes:
 
-- **OpenRouter** (`/api/v1/models` y `/endpoints`, sin clave): precios, contexto, proveedores, velocidad y espera por proveedor, enlace a pesos. Entran los modelos de los laboratorios de `data/curated/labs.json`, por su variante base; si OpenRouter sólo ofrece una variante (por ejemplo `:free`), ésa representa al modelo. El registro de cada recogida lista las altas recientes que se quedan fuera.
+- **OpenRouter** (`/api/v1/models` y `/endpoints`, sin clave): precios, contexto, proveedores, velocidad y espera por proveedor, enlace a pesos. Entran los modelos de los laboratorios de `data/curated/labs.json`, por su variante base; si OpenRouter sólo ofrece una variante (por ejemplo `:free`), ésa representa al modelo. El registro de cada recogida lista las altas recientes que se quedan fuera. El precio de cada modelo es el que cobra el propio laboratorio en OpenRouter (proveedores en `or_provider` de `labs.json`); si no lo sirve él, el del proveedor más barato, que se nombra. No se usa el precio de nivel de modelo de OpenRouter, porque cambia de proveedor de referencia de un día a otro.
 - **Hugging Face** (`/api/models`, sin clave): existencia del repositorio de pesos, licencia y fecha.
 - **Epoch AI** (`eci_scores.csv` y `benchmarks.csv`, sin clave, CC BY 4.0): capacidad con el Epoch Capabilities Index y su intervalo, programación con las ejecuciones propias de Epoch de SWE-bench Verified, fecha del modelo, clasificación de apertura y la frontera abierta/cerrada por fecha. Cita: Epoch AI, ‘Capabilities & benchmarking’, epoch.ai.
 - **Epoch AI, otros conjuntos** (CSV, sin clave, CC BY 4.0): centros de datos y sus calendarios de potencia, ventas de chips de IA por fabricante y diseñador, e ingresos y uso declarados por las empresas. Son estimaciones de Epoch a partir de fuentes públicas; el recolector no las corrige.
