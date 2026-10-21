@@ -105,9 +105,12 @@ button { cursor: pointer; }
   font: 600 12px/1.4 var(--f-mono); border-bottom: 2px solid #000;
 }
 .freshness b { color: var(--lime); font-weight: 700; }
+.freshness .refresh { margin-left: auto; color: var(--lime); font-weight: 700; text-decoration: none; border: 1px solid var(--lime); padding: 1px 8px; }
+.freshness .refresh:hover { background: var(--lime); color: #121211; }
 .freshness .st-ok { color: #34D399; }
 .freshness .st-warn { color: #FBBF24; }
 .freshness .st-bad { color: #FF5C7A; }
+.freshness .st-ok a, .freshness .st-bad a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
 /* ── Vistas ───────────────────────────────────────────────────────────── */
 main { max-width: 1280px; margin: 0 auto; padding: 28px 24px 56px; }
@@ -150,7 +153,7 @@ h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orang
 /* Indicadores */
 .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
 .kpi { background: var(--card); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); padding: 14px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-.kpi .k { font: 700 11px var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.kpi .k { display: block; width: fit-content; font: 700 15px/1.25 var(--f-head); color: var(--text); padding-left: 9px; border-left: 4px solid var(--orange); }
 .kpi .v { font: 700 30px/1.05 var(--f-head); letter-spacing: -.02em; overflow-wrap: anywhere; }
 .kpi .v.small { font-size: 21px; }
 .kpi .s { font-size: 13px; color: var(--muted); }
@@ -186,8 +189,8 @@ h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orang
 /* Barras, columnas e intervalos */
 .chart .bar-bg { fill: transparent; }
 .chart .bar.hot .bar-bg, .chart .ci-row.hot .bar-bg { fill: rgba(204, 255, 0, .16); }
-.chart .bar-l { fill: var(--text); font: 500 12.5px var(--f-body); }
-.chart .bar-n { fill: var(--text); font: 600 11.5px var(--f-mono); }
+.chart .bar-l { fill: var(--text); font: 500 14.5px var(--f-body); }
+.chart .bar-n { fill: var(--text); font: 600 13.5px var(--f-mono); }
 .chart .bar-v { fill: var(--ink); }
 .chart .bar.us .bar-v { fill: var(--orange); }
 .chart .bar.cn .bar-v { fill: var(--open); }
@@ -272,6 +275,7 @@ table.mx tr.row[aria-expanded="true"] td { background: rgba(204, 255, 0, .2); bo
 .w.abiertos { background: var(--open); color: #fff; }
 .w.cerrados { background: var(--closed); color: #121211; }
 .w.nd { background: var(--card-2); color: var(--muted); }
+.w.cerrados.inf { background: var(--card-2); color: var(--text); border-style: dashed; border-color: var(--closed); }
 .big { font: 700 17px var(--f-head); }
 tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 22px; }
@@ -304,6 +308,7 @@ tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .stage .lbl { display: block; font: 700 10px var(--f-mono); text-transform: uppercase; color: var(--muted); }
 .stage.yes { border-color: var(--ink); background: var(--card-2); }
 .stage.no { color: var(--muted); }
+.stages-no { margin-top: 6px; font: 500 12px var(--f-mono); color: var(--muted); }
 .rel .extra { font-size: 13.5px; margin-top: 6px; }
 .rel.evt { grid-template-columns: 96px minmax(0, 1fr); box-shadow: none; border-style: dashed; }
 

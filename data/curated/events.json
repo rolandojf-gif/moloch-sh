@@ -1,4 +1,622 @@
 {
-  "_doc": "Acontecimientos que el recolector no puede deducir: anuncios, previews restringidas, retiradas. Cada entrada exige 'url' de la fuente primaria (anuncio del laboratorio, documentación o repositorio). Tipos: anuncio | preview | api | pesos | precio | retirada. 'model' es el id de OpenRouter si existe. 'delta' resume qué aporta frente a la versión anterior, según la fuente.",
-  "events": []
+  "_doc": "Acontecimientos que el recolector no puede deducir: anuncios, previews restringidas, retiradas. Cada entrada exige 'url' de la fuente primaria (anuncio del laboratorio, documentación o repositorio). Tipos: anuncio | preview (acceso restringido a organizaciones o personas seleccionadas) | producto (solo dentro de productos o suscripciones del laboratorio, sin API) | api | pesos | precio | retirada. 'model' es el id de OpenRouter si existe. 'delta' resume qué aporta frente a la versión anterior, según la fuente.",
+  "events": [
+    {
+      "model": "anthropic/claude-fable-5.1",
+      "type": "anuncio",
+      "date": "2026-09-01",
+      "url": "https://www.anthropic.com/claude-fable-and-mythos-5-1",
+      "fuente": "Anthropic, «Introducing Claude Fable 5.1 and Claude Mythos 5.1» (la página solo indica «September 2026»; el día 1 sale de las notas de versión de platform.claude.com)",
+      "verificacion": "lectura directa",
+      "consulta": "2026-10-21",
+      "delta": "Mejora a Fable 5 en programación, trabajo de conocimiento y tareas largas (Terminal-Bench 4.0: 55,8% frente a 42,0%) y abarata un 75% las lecturas de caché, con el mismo precio base."
+    },
+    {
+      "model": "anthropic/claude-haiku-5.5",
+      "type": "anuncio",
+      "date": "2026-10-07",
+      "url": "https://www.anthropic.com/claude-haiku-5-5",
+      "fuente": "Anthropic, «Introducing Claude Haiku 5.5»",
+      "verificacion": "lectura directa",
+      "consulta": "2026-10-21",
+      "delta": "Cuesta de media un 75% menos que Haiku 4.5, es el primer Haiku con ajuste de esfuerzo y mejora mucho en las pruebas (OSWorld 2.1 offline: del 15,7% al 72,4%)."
+    },
+    {
+      "model": "anthropic/claude-opus-5",
+      "type": "anuncio",
+      "date": "2026-07-24",
+      "url": "https://www.anthropic.com/news/claude-opus-5",
+      "fuente": "Anthropic, «Introducing Claude Opus 5»",
+      "verificacion": "lectura directa",
+      "consulta": "2026-10-21",
+      "delta": "Rendimiento muy superior al de Opus 4.8 al mismo precio ($5/$25 por millón de tokens); en Frontier-Bench v0.1 duplica con creces el resultado de Opus 4.8."
+    },
+    {
+      "model": "anthropic/claude-opus-5.5",
+      "type": "anuncio",
+      "date": "2026-09-22",
+      "url": "https://www.anthropic.com/claude-opus-5-5",
+      "fuente": "Anthropic, «Introducing Claude Opus 5.5»",
+      "verificacion": "lectura directa",
+      "consulta": "2026-10-21",
+      "delta": "Gran salto sobre Opus 5: genera tokens más de un 30% más rápido, redacta con más claridad y baja un 20% el precio ($4/$20), con un coste típico un 40% menor."
+    },
+    {
+      "model": "anthropic/claude-sonnet-5.5",
+      "type": "anuncio",
+      "date": "2026-09-28",
+      "url": "https://www.anthropic.com/claude-sonnet-5-5",
+      "fuente": "Anthropic, «Introducing Claude Sonnet 5.5»",
+      "verificacion": "lectura directa",
+      "consulta": "2026-10-21",
+      "delta": "Mejora clara sobre Sonnet 5: es más de un 30% más rápido, cuesta hasta un 30% menos por tarea y en Terminal-Bench 4.0 pasa del 10,3% al 70,6%."
+    },
+    {
+      "model": "bytedance-seed/seed-2-1-turbo",
+      "type": "anuncio",
+      "date": "2026-06-23",
+      "url": "https://seed.bytedance.com/en/blog/seed2-1-officially-released-advancing-ai-productivity",
+      "fuente": "ByteDance Seed, «Seed2.1 Officially Released: Advancing AI Productivity» (familia Pro y Turbo)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Según ByteDance, Seed2.1 mejora mucho los agentes generales y la ingeniería de código, y avanza en conocimiento, razonamiento y comprensión multimodal."
+    },
+    {
+      "model": "bytedance-seed/seed-2.0-code",
+      "type": "anuncio",
+      "date": "2026-02-14",
+      "url": "https://seed.bytedance.com/en/blog/seed-2-0-official-launch",
+      "fuente": "ByteDance Seed, lanzamiento oficial de la serie Seed2.0 (Pro, Lite, Mini y Code)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "cohere/command-a-plus",
+      "type": "anuncio",
+      "date": "2026-05-20",
+      "url": "https://cohere.com/blog/cohere-releases-command-a-plus",
+      "fuente": "Cohere, «Cohere Releases Command A+: An Open-Source Enterprise AI Model Built for Sovereign Critical Infrastructure» (anuncio muy anterior a su llegada a OpenRouter)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Reúne en un solo modelo las capacidades de Command A Reasoning, Vision y Translate; según Cohere, hasta un 110% más de rendimiento y un 30% menos de latencia que Command A Reasoning, con 48 idiomas."
+    },
+    {
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "type": "anuncio",
+      "date": "2026-07-31",
+      "url": "https://api-docs.deepseek.com/updates/",
+      "fuente": "DeepSeek, «Change Log» (entrada del 31-jul)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Versión oficial de V4-Flash que sustituye a la preview: misma arquitectura y tamaño, re-post-entrenada, con capacidades agénticas muy mejoradas y soporte nativo de la Responses API."
+    },
+    {
+      "model": "deepseek/deepseek-v4-flash-vision-exp",
+      "type": "anuncio",
+      "date": "2026-08-21",
+      "url": "https://api-docs.deepseek.com/news/news260821/",
+      "fuente": "DeepSeek, «DeepSeek-V4-Flash-Vision-Exp Release: Multimodal API Now Live»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Modelo experimental que añade comprensión de imágenes a V4-Flash: lo iguala en texto y mejora mucho en benchmarks de agentes multimodales."
+    },
+    {
+      "model": "deepseek/deepseek-v4-pro-0813",
+      "type": "anuncio",
+      "date": "2026-08-13",
+      "url": "https://api-docs.deepseek.com/news/news260813/",
+      "fuente": "DeepSeek, «DeepSeek-V4-Pro GA Release»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Versión GA de V4-Pro con grandes mejoras agénticas respecto a la preview, tres niveles de esfuerzo de razonamiento (low/high/max) y soporte nativo de la Responses API de OpenAI."
+    },
+    {
+      "model": "deepseek/deepseek-v4.1-flash",
+      "type": "anuncio",
+      "date": "2026-09-10",
+      "url": "https://api-docs.deepseek.com/news/news260910/",
+      "fuente": "DeepSeek, «DeepSeek-V4.1-Flash: Smarter, Faster, More Efficient»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Nueva arquitectura con comprensión visual nativa; su caché KV necesita 1/4 de HBM y 1/8 de SSD respecto a la generación anterior y, según DeepSeek, supera a V4-Pro en rendimiento, coste y velocidad."
+    },
+    {
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "type": "anuncio",
+      "date": "2026-10-17",
+      "url": "https://api-docs.deepseek.com/news/news261017/",
+      "fuente": "DeepSeek, «DeepSeek-V4.1-Flash-1017: Wish-Driven Programming Made Real»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Actualización menor de V4.1-Flash con mejores resultados en razonamiento, código, agentes y visión, y salidas más cortas, sin cambiar el precio ni la API."
+    },
+    {
+      "model": "google/gemini-3.7-flash",
+      "type": "anuncio",
+      "date": "2026-08-13",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/",
+      "fuente": "Google, «Gemini 3.7 Flash: our most intelligent workhorse model»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Mejora a Gemini 3.6 Flash en programación y agentes: en DeepSWE v1.1 pasa del 49,0% al 65,3% y en AutomationBench del 17,0% al 30,4%."
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "type": "anuncio",
+      "date": "2026-09-02",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/",
+      "fuente": "Google, «Introducing Gemini 3.8 Flash and 3.8 Flash Cyber»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Mejoras significativas sobre Gemini 3.7 Flash en ingeniería de software, tareas agénticas y razonamiento de varios pasos, con el mismo precio introductorio."
+    },
+    {
+      "model": "google/gemini-4-argon",
+      "type": "anuncio",
+      "date": "2026-09-30",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+      "fuente": "Google, «Gemini 4 Argon: our next era of frontier intelligence»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Sube el límite de salida a 1 millón de tokens, frente a los 64K anteriores."
+    },
+    {
+      "model": "google/gemini-4-argon",
+      "type": "preview",
+      "date": "2026-09-30",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+      "fuente": "Google, «Gemini 4 Argon: our next era of frontier intelligence»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "nota": "Acceso inicial restringido a defensores de ciberseguridad verificados a través del Fairwind Program. La disponibilidad general para desarrolladores y empresas llegó el 13 de octubre de 2026 (cloud.google.com/blog, verificado por lectura directa)."
+    },
+    {
+      "model": "google/gemini-nano-banana-2.1",
+      "type": "anuncio",
+      "date": "2026-10-06",
+      "url": "https://x.com/Google/status/2107501209154204148",
+      "fuente": "Google (cuenta oficial en X), «Meet Nano Banana 2.1, our latest image generation and editing model» (no hay post en blog; el changelog de ai.google.dev y la model card de DeepMind también lo fechan el 6 de octubre)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Según Google, supera a sus modelos de imagen anteriores en todo, con saltos notables en diseño visual, edición con máscaras y consistencia de sujetos."
+    },
+    {
+      "model": "inclusionai/ling-3.0-flash",
+      "type": "anuncio",
+      "date": "2026-07-23",
+      "url": "https://x.com/AntLingAGI/status/2080351022028095681",
+      "fuente": "Ant Ling (@AntLingAGI) en X, «Today, we're releasing Ling-3.0-flash—a hybrid-reasoning MoE model built for production-scale agents…»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Con 1/8 de los parámetros totales y 1/12 de los activos, Ant dice que iguala o supera a su anterior buque insignia de 1T (Ring-2.6-1T) en la mayoría de los benchmarks mostrados."
+    },
+    {
+      "model": "inclusionai/ling-3.0-flash-vl",
+      "type": "anuncio",
+      "date": "2026-09-04",
+      "url": "https://x.com/AntLingAGI/status/2095935971556782372",
+      "fuente": "Ant Ling (@AntLingAGI) en X, «Today, we are releasing Ling-3.0-flash-VL, built on Ling-3.0-flash with visual understanding and visual agent capabilities…»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Parte de Ling-3.0-flash y le añade comprensión visual y capacidades de agente visual."
+    },
+    {
+      "model": "inclusionai/ling-3.1-flash",
+      "type": "anuncio",
+      "date": "2026-09-30",
+      "url": "https://x.com/AntLingAGI/status/2105335205741596911",
+      "fuente": "Ant Ling (@AntLingAGI) en X, «Meet Ling-3.1-flash: ~560B total params, ~25B active/token, up to 1M-token context. We plan to open-source the model soon…» (pesos abiertos anunciados el 14-oct)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "meta/muse-glimmer-30b",
+      "type": "anuncio",
+      "date": "2026-08-10",
+      "url": "https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model",
+      "fuente": "Meta, «Introducing Muse Glimmer: An Open Agentic Model That Runs on Your Device»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "meta/muse-spark-1.2",
+      "type": "anuncio",
+      "date": "2026-08-05",
+      "url": "https://research.meta.ai/blog/introducing-muse-code-and-muse-spark-1-2",
+      "fuente": "Meta, «Introducing Muse Code and Muse Spark 1.2»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Actualización centrada en programación respecto a Muse Spark 1.1: mejora en generación de código, depuración compleja y comprensión de bases de código, entrenada junto al agente Muse Code."
+    },
+    {
+      "model": "meta/muse-spark-1.2-contributor",
+      "type": "anuncio",
+      "date": "2026-08-05",
+      "url": "https://developer.meta.com/ai/resources/blog/build-with-muse-code/",
+      "fuente": "Meta, «Meet Muse Spark 1.2 and Muse Code: a coding model and the agent built to run it» (presenta el ID muse-spark-1.2-contributor)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Mismo modelo que Muse Spark 1.2 a precio muy inferior (0,10/0,20 $ por millón de tokens) a cambio de que el uso pueda emplearse para mejorar los productos de Meta; límite por tokens en ventana de 5 horas y solo en países seleccionados."
+    },
+    {
+      "model": "meta/muse-spark-1.3",
+      "type": "anuncio",
+      "date": "2026-09-02",
+      "url": "https://research.meta.ai/blog/introducing-muse-spark-1-3",
+      "fuente": "Meta, «Introducing Muse Spark 1.3»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Frente a Muse Spark 1.2, Meta mide ~20% menos llamadas a herramientas y ~25% menos tokens en programación, añade un modo de razonamiento max y mejora en seguimiento de instrucciones y resistencia a inyección de prompts."
+    },
+    {
+      "model": "meta/muse-spark-1.3-contributor",
+      "type": "anuncio",
+      "date": "2026-09-02",
+      "url": "https://research.meta.ai/blog/introducing-muse-spark-1-3",
+      "fuente": "Meta, «Introducing Muse Spark 1.3» (anuncio del modelo base; la variante contributor solo figura en la tabla de precios de developer.meta.com, sin fecha)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Variante contributor (más barata, con uso empleado para mejorar los productos de Meta) de Muse Spark 1.3, que según Meta usa ~20% menos llamadas a herramientas y ~25% menos tokens que 1.2 en programación."
+    },
+    {
+      "model": "meta/muse-spark-open",
+      "type": "anuncio",
+      "date": "2026-10-15",
+      "url": "https://huggingface.co/meta-models/Muse-Spark-Open-816B-A42B",
+      "fuente": "Meta (meta-models en Hugging Face), model card «Muse-Spark-Open-816B-A42B» (Date of Release: 15-oct-2026)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Publica por primera vez pesos descargables de Muse Spark (MoE de 816B parámetros totales y 42B activos, contexto de 1M) bajo la Muse Model License, con términos comerciales limitados."
+    },
+    {
+      "model": "meta/muse-wonder",
+      "type": "anuncio",
+      "date": "2026-10-12",
+      "url": "https://about.fb.com/news/2026/10/introducing-muse-wonder-models/",
+      "fuente": "Meta, «Introducing Muse Wonder and Muse Wonder Full: Frontier Models for Agents»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Según Meta, son sus modelos más capaces hasta la fecha, construidos sobre Muse Spark, y añaden Active Memory (contexto entre conversaciones) y Active Focus (persistencia en tareas difíciles)."
+    },
+    {
+      "model": "minimax/minimax-m3.1-flash",
+      "type": "anuncio",
+      "date": "2026-10-19",
+      "url": "https://www.minimax.io/blog/minimax-m31f",
+      "fuente": "MiniMax, «MiniMax M3.1 Flash: Redefining Agent Performance and Cost»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Según MiniMax, inferencia online casi 3 veces más rápida y un 70% menos de coste de uso en tareas agénticas frente a la generación anterior."
+    },
+    {
+      "model": "minimax/minimax-m3.1-flash",
+      "type": "producto",
+      "date": "2026-09-27",
+      "url": "https://agent.minimax.io/tools/m3-1-flash-preview",
+      "fuente": "MiniMax, página de M3.1-Flash-Preview",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "nota": "M3.1-Flash-Preview solo disponible en MiniMax Code y en sus planes de suscripción, sin API de pago por uso."
+    },
+    {
+      "model": "mistralai/mistral-large-4-0",
+      "type": "anuncio",
+      "date": "2026-10-06",
+      "url": "https://mistral.ai/news/mistral-large-4/",
+      "fuente": "Mistral AI, «Introducing Mistral Large 4»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "nvidia/nemotron-3.5-lightning",
+      "type": "anuncio",
+      "date": "2026-08-11",
+      "url": "https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/",
+      "fuente": "NVIDIA, «NVIDIA Nemotron 3.5 Lightning and NeMo Switchyard Deliver Faster, Smarter, More Efficient Agentic AI»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Frente a Nemotron 3 Nano 30B-A3B, añade predicción multitoken para decodificación especulativa y, según la model card de NVIDIA, sube en tareas agénticas y de código (SWE-bench Verified de 34,1 a 51,6)."
+    },
+    {
+      "model": "nvidia/nemotron-3.5-super-vl",
+      "type": "anuncio",
+      "date": "2026-10-15",
+      "url": "https://blogs.nvidia.com/blog/nemotron-3-5-super-vl/",
+      "fuente": "NVIDIA, «Open From Data Center to Desktop: NVIDIA Expands Nemotron Family With Highest Efficiency Super VL and Bolt Models»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Añade visión al Nemotron Super de 120B (12B activos); según NVIDIA supera a Nemotron 3 Super en SWE-bench y Terminal-Bench y logra una precisión comparable a su modelo de razonamiento más grande con una quinta parte de parámetros."
+    },
+    {
+      "model": "nvidia/switchyard",
+      "type": "anuncio",
+      "date": "2026-08-11",
+      "url": "https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/",
+      "fuente": "NVIDIA, «NVIDIA Nemotron 3.5 Lightning and NeMo Switchyard Deliver Faster, Smarter, More Efficient Agentic AI» (lanzamiento de la librería de código abierto; el router alojado en OpenRouter no tiene anuncio propio)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "openai/gpt-6-astra",
+      "type": "anuncio",
+      "date": "2026-09-03",
+      "url": "https://openai.com/index/gpt-6-astra/",
+      "fuente": "OpenAI, «GPT-6 Astra: A new generation of intelligence»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Primer modelo de OpenAI con capacidad «Crítica» en ciberseguridad según su Preparedness Framework; en OSWorld 2.0 logra un 72,6% frente al 65,7% de GPT-5.6 Sol, en un 47% menos de tiempo."
+    },
+    {
+      "model": "openai/gpt-6-astra",
+      "type": "preview",
+      "date": "2026-09-03",
+      "url": "https://openai.com/index/gpt-6-astra/",
+      "fuente": "OpenAI, «GPT-6 Astra: A new generation of intelligence»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "nota": "El despliegue arrancó solo para un grupo limitado de organizaciones. ChatGPT Plus/Pro/Business/Enterprise, la API, Azure y AWS Bedrock llegaron «en los próximos días»."
+    },
+    {
+      "model": "openai/gpt-6-astra-pro",
+      "type": "anuncio",
+      "date": "2026-09-03",
+      "url": "https://openai.com/index/gpt-6-astra/",
+      "fuente": "OpenAI, «GPT-6 Astra: A new generation of intelligence» (el post anuncia GPT-6 Astra Pro para los planes Pro, Business y Enterprise)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "openai/gpt-6-astra-pro",
+      "type": "preview",
+      "date": "2026-09-03",
+      "url": "https://openai.com/index/gpt-6-astra/",
+      "fuente": "OpenAI, «GPT-6 Astra: A new generation of intelligence»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "nota": "Llegó con el despliegue inicial de Astra, limitado a un grupo de organizaciones, antes de su ampliación a la API y a ChatGPT en los días siguientes."
+    },
+    {
+      "model": "openai/gpt-6-luna",
+      "type": "anuncio",
+      "date": "2026-09-22",
+      "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna/",
+      "fuente": "OpenAI, «Introducing GPT-6 Sol and Luna»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Modelo de bajo coste para tareas de alto volumen; su precio en la API baja un 50% respecto al precio promocional de GPT-5.6 Luna."
+    },
+    {
+      "model": "openai/gpt-6-luna-pro",
+      "type": "anuncio",
+      "date": "2026-09-22",
+      "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna/",
+      "fuente": "OpenAI, «Introducing GPT-6 Sol and Luna» (post del modelo base; la variante Pro es el modo de razonamiento «pro» de la API, que el post no nombra)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "openai/gpt-6-sol",
+      "type": "anuncio",
+      "date": "2026-09-22",
+      "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna/",
+      "fuente": "OpenAI, «Introducing GPT-6 Sol and Luna»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Comete aproximadamente la mitad de errores que su predecesor en la evaluación interna de factualidad de OpenAI, y su precio en la API baja un 50% respecto al precio promocional de GPT-5.6."
+    },
+    {
+      "model": "openai/gpt-6-sol-pro",
+      "type": "anuncio",
+      "date": "2026-09-22",
+      "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna/",
+      "fuente": "OpenAI, «Introducing GPT-6 Sol and Luna» (post del modelo base; la variante Pro es el modo de razonamiento «pro» de la API, que el post no nombra)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "openai/gpt-6.1-sol",
+      "type": "anuncio",
+      "date": "2026-09-29",
+      "url": "https://openai.com/index/introducing-gpt-6-1-sol/",
+      "fuente": "OpenAI, «Introducing GPT-6.1 Sol»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Mejora de GPT-6 Sol que casi iguala a GPT-6 Astra en programación agéntica, uso del ordenador y trabajo profesional a una quinta parte de su precio; con esfuerzo bajo, las respuestas con algún error factual bajan del 11,4% al 7,7%."
+    },
+    {
+      "model": "openai/gpt-6.1-sol-pro",
+      "type": "anuncio",
+      "date": "2026-09-29",
+      "url": "https://openai.com/index/introducing-gpt-6-1-sol/",
+      "fuente": "OpenAI, «Introducing GPT-6.1 Sol» (post del modelo base; la variante Pro es el modo de razonamiento «pro» de la API, que el post no nombra)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "qwen/qwen3.7-flash",
+      "type": "anuncio",
+      "date": "2026-07-21",
+      "url": "https://docs.modelstudio.console.alibabacloud.com/en/model-studio/newly-released-models",
+      "fuente": "Alibaba Cloud Model Studio, «Model lifecycle and updates» (fila del 21-jul; el changelog de QwenCloud la pone el 25-jul; no hubo entrada de blog)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Mejora frente a Qwen3.6-Flash en comprensión multimodal y ejecución agéntica: reconocimiento de objetos, percepción espacial, agentes de búsqueda y programación multimodal."
+    },
+    {
+      "model": "qwen/qwen3.8-2.4t-a95b",
+      "type": "anuncio",
+      "date": "2026-08-12",
+      "url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B",
+      "fuente": "Qwen, ficha oficial «Qwen/Qwen3.8-2.4T-A95B» en Hugging Face (pesos publicados el 12-ago; el modelo hospedado Qwen3.8-Max se anunció el 3-ago en qwen.ai)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Es la primera vez que Qwen abre los pesos de un modelo de clase Max: 2,4T parámetros totales y 95B activos. El checkpoint abierto es solo de texto y razona siempre."
+    },
+    {
+      "model": "qwen/qwen3.8-2.4t-a95b",
+      "type": "producto",
+      "date": "2026-07-19",
+      "url": "https://x.com/Alibaba_Qwen/status/2078759124914098291",
+      "fuente": "Qwen (@Alibaba_Qwen) en X, «Qwen3.8 is launching and going open-weight soon!»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "nota": "Qwen3.8-Max-Preview (el mismo modelo) solo en Token Plan, Qoder y QoderWork de Alibaba, sin API de pago por uso, hasta la API general del 3-ago."
+    },
+    {
+      "model": "qwen/qwen3.8-27b",
+      "type": "anuncio",
+      "date": "2026-08-14",
+      "url": "https://x.com/Alibaba_Qwen/status/2088280182356611304",
+      "fuente": "Qwen (@Alibaba_Qwen) en X, «We promised open weights for Qwen3.8. Now, time to meet them!»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Modelo denso nativamente multimodal que, con 27B parámetros, supera en conjunto a Qwen3.7-Plus y destaca en programación real y en flujos de ofimática; contexto de 262K ampliable a 1M."
+    },
+    {
+      "model": "qwen/qwen3.8-flash",
+      "type": "anuncio",
+      "date": "2026-08-26",
+      "url": "https://x.com/Alibaba_Qwen/status/2092591393424515114",
+      "fuente": "Qwen (@Alibaba_Qwen) en X, «Meet Qwen3.8-Flash, a multimodal MoE and an early preview of the Qwen4 architecture»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Primer adelanto de la arquitectura de Qwen4 (atención híbrida, N-gram Embedding, optimizador Muon), con 125B parámetros más 51B de embeddings N-gram y 6B activos, entrenado con cerca de 1/9 del coste de Qwen3.7-Plus."
+    },
+    {
+      "model": "qwen/qwen3.8-max-0902",
+      "type": "anuncio",
+      "date": "2026-09-02",
+      "url": "https://x.com/Alibaba_Qwen/status/2094968708288680276",
+      "fuente": "Qwen (@Alibaba_Qwen) en X, «Qwen3.8-Max just got upgraded. Meet Qwen3.8-Max-0902!»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Snapshot de Qwen3.8-Max con más post-entrenamiento en programación y Cowork, mejor en tareas empresariales complejas, investigación científica y flujos de largo horizonte; mismo tamaño, contexto y precio."
+    },
+    {
+      "model": "qwen/qwen3.8-omni-flash",
+      "type": "anuncio",
+      "date": "2026-09-18",
+      "url": "https://x.com/Alibaba_Qwen/status/2100785962414702599",
+      "fuente": "Qwen (@Alibaba_Qwen) en X, «Meet Qwen3.8-Omni-Flash»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Primer modelo omnimodal de Qwen construido en torno a capacidades agénticas: une la comprensión nativa de audio y vídeo, el razonamiento y el uso de herramientas."
+    },
+    {
+      "model": "tencent/hy-mt2-1.8b",
+      "type": "anuncio",
+      "date": "2026-05-21",
+      "url": "https://github.com/Tencent-Hunyuan/Hy-MT2",
+      "fuente": "Tencent Hy, repositorio oficial «Tencent-Hunyuan/Hy-MT2» (News: «2026.5.21 We open-sourced Hy-MT2-1.8B/Hy-MT2-7B/Hy-MT2-30B-A3B/IFMTBench»)",
+      "verificacion": "lectura directa",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "tencent/hy-mt2-30b-a3b",
+      "type": "anuncio",
+      "date": "2026-05-21",
+      "url": "https://github.com/Tencent-Hunyuan/Hy-MT2",
+      "fuente": "Tencent Hy, repositorio oficial «Tencent-Hunyuan/Hy-MT2» (News: «2026.5.21 We open-sourced Hy-MT2-1.8B/Hy-MT2-7B/Hy-MT2-30B-A3B/IFMTBench»)",
+      "verificacion": "lectura directa",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "tencent/hy-mt2-7b",
+      "type": "anuncio",
+      "date": "2026-05-21",
+      "url": "https://github.com/Tencent-Hunyuan/Hy-MT2",
+      "fuente": "Tencent Hy, repositorio oficial «Tencent-Hunyuan/Hy-MT2» (News: «2026.5.21 We open-sourced Hy-MT2-1.8B/Hy-MT2-7B/Hy-MT2-30B-A3B/IFMTBench»)",
+      "verificacion": "lectura directa",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "tencent/hy4-preview",
+      "type": "anuncio",
+      "date": "2026-08-28",
+      "url": "https://x.com/TencentHunyuan/status/2093222928720761009",
+      "fuente": "Tencent Hy (@TencentHunyuan) en X, «Hy4 preview is here. 770B, 49B active, 1M context…»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Según Tencent, Hy4 preview escala el tamaño del modelo, la longitud de contexto y los datos de entrenamiento, con el mayor salto entre generaciones que han medido."
+    },
+    {
+      "model": "x-ai/grok-4.6",
+      "type": "anuncio",
+      "date": "2026-08-12",
+      "url": "https://x.ai/news/grok-4-6",
+      "fuente": "xAI (SpaceXAI), «Introducing Grok 4.6»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Mejora significativa sobre Grok 4.5 al mismo precio, gracias a un entrenamiento complementario más largo con un optimizador y una receta mejorados."
+    },
+    {
+      "model": "x-ai/grok-4.7",
+      "type": "anuncio",
+      "date": "2026-09-21",
+      "url": "https://x.ai/news/grok-4-7",
+      "fuente": "xAI (SpaceXAI), «Introducing Grok 4.7»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Mejora notable sobre Grok 4.6 al mismo precio y velocidad, con un modelo base nuevo y más grande y un entrenamiento por refuerzo más largo."
+    },
+    {
+      "model": "xiaomi/mimo-v2.6-flash",
+      "type": "anuncio",
+      "date": "2026-09-21",
+      "url": "https://x.com/XiaomiMiMo/status/2102138559952290106",
+      "fuente": "Xiaomi MiMo (@XiaomiMiMo) en X, «Introducing Xiaomi MiMo-V2.6 — Pro & Flash…» (20:51 UTC, ya 22-sep en hora de Pekín)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Según Xiaomi, MiMo-V2.6-Flash supera a MiMo-V2.5-Pro."
+    },
+    {
+      "model": "xiaomi/mimo-v2.6-pro",
+      "type": "anuncio",
+      "date": "2026-09-21",
+      "url": "https://x.com/XiaomiMiMo/status/2102138559952290106",
+      "fuente": "Xiaomi MiMo (@XiaomiMiMo) en X, «Introducing Xiaomi MiMo-V2.6 — Pro & Flash…» (20:51 UTC, ya 22-sep en hora de Pekín)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21"
+    },
+    {
+      "model": "xiaomi/mimo-v2.6-pro-ultraspeed",
+      "type": "anuncio",
+      "date": "2026-09-22",
+      "url": "https://mimo.mi.com/docs/en-US/news/latest/v2-6",
+      "fuente": "Xiaomi MiMo, «Xiaomi MiMo-V2.6 Series: 3 New Models Officially Released» (fecha de Pekín; el post de @XiaomiMiMo en X salió el 21-sep a las 20:51 UTC)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Según Xiaomi, sirve el mismo MiMo-V2.6-Pro con la misma calidad y una velocidad de salida hasta 20 veces mayor que el modo estándar."
+    },
+    {
+      "model": "z-ai/glm-5.3",
+      "type": "anuncio",
+      "date": "2026-08-14",
+      "url": "https://x.com/Zai_org/status/2088132965922476159",
+      "fuente": "Z.ai (@Zai_org) en X, «Introducing GLM-5.3: Built to Code. Ready for Cyber Defense.»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Mismo modelo base que GLM-5.2, mejorado solo con post-entrenamiento: +50 % en Z.ai Code Bench frente a GLM-5.2 y 84,5 % en CyberGym frente a 77,2 %."
+    },
+    {
+      "model": "z-ai/glm-5.3",
+      "type": "producto",
+      "date": "2026-08-14",
+      "url": "https://x.com/Zai_org/status/2088132969630212372",
+      "fuente": "Z.ai (@Zai_org) en X, «GLM-5.3 is available now through GLM Coding Plan and ZCode. API access and open weights will be released in stages…»",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "nota": "Al principio solo para suscriptores de GLM Coding Plan y del cliente ZCode; la API abrió el 18-ago y los pesos llegaron después."
+    },
+    {
+      "model": "z-ai/glm-5.3-flash",
+      "type": "anuncio",
+      "date": "2026-08-26",
+      "url": "https://x.com/Zai_org/status/2092616204787626030",
+      "fuente": "Z.ai (@Zai_org) en X, «Introducing GLM-5.3-Flash» (se probó antes de forma anónima como «Ox Alpha»; la fecha de esa prueba no consta en una fuente de Z.ai)",
+      "verificacion": "buscador",
+      "consulta": "2026-10-21",
+      "delta": "Primer modelo nativamente multimodal de la serie GLM-5 (320B totales, 18B activos, 1M de contexto); según Z.ai supera a GLM-5.2 a una décima parte del precio."
+    }
+  ]
 }

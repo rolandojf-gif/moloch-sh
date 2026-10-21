@@ -1,5 +1,5 @@
 /* Vista «Lanzamientos»: por modelo, qué etapas constan (anuncio, acceso restringido, API pública, pesos) y con qué fuente. */
-import { esc, src, provLine, fmtDate, num, ii, eci, aaConfig } from './fmt.js';
+import { esc, src, weightsTag, provLine, fmtDate, num, ii, eci, aaConfig } from './fmt.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -9,17 +9,20 @@ let D;
 const STAGES = [
   ['anuncio', 'Anuncio'],
   ['preview', 'Acceso restringido'],
+  ['producto', 'Solo en productos del laboratorio'],
   ['api', 'API pública'],
   ['pesos', 'Pesos descargables']
 ];
-const EVT = { pesos: 'Pesos abiertos', evaluacion: 'Primera evaluación', anuncio: 'Anuncio', preview: 'Acceso restringido', api: 'API pública' };
+const EVT = { pesos: 'Pesos abiertos', evaluacion: 'Primera evaluación', anuncio: 'Anuncio', preview: 'Acceso restringido', producto: 'Solo en productos del laboratorio', api: 'API pública' };
 
-/* Etapas de un modelo. Las curadas (anuncio, preview) exigen URL; API y pesos salen del recolector. */
+/* Etapas de un modelo. Las curadas (anuncio, preview, producto) exigen URL de la fuente primaria; sin anuncio curado se usa la
+   fecha de publicación de la base de modelos de Epoch. API y pesos salen del recolector. */
 function stagesOf(m, curated) {
   const st = {};
   for (const e of curated.filter(e => e.model === m.id)) {
-    if (!st[e.type] || e.date < st[e.type].date) st[e.type] = { date: e.date, html: src({ src: 'curated', url: e.url, asOf: e.date, note: e.note || '' }), delta: e.delta };
+    if (!st[e.type] || e.date < st[e.type].date) st[e.type] = { date: e.date, html: src({ src: 'curated', url: e.url, asOf: e.date, got: e.consulta, note: [e.fuente, e.verificacion === 'buscador' ? 'fecha comprobada con buscador' : null].filter(Boolean).join(' · ') }), note: e.nota || null, delta: e.delta };
   }
+  if (!st.anuncio && m.epochPub?.v) st.anuncio = { date: m.epochPub.v, html: src(m.epochPub), note: 'publicación según Epoch AI' };
   if (m.orCreated.v) st.api = st.api || { date: m.orCreated.v, html: src(m.orCreated), note: 'alta en OpenRouter' };
   if (m.weights.v === 'abiertos' && m.hfCreated?.v) st.pesos = st.pesos || { date: m.hfCreated.v, html: src(m.hfCreated), note: `repositorio creado · ${m.license.v || 'licencia sin datos'}` };
   return st;
@@ -27,9 +30,10 @@ function stagesOf(m, curated) {
 
 function cardFor(m, curated) {
   const st = stagesOf(m, curated);
+  const missing = STAGES.filter(([k]) => !st[k]).map(([, label]) => label.toLowerCase());
   const dates = Object.values(st).map(s => s.date).filter(Boolean).sort();
   const latest = dates[dates.length - 1];
-  const delta = Object.values(st).find(s => s.delta)?.delta;
+  const withDelta = Object.values(st).find(s => s.delta);
   const evals = [];
   if (ii(m) !== null) evals.push(`índice ${num(ii(m))}${src(m.aa.intelligence)} en Artificial Analysis${aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : ''}`);
   if (eci(m) !== null) evals.push(`ECI ${num(eci(m))}${src(m.epoch.eci)} en Epoch AI`);
@@ -42,13 +46,13 @@ function cardFor(m, curated) {
     html: `<article class="rel">
       <div class="rel-date">${esc(fmtDate(latest))}</div>
       <div>
-        <h3>${esc(m.name)} <span class="w ${m.weights.v || 'nd'}">${esc(m.weights.v || 'pesos sin datos')}</span>${identity}</h3>
+        <h3>${esc(m.name)} ${weightsTag(m)}${identity}</h3>
         <div class="m-lab">${esc(m.lab.name)}</div>
-        <div class="stages">${STAGES.map(([k, label]) => st[k]
-          ? `<div class="stage yes"><span class="lbl">${label}</span>${esc(fmtDate(st[k].date))}${st[k].html}${st[k].note ? `<span class="m-sub">${esc(st[k].note)}</span>` : ''}</div>`
-          : `<div class="stage no"><span class="lbl">${label}</span>no consta</div>`).join('')}</div>
+        <div class="stages">${STAGES.filter(([k]) => st[k]).map(([k, label]) =>
+          `<div class="stage yes"><span class="lbl">${label}</span>${esc(fmtDate(st[k].date))}${st[k].html}${st[k].note ? `<span class="m-sub">${esc(st[k].note)}</span>` : ''}</div>`).join('')}</div>
+        ${missing.length ? `<div class="stages-no">No constan: ${esc(missing.join(', '))}.</div>` : ''}
         <div class="extra"><b>Evaluación independiente:</b> ${evalTxt}${aaRel}</div>
-        <div class="extra"><b>Qué aporta frente a la versión anterior:</b> ${delta ? esc(delta) : '<span class="nd">sin datos</span>'}</div>
+        <div class="extra"><b>Qué aporta frente a la versión anterior:</b> ${withDelta ? `${esc(withDelta.delta)}${/según/i.test(withDelta.delta) ? '' : ' (según el laboratorio)'}${withDelta.html}` : '<span class="nd">sin datos</span>'}</div>
       </div>
     </article>`
   };
@@ -84,7 +88,7 @@ function render() {
     html += c.html;
   }
   if (gone.length) html += `<h2 class="sec">Retirados de OpenRouter en el periodo</h2><ul class="changes">${gone.map(e => `<li><span>${esc(fmtDate(e.date))}</span><span>${esc(e.what)}</span>${provLine(e.src)}</li>`).join('')}</ul>`;
-  html += `<p class="note">«API pública» es la fecha de alta en OpenRouter, que puede ser posterior a la API del laboratorio. «Pesos descargables» es la fecha de creación del repositorio en Hugging Face. Anuncios y accesos restringidos sólo constan cuando se han registrado a mano con enlace a la fuente primaria.</p>`;
+  html += `<p class="note">«API pública» es la fecha de alta en OpenRouter, que puede ser posterior a la API del laboratorio. «Pesos descargables» es la fecha de creación del repositorio en Hugging Face. «Acceso restringido» es una fase en la que sólo podían usarlo organizaciones o personas seleccionadas; «Solo en productos del laboratorio», una fase en la que se podía usar en sus aplicaciones o suscripciones pero no por API. Anuncios y estas dos fases constan cuando se han registrado a mano con enlace a la fuente primaria (blog, documentación o repositorio del laboratorio); si no hay anuncio registrado, se toma la fecha de publicación de la base de modelos de Epoch AI. Las etapas sin dato se agrupan en «No constan».</p>`;
   $('#ln-list').innerHTML = html;
 }
 

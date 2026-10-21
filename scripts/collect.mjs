@@ -166,6 +166,29 @@ async function loadHF(repo) {
   }
 }
 
+/* Repositorios públicos de una organización de Hugging Face (los más recientes primero). Una consulta por organización. */
+const HF_ORGS = new Map();
+function loadHFOrg(org) {
+  if (!HF_ORGS.has(org)) {
+    HF_ORGS.set(org, getJSON(`${SOURCES.hf.api}?author=${encodeURIComponent(org)}&sort=createdAt&direction=-1&limit=1000`)
+      .then(rows => (rows || []).filter(r => r.id && !r.private).map(r => r.id))
+      .catch(e => { log(`Hugging Face: no se pudo listar ${org}: ${e.message}`); return []; }));
+  }
+  return HF_ORGS.get(org);
+}
+/* Busca en las organizaciones del laboratorio un repositorio con el mismo nombre que el modelo (sin mayúsculas ni signos),
+   admitiendo sólo sufijos que no cambian el modelo (instruct, it, chat, hf, fp8, bf16). */
+const HF_SUFFIX = /^(instruct|it|chat|hf|fp8|bf16)?$/;
+async function findHFRepo(m, orgs) {
+  const norm = x => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const keys = [...new Set([norm(m.id.split('/')[1]?.replace(/:.*$/, '')), norm(m.name)].filter(Boolean))];
+  for (const org of orgs) {
+    const hit = (await loadHFOrg(org)).find(id => { const r = norm(id.split('/')[1]); return keys.some(k => r.startsWith(k) && HF_SUFFIX.test(r.slice(k.length))); });
+    if (hit) return hit;
+  }
+  return null;
+}
+
 /* ── Epoch AI ───────────────────────────────────────────────────────────── */
 function parseCSV(text) {
   const rows = []; let row = [], cell = '', q = false;
@@ -245,8 +268,20 @@ async function loadEpoch() {
     nSwe = best.size;
   } catch (e) { log(`Epoch benchmarks falló: ${e.message}`); out.sweFailed = true; }
   log(`Epoch: ${out.rows.length} modelos con ECI, ${nSwe} con SWE-bench Verified`);
+  // Base de modelos de Epoch: su «Publication date» (publicación, anuncio o lanzamiento) sirve de anuncio cuando no hay uno curado.
+  out.pub = nameIndex([], () => []);
+  for (const u of EPOCH_MODELS) {
+    try {
+      const rows = parseCSV(await getText(u)).map(r => ({ name: r.Model, date: String(r['Publication date'] || '').slice(0, 10) }))
+        .filter(r => r.name && /^\d{4}-\d{2}-\d{2}$/.test(r.date));
+      out.pub = nameIndex(rows, r => [r.name], (a, b) => a.date < b.date);
+      log(`Epoch, base de modelos: ${u} · ${rows.length} con fecha de publicación`);
+      break;
+    } catch (e) { log(`Epoch, base de modelos: ${u} falló: ${e.message}`); }
+  }
   return out;
 }
+const EPOCH_MODELS = ['https://epoch.ai/data/all_ai_models.csv', 'https://epoch.ai/data/notable_ai_models.csv', 'https://epoch.ai/data/large_scale_ai_models.csv'];
 
 /* Frontera por fecha según Epoch: máximo acumulado del ECI en cada grupo de apertura. */
 function epochFrontier(rows) {
@@ -339,19 +374,20 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
   const orUrl = `https://openrouter.ai/${m.orVariant || m.id}`;
   const createdISO = m.created ? new Date(m.created * 1000).toISOString().slice(0, 10) : null;
   const author = m.id.split('/')[0];
-  const hfId = m.hugging_face_id || m._hfOverride || null;
+  const hfId = m.hugging_face_id || m._hfOverride || m._hfFound || null;
 
   // Pesos: abiertos sólo si hay repositorio público en Hugging Face enlazado por OpenRouter y la consulta lo confirma.
   let weights, license;
   if (hfId && hf && hf.ok && !hf.isPrivate) {
     const hfUrl = `https://huggingface.co/${hfId}`;
-    weights = fact('abiertos', 'hf', hfUrl, hf.createdAt || TODAY, hf.gated ? { note: 'descarga con solicitud de acceso' } : {});
+    const notes = [m._hfFound ? 'encontrado en la organización del laboratorio en Hugging Face; OpenRouter no lo enlaza' : null, hf.gated ? 'descarga con solicitud de acceso' : null].filter(Boolean);
+    weights = fact('abiertos', 'hf', hfUrl, hf.createdAt || TODAY, notes.length ? { note: notes.join('; ') } : {});
     license = fact(hf.license ? (hf.license === 'other' && hf.licenseName ? hf.licenseName : hf.license) : null, 'hf', hfUrl, TODAY);
   } else if (hfId && hf && !hf.ok && !hf.notFound && prev && prev.weights) {
     weights = { ...prev.weights, stale: true };
     license = prev.license ? { ...prev.license, stale: true } : fact(null, 'hf', null);
-  } else if (!hfId || (m._hfOverride && hf && hf.notFound)) {
-    weights = fact('cerrados', 'openrouter', orUrl, TODAY, { inferred: true, note: 'inferido: OpenRouter no enlaza pesos públicos; puede corregirse en data/curated/overrides.json' });
+  } else if (!hfId || ((m._hfOverride || m._hfFound) && hf && hf.notFound)) {
+    weights = fact('cerrados', 'openrouter', orUrl, TODAY, { inferred: true, note: 'inferido: OpenRouter no enlaza pesos públicos y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; puede corregirse en data/curated/overrides.json' });
     license = fact('propietaria', 'openrouter', orUrl, TODAY, { inferred: true, note: 'inferido: sin pesos enlazados' });
   } else {
     weights = fact(null, 'hf', `https://huggingface.co/${hfId}`, TODAY, { note: 'el repositorio enlazado no responde' });
@@ -454,15 +490,25 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
     };
   }
 
+  // Publicación según la base de modelos de Epoch: sólo por nombre exacto (el de su ECI o el del catálogo).
+  const name = (m.name || m.id).replace(/^[^:]+:\s*/, '').replace(/\s*\(free\)$/i, '');
+  let epochPub = null;
+  if (ep === 'keep') epochPub = prev?.epochPub || null;
+  else if (ep && !lab.stealth) {
+    const r = (eRow && (ep.pub.exact(eRow.model) || ep.pub.exact(eRow.name))) || ep.pub.exact(name);
+    if (r) epochPub = fact(r.date, 'epoch', 'https://epoch.ai/data/ai-models', r.date, { note: `fecha de publicación en la base de modelos de Epoch AI («${r.name}»)` });
+  }
+
   return {
     id: m.id,
-    name: (m.name || m.id).replace(/^[^:]+:\s*/, '').replace(/\s*\(free\)$/i, ''),
+    name,
     orVariant: m.orVariant || null,
     lab: { id: author, name: lab.name, country: lab.country, url: lab.url, src: 'curated' },
     identity: lab.stealth ? 'sin confirmar' : 'confirmada',
     hfId: lab.stealth ? null : hfId,
     weights, license,
     orCreated: fact(createdISO, 'openrouter', orUrl, createdISO || TODAY, { note: 'fecha de alta en OpenRouter' }),
+    epochPub,
     hfCreated: (hf && hf.ok && hf.createdAt) ? fact(hf.createdAt, 'hf', `https://huggingface.co/${hfId}`, hf.createdAt, { note: 'creación del repositorio' }) : (prev && prev.hfCreated) || null,
     ctx: fact(m.context_length || null, 'openrouter', orUrl),
     reasoning: fact(params.includes('reasoning') || params.includes('include_reasoning') ? true : (params.length ? false : null), 'openrouter', orUrl, TODAY, { note: 'parámetro «reasoning» admitido' }),
@@ -595,13 +641,28 @@ async function main() {
     aa: aaRows === null ? { ok: false, optional: true, reason: !AA_KEY ? 'no conectado' : 'sin permiso de publicación' } : aaRows === undefined ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores', lastOk: prevCatalog?.status?.aa?.got || prevCatalog?.status?.aa?.lastOk || null } : { ok: true, got: NOW_ISO }
   };
 
+  // Organizaciones de Hugging Face de cada laboratorio: las que ya usan sus modelos enlazados (OpenRouter u overrides).
+  const labOrgs = new Map();
+  for (const m of orModels) {
+    const repo = m.hugging_face_id || hfOverrides[m.id];
+    const name = labs[m.id.split('/')[0]]?.name;
+    if (!repo || !name || !repo.includes('/')) continue;
+    if (!labOrgs.has(name)) labOrgs.set(name, new Set());
+    labOrgs.get(name).add(repo.split('/')[0]);
+  }
+  const hfFound = [];
+
   const models = [];
   for (const m of orModels) {
     const author = m.id.split('/')[0];
     const lab = labs[author];
     const prev = prevMap.get(m.id);
     if (!m.hugging_face_id && hfOverrides[m.id]) m._hfOverride = hfOverrides[m.id];
-    const hfRepo = m.hugging_face_id || m._hfOverride;
+    if (!m.hugging_face_id && !m._hfOverride && !lab.stealth && labOrgs.has(lab.name)) {
+      m._hfFound = await findHFRepo(m, labOrgs.get(lab.name));
+      if (m._hfFound) hfFound.push(`${m.id} → ${m._hfFound}`);
+    }
+    const hfRepo = m.hugging_face_id || m._hfOverride || m._hfFound;
     const [endpoints, hf] = await Promise.all([
       loadEndpoints(m.orVariant || m.id),
       (hfRepo && !lab.stealth) ? loadHF(hfRepo) : Promise.resolve(null)
@@ -613,6 +674,7 @@ async function main() {
     models.push(buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv));
   }
   if (status.hf.failed) status.hf.ok = status.hf.failed < models.length / 4;
+  log(`Hugging Face: ${hfFound.length} repositorios encontrados en la organización del laboratorio sin enlace de OpenRouter${hfFound.length ? `: ${hfFound.join(' | ')}` : ''}`);
 
   // Diagnóstico de emparejamiento con Epoch (sólo en el registro): ayuda a completar overrides.epoch.
   if (ep !== 'keep') {
@@ -677,8 +739,8 @@ async function main() {
       capability: `En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index${aaVersion ? ` v${aaVersion}` : ''}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.`,
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',
       price: 'Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado y con su cuantización cuando OpenRouter la publica (puede no ser la versión que evalúan AA o Epoch). El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio.',
-      weights: '«Abiertos» exige un repositorio público en Hugging Face enlazado por OpenRouter. Sin enlace, «cerrados». La licencia procede de la ficha de Hugging Face.',
-      speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la espera inicial incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
+      weights: '«Abiertos» exige un repositorio público en Hugging Face, enlazado por OpenRouter o con el mismo nombre en la organización del laboratorio. Sin repositorio, «cerrados», marcado como inferido salvo que Epoch lo clasifique. La licencia procede de la ficha de Hugging Face.',
+      speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la latencia (tiempo hasta el primer token) incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
       window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días.`
     },
     models,

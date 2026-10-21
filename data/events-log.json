@@ -1,4 +1,19 @@
 {
  "_doc": "Acontecimientos detectados por el recolector al comparar recogidas sucesivas. Generado; no editar a mano.",
- "events": []
+ "events": [
+  {
+   "kind": "pesos",
+   "model": "inclusionai/ling-3.1-flash",
+   "date": "2026-10-13",
+   "src": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co/inclusionAI/Ling-3.1-flash",
+    "got": "2026-10-21T10:50:37Z"
+   },
+   "what": "Ling 3.1 Flash: pesos descargables en Hugging Face (licencia mit).",
+   "data": {
+    "license": "mit"
+   }
+  }
+ ]
 }

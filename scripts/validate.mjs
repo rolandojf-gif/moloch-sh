@@ -25,13 +25,23 @@ for (const m of c.models || []) {
   if (![null, 'abiertos', 'cerrados'].includes(m.weights?.v)) errors.push(`${w}: pesos con valor no permitido ${m.weights?.v}`);
   if (m.identity !== 'confirmada' && m.lab?.country) errors.push(`${w}: identidad sin confirmar con país asignado`);
   if (m.epoch) for (const k of ['eci', 'release', 'access', 'swe']) checkFact(m.epoch[k], `${w}.epoch.${k}`);
+  if (m.epochPub) checkFact(m.epochPub, `${w}.epochPub`);
   if (m.aa) for (const k of ['intelligence', 'coding', 'agentic', 'tps', 'ttft', 'release']) if (m.aa[k] !== undefined) checkFact(m.aa[k], `${w}.aa.${k}`);
   if (m.aa && !c.sources?.aa?.permiso) errors.push(`${w}: datos de Artificial Analysis sin permiso registrado en data/curated/permisos.json`);
   if (m.price?.in?.v > 1000 || m.price?.out?.v > 1000) errors.push(`${w}: precio fuera de rango`);
   if (!['laboratorio', 'proveedor', 'referencia'].includes(m.price?.basis)) errors.push(`${w}: criterio de precio no permitido ${m.price?.basis}`);
   if (m.price?.basis !== 'referencia' && !m.price?.provider) errors.push(`${w}: precio sin proveedor indicado`);
 }
-for (const e of c.curatedEvents || []) if (!e.url) errors.push(`evento curado sin URL: ${e.title || e.model}`);
+// Acontecimientos curados: fuente primaria con enlace, fecha, tipo conocido y modelo del catálogo.
+const TIPOS_EV = ['anuncio', 'preview', 'producto', 'api', 'pesos', 'precio', 'retirada'];
+for (const e of c.curatedEvents || []) {
+  const w = `evento curado ${e.model || e.title}`;
+  if (!/^https:\/\/\S+$/.test(e.url || '')) errors.push(`${w}: sin URL de la fuente primaria`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(e.date || '')) errors.push(`${w}: fecha no válida ${e.date}`);
+  if (!TIPOS_EV.includes(e.type)) errors.push(`${w}: tipo no válido ${e.type}`);
+  if (e.model && !ids.has(e.model)) warnings.push(`${w}: el modelo no está en el catálogo`);
+  if (!['lectura directa', 'buscador'].includes(e.verificacion)) errors.push(`${w}: verificación no válida`);
+}
 
 /* Indicadores: todo objeto con forma de hecho ({v, src}) debe llevar fuente conocida y fechas. */
 const ind = await readOpt('data/indicadores.json');
