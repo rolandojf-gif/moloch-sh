@@ -1,6 +1,6 @@
 /* Vista «Modelos»: comparador, ficha desplegable, comparación de hasta tres y evolución de la frontera. */
 import { esc, fact, src, weightsTag, usd, num, tokens, fmtDate, country, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, speed, priceBasis, ND, AA_LINK } from './fmt.js';
-import { frontier } from './charts.js';
+import { frontier, hbars, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -181,6 +181,24 @@ function renderFrontier() {
   $('#mx-frontier-note').innerHTML = `<span class="lbl">Cómo leerlo</span>Cada línea es el mejor ECI alcanzado hasta esa fecha por un modelo con pesos abiertos y por uno cerrado; los puntos claros son el resto de modelos. Con nombre, el líder actual de cada grupo y los mayores saltos. Al pasar el cursor por un punto aparece su ficha. Datos de los ${f?.n ?? 'sin datos'} modelos que puntúa Epoch AI (incluidos los que no están en OpenRouter). Fuente: <a href="${esc(f?.url || 'https://epoch.ai/benchmarks/eci')}" target="_blank" rel="noopener">Epoch AI</a>, CC BY 4.0, consulta ${esc((f?.got || '').slice(0, 10))}.${gap !== null ? ` Distancia actual: ${num(gap)} puntos ECI (${esc(last.closedName)} frente a ${esc(last.openName)}).` : ''} Unos puntos de diferencia no equivalen a meses de retraso.`;
 }
 
+/* Ranking de uso de OpenRouter (conjunto de datos «rankings-daily», CC BY 4.0): diez primeros por tokens en los últimos 7 días. */
+const tokB = v => `${num(v / 1e12, v < 1e12 ? 2 : 1)} B`;
+const tokES = v => v >= 1e12 ? `${num(v / 1e12, 1)} billones` : v >= 1e9 ? `${num(v / 1e9, 0)} mil millones` : `${num(v / 1e6, 0)} millones`;
+function renderUso() {
+  const u = D.catalog.uso, el = $('#mx-uso'), note = $('#mx-uso-note');
+  if (!u?.top?.length) {
+    el.innerHTML = `<div class="chart-empty">${ND}: el ranking de uso necesita la clave de OpenRouter en la recogida.</div>`;
+    note.innerHTML = `<span class="lbl">Fuente</span><a href="https://openrouter.ai/rankings" target="_blank" rel="noopener">OpenRouter, rankings</a> (CC BY 4.0).`;
+    return;
+  }
+  const inCat = new Set(D.catalog.models.map(m => m.id));
+  hbars(el, u.top.map(r => ({
+    label: `${r.rank}. ${r.name || r.slug}${/:free$/.test(r.slug) ? ' :free' : ''}`, v: r.tokens, value: `${tokB(r.tokens)}${r.share != null ? ` (${num(r.share, 0)} %)` : ''}`,
+    tip: tip(r.name || r.slug, [['Tokens en 7 días', `${tokES(r.tokens)} (entrada + salida)`], ['Cuota del total de OpenRouter', r.share != null ? `${num(r.share, 1)} %` : null], ['Identificador', r.slug], ['Variante', /:free$/.test(r.slug) ? 'gratuita: OpenRouter la cuenta aparte de la de pago' : null], ['En la tabla de arriba', r.id && inCat.has(r.id) ? 'sí' : 'no (laboratorio no seguido o fuera de la ventana)']])
+  })), { aria: 'Modelos más usados en OpenRouter en los últimos 7 días', right: 112 });
+  note.innerHTML = `<span class="lbl">Cómo leerlo</span>B = billones de tokens (un billón es un millón de millones); entre paréntesis, la cuota. Tokens de entrada más salida procesados en OpenRouter del ${esc(fmtDate(u.from))} al ${esc(fmtDate(u.to))} (días UTC completos), sumando el ranking diario. Es el uso en OpenRouter, no en todo el mercado: no cuenta lo que se consume en la API propia de cada laboratorio ni en sus aplicaciones, y los modelos gratuitos o en promoción suben mucho. La cuota es sobre todo el tráfico de OpenRouter esos días. Puede diferir un poco de la página «top weekly», que usa su propia ventana. Fuente: OpenRouter (<a href="${esc(u.url)}" target="_blank" rel="noopener">openrouter.ai/rankings</a>), datos hasta el ${esc(fmtDate(u.asOf))}, CC BY 4.0; consulta ${esc((u.got || '').slice(0, 10))}${u.stale ? ' (la última consulta falló: se muestra el ranking anterior)' : ''}.`;
+}
+
 export function renderModelos(d) {
   D = d;
   if (!d.catalog.models.some(m => ii(m) !== null)) {
@@ -220,4 +238,5 @@ export function renderModelos(d) {
   renderTable();
   renderCompare();
   renderFrontier();
+  renderUso();
 }

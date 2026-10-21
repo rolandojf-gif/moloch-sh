@@ -36,6 +36,8 @@ jobs:
         env:
           # Clave gratuita de Artificial Analysis; sus datos se publican con el permiso de data/curated/permisos.json.
           AA_API_KEY: ${{ secrets.AA_API_KEY }}
+          # Clave de OpenRouter (secreto MOLOCHSH_API_KEY), sólo para el ranking de uso (conjunto de datos CC BY 4.0); sin ella el ranking queda «sin datos».
+          OPENROUTER_API_KEY: ${{ secrets.MOLOCHSH_API_KEY }}
         run: node scripts/collect.mjs
       - name: Validar
         run: node scripts/validate.mjs

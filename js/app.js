@@ -36,7 +36,7 @@ async function loadData() {
 function renderFreshness(d) {
   const el = $('#freshness');
   // Web principal de cada proveedor de datos (por clave de fuente o por nombre).
-  const HOME = { openrouter: 'https://openrouter.ai', OpenRouter: 'https://openrouter.ai', hf: 'https://huggingface.co', 'Hugging Face': 'https://huggingface.co', epoch: 'https://epoch.ai', 'Epoch AI': 'https://epoch.ai', aa: 'https://artificialanalysis.ai', 'Artificial Analysis': 'https://artificialanalysis.ai' };
+  const HOME = { uso: 'https://openrouter.ai/rankings', openrouter: 'https://openrouter.ai', OpenRouter: 'https://openrouter.ai', hf: 'https://huggingface.co', 'Hugging Face': 'https://huggingface.co', epoch: 'https://epoch.ai', 'Epoch AI': 'https://epoch.ai', aa: 'https://artificialanalysis.ai', 'Artificial Analysis': 'https://artificialanalysis.ai' };
   const c = d.catalog;
   const age = daysAgo(c.generated);
   const cls = age <= 1.5 ? 'st-ok' : age <= 7 ? 'st-warn' : 'st-bad';
