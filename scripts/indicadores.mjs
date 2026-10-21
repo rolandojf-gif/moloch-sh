@@ -324,6 +324,27 @@ async function metrBlock(ctx) {
 }
 
 /* ── Valoraciones del observatorio derivadas de reglas ─────────────────── */
+const es = v => String(v).replace('.', ',');
+const dia = d => new Date(d + 'T00:00:00Z').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const MONTH_DAYS = 30.44;
+/* Desfase del rival más cercano en la fecha del plazo: días desde que el líder publicó por primera vez un modelo
+   de su nivel. Rango previsto en meses [lo, hi]; un mes son 30,44 días. */
+function monthsRule(st, lo, hi, { names = {}, sentido, pide, extra = '' }) {
+  if (!st?.lead || !st.rivals?.length) return { v: 'sin evidencia suficiente', texto: 'Faltan datos de ECI hasta la fecha del plazo.' };
+  const name = k => names[k] || k;
+  const r = st.rivals[0], lr = r.leaderReached;
+  const lag = lr ? Math.round((Date.parse(st.date) - Date.parse(lr.date)) / 86400e3) : null;
+  const v = lag === null ? 'sin evidencia suficiente' : lag < lo * MONTH_DAYS ? 'adelantado' : lag > hi * MONTH_DAYS ? 'retrasado' : 'compatible';
+  const L = name(st.lead.key), R = name(r.key);
+  const reach = !lr ? '' : lr.date > r.date
+    ? ` ${R} llegó a ese nivel el ${dia(r.date)}; ${L}, el ${dia(lr.date)}.`
+    : ` ${L} había llegado a ese nivel el ${dia(lr.date)}; ${R}, el ${dia(r.date)}.`;
+  const cmp = { adelantado: `menos de ${lo} meses`, retrasado: `más de ${hi} meses`, compatible: `entre ${lo} y ${hi} meses` }[v];
+  return {
+    v, sentido: sentido[v] || null,
+    texto: `${L} iba primero (${st.lead.model}, ${es(st.lead.eci)} puntos ECI) y ${R} segundo (${r.model}, ${es(r.eci)}), a ${es(r.gap)} puntos${r.overlap ? ' con intervalos de confianza solapados' : ''}.${reach}${cmp ? ` Al vencer el plazo, ${R} tenía el nivel que ${L} había alcanzado ${cmp} antes; ${pide}.` : ''}${extra}`
+  };
+}
 function checks(ind, TODAY) {
   const c = {};
   const swe = ind.bench?.swe85, mid = ind.bench?.sweMid2025;
@@ -331,14 +352,14 @@ function checks(ind, TODAY) {
     const hit = swe.v && swe.v <= '2025-06-30';
     c.swe85 = mid.v === null && !swe.v
       ? { v: 'sin evidencia suficiente', texto: 'Epoch no tiene ejecuciones de SWE-bench Verified para modelos de esa época.' }
-      : { v: hit ? 'compatible' : 'retrasado', texto: hit ? `Un modelo publicado antes del plazo (${swe.model}) llega al 85 % en las ejecuciones de Epoch.` : `Ningún modelo publicado antes del 30 jun 2025 llega al 85 % en las ejecuciones de Epoch (mejor: ${mid.v ?? 'sin datos'} %). ${swe.v ? `El primero que lo alcanza se publicó el ${swe.v}.` : 'Ninguno lo alcanza todavía.'}${ind.bench?.sweBest?.v != null ? ` Hoy el mejor es ${ind.bench.sweBest.v} % (${ind.bench.sweBest.model}).` : ''}` };
+      : { v: hit ? 'compatible' : 'retrasado', texto: hit ? `Un modelo publicado antes del plazo (${swe.model}) llega al 85 % en las ejecuciones de Epoch.` : `Ningún modelo publicado antes del 30 jun 2025 llega al 85 % en las ejecuciones de Epoch (mejor: ${mid.v != null ? es(mid.v) : 'sin datos'} %). ${swe.v ? `El primero que lo alcanza se publicó el ${swe.v}.` : 'Ninguno lo alcanza todavía.'}` };
   }
   const s = ind.eci?.series?.points;
   if (s) {
     const closed = ind.eci.agent0?.closed, open = ind.eci.agent0?.open;
     if (closed && open) {
       const ok = open.eci >= closed.eci - SAME_ECI;
-      c.openAgent0 = { v: ok ? 'compatible' : 'retrasado', texto: `Mejor modelo cerrado a 31 dic 2025: ${closed.model} (${closed.eci}). Mejor de pesos abiertos a 30 abr 2026: ${open.model} (${open.eci}). Regla: «iguala» si queda a menos de ${SAME_ECI} punto ECI, el criterio de Epoch.` };
+      c.openAgent0 = { v: ok ? 'compatible' : 'retrasado', texto: `Mejor modelo cerrado a 31 dic 2025: ${closed.model} (${es(closed.eci)}). Mejor de pesos abiertos a 30 abr 2026: ${open.model} (${es(open.eci)}). Regla: «iguala» si queda a menos de ${SAME_ECI} punto ECI, el criterio de Epoch.` };
     } else c.openAgent0 = { v: 'sin evidencia suficiente', texto: 'Faltan datos de ECI para alguna de las dos fechas.' };
   }
   const oa = ind.companies?.openai2025;
@@ -347,9 +368,21 @@ function checks(ind, TODAY) {
     else {
       const rel = oa.v / 18e9 - 1;
       const v = rel > REV_TOLERANCE ? 'adelantado' : rel < -REV_TOLERANCE ? 'retrasado' : 'compatible';
-      c.openaiRev2025 = { v, texto: `Último dato de Epoch hasta el 31 dic 2025: ${Math.round(oa.v / 1e8) / 10} mil millones de $ anualizados (${oa.asOf}), frente a 18 previstos (${rel >= 0 ? '+' : ''}${Math.round(rel * 100)} %; margen de «compatible»: ±${REV_TOLERANCE * 100} %).` };
+      c.openaiRev2025 = { v, texto: `Último dato de Epoch hasta el 31 dic 2025: ${es(Math.round(oa.v / 1e8) / 10)} mil millones de $ anualizados (${oa.asOf}), frente a 18 previstos (${rel >= 0 ? '+' : ''}${Math.round(rel * 100)} %; margen de «compatible»: ±${REV_TOLERANCE * 100} %).` };
     }
   }
+  // Predicciones escritas en meses: se comparan fechas observadas, nunca una conversión de puntos en meses.
+  const rv = ind.eci?.rivals2025;
+  if (rv) c.rivales39 = monthsRule(rv, 3, 9, {
+    pide: 'la predicción pedía entre 3 y 9 meses',
+    sentido: { adelantado: 'Los rivales iban más cerca de lo previsto', retrasado: 'El líder iba más destacado de lo previsto', compatible: 'Distancia dentro de lo previsto' }
+  });
+  const uc = ind.eci?.usCn2026;
+  if (uc) c.deepcent6 = monthsRule(uc, 4, 8, {
+    names: { US: 'EE. UU.', CN: 'China' }, pide: '«unos seis meses» se da por cumplido entre 4 y 8',
+    sentido: { adelantado: 'China iba más cerca de lo previsto', retrasado: 'China iba más lejos de lo previsto', compatible: 'Distancia como la prevista' },
+    extra: ' El 12 % del cómputo no se valora: no hay una estimación propia del cómputo chino.'
+  });
   for (const k of Object.keys(c)) c[k].fecha = TODAY;
   return c;
 }

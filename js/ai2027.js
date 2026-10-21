@@ -23,7 +23,7 @@ const plain = (v, due) => !v ? 'Sin valoración' : v.v === 'todavía no evaluabl
 function resolve(val, checks) {
   if (!val?.regla) return val;
   const c = checks?.[val.regla];
-  return c ? { ...val, v: c.v, texto: c.texto, fecha: c.fecha } : { ...val, v: 'sin evidencia suficiente', texto: 'La regla no ha podido calcularse en la última recogida.' };
+  return c ? { ...val, v: c.v, texto: c.texto, fecha: c.fecha, sentido: c.sentido || null } : { ...val, v: 'sin evidencia suficiente', texto: 'La regla no ha podido calcularse en la última recogida.' };
 }
 const valOf = (h, quien, checks) => resolve((h.valoraciones || []).find(v => v.quien === quien), checks) || null;
 
@@ -51,7 +51,7 @@ function hito(h, ind, checks, today) {
   const rest = (h.evidencia || []).filter(e => !(e.tipo === 'medida' && e.indicador));
   const r = (h.revisiones || []).length;
   return `<article class="hito${due && o?.v === 'todavía no evaluable' ? ' overdue' : ''}" id="hito-${esc(h.id)}">
-    <div class="verdict ${cls(o?.v)}"><span class="lbl">Valoración del observatorio</span><b>${esc(plain(o, due))}</b>${o?.regla ? '<small>Calculada con una regla explícita en cada recogida.</small>' : ''}</div>
+    <div class="verdict ${cls(o?.v)}"><span class="lbl">Valoración del observatorio</span><b>${esc(plain(o, due))}</b>${o?.sentido ? `<span class="sentido">${esc(o.sentido)}</span>` : ''}${o?.regla ? '<small>Calculada con una regla explícita en cada recogida.</small>' : ''}</div>
     <div class="hito-main">
       <h4>${esc(h.titulo)}</h4>
       <div class="when">Para <b>${esc(h.plazo_texto)}</b> (${esc(fmtDate(h.plazo))}) · ${esc(when(h, today))}</div>

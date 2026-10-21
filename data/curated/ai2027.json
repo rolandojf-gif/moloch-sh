@@ -342,6 +342,8 @@
           "cita": "We imagine the others to be 3–9 months behind OpenBrain.",
           "plazo": "2025-12-31",
           "plazo_texto": "finales de 2025",
+          "operacionalizacion": "OpenBrain es ficticio: se toma como líder al laboratorio con el mejor ECI publicado hasta el 31 dic 2025. Para el rival más cercano se busca la primera fecha en que el líder publicó un modelo de su nivel; la predicción se cumple si esa fecha cae entre 3 y 9 meses antes del plazo. Son fechas observadas: no se convierten puntos ECI en meses.",
+          "comparabilidad": "El escenario habla de la ventaja de OpenBrain con modelos internos que no publica. El ECI sólo mide modelos publicados, así que una ventaja interna sin anunciar no se vería.",
           "revisiones": [],
           "evidencia": [
             { "tipo": "medida", "indicador": "eci.rivals2025", "momento": "plazo" },
@@ -350,7 +352,7 @@
           ],
           "valoraciones": [
             { "quien": "autores", "v": "adelantado", "fecha": "2026-02-12", "texto": "La competencia está más igualada de lo previsto: el alcance de los rivales que el escenario sitúa en 2026 ya se ha producido.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
-            { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "El observatorio no convierte distancias en meses. En puntos ECI, la distancia entre los dos primeros laboratorios es la del indicador; si sus intervalos se solapan, no puede afirmarse que haya un líder." }
+            { "quien": "observatorio", "regla": "rivales39" }
           ]
         },
         {
@@ -384,6 +386,8 @@
           "cita": "…they are about six months behind the best OpenBrain models.",
           "plazo": "2026-08-31",
           "plazo_texto": "mediados de 2026",
+          "operacionalizacion": "DeepCent es ficticio: se compara el mejor modelo de una organización china con el mejor de una estadounidense publicados hasta el 31 ago 2026, buscando la primera fecha en que EE. UU. publicó un modelo del nivel chino. «Unos seis meses» se da por cumplido entre 4 y 8 meses. El 12 % del cómputo no se valora: el observatorio no tiene una estimación propia del cómputo chino y las ventas por país del diseñador no dicen dónde se usan los chips.",
+          "comparabilidad": "El escenario compara con los mejores modelos de OpenBrain, incluidos los internos; el ECI sólo mide modelos publicados. País de la organización según Epoch.",
           "revisiones": [],
           "evidencia": [
             { "tipo": "medida", "indicador": "eci.usCn2026", "momento": "plazo" },
@@ -393,7 +397,7 @@
           ],
           "valoraciones": [
             { "quien": "autores", "v": "compatible", "fecha": "2026-08-16", "texto": "La distancia de unos seis meses y el 12 % les parecen razonables.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" },
-            { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "El observatorio expresa la distancia en puntos ECI, no en meses, y no tiene una estimación propia del cómputo chino: las ventas por país del diseñador no dicen dónde se usan los chips." }
+            { "quien": "observatorio", "regla": "deepcent6" }
           ]
         },
         {
