@@ -12,7 +12,7 @@
      Hugging Face /api/models/<repo>           (sin clave)  existencia de pesos, licencia, fecha del repositorio
      Epoch AI     eci_scores.csv y benchmarks.csv (CC BY 4.0) índice de capacidades ECI, SWE-bench Verified, apertura
      Artificial Analysis /api/v2/language/models/free (clave AA_API_KEY) índices de inteligencia, programación y agentes, velocidad
-     OpenRouter   /api/v1/datasets/rankings-daily (clave OPENROUTER_API_KEY, CC BY 4.0) tokens diarios de los 50 modelos más usados
+     OpenRouter   /api/v1/datasets/rankings-daily (clave OPENROUTER_API_KEY, CC BY 4.0) tokens diarios de los 50 modelos más usados (rankings de 7 y 30 días)
                   Se publica con su permiso por escrito, registrado en data/curated/permisos.json; sin él no se usa.
      Epoch AI y METR, para los indicadores: véase scripts/indicadores.mjs.
 
@@ -42,6 +42,10 @@ const FIXTURES = process.env.FIXTURES;
 const AA_KEY = process.env.AA_API_KEY || '';
 const OR_KEY = process.env.OPENROUTER_API_KEY || '';
 const USO_DAYS = 7;                                            // ranking de uso: últimos siete días UTC completos
+const USO_MES = 30;                                            // y últimos treinta
+// AA (plan gratuito) limita las consultas diarias: si la última consulta buena es reciente, se reutiliza en vez de repetirla.
+// En main basta con 6 h (la recogida diaria siempre consulta); en las ramas de prueba, 20 h, porque cada push lanza una recogida.
+const AA_REUSE_H = process.env.GITHUB_REF === 'refs/heads/main' ? 6 : 20;
 const AA_PAGES = 10;                                           // tope de páginas de 200 modelos; cada una cuenta para el límite diario de AA
 
 const SOURCES = {
@@ -353,28 +357,34 @@ async function loadAA(permiso) {
 async function loadUso(names) {
   if (!OR_KEY && !FIXTURES) { log('OPENROUTER_API_KEY ausente: sin ranking de uso'); return null; }
   const day = n => new Date(NOW.getTime() - n * 86400e3).toISOString().slice(0, 10);
-  const from = day(USO_DAYS), to = day(1);
+  const to = day(1);
   try {
-    const res = await getJSON(`${SOURCES.uso.api}?start_date=${from}&end_date=${to}`, { authorization: `Bearer ${OR_KEY}` });
+    // Una sola consulta de USO_MES días; la semana sale de los últimos USO_DAYS.
+    const res = await getJSON(`${SOURCES.uso.api}?start_date=${day(USO_MES)}&end_date=${to}`, { authorization: `Bearer ${OR_KEY}` });
     const rows = Array.isArray(res) ? res : res.data || res.rows || [];
     if (rows[0]) log(`ranking de uso: ${rows.length} filas; campos ${Object.keys(rows[0]).join(', ')}`);
     const slugOf = r => r.model_permaslug || r.permaslug || r.model || r.model_slug || null;
     const tokOf = r => { const t = Number(r.total_tokens ?? r.tokens ?? ((Number(r.prompt_tokens) || 0) + (Number(r.completion_tokens) || 0))); return Number.isFinite(t) ? t : 0; };
-    const per = new Map(); let total = 0; const days = new Set();
-    for (const r of rows) {
-      const t = tokOf(r); total += t; if (r.date) days.add(String(r.date).slice(0, 10));
-      const slug = slugOf(r);
-      if (!slug || /^other$/i.test(slug)) continue;
-      per.set(slug, (per.get(slug) || 0) + t);
-    }
-    if (!per.size) throw new Error('respuesta sin filas de modelos');
     // Permaslug = id de OpenRouter con sufijo de fecha o versión; se empareja con el id más largo que sea prefijo.
     const ids = [...names.keys()].sort((a, b) => b.length - a.length);
     const who = slug => names.get(slug) || names.get(ids.find(id => slug.startsWith(id + '-'))) || null;
-    const top = [...per.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([slug, t], i) => ({ rank: i + 1, slug, id: who(slug)?.id || null, name: who(slug)?.name || null, tokens: t, share: total ? Math.round(t / total * 1000) / 10 : null }));
-    const asOf = res.as_of || res.asOf || [...days].sort().pop() || to;
-    log(`ranking de uso ${from}…${to}: ${top.map(r => `${r.rank}. ${r.slug} ${(r.tokens / 1e9).toFixed(0)} mil M`).join(' | ')}`);
-    return { from, to, asOf, days: days.size || USO_DAYS, total, top, got: NOW_ISO, src: 'uso', url: SOURCES.uso.url };
+    const window = n => {
+      const from = day(n);
+      const per = new Map(); let total = 0; const days = new Set();
+      for (const r of rows) {
+        const d = String(r.date || '').slice(0, 10);
+        if (d && (d < from || d > to)) continue;
+        const t = tokOf(r); total += t; if (d) days.add(d);
+        const slug = slugOf(r);
+        if (!slug || /^other$/i.test(slug)) continue;
+        per.set(slug, (per.get(slug) || 0) + t);
+      }
+      if (!per.size) throw new Error('respuesta sin filas de modelos');
+      const top = [...per.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([slug, t], i) => ({ rank: i + 1, slug, id: who(slug)?.id || null, name: who(slug)?.name || null, tokens: t, share: total ? Math.round(t / total * 1000) / 10 : null }));
+      log(`ranking de uso ${from}…${to}: ${top.map(r => `${r.rank}. ${r.slug} ${(r.tokens / 1e9).toFixed(0)} mil M`).join(' | ')}`);
+      return { from, to, asOf: res.as_of || res.asOf || [...days].sort().pop() || to, days: days.size || n, total, top, got: NOW_ISO, src: 'uso', url: SOURCES.uso.url };
+    };
+    return { semana: window(USO_DAYS), mes: window(USO_MES) };
   } catch (e) {
     log(`ranking de uso falló: ${e.message}`);
     return undefined;
@@ -688,7 +698,10 @@ async function main() {
   try { orModels = await loadOpenRouter(labs, excl); }
   catch (e) { console.error('[collect] OpenRouter falló; no se escribe nada:', e.message); process.exit(2); }
 
-  const aaRes = await loadAA(permisos.aa);
+  const aaPrevGot = prevCatalog?.status?.aa?.ok ? prevCatalog.status.aa.got : null;
+  const aaReuse = !FIXTURES && aaPrevGot && (NOW - new Date(aaPrevGot)) / 3600e3 < AA_REUSE_H && prevCatalog?.models?.some(m => m.aa);
+  if (aaReuse) log(`Artificial Analysis: se reutiliza la consulta de ${aaPrevGot} (menos de ${AA_REUSE_H} h) para no gastar el cupo diario`);
+  const aaRes = aaReuse ? undefined : await loadAA(permisos.aa);
   const usoRes = await loadUso(orModels.names);
   const aaRows = aaRes ? aaRes.rows : aaRes;
   const aaVersion = aaRes ? aaRes.version : (aaRes === undefined ? prevCatalog?.aaIndexVersion ?? null : null);
@@ -699,7 +712,7 @@ async function main() {
     openrouter: { ok: true, got: NOW_ISO },
     hf: { ok: true, got: NOW_ISO, failed: 0 },
     epoch: ep === 'keep' ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores' } : { ok: true, got: NOW_ISO, ...(ep.sweFailed ? { note: 'SWE-bench no disponible en esta recogida' } : {}) },
-    aa: aaRows === null ? { ok: false, optional: true, reason: !AA_KEY ? 'no conectado' : 'sin permiso de publicación' } : aaRows === undefined ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores', lastOk: prevCatalog?.status?.aa?.got || prevCatalog?.status?.aa?.lastOk || null } : { ok: true, got: NOW_ISO }
+    aa: aaReuse ? { ok: true, got: aaPrevGot, reused: true } : aaRows === null ? { ok: false, optional: true, reason: !AA_KEY ? 'no conectado' : 'sin permiso de publicación' } : aaRows === undefined ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores', lastOk: prevCatalog?.status?.aa?.got || prevCatalog?.status?.aa?.lastOk || null } : { ok: true, got: NOW_ISO }
   };
   status.uso = usoRes === null ? { ok: false, optional: true, reason: 'no conectado' } : usoRes === undefined ? { ok: false, reason: 'la consulta falló; se conserva el ranking anterior', lastOk: prevCatalog?.uso?.got || null } : { ok: true, got: NOW_ISO };
 
@@ -817,7 +830,8 @@ async function main() {
     },
     models,
     excluded: orModels.excluded || prevCatalog?.excluded || [],
-    uso: usoRes || (usoRes === undefined && prevCatalog?.uso ? { ...prevCatalog.uso, stale: true } : null),
+    uso: usoRes ? usoRes.semana : (usoRes === undefined && prevCatalog?.uso ? { ...prevCatalog.uso, stale: true } : null),
+    usoMes: usoRes ? usoRes.mes : (usoRes === undefined && prevCatalog?.usoMes ? { ...prevCatalog.usoMes, stale: true } : null),
     curatedEvents,
     history: histFiles.map(f => f.slice(0, 10))
   };
