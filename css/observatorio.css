@@ -110,6 +110,7 @@ button { cursor: pointer; }
 .freshness .st-ok { color: #34D399; }
 .freshness .st-warn { color: #FBBF24; }
 .freshness .st-bad { color: #FF5C7A; }
+.freshness .st-ok a, .freshness .st-bad a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
 /* ── Vistas ───────────────────────────────────────────────────────────── */
 main { max-width: 1280px; margin: 0 auto; padding: 28px 24px 56px; }

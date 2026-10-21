@@ -34,6 +34,8 @@ async function loadData() {
 /* Antigüedad de la recogida: el observatorio sigue precios y lanzamientos, así que una semana ya es mucho. */
 function renderFreshness(d) {
   const el = $('#freshness');
+  // Web principal de cada proveedor de datos (por clave de fuente o por nombre).
+  const HOME = { openrouter: 'https://openrouter.ai', OpenRouter: 'https://openrouter.ai', hf: 'https://huggingface.co', 'Hugging Face': 'https://huggingface.co', epoch: 'https://epoch.ai', 'Epoch AI': 'https://epoch.ai', aa: 'https://artificialanalysis.ai', 'Artificial Analysis': 'https://artificialanalysis.ai' };
   const c = d.catalog;
   const age = daysAgo(c.generated);
   const cls = age <= 1.5 ? 'st-ok' : age <= 7 ? 'st-warn' : 'st-bad';
@@ -41,7 +43,9 @@ function renderFreshness(d) {
   const warn = age > 7 ? ' · DATOS DESACTUALIZADOS' : age > 1.5 ? ' · comprobar la recogida' : '';
   const st = Object.entries(c.status || {}).filter(([, s]) => !s.optional).map(([k, s]) => {
     const name = c.sources?.[k]?.name || k;
-    return s.ok ? `<span class="st-ok">● ${esc(name)}</span>` : `<span class="st-bad" title="${esc(s.reason || '')}">○ ${esc(name)}: ${esc(s.reason || 'sin datos')}</span>`;
+    const home = HOME[k] || HOME[name];
+    const lbl = home ? `<a href="${home}" target="_blank" rel="noopener">${esc(name)}</a>` : esc(name);
+    return s.ok ? `<span class="st-ok">● ${lbl}</span>` : `<span class="st-bad" title="${esc(s.reason || '')}">○ ${lbl}: ${esc(s.reason || 'sin datos')}</span>`;
   }).join('');
   // Indicadores de La carrera y AI 2027: una sola marca si todo va bien; cada fuente que falle, por separado.
   const IND = { epoch_dc: 'Epoch AI · centros de datos', epoch_chips: 'Epoch AI · chips', epoch_companies: 'Epoch AI · empresas', epoch_models: 'Epoch AI · cómputo de entrenamiento', metr: 'METR' };
