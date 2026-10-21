@@ -250,17 +250,20 @@ async function loadEpoch() {
 
 /* Frontera por fecha según Epoch: máximo acumulado del ECI en cada grupo de apertura. */
 function epochFrontier(rows) {
-  const pts = [];
+  const pts = [], models = [];
   const best = { open: null, closed: null };
-  const sorted = rows.filter(r => r.date && (r.group === 'Open weights' || r.group === 'Closed weights')).sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = rows.filter(r => r.date && (r.group === 'Open weights' || r.group === 'Closed weights')).sort((a, b) => a.date.localeCompare(b.date) || b.eci - a.eci);
   for (const r of sorted) {
     const g = r.group === 'Open weights' ? 'open' : 'closed';
-    if (!best[g] || r.eci > best[g].v) {
+    const rec = !best[g] || r.eci > best[g].v;
+    if (rec) {
       best[g] = { v: r.eci, name: r.name };
       pts.push({ date: r.date, open: best.open, closed: best.closed });
     }
+    // Todos los modelos puntuados, para dibujarlos junto a la frontera como hace Epoch.
+    models.push({ d: r.date, v: r.eci, g: g[0], n: r.name, org: (r.org || '').split(',')[0].trim() || null, lo: r.lo, hi: r.hi, rec });
   }
-  return pts;
+  return { points: pts, models };
 }
 
 /* ── Artificial Analysis ────────────────────────────────────────────────── */
@@ -669,7 +672,7 @@ async function main() {
     sources: SOURCES,
     status,
     aaIndexVersion: aaVersion ?? curated.aaIndexVersion ?? null,
-    epochFrontier: ep === 'keep' ? (prevCatalog?.epochFrontier || null) : { points: epochFrontier(ep.rows), got: NOW_ISO, src: 'epoch', url: SOURCES.epoch.url, n: ep.rows.length },
+    epochFrontier: ep === 'keep' ? (prevCatalog?.epochFrontier || null) : { ...epochFrontier(ep.rows), got: NOW_ISO, src: 'epoch', url: SOURCES.epoch.url, n: ep.rows.length },
     method: {
       capability: `En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index${aaVersion ? ` v${aaVersion}` : ''}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.`,
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',

@@ -1,5 +1,5 @@
 /* Vista «Modelos»: comparador, ficha desplegable, comparación de hasta tres y evolución de la frontera. */
-import { esc, fact, src, usd, num, tokens, fmtDate, country, blended, ii, coding, agentic, eci, swe, aaConfig, aaIndexName, speed, priceBasis, ND, AA_LINK } from './fmt.js';
+import { esc, fact, src, usd, num, tokens, fmtDate, country, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, speed, priceBasis, ND, AA_LINK } from './fmt.js';
 import { frontier } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -43,7 +43,7 @@ function speedCell(m) {
   const s = speed(m);
   if (!s) return ND;
   const ttft = s.ttft !== null && s.ttft !== undefined ? `${num(s.ttft, 2)} s` : 'sin datos';
-  return `<span class="big">${num(s.tps, 0)}</span> tok/s${src(s.f)}<span class="m-sub">espera inicial ${ttft}</span><span class="m-sub">${esc(s.provider)}</span>`;
+  return `<span class="big">${num(s.tps, 0)}</span> tok/s${src(s.f)}<span class="m-sub">espera inicial ${ttft}</span><span class="m-sub" title="${esc(s.provider)}">${esc(s.short)}</span>`;
 }
 
 function detail(m) {
@@ -100,7 +100,7 @@ function renderTable() {
       <td class="c-sel" data-label="Comparar"><input type="checkbox" aria-label="Comparar ${esc(m.name)}" data-cmp="${esc(m.id)}"${checked ? ' checked' : ''}${dis ? ' disabled' : ''}></td>
       <td class="c-name"><div class="m-name">${esc(m.name)}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></td>
       <td data-label="Pesos">${weightsBadge(m)}${m.license.v && m.weights.v === 'abiertos' ? `<span class="m-sub">${esc(m.license.v)}</span>` : ''}</td>
-      <td class="num" data-label="Inteligencia (AA)">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfig(m) ? `<span class="m-sub">${esc(aaConfig(m))}</span>` : ''}` : ND}</td>
+      <td class="num" data-label="Inteligencia (AA)">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfigShort(m) ? `<span class="m-sub" title="Configuración de AA con mayor índice: ${esc(aaConfig(m))}">${esc(aaConfigShort(m))}</span>` : ''}` : ND}</td>
       <td class="num" data-label="ECI (Epoch)">${m.epoch ? fact(m.epoch.eci, v => num(v)) : ND}</td>
       <td class="num" data-label="Velocidad">${speedCell(m)}</td>
       <td class="num" data-label="Entrada / salida">${fact(m.price.in, usd)}<span class="m-sub">${fact(m.price.out, usd)}</span>${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}, el más barato` : ''}</span>` : ''}</td>
@@ -152,15 +152,14 @@ function renderFrontier() {
   const el = $('#mx-frontier');
   const f = D.catalog.epochFrontier;
   const series = (f?.points || []).map(p => ({
-    date: p.date, version: 'eci',
-    open: p.open?.v ?? null, closed: p.closed?.v ?? null, openName: p.open?.name, closedName: p.closed?.name
+    date: p.date, open: p.open, closed: p.closed, openName: p.open?.name, closedName: p.closed?.name
   }));
-  if (!frontier(el, series, { step: true, yLabel: 'Epoch Capabilities Index (ECI)' })) {
+  if (!frontier(el, series, { models: f?.models || null, yLabel: 'Epoch Capabilities Index (ECI)' })) {
     el.innerHTML = '<div class="chart-empty">Sin datos: Epoch AI no estaba disponible en la recogida.</div>';
   }
   const last = series[series.length - 1];
-  const gap = last && last.open !== null && last.closed !== null ? Math.round((last.closed - last.open) * 10) / 10 : null;
-  $('#mx-frontier-note').innerHTML = `<span class="lbl">Cómo leerlo</span>Cada línea es el mejor ECI alcanzado hasta esa fecha por un modelo con pesos abiertos y por uno cerrado, entre los ${f?.n ?? 'sin datos'} modelos que puntúa Epoch AI (incluidos los que no están en OpenRouter). Fuente: <a href="${esc(f?.url || 'https://epoch.ai/benchmarks/eci')}" target="_blank" rel="noopener">Epoch AI</a>, CC BY 4.0, consulta ${esc((f?.got || '').slice(0, 10))}.${gap !== null ? ` Distancia actual: ${num(gap)} puntos ECI (${esc(last.closedName)} frente a ${esc(last.openName)}).` : ''} Unos puntos de diferencia no equivalen a meses de retraso.`;
+  const gap = last && last.open && last.closed ? Math.round((last.closed.v - last.open.v) * 10) / 10 : null;
+  $('#mx-frontier-note').innerHTML = `<span class="lbl">Cómo leerlo</span>Cada línea es el mejor ECI alcanzado hasta esa fecha por un modelo con pesos abiertos y por uno cerrado; los puntos claros son el resto de modelos. Con nombre, el líder actual de cada grupo y los mayores saltos. Al pasar el cursor por un punto aparece su ficha. Datos de los ${f?.n ?? 'sin datos'} modelos que puntúa Epoch AI (incluidos los que no están en OpenRouter). Fuente: <a href="${esc(f?.url || 'https://epoch.ai/benchmarks/eci')}" target="_blank" rel="noopener">Epoch AI</a>, CC BY 4.0, consulta ${esc((f?.got || '').slice(0, 10))}.${gap !== null ? ` Distancia actual: ${num(gap)} puntos ECI (${esc(last.closedName)} frente a ${esc(last.openName)}).` : ''} Unos puntos de diferencia no equivalen a meses de retraso.`;
 }
 
 export function renderModelos(d) {

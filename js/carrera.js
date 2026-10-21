@@ -1,7 +1,7 @@
 /* Vista «La carrera»: distancias en la frontera y seis frentes con hechos, indicadores y una lectura marcada como interpretación. */
-import { esc, fmtDate, ND } from './fmt.js';
-import { indicatorRow, indicatorKpi } from './indicadores.js';
-import { gaps } from './charts.js';
+import { esc, fmtDate, num, ND } from './fmt.js';
+import { indicatorRow, indicatorKpi, mw, mh100, usdB, PAIS } from './indicadores.js';
+import { gaps, hbars, columns, dotci, recordChart, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
 export const ESTADO = { abierta: 'Hipótesis abierta', confirmada: 'Hipótesis confirmada', debilitada: 'Hipótesis debilitada' };
@@ -30,10 +30,78 @@ function lectura(l) {
   </aside>`;
 }
 
+/* Gráficos de cada frente: { title, note, url, draw(el) }. Sólo con datos recogidos; si faltan, el frente no lleva gráfico. */
+const quarter = d => { const t = new Date(d + 'T00:00:00Z'); return `T${Math.floor(t.getUTCMonth() / 3) + 1} ${t.getUTCFullYear()}`; };
+const EPOCH = (name, url) => `Fuente: <a href="${esc(url)}" target="_blank" rel="noopener">Epoch AI, ${esc(name)}</a>, CC BY 4.0.`;
+const CHARTS = {
+  computo: I => [
+    I.chips?.quarters?.length && {
+      title: 'Chips de IA entregados por trimestre',
+      note: `${EPOCH('«AI chip sales»', I.chips.cum?.url || 'https://epoch.ai/data/ai-chip-sales')} En equivalentes de H100 (H100e).${I.chips.cum?.incomplete ? ' El último trimestre, en gris, está incompleto.' : ''}`,
+      draw: el => {
+        const q = I.chips.quarters;
+        let acc = 0;
+        columns(el, q.map((r, i) => {
+          acc += r.h100e;
+          const part = i === q.length - 1 && I.chips.cum?.incomplete;
+          return { label: quarter(r.d), v: r.h100e, cls: part ? 'part' : '', tip: tip(quarter(r.d), [['Entregados', mh100(r.h100e)], ['Acumulado desde el inicio de la serie', mh100(acc)], ['Estado', part ? 'trimestre incompleto' : null]]) };
+        }), { fmt: v => v >= 1e6 ? `${num(v / 1e6, 0)} M` : `${num(v / 1e3, 0)} K`, yLabel: 'H100e', every: 4, aria: 'Chips de IA entregados por trimestre' });
+      }
+    },
+    I.chips?.makers?.length && {
+      title: 'Chips entregados por fabricante, acumulado',
+      note: `${EPOCH('«AI chip sales»', I.chips.cum?.url || 'https://epoch.ai/data/ai-chip-sales')} Naranja: diseñador estadounidense. Verde: chino.`,
+      draw: el => hbars(el, I.chips.makers.map(r => ({ label: r.maker, v: r.h100e, cls: r.country === 'US' ? 'us' : r.country === 'CN' ? 'cn' : 'dim', value: mh100(r.h100e), tip: tip(r.maker, [['Acumulado', mh100(r.h100e)], ['País del diseñador', r.country === 'US' ? 'EE. UU.' : r.country === 'CN' ? 'China' : r.country]]) })), { aria: 'Chips por fabricante' })
+    }
+  ],
+  energia: I => [
+    I.dc?.countries?.length && {
+      title: 'Potencia de TI en servicio por país',
+      note: `${EPOCH('«AI data centers»', I.dc.now?.url || 'https://epoch.ai/data/data-centers')} Sólo los centros que sigue Epoch; no es el total mundial.`,
+      draw: el => hbars(el, I.dc.countries.map(r => ({ label: r.country === 'US' ? 'EE. UU.' : r.country === 'CN' ? 'China' : 'Otros países', v: r.mw, cls: r.country === 'US' ? 'us' : r.country === 'CN' ? 'cn' : 'dim', value: mw(r.mw), tip: tip(r.country === 'US' ? 'EE. UU.' : r.country === 'CN' ? 'China' : 'Otros países', [['Potencia de TI', mw(r.mw)], ['Centros', num(r.n, 0)], ['Cómputo', mh100(r.h100e)]]) })), { aria: 'Potencia por país' })
+    },
+    I.dc?.top?.length && {
+      title: 'Los centros con más potencia en servicio',
+      note: EPOCH('«AI data centers»', I.dc.now?.url || 'https://epoch.ai/data/data-centers'),
+      draw: el => hbars(el, I.dc.top.map(r => ({ label: r.name, v: r.mw, value: mw(r.mw), tip: tip(r.name, [['Potencia de TI', mw(r.mw)], ['Propietario', r.owner], ['Usuarios', r.users], ['País', PAIS[r.country] || r.country], ['Cómputo', r.h100e ? mh100(r.h100e) : null]]) })), { aria: 'Centros con más potencia' })
+    }
+  ],
+  agentes: I => [
+    I.bench?.sweSeries?.v?.length && {
+      title: 'Mejor resultado en SWE-bench Verified',
+      note: `Ejecuciones propias de ${EPOCH('«SWE-bench Verified»', I.bench.sweSeries.url).replace('Fuente: ', '')} Por fecha de publicación del modelo. La línea discontinua es la predicción de AI 2027 para mediados de 2025.`,
+      draw: el => recordChart(el, I.bench.sweSeries.v, { yLabel: '% resuelto', unit: ' %', ref: { v: 85, label: 'AI 2027: 85 % a mediados de 2025' } })
+    }
+  ],
+  evaluacion: I => [
+    I.bench?.tasks?.v?.length && {
+      title: 'Mejor resultado en cada evaluación',
+      note: `${EPOCH('«Benchmarking»', I.bench.tasks.url)} Evaluaciones ejecutadas por Epoch con al menos 5 modelos. En rojo, las saturadas (90 % o más).`,
+      draw: el => hbars(el, I.bench.tasks.v.slice().sort((a, b) => b.best - a.best).map(t => ({ label: t.task, v: t.best, cls: t.best >= 90 ? 'hit' : '', value: `${num(t.best, 1)} %`, tip: tip(t.task, [['Mejor resultado', `${num(t.best, 1)} %`], ['Modelo', t.model], ['Publicado', t.release ? fmtDate(t.release) : null], ['Modelos evaluados', num(t.models, 0)]]) })), { max: 100, ref: { v: 90, label: 'saturada' }, aria: 'Mejor resultado por evaluación' })
+    }
+  ],
+  economia: I => [
+    I.companies?.revenue?.length && {
+      title: 'Ingresos anualizados por empresa, último dato',
+      note: `${EPOCH('«AI companies»', 'https://epoch.ai/data/ai-companies')} Informes de prensa y de las empresas; las fechas y el tipo de cifra varían, véanse en cada barra.`,
+      draw: el => hbars(el, I.companies.revenue.map(f => ({ label: `${f.company} · ${fmtDate(f.asOf)}`, v: f.v, value: usdB(f.v).replace(' mil millones de $', ' mil M$'), tip: tip(f.company, [['Ingresos anualizados', usdB(f.v)], ['Fecha del dato', fmtDate(f.asOf)], ['Tipo', f.type], ['Confianza de Epoch', f.confidence]]) })), { aria: 'Ingresos anualizados por empresa' })
+    }
+  ],
+  coordinacion: I => [
+    I.eci?.labs?.length && {
+      title: 'Mejor modelo de cada laboratorio (ECI)',
+      note: `${EPOCH('«Epoch Capabilities Index»', I.eci.frontier?.url || 'https://epoch.ai/benchmarks/eci')} La raya es el intervalo de confianza del 90 %: si dos rayas se solapan, no puede afirmarse cuál va primero.`,
+      draw: el => dotci(el, I.eci.labs.map(r => ({ label: r.org, v: r.eci, lo: r.ci?.[0] ?? null, hi: r.ci?.[1] ?? null, tip: tip(r.org, [['Modelo', r.model], ['ECI', num(r.eci, 1)], ['Intervalo', r.ci?.[0] != null ? `${num(r.ci[0], 1)}–${num(r.ci[1], 1)}` : null], ['Publicado', fmtDate(r.date)]]) })), { unit: 'puntos ECI', aria: 'Mejor ECI por laboratorio' })
+    }
+  ]
+};
+const chartsOf = (f, ind) => ind && CHARTS[f.id] ? CHARTS[f.id](ind).filter(Boolean) : [];
+
 function front(f, i, ind) {
   const n = String(i + 1).padStart(2, '0');
   return `<article class="front" id="frente-${esc(f.id)}" aria-labelledby="fh-${esc(f.id)}">
     <header class="front-head"><span class="front-n">${n}</span><div><h3 id="fh-${esc(f.id)}">${esc(f.titulo)}</h3><p class="q">${esc(f.pregunta)}</p></div></header>
+    ${chartsOf(f, ind).length ? `<div class="front-charts">${chartsOf(f, ind).map((c, k) => `<figure class="fchart"><figcaption>${esc(c.title)}</figcaption><div class="chart" id="fc-${esc(f.id)}-${k}"></div><p class="note">${c.note}</p></figure>`).join('')}</div>` : ''}
     <div class="front-body">
       <div class="front-data">
         <h4>Datos</h4>
@@ -65,6 +133,7 @@ export function renderCarrera(d) {
   }
   $('#ca-index').innerHTML = cur.frentes.map((f, i) => `<a href="#frente-${esc(f.id)}" data-jump><i>${String(i + 1).padStart(2, '0')}</i>${esc(f.titulo)}</a>`).join('');
   $('#ca-fronts').innerHTML = cur.frentes.map((f, i) => front(f, i, ind)).join('');
+  for (const f of cur.frentes) chartsOf(f, ind).forEach((c, k) => c.draw(document.getElementById(`fc-${f.id}-${k}`)));
   /* Los anclajes internos no deben cambiar de vista: se desplaza sin tocar el hash. */
   $('#ca-index').addEventListener('click', e => {
     const a = e.target.closest('a[data-jump]');

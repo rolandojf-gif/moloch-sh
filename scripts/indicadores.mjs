@@ -112,7 +112,7 @@ function eciBlock(rows, ctx) {
       overlap: l1 && l2 && l1.lo !== null && l2.hi !== null ? l1.lo <= l2.hi : null,
       note: 'mejor modelo del primer laboratorio menos el del segundo'
     }),
-    labs: labs.slice(0, 6).map(r => ({ org: firstOrg(r.org), model: r.name, eci: r.eci, date: r.date })),
+    labs: labs.slice(0, 8).map(r => ({ org: firstOrg(r.org), model: r.name, eci: r.eci, date: r.date, ci: [r.lo, r.hi] })),
     series: { points: series, src: 'epoch', url, got: ctx.NOW_ISO }
   };
 }
@@ -137,6 +137,12 @@ function benchBlock(bench, ctx) {
   const swe = ok.filter(r => /^swe-bench verified$/i.test(r.task || ''))
     .map(r => ({ v: n(r['Best score (across scorers)']), model: r['Display name'] || r.Model, release: r['Version release date'] || (r.started_at || '').slice(0, 10) }));
   const sweBest = swe.slice().sort((a, b) => b.v - a.v)[0] || null;
+  // Serie para el gráfico: mejor resultado de cada modelo por fecha de publicación, marcando los récords.
+  const perModel = new Map();
+  for (const r of swe) if (r.release && (!perModel.has(r.model) || r.v > perModel.get(r.model).v)) perModel.set(r.model, r);
+  let top = -1;
+  const sweSeries = [...perModel.values()].sort((a, b) => a.release.localeCompare(b.release) || b.v - a.v)
+    .map(r => { const rec = r.v > top; if (rec) top = r.v; return { d: r.release, v: r1(r.v * 100), n: r.model, rec }; });
   const first85 = swe.filter(s => s.v >= 0.85 && s.release).sort((a, b) => a.release.localeCompare(b.release))[0] || null;
   const byMid2025 = swe.filter(s => s.release && s.release <= '2025-06-30').sort((a, b) => b.v - a.v)[0] || null;
 
@@ -145,6 +151,7 @@ function benchBlock(bench, ctx) {
     saturated: fact(list.length ? saturated : null, 'epoch', PAGES.bench, TODAY, { of: list.length, note: 'evaluaciones cuyo mejor resultado alcanza el 90 %' }),
     sweBest: fact(sweBest ? r1(sweBest.v * 100) : null, 'epoch', PAGES.swe, sweBest?.release || TODAY, { model: sweBest?.model || null, note: 'SWE-bench Verified ejecutado por Epoch' }),
     swe85: fact(first85 ? first85.release : null, 'epoch', PAGES.swe, TODAY, { model: first85?.model || null, score: first85 ? r1(first85.v * 100) : null, note: 'fecha de publicación del primer modelo que llega al 85 % en las ejecuciones de Epoch' }),
+    sweSeries: fact(sweSeries.length ? sweSeries : null, 'epoch', PAGES.swe, TODAY, { note: 'mejor resultado de cada modelo en las ejecuciones de Epoch, por fecha de publicación del modelo' }),
     sweMid2025: fact(byMid2025 ? r1(byMid2025.v * 100) : null, 'epoch', PAGES.swe, '2025-06-30', { model: byMid2025?.model || null, note: 'mejor resultado de un modelo publicado antes del 30 jun 2025' })
   };
 }

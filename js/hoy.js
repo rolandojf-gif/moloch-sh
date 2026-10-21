@@ -1,6 +1,6 @@
 /* Vista «Hoy»: qué ha cambiado, cuatro indicadores y capacidad frente a precio. */
-import { esc, fact, src, provLine, usd, num, fmtDate, blended, ii, capFact, eci, aaConfig, aaIndexName, priceBasis, ND, AA_LINK } from './fmt.js';
-import { scatter } from './charts.js';
+import { esc, fact, src, provLine, usd, num, fmtDate, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, ND, AA_LINK } from './fmt.js';
+import { scatter, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
 const KIND = { nuevo: 'Nuevo modelo', pesos: 'Pesos abiertos', precio: 'Precio del laboratorio', evaluacion: 'Evaluación independiente', retirada: 'Retirada' };
@@ -183,7 +183,16 @@ function renderScatter(d, gapPts) {
   }
   const pts = models.filter(m => blended(m) > 0).map(m => ({
     id: m.id, x: blended(m), y: ii(m), cls: m.weights.v === 'abiertos' ? 'open' : m.weights.v === 'cerrados' ? 'closed' : 'unknown',
-    label: m.name, title: `${m.name} (${m.lab.name}) · índice AA ${m.aa.intelligence.v} · ${usd(blended(m))}/M combinado · ${m.weights.v || 'pesos sin datos'}`
+    label: m.name,
+    tip: tip(m.name, [
+      ['Laboratorio', m.lab.name],
+      ['Índice AA', `${num(ii(m))}${aaConfigShort(m) ? ` (${aaConfigShort(m)})` : ''}`],
+      ['ECI (Epoch)', eci(m) !== null ? num(eci(m)) : null],
+      ['Precio combinado', `${usd(blended(m))} por millón`],
+      ['Entrada / salida', `${usd(m.price.in.v)} / ${usd(m.price.out.v)}`],
+      ['Precio de', priceBasis(m)],
+      ['Pesos', m.weights.v || 'sin datos']
+    ])
   }));
   const excluded = models.length - pts.length;
   const lo = leader(models, 'abiertos'), lc = leader(models, 'cerrados');

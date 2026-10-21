@@ -4,12 +4,12 @@ import { esc, fact, src, num, fmtDate, ND } from './fmt.js';
 
 const pts = v => `${v > 0 ? '' : v < 0 ? '−' : ''}${num(Math.abs(v), 1)} puntos ECI`;
 export const mw = v => v >= 1000 ? `${num(v / 1000, 1)} GW` : `${num(v, 0)} MW`;
-const mh100 = v => v >= 1e6 ? `${num(v / 1e6, 1)} M H100e` : `${num(Math.round(v / 1000), 0)} K H100e`;
+export const mh100 = v => v >= 1e6 ? `${num(v / 1e6, 1)} M H100e` : `${num(Math.round(v / 1000), 0)} K H100e`;
 export const usdB = v => `${num(v / 1e9, v >= 1e10 ? 0 : 1)} mil millones de $`;
 const who = b => b ? `${esc(b.model)}${b.org ? ` (${esc(b.org.split(',')[0])})` : ''}` : 'sin datos';
 const COUNTRY = { US: 'EE. UU.', CN: 'China', otros: 'otros' };
 /* Epoch da el país de cada centro en inglés. */
-const PAIS = { 'United States': 'EE. UU.', 'United States of America': 'EE. UU.', China: 'China', Malaysia: 'Malasia', 'United Arab Emirates': 'EAU', 'Saudi Arabia': 'Arabia Saudí', 'United Kingdom': 'Reino Unido', Norway: 'Noruega', Japan: 'Japón', 'South Korea': 'Corea del Sur', Germany: 'Alemania', France: 'Francia', Spain: 'España', Canada: 'Canadá', Singapore: 'Singapur', Taiwan: 'Taiwán', Qatar: 'Catar', Sweden: 'Suecia', Finland: 'Finlandia', Netherlands: 'Países Bajos' };
+export const PAIS = { 'United States': 'EE. UU.', 'United States of America': 'EE. UU.', China: 'China', Malaysia: 'Malasia', 'United Arab Emirates': 'EAU', 'Saudi Arabia': 'Arabia Saudí', 'United Kingdom': 'Reino Unido', Norway: 'Noruega', Japan: 'Japón', 'South Korea': 'Corea del Sur', Germany: 'Alemania', France: 'Francia', Spain: 'España', Canada: 'Canadá', Singapore: 'Singapur', Taiwan: 'Taiwán', Qatar: 'Catar', Sweden: 'Suecia', Finland: 'Finlandia', Netherlands: 'Países Bajos' };
 
 /* Hecho «hermano» para listas y valores derivados que no son un hecho propio: misma fuente y fechas. */
 const like = (f, v, extra = {}) => f ? { src: f.src, url: f.url, asOf: f.asOf, got: f.got, stale: f.stale, ...extra, v } : null;

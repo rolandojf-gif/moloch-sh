@@ -1,5 +1,5 @@
 {
-  "_doc": "Seguimiento de AI 2027. Cada hito conserva la predicción original («prediccion», y «cita» cuando el texto es literal); las revisiones de los autores se añaden fechadas en «revisiones» y nunca sustituyen la original. «evidencia» separa lo medido, lo declarado por laboratorios y lo que valoran los autores. «evidencia».tipo: medida (dato de un tercero independiente), declarada (cifra de un laboratorio o empresa sobre sí mismo), valoración de los autores o contexto (otro hecho con fuente). «valoraciones»: una de los autores (sus palabras, situadas por el observatorio en la escala común) y una del observatorio, fija o derivada de una regla de scripts/indicadores.mjs («regla»). Escala: adelantado, compatible, retrasado, todavía no evaluable, sin evidencia suficiente.",
+  "_doc": "Seguimiento de AI 2027. «corto» es el rótulo del hito en el calendario. Cada hito conserva la predicción original («prediccion», y «cita» cuando el texto es literal); las revisiones de los autores se añaden fechadas en «revisiones» y nunca sustituyen la original. «evidencia» separa lo medido, lo declarado por laboratorios y lo que valoran los autores. «evidencia».tipo: medida (dato de un tercero independiente), declarada (cifra de un laboratorio o empresa sobre sí mismo), valoración de los autores o contexto (otro hecho con fuente). «valoraciones»: una de los autores (sus palabras, situadas por el observatorio en la escala común) y una del observatorio, fija o derivada de una regla de scripts/indicadores.mjs («regla»). Escala: adelantado, compatible, retrasado, todavía no evaluable, sin evidencia suficiente.",
   "schema": 1,
   "actualizado": "2026-10-20",
   "escenario": {
@@ -52,6 +52,7 @@
         {
           "id": "swe85",
           "titulo": "85 % en SWE-bench Verified",
+          "corto": "SWE-bench al 85 %",
           "seccion": "Mid 2025: Stumbling Agents (nota al pie)",
           "url": "https://ai-2027.com/",
           "prediccion": "Los mejores agentes de mediados de 2025 resuelven el 85 % de SWE-bench Verified.",
@@ -74,6 +75,7 @@
         {
           "id": "horizonte3s",
           "titulo": "Horizonte de unas tres semanas de trabajo",
+          "corto": "Horizonte de 3 semanas",
           "seccion": "Trayectoria de 2026 según los autores",
           "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions",
           "prediccion": "A finales de 2026, el mejor agente completa con un 80 % de éxito tareas que a un experto humano le llevarían unas tres semanas de trabajo (unas 120 horas, contando semanas de 40 horas; conversión del observatorio).",
@@ -93,6 +95,7 @@
         {
           "id": "sc2027",
           "titulo": "Programador sobrehumano",
+          "corto": "Programador sobrehumano",
           "seccion": "March 2027: Algorithmic Breakthroughs",
           "url": "https://ai-2027.com/",
           "prediccion": "OpenBrain desarrolla internamente un programador sobrehumano: hace el trabajo del mejor programador humano en tareas de investigación en IA, más rápido y lo bastante barato como para ejecutar muchas copias.",
@@ -125,6 +128,7 @@
         {
           "id": "mult15",
           "titulo": "Progreso algorítmico un 50 % más rápido",
+          "corto": "I+D 1,5× más rápida",
           "seccion": "Early 2026: Coding Automation",
           "url": "https://ai-2027.com/",
           "prediccion": "Con Agent-1 en uso interno, OpenBrain avanza en algoritmos un 50 % más rápido que sin asistentes de IA: una semana con IA equivale a semana y media sin ella.",
@@ -147,6 +151,7 @@
         {
           "id": "mult19",
           "titulo": "Aceleración de 1,9× en la I+D de IA",
+          "corto": "I+D 1,9× más rápida",
           "seccion": "Trayectoria de 2026 según los autores",
           "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions",
           "prediccion": "A finales de 2026, la IA multiplica por 1,9 el ritmo de la I+D en IA del laboratorio líder.",
@@ -172,6 +177,7 @@
         {
           "id": "flop27",
           "titulo": "Entrenamiento de 10^27 FLOP",
+          "corto": "10^27 FLOP",
           "seccion": "Late 2025: The World's Most Expensive AI",
           "url": "https://ai-2027.com/",
           "prediccion": "El último modelo público de OpenBrain, Agent-0, se ha entrenado con 10^27 FLOP (50 veces el cómputo de GPT-4), y los nuevos centros permitirán entrenar con 10^28.",
@@ -192,6 +198,7 @@
         {
           "id": "h100e40m",
           "titulo": "40 millones de H100e disponibles",
+          "corto": "40 M de H100e",
           "seccion": "Suplemento de cómputo",
           "url": "https://ai-2027.com/research/compute-forecast",
           "prediccion": "El cómputo de IA disponible en el mundo llega a 40 millones de equivalentes H100 a finales de 2026 y a 100 millones a finales de 2027, con un gasto en centros de IA de 600.000 millones de dólares en 2026.",
@@ -212,6 +219,7 @@
         {
           "id": "potencia2026",
           "titulo": "Potencia de la IA en 2026",
+          "corto": "Potencia en 2026",
           "seccion": "KEY METRICS 2026 y suplemento de cómputo",
           "url": "https://ai-2027.com/",
           "prediccion": "En 2026 la IA demanda 38 GW de potencia en el mundo (pico), y en EE. UU. el 2,5 % de la capacidad eléctrica (33 GW de 1,34 TW). La tabla del suplemento de cómputo da 29 GW de necesidad total de los centros de IA.",
@@ -240,6 +248,7 @@
         {
           "id": "ingresos2025",
           "titulo": "18.000 millones de ingresos anualizados",
+          "corto": "18.000 M$ de ingresos",
           "seccion": "Late 2025, trayectoria del escenario según los autores",
           "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions",
           "prediccion": "El laboratorio líder llega a unos 18.000 millones de dólares de ingresos anualizados a finales de 2025. Los autores lo comparan con OpenAI.",
@@ -259,6 +268,7 @@
         {
           "id": "valoracion500",
           "titulo": "Valoración de 500.000 millones",
+          "corto": "Valoración de 500.000 M$",
           "seccion": "Mid 2025, trayectoria del escenario según los autores",
           "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions",
           "prediccion": "El laboratorio líder alcanza una valoración de 500.000 millones de dólares a mediados de 2025.",
@@ -277,6 +287,7 @@
         {
           "id": "ingresos2026",
           "titulo": "Ingresos de OpenBrain en 2026",
+          "corto": "Ingresos de 2026",
           "seccion": "KEY METRICS 2026",
           "url": "https://ai-2027.com/",
           "prediccion": "OpenBrain ingresa 35.000 millones de dólares en el conjunto de 2026 (cifra anual, no anualizada) y gasta 40.000 millones en cómputo; el coste de propiedad de su cómputo activo ronda los 200.000 millones.",
@@ -297,6 +308,7 @@
         {
           "id": "lider55",
           "titulo": "55.000 millones anualizados y 2,5 billones de valoración",
+          "corto": "55.000 M$ de ingresos",
           "seccion": "Trayectoria de 2026 según los autores",
           "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions",
           "prediccion": "En la trayectoria del escenario, el laboratorio líder llega en 2026 a 55.000 millones de dólares de ingresos anualizados y a una valoración de 2,5 billones.",
@@ -322,6 +334,7 @@
         {
           "id": "rivales39",
           "titulo": "Los rivales, de 3 a 9 meses por detrás",
+          "corto": "Rivales a 3–9 meses",
           "seccion": "Late 2025: The World's Most Expensive AI",
           "url": "https://ai-2027.com/",
           "prediccion": "Los demás laboratorios van de 3 a 9 meses por detrás de OpenBrain.",
@@ -341,6 +354,7 @@
         {
           "id": "abiertoAgent0",
           "titulo": "Un modelo de pesos abiertos iguala a Agent-0",
+          "corto": "Abierto iguala a Agent-0",
           "seccion": "Early 2026: Coding Automation",
           "url": "https://ai-2027.com/",
           "prediccion": "Varios modelos públicos de la competencia igualan o superan a Agent-0, entre ellos uno de pesos abiertos.",
@@ -361,6 +375,7 @@
         {
           "id": "deepcent6",
           "titulo": "China, unos seis meses por detrás con el 12 % del cómputo",
+          "corto": "China a 6 meses",
           "seccion": "Mid 2026: China Wakes Up",
           "url": "https://ai-2027.com/",
           "prediccion": "China mantiene alrededor del 12 % del cómputo de IA mundial y DeepCent va unos seis meses por detrás de los mejores modelos de OpenBrain.",
@@ -381,6 +396,7 @@
         {
           "id": "chinaCentraliza",
           "titulo": "China centraliza su investigación",
+          "corto": "China centraliza",
           "seccion": "Mid 2026: China Wakes Up",
           "url": "https://ai-2027.com/",
           "prediccion": "China nacionaliza su investigación en IA: un colectivo liderado por DeepCent reúne casi la mitad de su cómputo de IA, y una zona de desarrollo centralizada junto a la central nuclear de Tianwan recibe más del 80 % de los chips nuevos.",
@@ -399,6 +415,7 @@
         {
           "id": "sl3",
           "titulo": "Seguridad de nivel SL3 en el laboratorio líder",
+          "corto": "Seguridad SL3",
           "seccion": "Mid 2026: China Wakes Up",
           "url": "https://ai-2027.com/",
           "prediccion": "OpenBrain ha elevado su seguridad al nivel SL3 de RAND: protegida frente a amenazas internas y grandes grupos de ciberdelincuencia, aunque no frente a Estados.",
@@ -417,6 +434,7 @@
         {
           "id": "roboAgent2",
           "titulo": "Robo de los pesos de Agent-2",
+          "corto": "Robo de Agent-2",
           "seccion": "February 2027: China Steals Agent-2",
           "url": "https://ai-2027.com/",
           "prediccion": "China roba los pesos de Agent-2 con una serie de sustracciones rápidas y coordinadas en servidores de OpenBrain.",
@@ -432,6 +450,7 @@
         {
           "id": "tratado",
           "titulo": "Sin tratado de control de armas de IA",
+          "corto": "Sin tratado",
           "seccion": "August 2027: The Geopolitics of Superintelligence",
           "url": "https://ai-2027.com/",
           "prediccion": "Los diplomáticos estudian cómo sería un tratado de control de armas de IA y cómo vigilarlo, pero se prefiere ampliar la ventaja propia; los acercamientos de China no llegan a nada.",
