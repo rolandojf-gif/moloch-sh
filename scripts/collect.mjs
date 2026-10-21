@@ -269,7 +269,7 @@ async function loadAA(permiso) {
     let version = null;
     for (let page = 1; page <= AA_PAGES; page++) {
       const res = await getJSON(`${SOURCES.aa.api}?page=${page}`, { 'x-api-key': AA_KEY });
-      version = version ?? res.intelligence_index_version ?? null;
+      if (version === null && res.intelligence_index_version != null) version = String(res.intelligence_index_version);
       rows.push(...(res.data || []).map(r => ({ ...r, ...(r.performance || {}) })));
       if (!res.pagination?.has_more) break;
     }
@@ -281,10 +281,10 @@ async function loadAA(permiso) {
   }
 }
 
-/* AA publica una fila por configuración de razonamiento («GPT-6 Sol (High)», «(Max)»…). Se toma la de mayor índice
-   entre ésas; las ediciones especiales («(Daybreak Blue, max)») sólo cuentan si no hay otra. */
+/* AA publica una fila por configuración de razonamiento («GPT-6 Sol (High)», «(Max, Default Fallback)»…). Se toma la de
+   mayor índice entre ésas; las ediciones especiales («(Daybreak Blue, max)») sólo cuentan si no hay otra. */
 const AA_SETTING = /^(non-reasoning|reasoning|minimal|low|medium|high|xhigh|max)$/;
-const aaSetting = r => ((/\(([^)]*)\)\s*$/.exec(r.name || '') || [])[1] || '').toLowerCase().trim();
+const aaSetting = r => ((/\(([^)]*)\)\s*$/.exec(r.name || '') || [])[1] || '').split(',')[0].toLowerCase().trim();
 
 function matchAA(orModel, lab, aaRows, overrides, creatorIds) {
   if (!aaRows || !lab.aa_creator) return null;
@@ -642,7 +642,7 @@ async function main() {
       capability: `En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index${aaVersion ? ` v${aaVersion}` : ''}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.`,
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',
       weights: '«Abiertos» exige un repositorio público en Hugging Face enlazado por OpenRouter. Sin enlace, «cerrados». La licencia procede de la ficha de Hugging Face.',
-      speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia; si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
+      speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la espera inicial incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
       window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días.`
     },
     models,

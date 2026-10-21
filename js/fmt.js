@@ -90,13 +90,16 @@ export const coding = m => m.aa?.coding?.v ?? null;
 export const agentic = m => m.aa?.agentic?.v ?? null;
 export const eci = m => m.epoch?.eci?.v ?? null;
 export const swe = m => m.epoch?.swe?.v ?? null;
-/* Configuración de AA cuando su nombre no coincide con el del catálogo, p. ej. «(Max)». */
-export const aaConfig = m => m.aa && m.aa.name && m.aa.name !== m.name ? m.aa.name : null;
+/* Nombre en AA cuando aporta algo frente al del catálogo, p. ej. la configuración «(Max)»; no por guiones o mayúsculas. */
+const bare = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+export const aaConfig = m => m.aa && m.aa.name && bare(m.aa.name) !== bare(m.name) ? m.aa.name : null;
 
 /* Velocidad: mediana de AA si existe; si no, el proveedor de OpenRouter más rápido, nombrado. */
 export function speed(m) {
   const a = m.aa;
-  if (a && a.tps && a.tps.v) return { tps: a.tps.v, ttft: a.ttft?.v ?? null, f: a.tps, ft: a.ttft, provider: 'referencia de AA' };
+  // AA mide con la misma configuración que puntúa (la de mayor índice): con el razonamiento al máximo, la espera incluye el tiempo de pensar.
+  const cfg = a && ((/\(([^)]*)\)\s*$/.exec(a.name || '') || [])[1] || null);
+  if (a && a.tps && a.tps.v) return { tps: a.tps.v, ttft: a.ttft?.v ?? null, f: a.tps, ft: a.ttft, provider: `referencia de AA${cfg ? `, configuración ${cfg}` : ''}` };
   const eps = (m.endpoints || []).filter(e => e.tps);
   if (!eps.length) return null;
   const e = eps.slice().sort((x, y) => y.tps - x.tps)[0];
