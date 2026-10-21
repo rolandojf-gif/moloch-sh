@@ -169,7 +169,60 @@ h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orang
 .chart .pt-closed { fill: var(--closed); }
 .chart .pt-unknown { fill: var(--unknown); }
 .chart circle { stroke: var(--card); stroke-width: 1.5; }
-.chart circle:hover { stroke: var(--ink); stroke-width: 2; }
+.chart circle.faint { opacity: .28; }
+.chart .hot circle, .chart circle.hot { stroke: var(--ink); stroke-width: 2.5; opacity: 1; }
+.chart svg { touch-action: pan-y; }
+.chart .ptlabel { paint-order: stroke; stroke: var(--card); stroke-width: 3px; stroke-linejoin: round; }
+.legend i.lg-key { background: var(--card); border: 2px solid var(--ink); border-radius: 50%; }
+.legend i.lg-faint { background: var(--unknown); opacity: .35; border-radius: 50%; }
+/* Barras, columnas e intervalos */
+.chart .bar-bg { fill: transparent; }
+.chart .bar.hot .bar-bg, .chart .ci-row.hot .bar-bg { fill: rgba(204, 255, 0, .16); }
+.chart .bar-l { fill: var(--text); font: 500 12.5px var(--f-body); }
+.chart .bar-n { fill: var(--text); font: 600 11.5px var(--f-mono); }
+.chart .bar-v { fill: var(--ink); }
+.chart .bar.us .bar-v { fill: var(--orange); }
+.chart .bar.cn .bar-v { fill: var(--open); }
+.chart .bar.dim .bar-v { fill: var(--unknown); }
+.chart .bar.hit .bar-v { fill: var(--closed); }
+.chart .ref { stroke: var(--orange-ink); stroke-width: 2; stroke-dasharray: 5 4; }
+.chart .ref-t { fill: var(--orange-ink); font: 700 11px var(--f-mono); paint-order: stroke; stroke: var(--card); stroke-width: 3px; }
+.chart .col { fill: var(--ink); }
+.chart .col.part { fill: var(--unknown); }
+.chart .col.hot { fill: var(--orange); }
+.chart .ci { stroke: var(--muted); stroke-width: 3; }
+.chart .ci-dot { fill: var(--orange); stroke: var(--ink); stroke-width: 1.5; }
+/* Gráficos de los frentes de «La carrera» */
+.front-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 18px; padding: 16px 18px; border-bottom: 2px solid var(--ink); }
+.fchart { margin: 0; min-width: 0; }
+.fchart figcaption { font: 700 12px var(--f-mono); text-transform: uppercase; letter-spacing: .03em; margin-bottom: 8px; }
+.fchart .note { margin-top: 6px; font-size: 12.5px; }
+/* Calendario de hitos */
+.chart .lane { fill: transparent; }
+.chart .lane.odd { fill: var(--card-2); }
+.chart .lane-t { fill: var(--text); font: 700 11px var(--f-mono); text-transform: uppercase; }
+.chart .tl-grid { stroke: var(--line); }
+.chart .past { fill: var(--ink); opacity: .05; }
+.chart .today { stroke: var(--orange); stroke-width: 2.5; }
+.chart .today-t { fill: var(--orange-ink); font: 700 11px var(--f-mono); }
+.chart .hito-pt circle { stroke: var(--ink); stroke-width: 2; }
+.chart .leader { stroke: var(--muted); stroke-width: 1; }
+.chart .hito-pt.v-adelantado circle { fill: var(--orange); }
+.chart .hito-pt.v-compatible circle { fill: var(--lime); }
+.chart .hito-pt.v-retrasado circle { fill: var(--ink); }
+.chart .hito-pt.v-todavia-no-evaluable circle { fill: var(--card); stroke-dasharray: 3 2; }
+.chart .hito-pt.v-sin-evidencia-suficiente circle { fill: url(#hatch); }
+.chart .hito-pt.hot circle { stroke-width: 3.5; }
+.chart .hatch-bg { fill: var(--card); }
+.chart .hatch-ln { stroke: var(--muted); stroke-width: 2; }
+/* Ventana emergente de los gráficos, al estilo de Epoch */
+.chart-tip { position: fixed; z-index: 50; pointer-events: none; min-width: 260px; max-width: min(380px, calc(100vw - 16px)); background: var(--card); color: var(--text); border: 2px solid var(--ink); box-shadow: var(--shadow); font: 400 13.5px/1.35 var(--f-body); }
+.chart-tip .tt-title { font: 700 15px/1.25 var(--f-head); padding: 10px 12px 8px; border-bottom: 1px solid var(--line); }
+.chart-tip table { width: 100%; border-collapse: collapse; }
+.chart-tip th, .chart-tip td { text-align: left; vertical-align: top; padding: 6px 12px; }
+.chart-tip th { font: 500 12.5px var(--f-body); color: var(--muted); white-space: nowrap; width: 1%; }
+.chart-tip tr:nth-child(odd) { background: var(--card-2); }
+.chart-tip .tt-foot { padding: 8px 12px 10px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); }
 .chart .ln-open { stroke: var(--open); stroke-width: 2.5; fill: none; }
 .chart .ln-closed { stroke: var(--closed); stroke-width: 2.5; fill: none; }
 .chart .ptlabel { fill: var(--text); font: 600 10.5px var(--f-mono); }
@@ -192,6 +245,9 @@ table.mx caption { text-align: left; padding: 10px 12px; font: 400 12px var(--f-
 table.mx th { text-align: left; font: 700 11px var(--f-mono); text-transform: uppercase; letter-spacing: .03em; padding: 10px 12px; border-bottom: 2px solid var(--ink); background: var(--card-2); white-space: nowrap; }
 table.mx td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
 table.mx .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* Las líneas secundarias (configuración, proveedor) parten en varias líneas: la tabla cabe en la ventana. */
+table.mx .num .m-sub { white-space: normal; max-width: 22ch; margin-left: auto; }
+table.mx td.c-name { min-width: 160px; }
 table.mx tr.row { cursor: pointer; }
 table.mx tr.row:hover td { background: rgba(204, 255, 0, .12); }
 table.mx tr.row[aria-expanded="true"] td { background: rgba(204, 255, 0, .2); border-bottom-color: transparent; }
@@ -256,7 +312,7 @@ tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .front-n { flex: none; width: 42px; height: 42px; display: grid; place-content: center; background: var(--orange); color: #121211; border: 2px solid var(--ink); font: 700 15px var(--f-mono); }
 .front-head h3 { margin: 0; font: 700 22px/1.15 var(--f-head); text-transform: uppercase; letter-spacing: -.01em; }
 .front-head .q { margin: 4px 0 0; font-size: 16px; color: var(--muted); max-width: 80ch; }
-.front-head .q .lbl, .hito .lbl, .op .lbl, .revs .lbl, .evid .lbl, .valdet .lbl, #a7-scn .lbl, #a7-pace .lbl { display: block; font: 700 10.5px var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 3px; }
+.front-head .q .lbl, .hito .lbl, .op .lbl, .revs .lbl, .evid .lbl, .valdet .lbl, #a7-scn .lbl, #a7-pace .lbl, .a7-status .lbl, .hito-cols .lbl, .authors .lbl { display: block; font: 700 10.5px var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 3px; }
 .front-body { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
 .front-data { padding: 14px 16px 18px; min-width: 0; }
 .front-data h4 { font: 700 11.5px var(--f-mono); text-transform: uppercase; letter-spacing: .05em; margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
@@ -331,6 +387,34 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
 .hito { border-bottom: 1px solid var(--line); }
 .hito:last-child { border-bottom: 0; }
 .hito.overdue { box-shadow: inset 6px 0 0 var(--warn); }
+.hito { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 0; }
+.hito.flash { animation: flash 1.6s ease-out; }
+@keyframes flash { from { background: rgba(204, 255, 0, .45); } to { background: transparent; } }
+.verdict { padding: 14px 14px; border-right: 2px solid var(--ink); display: flex; flex-direction: column; gap: 6px; border-width: 0 2px 0 0; border-style: solid; border-color: var(--ink); }
+.verdict b { font: 700 17px/1.2 var(--f-head); }
+.verdict small { font-size: 12px; opacity: .8; }
+.verdict .lbl { color: inherit !important; opacity: .75; }
+.verdict.v-todavia-no-evaluable { border-style: solid; }
+.hito-main { padding: 14px 16px 12px; min-width: 0; }
+.when { font: 500 12.5px var(--f-mono); color: var(--muted); margin-top: 4px; }
+.when b { color: var(--text); }
+.hito-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 10px; }
+.hito-cols p { margin: 0; font-size: 14.5px; }
+.hito-cols dl.ind { margin-top: 8px; }
+.authors { margin: 10px 0 0; font-size: 13.5px; color: var(--muted); }
+.authors .val { margin-right: 4px; }
+.hito .hito-more { padding: 10px 0 0; }
+.a7-status { display: flex; flex-direction: column; gap: 14px; }
+.st-block p { margin: 4px 0 0; font-size: 14px; }
+.st-big { font: 500 17px/1.3 var(--f-head) !important; }
+.st-big b { font-size: 26px; }
+.st-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; }
+.st-list li { display: flex; align-items: center; gap: 8px; }
+.chip { display: inline-grid; place-content: center; min-width: 26px; height: 22px; padding: 0 5px; font: 700 12px var(--f-mono); border: 2px solid var(--ink); }
+.legend i.chip { min-width: 14px; height: 14px; padding: 0; vertical-align: -2px; border-radius: 50%; }
+.legend i.chip.v-todavia-no-evaluable { border-style: dashed; }
+.st-how { margin-top: 10px !important; padding-top: 10px; border-top: 1px dashed var(--line); }
+#a7-pace { margin-top: 14px; }
 .hito-head { display: grid; grid-template-columns: 130px minmax(0, 1fr) 200px; gap: 8px 16px; padding: 14px 16px 10px; }
 .plazo { display: flex; flex-direction: column; gap: 2px; }
 .plazo b { font: 700 15px/1.2 var(--f-head); }
@@ -379,6 +463,7 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
   .front-body, .a7-top { grid-template-columns: 1fr; }
   .lectura { border-left: 0; border-top: 2px solid var(--ink); }
   .hito-head { grid-template-columns: 110px minmax(0, 1fr); }
+  .hito-cols { grid-template-columns: 1fr; }
   .vals { grid-column: 2; flex-direction: row; flex-wrap: wrap; }
   .hito-more { padding-left: 142px; }
 }
@@ -396,6 +481,8 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
   .changes li { grid-template-columns: 1fr; }
   .changes li .prov { grid-column: 1; }
   .hito-head { grid-template-columns: 1fr; }
+  .hito { grid-template-columns: 1fr; }
+  .verdict { border-width: 0 0 2px 0; }
   .vals { grid-column: 1; }
   .hito-more { padding-left: 16px; }
   .pace { grid-template-columns: 1fr; }
@@ -403,6 +490,7 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
   .tally-n { text-align: left; }
   .revlog li { grid-template-columns: 1fr; }
   .front-head h3 { font-size: 19px; }
+  .front-charts { grid-template-columns: 1fr; padding: 12px; }
   /* Comparador como fichas */
   .table-wrap { background: transparent; border: 0; box-shadow: none; overflow: visible; }
   table.mx, table.mx tbody { display: block; }

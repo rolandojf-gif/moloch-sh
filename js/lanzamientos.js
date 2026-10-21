@@ -12,7 +12,7 @@ const STAGES = [
   ['api', 'API pública'],
   ['pesos', 'Pesos descargables']
 ];
-const EVT = { precio: 'Cambio de precio', retirada: 'Retirada', pesos: 'Pesos abiertos', evaluacion: 'Primera evaluación', anuncio: 'Anuncio', preview: 'Acceso restringido', api: 'API pública' };
+const EVT = { pesos: 'Pesos abiertos', evaluacion: 'Primera evaluación', anuncio: 'Anuncio', preview: 'Acceso restringido', api: 'API pública' };
 
 /* Etapas de un modelo. Las curadas (anuncio, preview) exigen URL; API y pesos salen del recolector. */
 function stagesOf(m, curated) {
@@ -70,18 +70,20 @@ function eventCard(e) {
 function render() {
   const curated = D.catalog.curatedEvents || [];
   const cutoff = state.days ? new Date(Date.now() - state.days * 86400e3).toISOString().slice(0, 10) : '';
+  // Sólo lanzamientos: los cambios de precio están en «Hoy» y las retiradas van aparte, al final.
   let cards = D.catalog.models.map(m => cardFor(m, curated));
-  cards = cards.concat((D.evLog.events || []).filter(e => e.kind === 'precio' || e.kind === 'retirada').map(eventCard));
   cards = cards.concat(curated.filter(e => !e.model || !D.byId.has(e.model)).map(e => eventCard({ ...e, kind: e.type, what: e.title, src: { name: e.source || 'Fuente', url: e.url, date: e.date } })));
   cards = cards.filter(c => c.date && c.date >= cutoff && (state.w === 'all' || c.weights === state.w))
     .sort((a, b) => b.date.localeCompare(a.date));
-  if (!cards.length) { $('#ln-list').innerHTML = '<div class="empty">Ningún acontecimiento en este periodo.</div>'; return; }
+  const gone = (D.evLog.events || []).filter(e => e.kind === 'retirada' && e.date >= cutoff);
+  if (!cards.length && !gone.length) { $('#ln-list').innerHTML = '<div class="empty">Ningún lanzamiento en este periodo.</div>'; return; }
   let html = '', month = '';
   for (const c of cards) {
     const mo = new Date(c.date + 'T00:00:00Z').toLocaleDateString('es-ES', { month: 'long', year: 'numeric', timeZone: 'UTC' });
     if (mo !== month) { html += `<div class="month">${esc(mo)}</div>`; month = mo; }
     html += c.html;
   }
+  if (gone.length) html += `<h2 class="sec">Retirados de OpenRouter en el periodo</h2><ul class="changes">${gone.map(e => `<li><span>${esc(fmtDate(e.date))}</span><span>${esc(e.what)}</span>${provLine(e.src)}</li>`).join('')}</ul>`;
   html += `<p class="note">«API pública» es la fecha de alta en OpenRouter, que puede ser posterior a la API del laboratorio. «Pesos descargables» es la fecha de creación del repositorio en Hugging Face. Anuncios y accesos restringidos sólo constan cuando se han registrado a mano con enlace a la fuente primaria.</p>`;
   $('#ln-list').innerHTML = html;
 }

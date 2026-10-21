@@ -162,21 +162,29 @@
   <section class="view" id="view-ai2027" data-view="ai2027" aria-labelledby="h-ai2027" hidden>
     <div class="view-head">
       <h1 id="h-ai2027">Cómo encaja la realidad con AI 2027</h1>
-      <p class="lede">Seguimiento de un escenario que sus autores presentan como uno de varios futuros posibles. Cada hito conserva la predicción original; las revisiones posteriores aparecen fechadas a su lado, sin sustituirla.</p>
+      <p class="lede">Qué predijo el escenario AI 2027, para cuándo, y en qué punto está cada predicción hoy. Cada una conserva su texto original; las revisiones posteriores de los autores aparecen fechadas a su lado, sin sustituirlo.</p>
     </div>
     <div class="a7-top">
       <div class="panel" id="a7-scn"></div>
-      <div class="panel" id="a7-pace"></div>
+      <div class="panel a7-status" id="a7-status"></div>
     </div>
 
-    <h2 class="sec">Valoraciones de los hitos</h2>
-    <div class="panel tally" id="a7-tally"></div>
-    <p class="note">Escala común: adelantado, compatible, retrasado, todavía no evaluable o sin evidencia suficiente. Las valoraciones de los autores son sus palabras, situadas por el observatorio en esta escala. Las del observatorio son fijas o se calculan en cada recogida con una regla explícita. «Adelantado» o «retrasado» describen el ritmo frente al escenario, no si eso es bueno o malo.</p>
-    <details class="vig" id="a7-vig"></details>
+    <h2 class="sec">Calendario de predicciones</h2>
+    <div class="panel">
+      <div class="chart" id="a7-timeline"></div>
+      <div class="legend" id="a7-tl-legend"></div>
+      <p class="note">Cada punto es una predicción, en su fecha; el color es la valoración del observatorio. La zona sombreada es el pasado. Pasa el cursor por un punto para leerla y púlsalo para ir a su ficha.</p>
+    </div>
 
-    <h2 class="sec">Cinco líneas</h2>
+    <h2 class="sec">Las predicciones, una a una</h2>
     <nav class="jump" id="a7-index" aria-label="Líneas"></nav>
     <div id="a7-lines"></div>
+
+    <h2 class="sec">Autores frente al observatorio</h2>
+    <div class="panel tally" id="a7-tally"></div>
+    <p class="note">Escala común: adelantado, compatible, retrasado, todavía no evaluable o sin evidencia suficiente. Las valoraciones de los autores son sus palabras, situadas por el observatorio en esta escala. Las del observatorio son fijas o se calculan en cada recogida con una regla explícita. «Adelantado» o «retrasado» describen el ritmo frente al escenario, no si eso es bueno o malo.</p>
+    <div class="panel" id="a7-pace"></div>
+    <details class="vig" id="a7-vig"></details>
 
     <h2 class="sec">Registro de revisiones del escenario</h2>
     <ol class="revlog" id="a7-rev"></ol>
