@@ -91,7 +91,7 @@ function hito(h, ind, checks, today, a7) {
           ${now.length ? `<span class="lbl lbl-hoy">Y hoy (${esc(curDate(today))})</span>${rows(now)}` : ''}</div>`
           : `<div><span class="lbl">Dónde estamos${o?.fecha ? ` (${esc(curDate(o.fecha))})` : ''}</span><p>${esc(o?.texto || 'Sin valoración del observatorio.')}</p>${rows(measured)}</div>`}
       </div>
-      ${est ? `<div class="est-block"><span class="lbl">Estimación · ${esc(EST_KIND[est.metodo])}</span><p>${esc(est.texto)}</p>${est.muros ? `<p class="muros"><b>Qué podría frenarla o invalidarla.</b> ${esc(est.muros)}</p>` : ''}${est.fuentes?.length ? `<p class="prov">${est.fuentes.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.texto)}</a>`).join(' · ')}</p>` : ''}</div>` : ''}
+      ${est ? `<div class="est-block"><span class="lbl">Estimación · ${esc(est.rotulo || EST_KIND[est.metodo])}</span><p>${esc(est.texto)}</p>${est.muros ? `<p class="muros"><b>Qué podría frenarla o invalidarla.</b> ${esc(est.muros)}</p>` : ''}${est.fuentes?.length ? `<p class="prov">${est.fuentes.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.texto)}</a>`).join(' · ')}</p>` : ''}</div>` : ''}
       <p class="authors"><span class="lbl">Qué dicen los autores</span>${a ? `<span class="val ${cls(a.v)}">${esc(a.v)}</span> ${esc(a.texto || '')}${a.url ? ` <a href="${esc(a.url)}" target="_blank" rel="noopener">Fuente</a>` : ''}` : 'No han publicado una valoración que el observatorio haya encontrado.'}</p>
       <details class="hito-more">
         <summary>Texto original, evidencia${r ? ' y revisiones' : ''}</summary>

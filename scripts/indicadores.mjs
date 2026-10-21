@@ -451,7 +451,7 @@ function checks(ind, TODAY) {
     const v = rel > REV_TOLERANCE ? 'adelantado' : rel < -REV_TOLERANCE ? 'retrasado' : 'compatible';
     c.est_ingresos2026 = {
       v, sentido: { adelantado: 'Superaría lo previsto', compatible: 'Como lo previsto', retrasado: 'Por debajo de lo previsto' }[v],
-      texto: `${y.company} ingresaría unos ${es(Math.round(y.v / 1e8) / 10)} mil millones de $ en 2026 si su último dato anualizado (${es(Math.round(y.last.v / 1e8) / 10)} mil millones, ${dia(y.last.date)}) se mantiene hasta fin de año, frente a 35 previstos (${rel >= 0 ? '+' : ''}${Math.round(rel * 100)} %). Si sigue creciendo, sería más.`
+      texto: `Interpolando los ingresos anualizados que recoge Epoch y manteniendo el último (${es(Math.round(y.last.v / 1e8) / 10)} mil millones, ${dia(y.last.date)}) hasta fin de año, ${y.company} ingresaría unos ${es(Math.round(y.v / 1e8) / 10)} mil millones de $ en 2026, frente a 35 previstos (${rel >= 0 ? '+' : ''}${Math.round(rel * 100)} %). Si sigue creciendo, sería más.`
     };
   }
   const m = ind.metr?.sota;
@@ -471,7 +471,7 @@ function checks(ind, TODAY) {
     const v = b.v >= 1e27 ? 'compatible' : 'retrasado';
     c.est_flop27 = {
       v, sentido: v === 'compatible' ? 'Alcanzado según Epoch' : 'Por debajo según Epoch',
-      texto: `Según las estimaciones de Epoch, el mayor entrenamiento de un modelo publicado hasta el 31 dic 2025 fue el de ${b.model}${b.org ? ` (${b.org})` : ''}: unos ${sci(b.v)} FLOP${b.confidence ? `, con confianza «${b.confidence}»` : ''}, el ${es(Math.round(b.v / 1e25))} % de 10^27. ${f?.v ? `El primero que llega a 10^27 es ${f.model}, publicado el ${dia(f.v)}.` : 'Ninguno llega todavía a 10^27.'}`
+      texto: `De los modelos publicados hasta el 31 dic 2025 con cómputo estimado por Epoch, el mayor es ${b.model}${b.org ? ` (${b.org})` : ''}: unos ${sci(b.v)} FLOP${b.confidence ? ` (confianza de Epoch: ${b.confidence})` : ''}, el ${es(Math.round(b.v / 1e25))} % de 10^27.${tr.largest?.v && tr.largest.model !== b.model ? ` Hoy el mayor es ${tr.largest.model}${tr.largest.org ? ` (${tr.largest.org}, ${dia(tr.largest.date)})` : ''}, con unos ${sci(tr.largest.v)}.` : ''} ${f?.v ? `El primero que llega a 10^27 es ${f.model}, publicado el ${dia(f.v)}.` : 'Ninguno llega todavía a 10^27.'}`
     };
   }
   for (const k of Object.keys(c)) c[k].fecha = TODAY;
