@@ -32,7 +32,7 @@ function cardFor(m, curated) {
   const missing = STAGES.filter(([k]) => !st[k]).map(([, label]) => label.toLowerCase());
   const dates = Object.values(st).map(s => s.date).filter(Boolean).sort();
   const latest = dates[dates.length - 1];
-  const delta = Object.values(st).find(s => s.delta)?.delta;
+  const withDelta = Object.values(st).find(s => s.delta);
   const evals = [];
   if (ii(m) !== null) evals.push(`índice ${num(ii(m))}${src(m.aa.intelligence)} en Artificial Analysis${aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : ''}`);
   if (eci(m) !== null) evals.push(`ECI ${num(eci(m))}${src(m.epoch.eci)} en Epoch AI`);
@@ -51,7 +51,7 @@ function cardFor(m, curated) {
           `<div class="stage yes"><span class="lbl">${label}</span>${esc(fmtDate(st[k].date))}${st[k].html}${st[k].note ? `<span class="m-sub">${esc(st[k].note)}</span>` : ''}</div>`).join('')}</div>
         ${missing.length ? `<div class="stages-no">No constan: ${esc(missing.join(', '))}.</div>` : ''}
         <div class="extra"><b>Evaluación independiente:</b> ${evalTxt}${aaRel}</div>
-        <div class="extra"><b>Qué aporta frente a la versión anterior:</b> ${delta ? esc(delta) : '<span class="nd">sin datos</span>'}</div>
+        <div class="extra"><b>Qué aporta frente a la versión anterior:</b> ${withDelta ? `${esc(withDelta.delta)} (según el laboratorio)${withDelta.html}` : '<span class="nd">sin datos</span>'}</div>
       </div>
     </article>`
   };
