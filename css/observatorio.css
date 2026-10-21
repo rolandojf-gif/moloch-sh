@@ -206,6 +206,7 @@ h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orang
 /* Gráficos de los frentes de «La carrera» */
 .front-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 18px; padding: 16px 18px; border-bottom: 2px solid var(--ink); }
 .fchart { margin: 0; min-width: 0; }
+.fchart.wide { grid-column: 1 / -1; }
 .fchart figcaption { font: 700 13px/1.3 var(--f-mono); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 10px; }
 .fchart .note { margin-top: 6px; font-size: 12.5px; }
 /* Calendario de hitos */
@@ -258,6 +259,11 @@ h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orang
 table.mx { width: 100%; border-collapse: collapse; font-size: 14px; }
 table.mx caption { text-align: left; padding: 10px 12px; font: 400 12px var(--f-mono); color: var(--muted); border-bottom: 2px solid var(--ink); }
 table.mx th { text-align: left; font: 700 11px var(--f-mono); text-transform: uppercase; letter-spacing: .03em; padding: 10px 12px; border-bottom: 2px solid var(--ink); background: var(--card-2); white-space: nowrap; }
+.th-sort { all: unset; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; font: inherit; text-transform: inherit; letter-spacing: inherit; }
+.th-sort .arr { font-size: 12px; color: var(--muted); min-width: 1ch; }
+.th-sort[aria-sort="ascending"] .arr, .th-sort[aria-sort="descending"] .arr { color: var(--orange-ink); }
+.th-sort:hover .th-l { text-decoration: underline; }
+.th-sort:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 table.mx td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
 table.mx .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 /* Las líneas secundarias (configuración, proveedor) parten en varias líneas: la tabla cabe en la ventana. */

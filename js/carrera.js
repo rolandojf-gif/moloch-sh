@@ -64,6 +64,18 @@ const CHARTS = {
       title: 'Los centros con más potencia en servicio',
       note: EPOCH('«AI data centers»', I.dc.now?.url || 'https://epoch.ai/data/data-centers'),
       draw: el => hbars(el, I.dc.top.map(r => ({ label: r.name, v: r.mw, value: mw(r.mw), tip: tip(r.name, [['Potencia de TI', mw(r.mw)], ['Propietario', r.owner], ['Usuarios', r.users], ['País', PAIS[r.country] || r.country], ['Cómputo', r.h100e ? mh100(r.h100e) : null]]) })), { aria: 'Centros con más potencia' })
+    },
+    I.dc?.plan?.series?.length && {
+      title: `Potencia prevista hasta ${new Date(I.dc.plan.lastDate + 'T00:00:00Z').getUTCFullYear()}, según el calendario de Epoch`,
+      wide: true,
+      note: `${EPOCH('«AI data centers», calendario de obras', I.dc.plan.url || 'https://epoch.ai/data/data-centers')} Potencia de cada centro al final de cada trimestre: lo pasado (negro) está construido; lo futuro (gris) es la estimación de Epoch a partir de obras, permisos y anuncios de ${num(I.dc.plan.centres, 0)} centros. Es la columna «Power (MW)» del calendario, probablemente con refrigeración y pérdidas, por eso supera a la potencia de TI de arriba. Cuanto más lejos, menos proyectos conocidos: el aplanamiento final refleja la falta de anuncios, no un freno.`,
+      draw: el => {
+        const today = I.dc.plan.asOf || new Date().toISOString().slice(0, 10);
+        columns(el, I.dc.plan.series.map(p => {
+          const fut = p.d > today;
+          return { label: quarter(p.d), v: p.mw, cls: fut ? 'part' : '', tip: tip(`${quarter(p.d)}${fut ? ' · previsto' : ''}`, [['Potencia total', mw(p.mw)], ['EE. UU.', mw(p.US)], ['China', mw(p.CN)], ['Otros o sin país', mw(p.otros)], ['Centros con dato', num(p.centres, 0)]]) };
+        }), { fmt: v => `${num(v / 1000, 0)} GW`, yLabel: 'potencia', every: 4, aria: 'Potencia prevista de los centros de datos por trimestre' });
+      }
     }
   ],
   agentes: I => [
@@ -101,7 +113,7 @@ function front(f, i, ind) {
   const n = String(i + 1).padStart(2, '0');
   return `<article class="front" id="frente-${esc(f.id)}" aria-labelledby="fh-${esc(f.id)}">
     <header class="front-head"><span class="front-n">${n}</span><div><h3 id="fh-${esc(f.id)}">${esc(f.titulo)}</h3><p class="q">${esc(f.pregunta)}</p></div></header>
-    ${chartsOf(f, ind).length ? `<div class="front-charts">${chartsOf(f, ind).map((c, k) => `<figure class="fchart"><figcaption>${esc(c.title)}</figcaption><div class="chart" id="fc-${esc(f.id)}-${k}"></div><p class="note">${c.note}</p></figure>`).join('')}</div>` : ''}
+    ${chartsOf(f, ind).length ? `<div class="front-charts">${chartsOf(f, ind).map((c, k) => `<figure class="fchart${c.wide ? ' wide' : ''}"><figcaption>${esc(c.title)}</figcaption><div class="chart" id="fc-${esc(f.id)}-${k}"></div><p class="note">${c.note}</p></figure>`).join('')}</div>` : ''}
     <div class="front-body">
       <div class="front-data">
         <h4>Datos</h4>

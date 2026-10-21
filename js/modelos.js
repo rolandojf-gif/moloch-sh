@@ -4,7 +4,9 @@ import { frontier } from './charts.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const state = { w: 'all', sort: 'ii', q: '', open: new Set(), cmp: [], all: false };
+const state = { w: 'all', sort: 'ii', dir: -1, q: '', open: new Set(), cmp: [], all: false };
+/* Sentido por defecto de cada criterio: el precio, de más barato a más caro; el resto, de mayor a menor. */
+const DIR0 = { ii: -1, eci: -1, tps: -1, price: 1, date: -1 };
 const PAGE = 40;
 let D;
 
@@ -15,7 +17,7 @@ function sortKey(m) {
   switch (state.sort) {
     case 'ii': return ii(m);
     case 'eci': return eci(m);
-    case 'price': { const b = freeOnly(m) ? null : blended(m); return b === null ? null : -b; }
+    case 'price': return freeOnly(m) ? null : blended(m);
     case 'tps': return speed(m)?.tps ?? null;
     case 'date': return m.orCreated.v ? new Date(m.orCreated.v).getTime() : null;
   }
@@ -32,7 +34,7 @@ function rows() {
       if (ka === null && kb === null) return a.name.localeCompare(b.name);
       if (ka === null) return 1;
       if (kb === null) return -1;
-      return kb - ka;
+      return state.dir * (ka - kb);
     });
 }
 
@@ -84,7 +86,17 @@ function detail(m) {
   return `<dl class="dgrid">${dl.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${provTable}`;
 }
 
+function syncHeads() {
+  for (const b of $$('[data-sort]')) {
+    const on = b.dataset.sort === state.sort;
+    b.setAttribute('aria-sort', on ? (state.dir < 0 ? 'descending' : 'ascending') : 'none');
+    b.querySelector('.arr').textContent = on ? (state.dir < 0 ? '▼' : '▲') : '↕';
+    b.title = on ? (state.dir < 0 ? 'De mayor a menor; pulsa para invertir' : 'De menor a mayor; pulsa para invertir') : 'Ordenar por esta columna';
+  }
+}
+
 function renderTable() {
+  syncHeads();
   const list = rows();
   $('#mx-caption').innerHTML = `${list.length} modelos${!state.all && !state.q && list.length > PAGE ? ` (se muestran ${PAGE})` : ''} · precios en USD por millón de tokens (OpenRouter) · inteligencia: ${esc(aaIndexName(D.catalog.aaIndexVersion))}, configuración de mayor índice, datos de ${AA_LINK} · ECI: Epoch Capabilities Index (Epoch AI, CC BY 4.0); las dos escalas no son comparables · pulsa una fila para ver contexto, licencia, caché, programación, agentes y proveedores.`;
   const ex = D.catalog.excluded || [];
@@ -172,7 +184,7 @@ function renderFrontier() {
 export function renderModelos(d) {
   D = d;
   if (!d.catalog.models.some(m => ii(m) !== null)) {
-    state.sort = d.catalog.models.some(m => eci(m) !== null) ? 'eci' : 'date';
+    state.sort = d.catalog.models.some(m => eci(m) !== null) ? 'eci' : 'date'; state.dir = -1;
     $('#mx-sort').value = state.sort;
   }
   $('#mx-weights').addEventListener('click', e => {
@@ -181,7 +193,15 @@ export function renderModelos(d) {
     $$('#mx-weights [data-w]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
     renderTable();
   });
-  $('#mx-sort').addEventListener('change', e => { state.sort = e.target.value; renderTable(); });
+  $('#mx-sort').addEventListener('change', e => { state.sort = e.target.value; state.dir = DIR0[state.sort]; renderTable(); });
+  // Flechas en las cabeceras: pulsar la columna activa invierte el orden; otra columna empieza en su sentido por defecto.
+  $('#mx-table thead')?.addEventListener('click', e => {
+    const b = e.target.closest('[data-sort]'); if (!b) return;
+    const k = b.dataset.sort;
+    state.dir = state.sort === k ? -state.dir : DIR0[k];
+    state.sort = k; $('#mx-sort').value = k;
+    renderTable();
+  });
   $('#mx-q').addEventListener('input', e => { state.q = e.target.value; renderTable(); });
   const body = $('#mx-body');
   body.addEventListener('change', e => {
