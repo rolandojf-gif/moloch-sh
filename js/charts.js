@@ -473,15 +473,24 @@ export function hbars(el, rows, opts = {}) {
 /* ── Columnas por periodo ───────────────────────────────────────────────── */
 /* rows: [{ label, v, tip, cls? }] en orden temporal; se rotula una de cada «every» columnas. */
 export function columns(el, rows, opts = {}) {
-  const { fmt = v => num(v, 0), yLabel = '', every = 1, aria = '' } = opts;
+  const { fmt = v => num(v, 0), yLabel = '', every = 1, aria = '', log = false, left = 64 } = opts;
   if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
   watchWidth(el, () => columns(el, rows, opts));
-  const G = { W: fitWidth(el), H: 260, L: 64, R: 12, T: 14, B: 40 };
+  const G = { W: fitWidth(el), H: 260, L: left, R: 12, T: 14, B: 40 };
   const { W, H, L, R, T, B } = G;
-  const top = Math.max(...rows.map(r => r.v));
-  const tk = niceTicks(0, top * 1.05);
-  const ymax = tk[tk.length - 1];
-  const Y = v => T + (1 - v / (ymax || 1)) * (H - T - B);
+  const top = Math.max(...rows.map(r => r.hi ?? r.v));
+  let tk, Y;
+  if (log) {
+    // Escala logarítmica: marcas en potencias de diez; las barras arrancan en la marca inferior.
+    const lo = 10 ** Math.floor(Math.log10(Math.min(...rows.map(r => r.lo ?? r.v)))), hi = 10 ** Math.ceil(Math.log10(top));
+    tk = []; for (let v = lo; v <= hi * 1.0001; v *= 10) tk.push(v);
+    Y = v => T + (1 - (Math.log10(Math.max(v, lo)) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo) || 1)) * (H - T - B);
+  } else {
+    tk = niceTicks(0, top * 1.05);
+    const ymax = tk[tk.length - 1];
+    Y = v => T + (1 - v / (ymax || 1)) * (H - T - B);
+  }
+  const y0 = log ? tk[0] : 0;
   const bw = (W - L - R) / rows.length;
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">`;
   s += yAxis(tk, Y, G, fmt, yLabel);
@@ -491,7 +500,11 @@ export function columns(el, rows, opts = {}) {
   s += '</g>';
   const targets = rows.map((r, i) => {
     const x = L + i * bw;
-    s += `<rect data-k="${i}" class="col ${r.cls || ''}" x="${(x + bw * 0.15).toFixed(1)}" y="${Y(r.v).toFixed(1)}" width="${(bw * 0.7).toFixed(1)}" height="${(Y(0) - Y(r.v)).toFixed(1)}"/>`;
+    s += `<rect data-k="${i}" class="col ${r.cls || ''}" x="${(x + bw * 0.15).toFixed(1)}" y="${Y(r.v).toFixed(1)}" width="${(bw * 0.7).toFixed(1)}" height="${(Y(y0) - Y(r.v)).toFixed(1)}"/>`;
+    if (r.lo != null && r.hi != null) {
+      const cx = (x + bw / 2).toFixed(1), w = Math.min(10, bw * 0.25);
+      s += `<g class="whisk"><line x1="${cx}" x2="${cx}" y1="${Y(r.hi).toFixed(1)}" y2="${Y(r.lo).toFixed(1)}"/><line x1="${(x + bw / 2 - w).toFixed(1)}" x2="${(x + bw / 2 + w).toFixed(1)}" y1="${Y(r.hi).toFixed(1)}" y2="${Y(r.hi).toFixed(1)}"/><line x1="${(x + bw / 2 - w).toFixed(1)}" x2="${(x + bw / 2 + w).toFixed(1)}" y1="${Y(r.lo).toFixed(1)}" y2="${Y(r.lo).toFixed(1)}"/></g>`;
+    }
     return { box: [x, T, x + bw, H - B], html: r.tip || tip(r.label, [['Valor', fmt(r.v)]]) };
   });
   s += '</svg>';

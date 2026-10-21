@@ -33,6 +33,48 @@ function lectura(l) {
 /* Gráficos de cada frente: { title, note, url, draw(el) }. Sólo con datos recogidos; si faltan, el frente no lleva gráfico. */
 const quarter = d => { const t = new Date(d + 'T00:00:00Z'); return `T${Math.floor(t.getUTCMonth() / 3) + 1} ${t.getUTCFullYear()}`; };
 const EPOCH = (name, url) => `Fuente: <a href="${esc(url)}" target="_blank" rel="noopener">Epoch AI, ${esc(name)}</a>, CC BY 4.0.`;
+/* Entregas anuales de chips desde 2024 y extrapolación trimestral hasta END: cada trimestre futuro = el mismo trimestre
+   del año anterior × crecimiento interanual. Central: últimos cuatro trimestres completos frente a los cuatro anteriores;
+   horquilla: menor y mayor cociente interanual de esos cuatro trimestres. */
+const CHIPS_END = 2033;
+function chipsTrend(ch) {
+  if (!ch?.quarters?.length) return null;
+  const q = (ch.cum?.incomplete ? ch.quarters.slice(0, -1) : ch.quarters).map(r => ({ d: r.d, v: r.h100e }));
+  if (q.length < 8) return null;
+  const sum = a => a.reduce((s, r) => s + r.v, 0);
+  const last4 = q.slice(-4), prev4 = q.slice(-8, -4);
+  const yoy = last4.map((r, i) => r.v / prev4[i].v);
+  const G = { v: sum(last4) / sum(prev4), lo: Math.min(...yoy), hi: Math.max(...yoy) };
+  const ym = d => { const t = new Date(d + 'T00:00:00Z'); return [t.getUTCFullYear(), Math.floor(t.getUTCMonth() / 3)]; };
+  const W = ch.cum?.tdpGW && ch.cum?.v ? ch.cum.tdpGW * 1e9 / ch.cum.v : null; // vatios nominales por H100e, con los chips ya entregados
+  const years = new Map(), add = (y, k, v) => { const e = years.get(y) || { real: 0, nReal: 0, v: 0, lo: 0, hi: 0 }; if (k === 'real') { e.real += v.v; e.nReal++; e.v += v.v; e.lo += v.v; e.hi += v.v; } else { e.v += v.v; e.lo += v.lo; e.hi += v.hi; } years.set(y, e); };
+  for (const r of q) { const [y] = ym(r.d); if (y >= 2024) add(y, 'real', { v: r.v }); }
+  // Serie de trabajo por escenario: los últimos cuatro trimestres reales y lo que se va extrapolando.
+  const win = { v: last4.map(r => r.v), lo: last4.map(r => r.v), hi: last4.map(r => r.v) };
+  let [y, k] = ym(q[q.length - 1].d);
+  for (;;) {
+    k++; if (k > 3) { k = 0; y++; }
+    if (y > CHIPS_END) break;
+    const next = {};
+    for (const s of ['v', 'lo', 'hi']) { next[s] = win[s].shift() * G[s]; win[s].push(next[s]); }
+    add(y, 'proj', next);
+  }
+  const mh = v => `${num(v / 1e6, v < 1e8 ? 1 : 0)} M de H100e`;
+  const rows = [...years.entries()].sort((a, b) => a[0] - b[0]).map(([yr, e]) => {
+    const full = e.nReal === 4;
+    return {
+      label: String(yr), v: e.v, cls: full ? '' : 'part', lo: full ? null : e.lo, hi: full ? null : e.hi,
+      tip: tip(`${yr}${full ? '' : e.nReal ? ' · en parte extrapolado' : ' · extrapolado'}`, [
+        [full ? 'Entregados' : 'Tendencia central', mh(e.v)],
+        ['Horquilla', full ? null : `${mh(e.lo)} – ${mh(e.hi)}`],
+        ['Ya entregado (trimestres completos)', !full && e.nReal ? mh(e.real) : null],
+        ['Consumo nominal de esos chips', W ? `${num(e.v * W / 1e9, 0)} GW con la eficiencia actual${full ? '' : '; menos si mejora'}` : null]
+      ])
+    };
+  });
+  return { rows, g: G.v, lo: G.lo, hi: G.hi };
+}
+
 const CHARTS = {
   computo: I => [
     I.chips?.quarters?.length && {
@@ -48,6 +90,15 @@ const CHARTS = {
         }), { fmt: v => v >= 1e6 ? `${num(v / 1e6, 0)} M` : `${num(v / 1e3, 0)} K`, yLabel: 'H100e', every: 4, aria: 'Chips de IA entregados por trimestre' });
       }
     },
+    chipsTrend(I.chips) && (() => {
+      const t = chipsTrend(I.chips), x = v => num(v, 1).replace(/,0$/, '');
+      return {
+        title: `Chips de IA entregados por año: tendencia extrapolada hasta ${t.rows[t.rows.length - 1].label}`,
+        wide: true,
+        note: `Extrapolación propia, no una previsión de Epoch: los datos son los de ${EPOCH('«AI chip sales»', I.chips.cum?.url || 'https://epoch.ai/data/ai-chip-sales').replace('Fuente: ', '')} Cada trimestre futuro repite el crecimiento interanual reciente: ×${x(t.g)} al año en la barra (los cuatro últimos trimestres completos frente a los cuatro anteriores), y la horquilla va del menor al mayor crecimiento interanual de esos cuatro trimestres (×${x(t.lo)} a ×${x(t.hi)}). Escala logarítmica: cada marca es diez veces la anterior. Negro: año con datos completos; gris: año con trimestres extrapolados. Empieza en 2024, el primer año en que la serie cubre todos los fabricantes. Muestra lo que pasaría si nada frenara la tendencia; no es lo que espera nadie. Al pasar el ratón se ve el consumo nominal que tendrían esos chips con la eficiencia actual, para compararlo con la potencia prevista del frente 02.`,
+        draw: el => columns(el, t.rows, { log: true, left: 86, fmt: v => `${num(v / 1e6, 0)} M`, yLabel: 'H100e al año', aria: 'Chips de IA entregados por año, con la tendencia extrapolada' })
+      };
+    })(),
     I.chips?.makers?.length && {
       title: 'Chips entregados por fabricante, acumulado',
       note: `${EPOCH('«AI chip sales»', I.chips.cum?.url || 'https://epoch.ai/data/ai-chip-sales')} Naranja: diseñador estadounidense. Verde: chino.`,

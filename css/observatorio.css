@@ -201,6 +201,8 @@ h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orang
 .chart .col { fill: var(--ink); }
 .chart .col.part { fill: var(--unknown); }
 .chart .col.hot { fill: var(--orange); }
+.chart .col.proj { fill: var(--unknown); opacity: .55; }
+.chart .whisk line { stroke: var(--ink); stroke-width: 1.4; }
 .chart .ci { stroke: var(--muted); stroke-width: 3; }
 .chart .ci-dot { fill: var(--orange); stroke: var(--ink); stroke-width: 1.5; }
 /* Gráficos de los frentes de «La carrera» */
