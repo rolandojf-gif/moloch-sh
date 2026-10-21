@@ -1,5 +1,5 @@
 /* Vista «Lanzamientos»: por modelo, qué etapas constan (anuncio, acceso restringido, API pública, pesos) y con qué fuente. */
-import { esc, src, provLine, fmtDate, num, ii, AA_LEADERBOARD } from './fmt.js';
+import { esc, src, provLine, fmtDate, num, ii, eci, aaConfig } from './fmt.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -30,10 +30,12 @@ function cardFor(m, curated) {
   const dates = Object.values(st).map(s => s.date).filter(Boolean).sort();
   const latest = dates[dates.length - 1];
   const delta = Object.values(st).find(s => s.delta)?.delta;
-  const evalTxt = ii(m) !== null
-    ? `sí: ECI ${num(ii(m))}${src(m.epoch.eci)} en Epoch AI`
-    : `no consta todavía en el índice de Epoch AI (consulta la ${AA_LEADERBOARD})`;
-  const aaRel = m.epoch?.release?.v ? ` · fecha del modelo según Epoch: ${esc(fmtDate(m.epoch.release.v))}${src(m.epoch.release)}` : '';
+  const evals = [];
+  if (ii(m) !== null) evals.push(`índice ${num(ii(m))}${src(m.aa.intelligence)} en Artificial Analysis${aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : ''}`);
+  if (eci(m) !== null) evals.push(`ECI ${num(eci(m))}${src(m.epoch.eci)} en Epoch AI`);
+  const evalTxt = evals.length ? `sí: ${evals.join(' · ')}` : 'no consta todavía en Artificial Analysis ni en Epoch AI';
+  const relSrc = m.aa?.release?.v ? ['AA', m.aa.release] : m.epoch?.release?.v ? ['Epoch', m.epoch.release] : null;
+  const aaRel = relSrc ? ` · fecha del modelo según ${relSrc[0]}: ${esc(fmtDate(relSrc[1].v))}${src(relSrc[1])}` : '';
   const identity = m.identity === 'confirmada' ? '' : ' <span class="tag">Identidad sin confirmar</span>';
   return {
     date: latest, weights: m.weights.v,

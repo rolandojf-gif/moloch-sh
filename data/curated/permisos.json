@@ -1,0 +1,14 @@
+{
+  "_doc": "Permisos de fuentes cuya licencia por defecto no permite republicar sus datos. El recolector sólo publica datos de una fuente de esta lista si su estado es «permitido». Si cambian las condiciones, se actualiza aquí con la fecha.",
+  "aa": {
+    "estado": "permitido",
+    "fecha": "2026-10-21",
+    "forma": "correo de The Artificial Analysis Team al autor de la web",
+    "alcance": "Usar la API pública de Artificial Analysis en esta web personal y estática, y mostrar las puntuaciones, métricas y clasificaciones de los modelos de lenguaje que siguen.",
+    "condiciones": [
+      "Citar con claridad a Artificial Analysis como fuente de los datos, con enlace a https://artificialanalysis.ai.",
+      "Respetar los límites de consultas de la API y guardar los datos en la web estática en lugar de consultarla en cada visita."
+    ],
+    "revisar_si": "la web pasa a uso comercial o necesita más consultas de las que permite la API gratuita"
+  }
+}

@@ -1,9 +1,11 @@
 /* Vista «Hoy»: qué ha cambiado, cuatro indicadores y capacidad frente a precio. */
-import { esc, fact, src, provLine, usd, num, fmtDate, blended, ii, capFact, ND, AA_LEADERBOARD } from './fmt.js';
+import { esc, fact, src, provLine, usd, num, fmtDate, blended, ii, capFact, eci, aaConfig, aaIndexName, priceBasis, ND, AA_LINK } from './fmt.js';
 import { scatter } from './charts.js';
 
 const $ = s => document.querySelector(s);
-const KIND = { nuevo: 'Nuevo modelo', pesos: 'Pesos abiertos', precio: 'Cambio de precio', evaluacion: 'Evaluación independiente', retirada: 'Retirada' };
+const KIND = { nuevo: 'Nuevo modelo', pesos: 'Pesos abiertos', precio: 'Precio del laboratorio', evaluacion: 'Evaluación independiente', retirada: 'Retirada' };
+/* Orden de las tarjetas: modelos nuevos, evaluaciones y pesos antes que precios y retiradas. */
+const TIER = { nuevo: 0, evaluacion: 0, pesos: 0, precio: 1, retirada: 2 };
 const GAPS = [5, 10, 15];
 const blendSnap = s => (s && s.in !== null && s.out !== null && s.in !== undefined && s.out !== undefined) ? (3 * s.in + s.out) / 4 : null;
 
@@ -14,12 +16,12 @@ function leader(models, w) {
   return scored(models).filter(m => m.weights.v === w).sort((a, b) => ii(b) - ii(a))[0] || null;
 }
 
-/* Relevancia, para ordenar los cambios de una misma fecha: pesos y modelos evaluados primero; cambios de precio según su tamaño; retiradas al final. */
+/* Relevancia, para desempatar acontecimientos de un mismo grupo y fecha: pesos y modelos evaluados primero; precios según su tamaño. */
 function relevance(item, byId) {
   const m = byId.get(item.model);
   switch (item.kind) {
     case 'pesos': return 50;
-    case 'nuevo': return m?.identity !== 'confirmada' ? 20 : 30 + (item.data?.eci ? 15 : 0);
+    case 'nuevo': return m?.identity !== 'confirmada' ? 20 : 30 + (item.data?.ii || item.data?.eci ? 15 : 0);
     case 'precio': return 25 + Math.min(20, Math.abs(item.data?.pct || 0) / 2);
     case 'evaluacion': return 35;
     case 'retirada': return 10;
@@ -41,18 +43,22 @@ function consequence(item, d) {
     const block = m.weights.v;
     const lead = leader(models.filter(x => x.id !== m.id), block);
     const rank = scored(models).sort((a, b) => ii(b) - ii(a)).findIndex(x => x.id === m.id) + 1;
+    const head = `Índice AA ${num(score)}${src(capFact(m))}${aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : ''}`;
     if (lead) {
       const diff = Math.round((score - ii(lead)) * 10) / 10;
       parts.push(diff > 0
-        ? `ECI ${num(score)}: supera en ${num(diff)} puntos al anterior mejor ${block === 'abiertos' ? 'abierto' : 'cerrado'} (${esc(lead.name)}).`
-        : `ECI ${num(score)}: a ${num(-diff)} puntos del mejor ${block === 'abiertos' ? 'abierto' : 'cerrado'} (${esc(lead.name)}). Puesto ${rank} de ${scored(models).length} en el catálogo.`);
-    } else parts.push(`ECI ${num(score)}. Puesto ${rank} de ${scored(models).length} en el catálogo.`);
+        ? `${head}: supera en ${num(diff)} puntos al anterior mejor ${block === 'abiertos' ? 'abierto' : 'cerrado'} (${esc(lead.name)}).`
+        : `${head}: a ${num(-diff)} puntos del mejor ${block === 'abiertos' ? 'abierto' : 'cerrado'} (${esc(lead.name)}). Puesto ${rank} de ${scored(models).length} en el catálogo.`);
+    } else parts.push(`${head}. Puesto ${rank} de ${scored(models).length} en el catálogo.`);
+    if (eci(m) === null) parts.push('Epoch AI todavía no lo ha puntuado.');
   } else if (item.kind === 'nuevo') {
-    parts.push(`Sin puntuación de capacidad independiente todavía en Epoch AI. Puede que ya figure en la ${AA_LEADERBOARD}.`);
+    parts.push(eci(m) !== null
+      ? `Sin puntuación todavía en Artificial Analysis. ECI ${num(eci(m))}${src(m.epoch.eci)} en Epoch AI.`
+      : 'Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI.');
   }
   if (item.kind === 'precio') {
     const pct = item.data.pct;
-    parts.push(`${pct < 0 ? 'Baja' : 'Sube'} un ${num(Math.abs(pct))} % desde la recogida del ${fmtDate(item.data.since)}.`);
+    parts.push(`El precio combinado ${pct < 0 ? 'baja' : 'sube'} un ${num(Math.abs(pct))} % respecto a la recogida del ${fmtDate(item.data.since)}.`);
   }
   if (item.kind === 'nuevo' || item.kind === 'precio') {
     const b = blended(m);
@@ -66,17 +72,23 @@ function consequence(item, d) {
 }
 
 function renderNews(d) {
-  // Lo más reciente primero: un modelo de hace dos semanas con ECI no debe tapar el de ayer que aún no tiene evaluación.
-  const items = (d.changes.items || []).slice().sort((a, b) => (b.date || '').localeCompare(a.date || '') || relevance(b, d.byId) - relevance(a, d.byId));
-  $('#hoy-period').innerHTML = d.changes.since
-    ? `Cambios entre la recogida del ${esc(fmtDate(d.changes.since))} y la del ${esc(fmtDate(d.catalog.generated))}.`
-    : `Primera recogida: se listan las altas de los últimos 14 días en OpenRouter, de la más reciente a la más antigua. Los cambios de precio se detectan a partir de la siguiente.`;
+  // Tarjetas: primero modelos nuevos, evaluaciones y pesos, del más reciente al más antiguo; después precios y retiradas.
+  // Lista completa: cronológica, lo más reciente primero.
+  const byDate = (a, b) => (b.date || '').localeCompare(a.date || '');
+  const all = (d.changes.items || []).slice();
+  const cards = all.slice().sort((a, b) => (TIER[a.kind] ?? 3) - (TIER[b.kind] ?? 3) || byDate(a, b) || relevance(b, d.byId) - relevance(a, d.byId));
+  const items = all.sort((a, b) => byDate(a, b) || (TIER[a.kind] ?? 3) - (TIER[b.kind] ?? 3) || relevance(b, d.byId) - relevance(a, d.byId));
+  const days = d.changes.window || 7;
+  $('#hoy-period').innerHTML = `Últimos ${days} días, desde el ${esc(fmtDate(d.changes.since))}: modelos nuevos en OpenRouter, primeras puntuaciones, pesos abiertos, cambios de precio del propio laboratorio y retiradas.`;
   if (!items.length) {
-    $('#hoy-news').innerHTML = `<div class="empty">Sin cambios relevantes${d.changes.since ? ` desde el ${esc(fmtDate(d.changes.since))}` : ''}. Ningún modelo nuevo, cambio de precio de al menos un 5 %, pesos nuevos ni retiradas en los laboratorios seguidos.</div>`;
+    $('#hoy-news').innerHTML = `<div class="empty">Nada en los últimos ${days} días: ningún modelo nuevo, primera puntuación, pesos nuevos, cambio de precio del laboratorio de al menos un 5 % ni retirada en los laboratorios seguidos.</div>`;
     $('#hoy-all').hidden = true;
     return;
   }
-  $('#hoy-news').innerHTML = items.slice(0, 3).map(it => `
+  // Una tarjeta por modelo: un modelo nuevo con su primera puntuación no ocupa dos.
+  const seen = new Set();
+  const top = cards.filter(it => !seen.has(it.model) && seen.add(it.model)).slice(0, 3);
+  $('#hoy-news').innerHTML = top.map(it => `
     <article class="news-card">
       <span class="tag k-${esc(it.kind)}">${esc(KIND[it.kind] || it.kind)}</span>
       <h3>${esc(d.byId.get(it.model)?.name || it.data?.name || it.model)}</h3>
@@ -84,11 +96,13 @@ function renderNews(d) {
       <p><span class="lbl">Qué cambia</span>${consequence(it, d)}</p>
       ${provLine({ ...it.src, date: it.date })}
     </article>`).join('');
-  const all = $('#hoy-all');
-  all.hidden = items.length <= 3;
-  all.querySelector('summary').textContent = `Ver todos los cambios (${items.length})`;
+  const more = $('#hoy-all');
+  more.hidden = items.length <= top.length;
+  more.querySelector('summary').textContent = `Ver todo lo ocurrido en ${days} días (${items.length})`;
   $('#hoy-all-list').innerHTML = items.map(it => `<li><span>${esc(fmtDate(it.date))}</span><span><b>${esc(KIND[it.kind] || it.kind)}.</b> ${esc(it.what)}</span>${provLine(it.src)}</li>`).join('');
 }
+
+const priceBy = m => priceBasis(m) ? `, ${esc(priceBasis(m))}` : '';
 
 function cheapestAbove(rows, T, getII, getPrice) {
   return rows.filter(r => getII(r) !== null && getII(r) >= T && getPrice(r) !== null && getPrice(r) > 0)
@@ -98,29 +112,33 @@ function cheapestAbove(rows, T, getII, getPrice) {
 function renderKPIs(d, gapPts) {
   const models = d.catalog.models;
   const lo = leader(models, 'abiertos'), lc = leader(models, 'cerrados');
-  const epOff = d.catalog.status?.epoch && !d.catalog.status.epoch.ok && !scored(models).length;
-  const reason = epOff ? `Epoch AI no disponible: ${esc(d.catalog.status.epoch.reason)}.` : '';
-  const prev = d.prevSnap;
+  const aaSt = d.catalog.status?.aa;
+  const reason = aaSt && !aaSt.ok && !scored(models).length ? `Artificial Analysis no disponible: ${esc(aaSt.reason || 'sin datos')}.` : '';
+  const ver = d.catalog.aaIndexVersion;
+  // Las comparaciones con la recogida anterior sólo valen con la misma versión del índice de AA.
+  const prev = d.prevSnap && d.prevSnap.leaders?.aa && (d.prevSnap.leaders.aa.v ?? null) === (ver ?? null) ? d.prevSnap : null;
+  const prevAA = prev?.leaders?.aa;
 
   const leadCard = (m, cls, label, prevLead) => {
     if (!m) return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v">${ND}</span><span class="s">${reason || 'Ningún modelo de este bloque tiene índice.'}</span></div>`;
     let delta = '';
-    if (prevLead && prevLead.id !== m.id && prevLead.eci !== undefined) delta = ` Antes: ${esc(prev.models[prevLead.id]?.n || prevLead.id)} (${num(prevLead.eci)}).`;
+    if (prevLead && prevLead.id !== m.id && prevLead.ii !== undefined) delta = ` Antes: ${esc(prev.models[prevLead.id]?.n || prevLead.id)} (${num(prevLead.ii)}).`;
+    const ep = eci(m) !== null ? ` ECI en Epoch AI: ${fact(m.epoch.eci, v => num(v))}.` : '';
     return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small">${esc(m.name)}</span>
-      <span class="s">${esc(m.lab.name)} · ECI ${fact(capFact(m), v => num(v))}, intervalo ${num(capFact(m).ci?.[0])}–${num(capFact(m).ci?.[1])}.${delta}</span></div>`;
+      <span class="s">${esc(m.lab.name)} · índice AA ${fact(capFact(m), v => num(v))}${aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : ''}.${ep}${delta}</span></div>`;
   };
 
   let gapCard;
   if (lo && lc) {
     const gap = Math.round((ii(lc) - ii(lo)) * 10) / 10;
     let delta = '';
-    if (prev?.leaders?.open?.eci !== undefined && prev?.leaders?.closed?.eci !== undefined) {
-      const pg = Math.round((prev.leaders.closed.eci - prev.leaders.open.eci) * 10) / 10;
+    if (prevAA?.open?.ii !== undefined && prevAA?.closed?.ii !== undefined) {
+      const pg = Math.round((prevAA.closed.ii - prevAA.open.ii) * 10) / 10;
       if (pg !== gap) delta = ` ${gap < pg ? 'Se reduce' : 'Se amplía'} desde ${num(pg)} el ${fmtDate(prev.date)}.`;
       else delta = ` Igual que el ${fmtDate(prev.date)}.`;
     }
     gapCard = `<div class="kpi"><span class="k">Diferencia cerrado − abierto</span><span class="v">${gap > 0 ? '' : gap < 0 ? '−' : ''}${num(Math.abs(gap))} pts${src(capFact(lc))}</span>
-      <span class="s">Puntos del Epoch Capabilities Index entre ${esc(lc.name)} y ${esc(lo.name)}. No equivalen a meses de retraso.${overlap(lo, lc) ? ' Los intervalos de confianza se solapan: la diferencia no es concluyente.' : ''}${delta}</span></div>`;
+      <span class="s">Puntos del ${esc(aaIndexName(ver))} entre ${esc(lc.name)} y ${esc(lo.name)}. No equivalen a meses de retraso. AA no publica intervalo de confianza para este índice.${delta}</span></div>`;
   } else {
     gapCard = `<div class="kpi"><span class="k">Diferencia cerrado − abierto</span><span class="v">${ND}</span><span class="s">${reason || 'Falta un líder con índice en algún bloque.'}</span></div>`;
   }
@@ -132,9 +150,11 @@ function renderKPIs(d, gapPts) {
     const best = cheapestAbove(scored(models), T, ii, blended);
     const bestOpen = cheapestAbove(scored(models).filter(m => m.weights.v === 'abiertos'), T, ii, blended);
     let delta = '';
-    if (prev) {
-      const rows = Object.entries(prev.models).map(([id, s]) => ({ id, ...s }));
-      const pb = cheapestAbove(rows, T, r => r.eci ?? null, blendSnap);
+    // Sólo se compara con recogidas que ya usaban el mismo criterio de precio (propio laboratorio o proveedor más barato).
+    const prevRows = prev ? Object.entries(prev.models).map(([id, s]) => ({ id, ...s })) : [];
+    if (prevRows.some(r => r.pb)) {
+      const rows = prevRows.filter(r => r.pb);
+      const pb = cheapestAbove(rows, T, r => r.ii ?? null, blendSnap);
       if (pb && best) {
         const ch = (blended(best) - blendSnap(pb)) / blendSnap(pb) * 100;
         delta = Math.abs(ch) < 0.5 ? ` Sin cambio desde el ${fmtDate(prev.date)}.` : ` ${ch < 0 ? 'Baja' : 'Sube'} un ${num(Math.abs(ch))} % desde el ${fmtDate(prev.date)} (${usd(blendSnap(pb))}).`;
@@ -143,32 +163,27 @@ function renderKPIs(d, gapPts) {
     const sel = `<label>umbral <select id="kpi-pct">${GAPS.map(g => `<option value="${g}"${g === gapPts ? ' selected' : ''}>líder − ${g} pts</option>`).join('')}</select></label>`;
     costCard = `<div class="kpi"><span class="k">Coste con capacidad comparable</span>
       <span class="v">${best ? usd(blended(best)) + src(best.price.in) : ND}</span>
-      <span class="s">${best ? `${esc(best.name)}: el más barato con ECI ≥ ${num(T)}, precio combinado por millón.` : `Ningún modelo con ECI ≥ ${num(T)} tiene precio.`}${bestOpen && bestOpen !== best ? ` Abierto más barato: ${esc(bestOpen.name)}, ${usd(blended(bestOpen))}.` : ''}${delta}</span>${sel}</div>`;
+      <span class="s">${best ? `${esc(best.name)}: el más barato con índice AA ≥ ${num(T)}, precio combinado por millón${priceBy(best)}.` : `Ningún modelo con índice AA ≥ ${num(T)} tiene precio.`}${bestOpen && bestOpen !== best ? ` Abierto más barato: ${esc(bestOpen.name)}, ${usd(blended(bestOpen))}.` : ''}${delta}</span>${sel}</div>`;
   } else {
     costCard = `<div class="kpi"><span class="k">Coste con capacidad comparable</span><span class="v">${ND}</span><span class="s">${reason || 'Sin modelos con índice.'}</span></div>`;
   }
 
-  $('#hoy-kpis').innerHTML = leadCard(lo, 'open', 'Líder abierto', prev?.leaders?.open) + leadCard(lc, 'closed', 'Líder cerrado', prev?.leaders?.closed) + gapCard + costCard;
-  $('#hoy-kpi-note').innerHTML = 'Líderes calculados entre los modelos que se pueden usar por API en OpenRouter y tienen puntuación en el <a href="https://epoch.ai/benchmarks/eci" target="_blank" rel="noopener">Epoch Capabilities Index</a> (Epoch AI, CC BY 4.0). Umbral de capacidad comparable: ECI del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con precios de OpenRouter.';
+  $('#hoy-kpis').innerHTML = leadCard(lo, 'open', 'Líder abierto', prevAA?.open) + leadCard(lc, 'closed', 'Líder cerrado', prevAA?.closed) + gapCard + costCard;
+  $('#hoy-kpi-note').innerHTML = `Líderes calculados entre los modelos que se pueden usar por API en OpenRouter y tienen puntuación en el ${esc(aaIndexName(ver))}. Datos de ${AA_LINK}, publicados con su permiso. De cada modelo se toma la configuración de razonamiento de mayor índice. Umbral de capacidad comparable: índice del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con el precio que cobra el propio laboratorio en OpenRouter o, si no lo sirve él, el del proveedor más barato, que se indica.`;
   $('#kpi-pct')?.addEventListener('change', e => { renderKPIs(d, Number(e.target.value)); renderScatter(d, Number(e.target.value)); });
-}
-
-function overlap(a, b) {
-  const x = capFact(a)?.ci, y = capFact(b)?.ci;
-  return x && y && x[0] !== null && y[0] !== null && x[0] <= y[1] && y[0] <= x[1];
 }
 
 function renderScatter(d, gapPts) {
   const models = scored(d.catalog.models);
   const el = $('#hoy-scatter');
   if (!models.length) {
-    el.innerHTML = '<div class="chart-empty">Sin datos de capacidad: ningún modelo del catálogo tiene puntuación ECI de Epoch AI.</div>';
+    el.innerHTML = '<div class="chart-empty">Sin datos de capacidad: ningún modelo del catálogo tiene puntuación de Artificial Analysis.</div>';
     $('#hoy-reading').innerHTML = '';
     return;
   }
   const pts = models.filter(m => blended(m) > 0).map(m => ({
     id: m.id, x: blended(m), y: ii(m), cls: m.weights.v === 'abiertos' ? 'open' : m.weights.v === 'cerrados' ? 'closed' : 'unknown',
-    label: m.name, title: `${m.name} (${m.lab.name}) · ECI ${m.epoch.eci.v} · ${usd(blended(m))}/M combinado · ${m.weights.v || 'pesos sin datos'}`
+    label: m.name, title: `${m.name} (${m.lab.name}) · índice AA ${m.aa.intelligence.v} · ${usd(blended(m))}/M combinado · ${m.weights.v || 'pesos sin datos'}`
   }));
   const excluded = models.length - pts.length;
   const lo = leader(models, 'abiertos'), lc = leader(models, 'cerrados');
@@ -176,7 +191,7 @@ function renderScatter(d, gapPts) {
   const T = Math.round((top - gapPts) * 10) / 10;
   const best = cheapestAbove(models, T, ii, blended);
   const labels = new Set([lo?.id, lc?.id, best?.id].filter(Boolean));
-  scatter(el, pts, { threshold: T, labels, yLabel: 'Epoch Capabilities Index (ECI)' });
+  scatter(el, pts, { threshold: T, labels, yLabel: 'Índice de inteligencia (Artificial Analysis)' });
 
   const bits = [];
   if (lo && lc) {
@@ -184,9 +199,9 @@ function renderScatter(d, gapPts) {
     const ratio = blended(lc) > 0 && blended(lo) > 0 ? blended(lc) / blended(lo) : null;
     bits.push(`El mejor modelo con pesos abiertos (${esc(lo.name)}, ${num(ii(lo))}) queda ${gap >= 0 ? `${num(gap)} puntos por debajo` : `${num(-gap)} puntos por encima`} del mejor cerrado (${esc(lc.name)}, ${num(ii(lc))})${ratio ? ` y su precio combinado es ${ratio >= 1 ? `${num(ratio)} veces menor` : `${num(1 / ratio)} veces mayor`}` : ''}.`);
   }
-  if (best) bits.push(`Por encima del umbral de ${num(T)} puntos ECI, la opción más barata es ${esc(best.name)} (${best.weights.v === 'abiertos' ? 'abierto' : 'cerrado'}), a ${usd(blended(best))} por millón.`);
-  if (excluded) bits.push(`${excluded} modelo${excluded > 1 ? 's' : ''} con ECI pero sin precio positivo no aparece${excluded > 1 ? 'n' : ''} en el gráfico.`);
-  $('#hoy-reading').innerHTML = `<span class="lbl">Lectura automática a partir de las cifras</span>${bits.join(' ')}`;
+  if (best) bits.push(`Por encima del umbral de ${num(T)} puntos del índice AA, la opción más barata es ${esc(best.name)} (${best.weights.v === 'abiertos' ? 'abierto' : 'cerrado'}), a ${usd(blended(best))} por millón.`);
+  if (excluded) bits.push(`${excluded} modelo${excluded > 1 ? 's' : ''} con índice pero sin precio positivo no aparece${excluded > 1 ? 'n' : ''} en el gráfico.`);
+  $('#hoy-reading').innerHTML = `<span class="lbl">Lectura automática a partir de las cifras</span>${bits.join(' ')}<span class="m-sub">Capacidad: ${esc(aaIndexName(d.catalog.aaIndexVersion))}, datos de ${AA_LINK}. Precio: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>, el del propio laboratorio o, si no lo sirve, el del proveedor más barato.</span>`;
 }
 
 export function renderHoy(d) {

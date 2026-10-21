@@ -7,8 +7,9 @@ let SOURCES = {};
 export function setSources(s) { SOURCES = s || {}; }
 
 export const ND = '<span class="nd">sin datos</span>';
-/* Artificial Analysis no permite republicar sus datos sin permiso: sólo se enlaza su clasificación. */
-export const AA_LEADERBOARD = '<a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener">clasificación de Artificial Analysis</a>';
+/* Artificial Analysis: sus datos se publican con su permiso por escrito (data/curated/permisos.json), citándolos con enlace. */
+export const AA_LINK = '<a href="https://artificialanalysis.ai" target="_blank" rel="noopener">Artificial Analysis</a>';
+export const aaIndexName = v => `índice de inteligencia de Artificial Analysis${v ? ` v${v}` : ''}`;
 
 export function fmtDate(iso) {
   if (!iso) return '—';
@@ -76,20 +77,33 @@ export function provLine(s) {
 export const COUNTRY = { US: 'EE. UU.', CN: 'China', FR: 'Francia', CA: 'Canadá', IL: 'Israel', GB: 'Reino Unido', DE: 'Alemania', JP: 'Japón', KR: 'Corea del Sur', AE: 'EAU' };
 export const country = c => c ? (COUNTRY[c] || c) : 'sin confirmar';
 
+/* Quién fija el precio mostrado: el propio laboratorio en OpenRouter o, si no lo sirve, el proveedor más barato. Texto sin escapar. */
+export const priceBasis = m => m.price?.basis === 'laboratorio' ? `precio de ${m.price.provider}`
+  : m.price?.basis === 'proveedor' ? `proveedor más barato: ${m.price.provider}${m.price.quant ? `, cuantización ${m.price.quant}` : ''}`
+  : m.price?.basis === 'referencia' ? 'precio de referencia de OpenRouter' : null;
 /* Precio combinado 3:1 (convención de Artificial Analysis), a partir de los precios de OpenRouter. */
 export function blended(m) {
   const i = m.price?.in?.v, o = m.price?.out?.v;
   return (i === null || i === undefined || o === null || o === undefined) ? null : (3 * i + o) / 4;
 }
-/* Capacidad: Epoch Capabilities Index (CC BY 4.0). Programación: SWE-bench Verified ejecutado por Epoch. */
-export const ii = m => m.epoch?.eci?.v ?? null;
-export const coding = m => m.epoch?.swe?.v ?? null;
-export const capFact = m => m.epoch?.eci ?? null;
+/* Capacidad en las vistas de modelos: Artificial Analysis Intelligence Index (configuración de mayor índice).
+   Epoch Capabilities Index y SWE-bench Verified (Epoch AI, CC BY 4.0) como referencia; las escalas no se mezclan. */
+export const ii = m => m.aa?.intelligence?.v ?? null;
+export const capFact = m => m.aa?.intelligence ?? null;
+export const coding = m => m.aa?.coding?.v ?? null;
+export const agentic = m => m.aa?.agentic?.v ?? null;
+export const eci = m => m.epoch?.eci?.v ?? null;
+export const swe = m => m.epoch?.swe?.v ?? null;
+/* Nombre en AA cuando aporta algo frente al del catálogo, p. ej. la configuración «(Max)»; no por guiones o mayúsculas. */
+const bare = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+export const aaConfig = m => m.aa && m.aa.name && bare(m.aa.name) !== bare(m.name) ? m.aa.name : null;
 
 /* Velocidad: mediana de AA si existe; si no, el proveedor de OpenRouter más rápido, nombrado. */
 export function speed(m) {
   const a = m.aa;
-  if (a && a.tps && a.tps.v) return { tps: a.tps.v, ttft: a.ttft?.v ?? null, f: a.tps, ft: a.ttft, provider: 'referencia de AA' };
+  // AA mide con la misma configuración que puntúa (la de mayor índice): con el razonamiento al máximo, la espera incluye el tiempo de pensar.
+  const cfg = a && ((/\(([^)]*)\)\s*$/.exec(a.name || '') || [])[1] || null);
+  if (a && a.tps && a.tps.v) return { tps: a.tps.v, ttft: a.ttft?.v ?? null, f: a.tps, ft: a.ttft, provider: `referencia de AA${cfg ? `, configuración ${cfg}` : ''}` };
   const eps = (m.endpoints || []).filter(e => e.tps);
   if (!eps.length) return null;
   const e = eps.slice().sort((x, y) => y.tps - x.tps)[0];
