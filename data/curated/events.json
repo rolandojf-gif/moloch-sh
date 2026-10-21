@@ -171,16 +171,6 @@
       "nota": "Acceso inicial restringido a defensores de ciberseguridad verificados a través del Fairwind Program. La disponibilidad general para desarrolladores y empresas llegó el 13 de octubre de 2026 (cloud.google.com/blog, verificado por lectura directa)."
     },
     {
-      "model": "google/gemini-nano-banana-2.1",
-      "type": "anuncio",
-      "date": "2026-10-06",
-      "url": "https://x.com/Google/status/2107501209154204148",
-      "fuente": "Google (cuenta oficial en X), «Meet Nano Banana 2.1, our latest image generation and editing model» (no hay post en blog; el changelog de ai.google.dev y la model card de DeepMind también lo fechan el 6 de octubre)",
-      "verificacion": "buscador",
-      "consulta": "2026-10-21",
-      "delta": "Según Google, supera a sus modelos de imagen anteriores en todo, con saltos notables en diseño visual, edición con máscaras y consistencia de sujetos."
-    },
-    {
       "model": "inclusionai/ling-3.0-flash",
       "type": "anuncio",
       "date": "2026-07-23",
@@ -326,15 +316,6 @@
       "verificacion": "buscador",
       "consulta": "2026-10-21",
       "delta": "Añade visión al Nemotron Super de 120B (12B activos); según NVIDIA supera a Nemotron 3 Super en SWE-bench y Terminal-Bench y logra una precisión comparable a su modelo de razonamiento más grande con una quinta parte de parámetros."
-    },
-    {
-      "model": "nvidia/switchyard",
-      "type": "anuncio",
-      "date": "2026-08-11",
-      "url": "https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/",
-      "fuente": "NVIDIA, «NVIDIA Nemotron 3.5 Lightning and NeMo Switchyard Deliver Faster, Smarter, More Efficient Agentic AI» (lanzamiento de la librería de código abierto; el router alojado en OpenRouter no tiene anuncio propio)",
-      "verificacion": "buscador",
-      "consulta": "2026-10-21"
     },
     {
       "model": "openai/gpt-6-astra",

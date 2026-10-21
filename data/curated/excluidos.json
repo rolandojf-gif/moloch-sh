@@ -1,0 +1,8 @@
+{
+  "_doc": "Lo que OpenRouter lista pero no es un modelo de lenguaje de uso general queda fuera del catálogo y se nombra aparte. Los modelos que generan imagen o audio se detectan solos por la salida que declara OpenRouter (architecture.output_modalities). Aquí van, por patrón de id, los enrutadores y los clasificadores de seguridad.",
+  "reglas": [
+    { "tipo": "enrutador", "patron": "^openrouter/(auto|fusion|pareto|free|bodybuilder)", "motivo": "enrutador de OpenRouter: elige otro modelo en cada petición" },
+    { "tipo": "enrutador", "patron": "^nvidia/switchyard", "motivo": "enrutador de NVIDIA: reparte las peticiones entre otros modelos" },
+    { "tipo": "seguridad", "patron": "(llama-guard|content-safety|safeguard)", "motivo": "clasificador de seguridad, no un modelo de conversación" }
+  ]
+}

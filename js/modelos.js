@@ -4,7 +4,9 @@ import { frontier } from './charts.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const state = { w: 'all', sort: 'ii', q: '', open: new Set(), cmp: [], all: false };
+const state = { w: 'all', sort: 'ii', dir: -1, q: '', open: new Set(), cmp: [], all: false };
+/* Sentido por defecto de cada criterio: el precio, de más barato a más caro; el resto, de mayor a menor. */
+const DIR0 = { ii: -1, eci: -1, tps: -1, price: 1, date: -1 };
 const PAGE = 40;
 let D;
 
@@ -15,7 +17,7 @@ function sortKey(m) {
   switch (state.sort) {
     case 'ii': return ii(m);
     case 'eci': return eci(m);
-    case 'price': { const b = blended(m); return b === null ? null : -b; }
+    case 'price': return freeOnly(m) ? null : blended(m);
     case 'tps': return speed(m)?.tps ?? null;
     case 'date': return m.orCreated.v ? new Date(m.orCreated.v).getTime() : null;
   }
@@ -32,9 +34,12 @@ function rows() {
       if (ka === null && kb === null) return a.name.localeCompare(b.name);
       if (ka === null) return 1;
       if (kb === null) return -1;
-      return kb - ka;
+      return state.dir * (ka - kb);
     });
 }
+
+/* Modelos que OpenRouter sólo ofrece como variante gratuita: su «0 $» no es un precio. */
+const freeOnly = m => !!m.orVariant && /:free$/.test(m.orVariant) && !m.price.in.v && !m.price.out.v;
 
 function speedCell(m) {
   const s = speed(m);
@@ -55,7 +60,7 @@ function detail(m) {
     ['Contexto', fact(m.ctx, v => tokens(v) + ' tokens')],
     ['Razonamiento', fact(m.reasoning, yesNo)],
     ['Caché (lectura)', m.price.cacheRead.v !== null ? usd(m.price.cacheRead.v) + ' / M' + src(m.price.cacheRead) : ND + src(m.price.cacheRead)],
-    ['Precio combinado 3:1', blended(m) !== null ? usd(blended(m)) + ' / M' + src(m.price.in) + (priceBasis(m) ? `<span class="m-sub">${esc(priceBasis(m))}</span>` : '') : ND],
+    ['Precio combinado 3:1', freeOnly(m) ? `gratis: solo variante ${esc(m.orVariant.slice(m.orVariant.lastIndexOf(':')))}, sin precio de pago todavía` : blended(m) !== null ? usd(blended(m)) + ' / M' + src(m.price.in) + (priceBasis(m) ? `<span class="m-sub">${esc(priceBasis(m))}</span>` : '') : ND],
     ['Alta en OpenRouter', fact(m.orCreated, v => fmtDate(v))],
     ['Repositorio de pesos', m.hfCreated ? fact(m.hfCreated, v => fmtDate(v)) : ND],
     ['Inteligencia (Artificial Analysis)', aa ? `${fact(aa.intelligence, v => num(v))}<span class="m-sub">${esc(aaIndexName(aa.version))} · como <a href="${esc(aa.url)}" target="_blank" rel="noopener">«${esc(aa.name)}»</a> en AA${aa.how && aa.how !== 'nombre exacto' ? ` (${esc(aa.how)})` : ''}</span>` : 'sin puntuación en Artificial Analysis todavía'],
@@ -81,9 +86,26 @@ function detail(m) {
   return `<dl class="dgrid">${dl.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${provTable}`;
 }
 
+function syncHeads() {
+  for (const b of $$('[data-sort]')) {
+    const on = b.dataset.sort === state.sort;
+    b.setAttribute('aria-sort', on ? (state.dir < 0 ? 'descending' : 'ascending') : 'none');
+    b.querySelector('.arr').textContent = on ? (state.dir < 0 ? '▼' : '▲') : '↕';
+    b.title = on ? (state.dir < 0 ? 'De mayor a menor; pulsa para invertir' : 'De menor a mayor; pulsa para invertir') : 'Ordenar por esta columna';
+  }
+}
+
 function renderTable() {
+  syncHeads();
   const list = rows();
   $('#mx-caption').innerHTML = `${list.length} modelos${!state.all && !state.q && list.length > PAGE ? ` (se muestran ${PAGE})` : ''} · precios en USD por millón de tokens (OpenRouter) · inteligencia: ${esc(aaIndexName(D.catalog.aaIndexVersion))}, configuración de mayor índice, datos de ${AA_LINK} · ECI: Epoch Capabilities Index (Epoch AI, CC BY 4.0); las dos escalas no son comparables · pulsa una fila para ver contexto, licencia, caché, programación, agentes y proveedores.`;
+  const ex = D.catalog.excluded || [];
+  const TIPO = { imagen: 'genera imágenes', audio: 'genera audio', enrutador: 'enrutadores', seguridad: 'clasificadores de seguridad' };
+  if (ex.length) {
+    const by = Object.keys(TIPO).map(t => [t, ex.filter(e => e.tipo === t)]).filter(([, l]) => l.length);
+    $('#mx-caption').innerHTML += `<details class="excl"><summary>Fuera de la tabla: ${ex.length} entradas de OpenRouter que no son modelos de lenguaje de uso general (${by.map(([t, l]) => `${l.length} ${TIPO[t].replace(/^genera /, 'de ').replace('imágenes', 'imagen')}`).join(', ')})</summary>
+      <ul>${by.map(([t, l]) => `<li><b>${esc(TIPO[t][0].toUpperCase() + TIPO[t].slice(1))}:</b> ${l.map(e => `<a href="https://openrouter.ai/${esc(e.id)}" target="_blank" rel="noopener">${esc(e.name)}</a>`).join(', ')}</li>`).join('')}</ul></details>`;
+  }
   if (!list.length) { $('#mx-body').innerHTML = '<tr><td colspan="7"><div class="empty">Ningún modelo coincide con el filtro.</div></td></tr>'; return; }
   const shown = state.all || state.q ? list : list.slice(0, PAGE);
   $('#mx-more')?.remove();
@@ -100,7 +122,7 @@ function renderTable() {
       <td class="num" data-label="Inteligencia (AA)">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfigShort(m) ? `<span class="m-sub" title="Configuración de AA con mayor índice: ${esc(aaConfig(m))}">${esc(aaConfigShort(m))}</span>` : ''}` : ND}</td>
       <td class="num" data-label="ECI (Epoch)">${m.epoch ? `<span class="big">${fact(m.epoch.eci, v => num(v))}</span>` : ND}</td>
       <td class="num" data-label="Velocidad">${speedCell(m)}</td>
-      <td class="num" data-label="Entrada / salida"><span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">salida ${fact(m.price.out, usd)}</span>${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}, el más barato` : ''}</span>` : ''}</td>
+      <td class="num" data-label="Entrada / salida">${freeOnly(m) ? `<span class="big">gratis</span>${src(m.price.in)}<span class="m-sub">solo variante ${esc(m.orVariant.slice(m.orVariant.lastIndexOf(':')))}; sin precio de pago todavía</span>` : `<span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">salida ${fact(m.price.out, usd)}</span>`}${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}, el más barato` : ''}</span>` : ''}</td>
     </tr>${open ? `<tr class="detail"><td colspan="7">${detail(m)}</td></tr>` : ''}`;
   }).join('');
 }
@@ -162,7 +184,7 @@ function renderFrontier() {
 export function renderModelos(d) {
   D = d;
   if (!d.catalog.models.some(m => ii(m) !== null)) {
-    state.sort = d.catalog.models.some(m => eci(m) !== null) ? 'eci' : 'date';
+    state.sort = d.catalog.models.some(m => eci(m) !== null) ? 'eci' : 'date'; state.dir = -1;
     $('#mx-sort').value = state.sort;
   }
   $('#mx-weights').addEventListener('click', e => {
@@ -171,7 +193,15 @@ export function renderModelos(d) {
     $$('#mx-weights [data-w]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
     renderTable();
   });
-  $('#mx-sort').addEventListener('change', e => { state.sort = e.target.value; renderTable(); });
+  $('#mx-sort').addEventListener('change', e => { state.sort = e.target.value; state.dir = DIR0[state.sort]; renderTable(); });
+  // Flechas en las cabeceras: pulsar la columna activa invierte el orden; otra columna empieza en su sentido por defecto.
+  $('#mx-table thead')?.addEventListener('click', e => {
+    const b = e.target.closest('[data-sort]'); if (!b) return;
+    const k = b.dataset.sort;
+    state.dir = state.sort === k ? -state.dir : DIR0[k];
+    state.sort = k; $('#mx-sort').value = k;
+    renderTable();
+  });
   $('#mx-q').addEventListener('input', e => { state.q = e.target.value; renderTable(); });
   const body = $('#mx-body');
   body.addEventListener('change', e => {

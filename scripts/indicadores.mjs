@@ -209,7 +209,22 @@ async function dcBlock(ctx) {
     for (const a of byDc.values()) a.sort((x, y) => x.date.localeCompare(y.date));
     const at = T => { let mw = 0, h = 0; for (const a of byDc.values()) { const last = a.filter(r => r.date <= T).pop(); if (last) { mw += last.mw || 0; h += last.h100e || 0; } } return { mw: Math.round(mw), h100e: Math.round(h) }; };
     const future = tl.filter(r => r.date > TODAY);
-    plan = { today: at(TODAY), end2026: at('2026-12-31'), end2027: at('2027-12-31'), futureRows: future.length, centres: byDc.size, lastDate: tl.map(r => r.date).sort().pop() };
+    const lastDate = tl.map(r => r.date).sort().pop();
+    // Serie trimestral (fin de cada trimestre) hasta la última fecha del calendario, con el reparto por país
+    // tomado de la ficha de cada centro.
+    const ctry = new Map(rows.map(r => [r.name, countryCode(r.country) || 'otros']));
+    const series = [];
+    for (let y = 2024; `${y}` <= lastDate.slice(0, 4); y++) for (const md of ['03-31', '06-30', '09-30', '12-31']) {
+      const T = `${y}-${md}`; if (T > lastDate && series.length && series[series.length - 1].d >= lastDate) break;
+      const p = { d: T, mw: 0, US: 0, CN: 0, otros: 0, centres: 0 };
+      for (const [dc, a] of byDc) { const last = a.filter(r => r.date <= T).pop(); if (last?.mw) { p.mw += last.mw; p[ctry.get(dc) === 'US' ? 'US' : ctry.get(dc) === 'CN' ? 'CN' : 'otros'] += last.mw; p.centres++; } }
+      for (const k of ['mw', 'US', 'CN', 'otros']) p[k] = Math.round(p[k]);
+      series.push(p);
+      if (T >= lastDate) break;
+    }
+    // Sin entradas nuevas al final, la serie sólo repite el último valor: se corta en el último trimestre con cambios.
+    while (series.length > 1 && series[series.length - 1].mw === series[series.length - 2].mw) series.pop();
+    plan = { today: at(TODAY), end2026: at('2026-12-31'), end2027: at('2027-12-31'), futureRows: future.length, centres: byDc.size, lastDate, series, seriesEnd: series[series.length - 1]?.d };
   } catch (e) { ctx.log(`calendario de centros falló: ${e.message}`); }
 
   return {

@@ -385,6 +385,49 @@ export function gaps(el, points) {
   return true;
 }
 
+/* ── Serie diaria ─────────────────────────────────────────────────────── */
+/* pts: [{ d: 'AAAA-MM-DD', ... }]; series: [{ key, cls, name, get(p) → número|null, who(p) → texto }]. Ejes por días. */
+export function daily(el, pts, opts = {}) {
+  const { series = [], yLabel = '', unit = '', foot = '', aria = '' } = opts;
+  const ok = pts.filter(p => series.some(sr => sr.get(p) !== null));
+  if (ok.length < 2) { el.innerHTML = '<div class="chart-empty">La serie necesita al menos dos recogidas diarias.</div>'; return false; }
+  watchWidth(el, () => daily(el, pts, opts));
+  const G = { W: fitWidth(el), H: 280, L: 52, R: 170, T: 16, B: 40 };
+  const { W, H, L, R, T, B } = G;
+  const tmin = ms(ok[0].d), tmax = ms(ok[ok.length - 1].d);
+  const vals = ok.flatMap(p => series.map(sr => sr.get(p))).filter(v => v !== null);
+  const lo = Math.floor(Math.min(...vals) / 5) * 5 - 5, hi = Math.ceil(Math.max(...vals) / 5) * 5 + 5;
+  const X = t => L + (t - tmin) / (tmax - tmin || 1) * (W - L - R);
+  const Y = v => T + (1 - (v - lo) / (hi - lo || 1)) * (H - T - B);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">`;
+  s += yAxis(niceTicks(lo, hi), Y, G, v => num(v, 0), yLabel);
+  const days = Math.round((tmax - tmin) / 864e5), every = Math.max(1, Math.ceil(days / 6));
+  for (let i = 0; i <= days; i += every) {
+    const t = tmin + i * 864e5, x = X(t);
+    s += `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${x.toFixed(1)}" y="${H - B + 18}" text-anchor="middle">${esc(fmtDate(new Date(t).toISOString().slice(0, 10)).replace(/ \d{4}$/, ''))}</text>`;
+  }
+  s += '</g>';
+  for (const sr of series) {
+    let d = '', pen = false;
+    for (const p of ok) { const v = sr.get(p); if (v === null) { pen = false; continue; } d += `${pen ? 'L' : 'M'}${X(ms(p.d)).toFixed(1)},${Y(v).toFixed(1)} `; pen = true; }
+    s += `<path class="${sr.cls}" d="${d}"/>`;
+  }
+  const step = (W - L - R) / Math.max(1, ok.length - 1);
+  const targets = ok.map((p, i) => {
+    const x = X(ms(p.d));
+    s += `<g data-k="${i}">${series.map(sr => sr.get(p) === null ? '' : `<circle class="pt-${sr.cls}" cx="${x.toFixed(1)}" cy="${Y(sr.get(p)).toFixed(1)}" r="3.5"/>`).join('')}</g>`;
+    return { box: [x - step / 2, T, x + step / 2, H - B], html: tip(fmtDate(p.d), series.map(sr => [sr.name, sr.get(p) === null ? 'sin datos' : `${num(sr.get(p), 1)}${unit}${sr.who?.(p) ? ` · ${sr.who(p)}` : ''}`]), foot) };
+  });
+  const last = ok[ok.length - 1];
+  const ends = series.filter(sr => sr.get(last) !== null).map(sr => ({ y: Y(sr.get(last)), text: `${sr.name}: ${num(sr.get(last), 1)}` }));
+  for (let i = 1; i < ends.length; i++) if (Math.abs(ends[i].y - ends[i - 1].y) < 14) ends[i].y = ends[i - 1].y + 14;
+  s += ends.map(e => `<text class="ptlabel" x="${(X(tmax) + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
+  s += `</svg><div class="legend">${series.map(sr => `<span><i class="sw-${sr.cls}"></i>${esc(sr.name)}</span>`).join('')}</div>`;
+  el.innerHTML = s;
+  interact(el, targets);
+  return true;
+}
+
 /* Ancho del viewBox igual al del contenedor, para que el texto se vea a su tamaño real en columnas estrechas. */
 const fitWidth = el => Math.round(Math.min(1200, Math.max(520, el.clientWidth || 860)));
 /* Los gráficos de vistas ocultas se dibujan sin ancho y luego se escalan: se redibujan cuando cambia el ancho real. */
@@ -430,15 +473,24 @@ export function hbars(el, rows, opts = {}) {
 /* ── Columnas por periodo ───────────────────────────────────────────────── */
 /* rows: [{ label, v, tip, cls? }] en orden temporal; se rotula una de cada «every» columnas. */
 export function columns(el, rows, opts = {}) {
-  const { fmt = v => num(v, 0), yLabel = '', every = 1, aria = '' } = opts;
+  const { fmt = v => num(v, 0), yLabel = '', every = 1, aria = '', log = false, left = 64 } = opts;
   if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
   watchWidth(el, () => columns(el, rows, opts));
-  const G = { W: fitWidth(el), H: 260, L: 64, R: 12, T: 14, B: 40 };
+  const G = { W: fitWidth(el), H: 260, L: left, R: 12, T: 14, B: 40 };
   const { W, H, L, R, T, B } = G;
-  const top = Math.max(...rows.map(r => r.v));
-  const tk = niceTicks(0, top * 1.05);
-  const ymax = tk[tk.length - 1];
-  const Y = v => T + (1 - v / (ymax || 1)) * (H - T - B);
+  const top = Math.max(...rows.map(r => r.hi ?? r.v));
+  let tk, Y;
+  if (log) {
+    // Escala logarítmica: marcas en potencias de diez; las barras arrancan en la marca inferior.
+    const lo = 10 ** Math.floor(Math.log10(Math.min(...rows.map(r => r.lo ?? r.v)))), hi = 10 ** Math.ceil(Math.log10(top));
+    tk = []; for (let v = lo; v <= hi * 1.0001; v *= 10) tk.push(v);
+    Y = v => T + (1 - (Math.log10(Math.max(v, lo)) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo) || 1)) * (H - T - B);
+  } else {
+    tk = niceTicks(0, top * 1.05);
+    const ymax = tk[tk.length - 1];
+    Y = v => T + (1 - v / (ymax || 1)) * (H - T - B);
+  }
+  const y0 = log ? tk[0] : 0;
   const bw = (W - L - R) / rows.length;
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">`;
   s += yAxis(tk, Y, G, fmt, yLabel);
@@ -448,7 +500,11 @@ export function columns(el, rows, opts = {}) {
   s += '</g>';
   const targets = rows.map((r, i) => {
     const x = L + i * bw;
-    s += `<rect data-k="${i}" class="col ${r.cls || ''}" x="${(x + bw * 0.15).toFixed(1)}" y="${Y(r.v).toFixed(1)}" width="${(bw * 0.7).toFixed(1)}" height="${(Y(0) - Y(r.v)).toFixed(1)}"/>`;
+    s += `<rect data-k="${i}" class="col ${r.cls || ''}" x="${(x + bw * 0.15).toFixed(1)}" y="${Y(r.v).toFixed(1)}" width="${(bw * 0.7).toFixed(1)}" height="${(Y(y0) - Y(r.v)).toFixed(1)}"/>`;
+    if (r.lo != null && r.hi != null) {
+      const cx = (x + bw / 2).toFixed(1), w = Math.min(10, bw * 0.25);
+      s += `<g class="whisk"><line x1="${cx}" x2="${cx}" y1="${Y(r.hi).toFixed(1)}" y2="${Y(r.lo).toFixed(1)}"/><line x1="${(x + bw / 2 - w).toFixed(1)}" x2="${(x + bw / 2 + w).toFixed(1)}" y1="${Y(r.hi).toFixed(1)}" y2="${Y(r.hi).toFixed(1)}"/><line x1="${(x + bw / 2 - w).toFixed(1)}" x2="${(x + bw / 2 + w).toFixed(1)}" y1="${Y(r.lo).toFixed(1)}" y2="${Y(r.lo).toFixed(1)}"/></g>`;
+    }
     return { box: [x, T, x + bw, H - B], html: r.tip || tip(r.label, [['Valor', fmt(r.v)]]) };
   });
   s += '</svg>';
