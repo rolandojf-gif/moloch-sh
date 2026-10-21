@@ -66,9 +66,9 @@ const CHARTS = {
       draw: el => hbars(el, I.dc.top.map(r => ({ label: r.name, v: r.mw, value: mw(r.mw), tip: tip(r.name, [['Potencia de TI', mw(r.mw)], ['Propietario', r.owner], ['Usuarios', r.users], ['País', PAIS[r.country] || r.country], ['Cómputo', r.h100e ? mh100(r.h100e) : null]]) })), { aria: 'Centros con más potencia' })
     },
     I.dc?.plan?.series?.length && {
-      title: `Potencia prevista hasta ${new Date(I.dc.plan.lastDate + 'T00:00:00Z').getUTCFullYear()}, según el calendario de Epoch`,
+      title: `Potencia prevista hasta ${new Date((I.dc.plan.seriesEnd || I.dc.plan.lastDate) + 'T00:00:00Z').getUTCFullYear()}, según el calendario de Epoch`,
       wide: true,
-      note: `${EPOCH('«AI data centers», calendario de obras', I.dc.plan.url || 'https://epoch.ai/data/data-centers')} Potencia de cada centro al final de cada trimestre: lo pasado (negro) está construido; lo futuro (gris) es la estimación de Epoch a partir de obras, permisos y anuncios de ${num(I.dc.plan.centres, 0)} centros. Es la columna «Power (MW)» del calendario, probablemente con refrigeración y pérdidas, por eso supera a la potencia de TI de arriba. Cuanto más lejos, menos proyectos conocidos: el aplanamiento final refleja la falta de anuncios, no un freno.`,
+      note: `${EPOCH('«AI data centers», calendario de obras', I.dc.plan.url || 'https://epoch.ai/data/data-centers')} Potencia de cada centro al final de cada trimestre: lo pasado (negro) está construido; lo futuro (gris) es la estimación de Epoch a partir de obras, permisos y anuncios de ${num(I.dc.plan.centres, 0)} centros. Es la columna «Power (MW)» del calendario, probablemente con refrigeración y pérdidas, por eso supera a la potencia de TI de arriba. El calendario no recoge entradas nuevas más allá de este punto, así que la serie se corta ahí; cuanto más lejos, menos proyectos conocidos, y lo previsto es una cota baja de lo que se construirá.`,
       draw: el => {
         const today = I.dc.plan.asOf || new Date().toISOString().slice(0, 10);
         columns(el, I.dc.plan.series.map(p => {

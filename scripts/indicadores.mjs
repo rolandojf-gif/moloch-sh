@@ -222,7 +222,9 @@ async function dcBlock(ctx) {
       series.push(p);
       if (T >= lastDate) break;
     }
-    plan = { today: at(TODAY), end2026: at('2026-12-31'), end2027: at('2027-12-31'), futureRows: future.length, centres: byDc.size, lastDate, series };
+    // Sin entradas nuevas al final, la serie sólo repite el último valor: se corta en el último trimestre con cambios.
+    while (series.length > 1 && series[series.length - 1].mw === series[series.length - 2].mw) series.pop();
+    plan = { today: at(TODAY), end2026: at('2026-12-31'), end2027: at('2027-12-31'), futureRows: future.length, centres: byDc.size, lastDate, series, seriesEnd: series[series.length - 1]?.d };
   } catch (e) { ctx.log(`calendario de centros falló: ${e.message}`); }
 
   return {
