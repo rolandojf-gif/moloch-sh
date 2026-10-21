@@ -1,185 +1,533 @@
 {
- "generated": "2026-10-20T19:25:29Z",
- "since": null,
+ "generated": "2026-10-21T03:20:14Z",
+ "since": "2026-10-20",
  "items": [
   {
-   "kind": "nuevo",
-   "model": "minimax/minimax-m3.1-flash",
-   "date": "2026-10-19",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/minimax/minimax-m3.1-flash:free",
-    "got": "2026-10-20T19:25:29Z"
-   },
-   "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
-   "data": {
-    "weights": "cerrados",
-    "in": 0,
-    "out": 0,
-    "eci": null,
-    "identity": "confirmada"
-   }
-  },
-  {
-   "kind": "nuevo",
+   "kind": "precio",
    "model": "deepseek/deepseek-v4.1-flash-1017",
-   "date": "2026-10-17",
+   "date": "2026-10-21",
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
-    "got": "2026-10-20T19:25:29Z"
+    "got": "2026-10-21T03:20:14Z"
    },
-   "what": "DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter.",
+   "what": "DeepSeek V4.1 Flash 1017: el precio de entrada pasa de 0,15 $ a 0,3 $ por millón de tokens.",
    "data": {
-    "weights": "abiertos",
-    "in": 0.15,
-    "out": 0.6,
-    "eci": null,
-    "identity": "confirmada"
+    "field": "in",
+    "from": 0.15,
+    "to": 0.3,
+    "pct": 100,
+    "since": "2026-10-20"
    }
   },
   {
-   "kind": "nuevo",
-   "model": "meta/muse-spark-open",
-   "date": "2026-10-15",
+   "kind": "precio",
+   "model": "deepseek/deepseek-v4.1-flash-1017",
+   "date": "2026-10-21",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/meta/muse-spark-open",
-    "got": "2026-10-20T19:25:29Z"
+    "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
+    "got": "2026-10-21T03:20:14Z"
    },
-   "what": "Muse Spark Open (Meta) aparece en el catálogo de OpenRouter.",
+   "what": "DeepSeek V4.1 Flash 1017: el precio de salida pasa de 0,6 $ a 1,2 $ por millón de tokens.",
    "data": {
-    "weights": "abiertos",
-    "in": 1.25,
-    "out": 4.25,
-    "eci": 155.11,
-    "identity": "confirmada"
+    "field": "out",
+    "from": 0.6,
+    "to": 1.2,
+    "pct": 100,
+    "since": "2026-10-20"
    }
   },
   {
-   "kind": "nuevo",
-   "model": "nvidia/nemotron-3.5-super-vl",
-   "date": "2026-10-15",
+   "kind": "precio",
+   "model": "deepseek/deepseek-v4.1-flash",
+   "date": "2026-10-21",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/nvidia/nemotron-3.5-super-vl",
-    "got": "2026-10-20T19:25:29Z"
+    "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash",
+    "got": "2026-10-21T03:20:14Z"
    },
-   "what": "Nemotron 3.5 Super VL (NVIDIA) aparece en el catálogo de OpenRouter.",
+   "what": "DeepSeek V4.1 Flash: el precio de entrada pasa de 0,0283 $ a 0,049 $ por millón de tokens.",
    "data": {
-    "weights": null,
-    "in": 0.15,
-    "out": 0.5,
-    "eci": null,
-    "identity": "confirmada"
+    "field": "in",
+    "from": 0.0283,
+    "to": 0.049,
+    "pct": 73.1,
+    "since": "2026-10-20"
    }
   },
   {
-   "kind": "nuevo",
-   "model": "google/gemini-4-argon",
-   "date": "2026-10-13",
+   "kind": "precio",
+   "model": "deepseek/deepseek-v4.1-flash",
+   "date": "2026-10-21",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/google/gemini-4-argon",
-    "got": "2026-10-20T19:25:29Z"
+    "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash",
+    "got": "2026-10-21T03:20:14Z"
    },
-   "what": "Gemini 4 Argon (Google) aparece en el catálogo de OpenRouter.",
+   "what": "DeepSeek V4.1 Flash: el precio de salida pasa de 0,12 $ a 0,525 $ por millón de tokens.",
    "data": {
-    "weights": "cerrados",
-    "in": 2,
-    "out": 10,
-    "eci": 166.45,
-    "identity": "confirmada"
+    "field": "out",
+    "from": 0.12,
+    "to": 0.525,
+    "pct": 337.5,
+    "since": "2026-10-20"
    }
   },
   {
-   "kind": "nuevo",
-   "model": "meta/muse-wonder",
-   "date": "2026-10-12",
+   "kind": "precio",
+   "model": "tencent/hy4-preview",
+   "date": "2026-10-21",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/meta/muse-wonder",
-    "got": "2026-10-20T19:25:29Z"
+    "url": "https://openrouter.ai/tencent/hy4-preview",
+    "got": "2026-10-21T03:20:14Z"
    },
-   "what": "Muse Wonder (Meta) aparece en el catálogo de OpenRouter.",
+   "what": "Hy4 preview: el precio de entrada pasa de 0,7506 $ a 0,834 $ por millón de tokens.",
    "data": {
-    "weights": "cerrados",
-    "in": 4,
-    "out": 20,
-    "eci": 161.85,
-    "identity": "confirmada"
+    "field": "in",
+    "from": 0.7506,
+    "to": 0.834,
+    "pct": 11.1,
+    "since": "2026-10-20"
    }
   },
   {
-   "kind": "nuevo",
-   "model": "stepfun/step-5-preview",
-   "date": "2026-10-08",
+   "kind": "precio",
+   "model": "tencent/hy4-preview",
+   "date": "2026-10-21",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/stepfun/step-5-preview",
-    "got": "2026-10-20T19:25:29Z"
+    "url": "https://openrouter.ai/tencent/hy4-preview",
+    "got": "2026-10-21T03:20:14Z"
    },
-   "what": "Step 5 Preview (StepFun) aparece en el catálogo de OpenRouter.",
+   "what": "Hy4 preview: el precio de salida pasa de 2,2509 $ a 2,501 $ por millón de tokens.",
    "data": {
-    "weights": "abiertos",
-    "in": 1,
-    "out": 2.7,
-    "eci": null,
-    "identity": "confirmada"
+    "field": "out",
+    "from": 2.2509,
+    "to": 2.501,
+    "pct": 11.1,
+    "since": "2026-10-20"
    }
   },
   {
-   "kind": "nuevo",
-   "model": "anthropic/claude-haiku-5.5",
-   "date": "2026-10-07",
+   "kind": "precio",
+   "model": "z-ai/glm-5.3-flash",
+   "date": "2026-10-21",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/anthropic/claude-haiku-5.5",
-    "got": "2026-10-20T19:25:29Z"
+    "url": "https://openrouter.ai/z-ai/glm-5.3-flash",
+    "got": "2026-10-21T03:20:14Z"
    },
-   "what": "Claude Haiku 5.5 (Anthropic) aparece en el catálogo de OpenRouter.",
+   "what": "GLM 5.3 Flash: el precio de entrada pasa de 0,048 $ a 0,15 $ por millón de tokens.",
    "data": {
-    "weights": "cerrados",
-    "in": 0.1,
-    "out": 0.5,
-    "eci": 159.32,
-    "identity": "confirmada"
+    "field": "in",
+    "from": 0.048,
+    "to": 0.15,
+    "pct": 212.5,
+    "since": "2026-10-20"
    }
   },
   {
-   "kind": "nuevo",
-   "model": "google/gemini-nano-banana-2.1",
-   "date": "2026-10-06",
+   "kind": "precio",
+   "model": "z-ai/glm-5.3-flash",
+   "date": "2026-10-21",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/google/gemini-nano-banana-2.1",
-    "got": "2026-10-20T19:25:29Z"
+    "url": "https://openrouter.ai/z-ai/glm-5.3-flash",
+    "got": "2026-10-21T03:20:14Z"
    },
-   "what": "Nano Banana 2.1 (Google) aparece en el catálogo de OpenRouter.",
+   "what": "GLM 5.3 Flash: el precio de salida pasa de 0,12 $ a 0,5 $ por millón de tokens.",
    "data": {
-    "weights": "cerrados",
-    "in": 1.5,
-    "out": 7.5,
-    "eci": null,
-    "identity": "confirmada"
+    "field": "out",
+    "from": 0.12,
+    "to": 0.5,
+    "pct": 316.7,
+    "since": "2026-10-20"
    }
   },
   {
-   "kind": "nuevo",
-   "model": "mistralai/mistral-large-4-0",
-   "date": "2026-10-06",
+   "kind": "precio",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "date": "2026-10-21",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/mistralai/mistral-large-4-0",
-    "got": "2026-10-20T19:25:29Z"
+    "url": "https://openrouter.ai/deepseek/deepseek-v4-flash-0731",
+    "got": "2026-10-21T03:20:14Z"
    },
-   "what": "Mistral Large 4 (Mistral AI) aparece en el catálogo de OpenRouter.",
+   "what": "DeepSeek V4 Flash 0731: el precio de entrada pasa de 0,1298 $ a 0,44 $ por millón de tokens.",
    "data": {
-    "weights": "cerrados",
-    "in": 1.36,
-    "out": 4.18,
-    "eci": 150.03,
-    "identity": "confirmada"
+    "field": "in",
+    "from": 0.1298,
+    "to": 0.44,
+    "pct": 239,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/deepseek/deepseek-v4-flash-0731",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "DeepSeek V4 Flash 0731: el precio de salida pasa de 0,3894 $ a 1,32 $ por millón de tokens.",
+   "data": {
+    "field": "out",
+    "from": 0.3894,
+    "to": 1.32,
+    "pct": 239,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "tencent/hy3",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/tencent/hy3",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "Hy3: el precio de entrada pasa de 0,0825 $ a 0,132 $ por millón de tokens.",
+   "data": {
+    "field": "in",
+    "from": 0.0825,
+    "to": 0.132,
+    "pct": 60,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "tencent/hy3",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/tencent/hy3",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "Hy3: el precio de salida pasa de 0,33 $ a 0,528 $ por millón de tokens.",
+   "data": {
+    "field": "out",
+    "from": 0.33,
+    "to": 0.528,
+    "pct": 60,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "z-ai/glm-5.2",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/z-ai/glm-5.2",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "GLM 5.2: el precio de entrada pasa de 0,62 $ a 0,0341 $ por millón de tokens.",
+   "data": {
+    "field": "in",
+    "from": 0.62,
+    "to": 0.0341,
+    "pct": -94.5,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "z-ai/glm-5.2",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/z-ai/glm-5.2",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "GLM 5.2: el precio de salida pasa de 2,42 $ a 7 $ por millón de tokens.",
+   "data": {
+    "field": "out",
+    "from": 2.42,
+    "to": 7,
+    "pct": 189.3,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "deepseek/deepseek-v4-pro",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/deepseek/deepseek-v4-pro",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "DeepSeek V4 Pro 0423: el precio de entrada pasa de 0,3751 $ a 0,9553 $ por millón de tokens.",
+   "data": {
+    "field": "in",
+    "from": 0.3751,
+    "to": 0.9553,
+    "pct": 154.7,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "deepseek/deepseek-v4-pro",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/deepseek/deepseek-v4-pro",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "DeepSeek V4 Pro 0423: el precio de salida pasa de 0,7503 $ a 1,9105 $ por millón de tokens.",
+   "data": {
+    "field": "out",
+    "from": 0.7503,
+    "to": 1.9105,
+    "pct": 154.6,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "xiaomi/mimo-v2.5-pro",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/xiaomi/mimo-v2.5-pro",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "MiMo-V2.5-Pro: el precio de entrada pasa de 0,435 $ a 0,3045 $ por millón de tokens.",
+   "data": {
+    "field": "in",
+    "from": 0.435,
+    "to": 0.3045,
+    "pct": -30,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "xiaomi/mimo-v2.5-pro",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/xiaomi/mimo-v2.5-pro",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "MiMo-V2.5-Pro: el precio de salida pasa de 0,87 $ a 0,609 $ por millón de tokens.",
+   "data": {
+    "field": "out",
+    "from": 0.87,
+    "to": 0.609,
+    "pct": -30,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "xiaomi/mimo-v2.5",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/xiaomi/mimo-v2.5",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "MiMo-V2.5: el precio de entrada pasa de 0,14 $ a 0,119 $ por millón de tokens.",
+   "data": {
+    "field": "in",
+    "from": 0.14,
+    "to": 0.119,
+    "pct": -15,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "xiaomi/mimo-v2.5",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/xiaomi/mimo-v2.5",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "MiMo-V2.5: el precio de salida pasa de 0,28 $ a 0,238 $ por millón de tokens.",
+   "data": {
+    "field": "out",
+    "from": 0.28,
+    "to": 0.238,
+    "pct": -15,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "z-ai/glm-5.1",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/z-ai/glm-5.1",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "GLM 5.1: el precio de entrada pasa de 0,966 $ a 1,4 $ por millón de tokens.",
+   "data": {
+    "field": "in",
+    "from": 0.966,
+    "to": 1.4,
+    "pct": 44.9,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "z-ai/glm-5.1",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/z-ai/glm-5.1",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "GLM 5.1: el precio de salida pasa de 3,036 $ a 4,4 $ por millón de tokens.",
+   "data": {
+    "field": "out",
+    "from": 3.036,
+    "to": 4.4,
+    "pct": 44.9,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "nvidia/nemotron-3-super-120b-a12b",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/nvidia/nemotron-3-super-120b-a12b",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "Nemotron 3 Super: el precio de entrada pasa de 0,08 $ a 0,3 $ por millón de tokens.",
+   "data": {
+    "field": "in",
+    "from": 0.08,
+    "to": 0.3,
+    "pct": 275,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "nvidia/nemotron-3-super-120b-a12b",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/nvidia/nemotron-3-super-120b-a12b",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "Nemotron 3 Super: el precio de salida pasa de 0,45 $ a 2,4 $ por millón de tokens.",
+   "data": {
+    "field": "out",
+    "from": 0.45,
+    "to": 2.4,
+    "pct": 433.3,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "qwen/qwen3.5-9b",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/qwen/qwen3.5-9b",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "Qwen3.5-9B: el precio de entrada pasa de 0,1 $ a 0,08 $ por millón de tokens.",
+   "data": {
+    "field": "in",
+    "from": 0.1,
+    "to": 0.08,
+    "pct": -20,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "qwen/qwen3.5-9b",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/qwen/qwen3.5-9b",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "Qwen3.5-9B: el precio de salida pasa de 0,15 $ a 0,13 $ por millón de tokens.",
+   "data": {
+    "field": "out",
+    "from": 0.15,
+    "to": 0.13,
+    "pct": -13.3,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "qwen/qwen3-next-80b-a3b-instruct",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/qwen/qwen3-next-80b-a3b-instruct",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "Qwen3 Next 80B A3B Instruct: el precio de entrada pasa de 0,1 $ a 0,09 $ por millón de tokens.",
+   "data": {
+    "field": "in",
+    "from": 0.1,
+    "to": 0.09,
+    "pct": -10,
+    "since": "2026-10-20"
+   }
+  },
+  {
+   "kind": "retirada",
+   "model": "qwen/qwen3-30b-a3b",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "Qwen3 30B A3B deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Qwen3 30B A3B"
+   }
+  },
+  {
+   "kind": "retirada",
+   "model": "qwen/qwen3-14b",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "Qwen3 14B deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Qwen3 14B"
+   }
+  },
+  {
+   "kind": "retirada",
+   "model": "qwen/qwen3-32b",
+   "date": "2026-10-21",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-10-21T03:20:14Z"
+   },
+   "what": "Qwen3 32B deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Qwen3 32B"
    }
   }
  ]
