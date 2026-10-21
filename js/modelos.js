@@ -87,6 +87,13 @@ function detail(m) {
 function renderTable() {
   const list = rows();
   $('#mx-caption').innerHTML = `${list.length} modelos${!state.all && !state.q && list.length > PAGE ? ` (se muestran ${PAGE})` : ''} · precios en USD por millón de tokens (OpenRouter) · inteligencia: ${esc(aaIndexName(D.catalog.aaIndexVersion))}, configuración de mayor índice, datos de ${AA_LINK} · ECI: Epoch Capabilities Index (Epoch AI, CC BY 4.0); las dos escalas no son comparables · pulsa una fila para ver contexto, licencia, caché, programación, agentes y proveedores.`;
+  const ex = D.catalog.excluded || [];
+  const TIPO = { imagen: 'genera imágenes', audio: 'genera audio', enrutador: 'enrutadores', seguridad: 'clasificadores de seguridad' };
+  if (ex.length) {
+    const by = Object.keys(TIPO).map(t => [t, ex.filter(e => e.tipo === t)]).filter(([, l]) => l.length);
+    $('#mx-caption').innerHTML += `<details class="excl"><summary>Fuera de la tabla: ${ex.length} entradas de OpenRouter que no son modelos de lenguaje de uso general (${by.map(([t, l]) => `${l.length} ${TIPO[t].replace(/^genera /, 'de ').replace('imágenes', 'imagen')}`).join(', ')})</summary>
+      <ul>${by.map(([t, l]) => `<li><b>${esc(TIPO[t][0].toUpperCase() + TIPO[t].slice(1))}:</b> ${l.map(e => `<a href="https://openrouter.ai/${esc(e.id)}" target="_blank" rel="noopener">${esc(e.name)}</a>`).join(', ')}</li>`).join('')}</ul></details>`;
+  }
   if (!list.length) { $('#mx-body').innerHTML = '<tr><td colspan="7"><div class="empty">Ningún modelo coincide con el filtro.</div></td></tr>'; return; }
   const shown = state.all || state.q ? list : list.slice(0, PAGE);
   $('#mx-more')?.remove();

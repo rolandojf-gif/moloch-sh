@@ -18,17 +18,18 @@ async function getJSON(url) {
 
 async function loadData() {
   const catalog = await getJSON('data/catalog.json');
-  const [changes, evLog, ind, carrera, ai2027] = await Promise.all([
+  const [changes, evLog, ind, carrera, ai2027, historia] = await Promise.all([
     getJSON('data/changes.json').catch(() => ({ items: [], since: null })),
     getJSON('data/events-log.json').catch(() => ({ events: [] })),
     getJSON('data/indicadores.json').catch(() => null),
     getJSON('data/curated/carrera.json').catch(() => null),
-    getJSON('data/curated/ai2027.json').catch(() => null)
+    getJSON('data/curated/ai2027.json').catch(() => null),
+    getJSON('data/historia.json').catch(() => null)
   ]);
   const today = catalog.generated.slice(0, 10);
   const dates = (catalog.history || []).filter(d => d < today).sort();
   const prevSnap = dates.length ? await getJSON(`data/history/${dates[dates.length - 1]}.json`).catch(() => null) : null;
-  return { catalog, changes, evLog, ind, carrera, ai2027, prevSnap, byId: new Map(catalog.models.map(m => [m.id, m])) };
+  return { catalog, changes, evLog, ind, carrera, ai2027, historia, prevSnap, byId: new Map(catalog.models.map(m => [m.id, m])) };
 }
 
 /* Antigüedad de la recogida: el observatorio sigue precios y lanzamientos, así que una semana ya es mucho. */

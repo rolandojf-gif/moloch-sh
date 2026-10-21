@@ -385,6 +385,49 @@ export function gaps(el, points) {
   return true;
 }
 
+/* ── Serie diaria ─────────────────────────────────────────────────────── */
+/* pts: [{ d: 'AAAA-MM-DD', ... }]; series: [{ key, cls, name, get(p) → número|null, who(p) → texto }]. Ejes por días. */
+export function daily(el, pts, opts = {}) {
+  const { series = [], yLabel = '', unit = '', foot = '', aria = '' } = opts;
+  const ok = pts.filter(p => series.some(sr => sr.get(p) !== null));
+  if (ok.length < 2) { el.innerHTML = '<div class="chart-empty">La serie necesita al menos dos recogidas diarias.</div>'; return false; }
+  watchWidth(el, () => daily(el, pts, opts));
+  const G = { W: fitWidth(el), H: 280, L: 52, R: 170, T: 16, B: 40 };
+  const { W, H, L, R, T, B } = G;
+  const tmin = ms(ok[0].d), tmax = ms(ok[ok.length - 1].d);
+  const vals = ok.flatMap(p => series.map(sr => sr.get(p))).filter(v => v !== null);
+  const lo = Math.floor(Math.min(...vals) / 5) * 5 - 5, hi = Math.ceil(Math.max(...vals) / 5) * 5 + 5;
+  const X = t => L + (t - tmin) / (tmax - tmin || 1) * (W - L - R);
+  const Y = v => T + (1 - (v - lo) / (hi - lo || 1)) * (H - T - B);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">`;
+  s += yAxis(niceTicks(lo, hi), Y, G, v => num(v, 0), yLabel);
+  const days = Math.round((tmax - tmin) / 864e5), every = Math.max(1, Math.ceil(days / 6));
+  for (let i = 0; i <= days; i += every) {
+    const t = tmin + i * 864e5, x = X(t);
+    s += `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${x.toFixed(1)}" y="${H - B + 18}" text-anchor="middle">${esc(fmtDate(new Date(t).toISOString().slice(0, 10)).replace(/ \d{4}$/, ''))}</text>`;
+  }
+  s += '</g>';
+  for (const sr of series) {
+    let d = '', pen = false;
+    for (const p of ok) { const v = sr.get(p); if (v === null) { pen = false; continue; } d += `${pen ? 'L' : 'M'}${X(ms(p.d)).toFixed(1)},${Y(v).toFixed(1)} `; pen = true; }
+    s += `<path class="${sr.cls}" d="${d}"/>`;
+  }
+  const step = (W - L - R) / Math.max(1, ok.length - 1);
+  const targets = ok.map((p, i) => {
+    const x = X(ms(p.d));
+    s += `<g data-k="${i}">${series.map(sr => sr.get(p) === null ? '' : `<circle class="pt-${sr.cls}" cx="${x.toFixed(1)}" cy="${Y(sr.get(p)).toFixed(1)}" r="3.5"/>`).join('')}</g>`;
+    return { box: [x - step / 2, T, x + step / 2, H - B], html: tip(fmtDate(p.d), series.map(sr => [sr.name, sr.get(p) === null ? 'sin datos' : `${num(sr.get(p), 1)}${unit}${sr.who?.(p) ? ` · ${sr.who(p)}` : ''}`]), foot) };
+  });
+  const last = ok[ok.length - 1];
+  const ends = series.filter(sr => sr.get(last) !== null).map(sr => ({ y: Y(sr.get(last)), text: `${sr.name}: ${num(sr.get(last), 1)}` }));
+  for (let i = 1; i < ends.length; i++) if (Math.abs(ends[i].y - ends[i - 1].y) < 14) ends[i].y = ends[i - 1].y + 14;
+  s += ends.map(e => `<text class="ptlabel" x="${(X(tmax) + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
+  s += `</svg><div class="legend">${series.map(sr => `<span><i class="sw-${sr.cls}"></i>${esc(sr.name)}</span>`).join('')}</div>`;
+  el.innerHTML = s;
+  interact(el, targets);
+  return true;
+}
+
 /* Ancho del viewBox igual al del contenedor, para que el texto se vea a su tamaño real en columnas estrechas. */
 const fitWidth = el => Math.round(Math.min(1200, Math.max(520, el.clientWidth || 860)));
 /* Los gráficos de vistas ocultas se dibujan sin ancho y luego se escalan: se redibujan cuando cambia el ancho real. */

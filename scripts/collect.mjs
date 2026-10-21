@@ -107,14 +107,24 @@ const norm = s => String(s || '').toLowerCase()
   .replace(/\s+/g, ' ').trim();
 
 /* ── OpenRouter ─────────────────────────────────────────────────────────── */
-async function loadOpenRouter(labs) {
+/* Lo que no es un modelo de lenguaje de uso general: generadores de imagen o audio (por la salida que declara
+   OpenRouter) y, por patrón curado, enrutadores y clasificadores de seguridad. */
+function kindOf(m, id, excl) {
+  const outs = m.architecture?.output_modalities || [];
+  if (outs.includes('image')) return { tipo: 'imagen', motivo: 'genera imágenes' };
+  if (outs.includes('audio')) return { tipo: 'audio', motivo: 'genera audio' };
+  for (const r of excl.reglas || []) if (new RegExp(r.patron, 'i').test(id)) return { tipo: r.tipo, motivo: r.motivo };
+  return null;
+}
+
+async function loadOpenRouter(labs, excl = { reglas: [] }) {
   const res = await getJSON(SOURCES.openrouter.api);
   const all = res.data || [];
   const cutoff = NOW.getTime() / 1000 - WINDOW_DAYS * 86400;
   const recent = NOW.getTime() / 1000 - NEW_DAYS * 86400;
   const ids = new Set(all.map(m => m.id));
   const seen = new Set();
-  const out = [], untracked = [], orphan = [];
+  const out = [], untracked = [], orphan = [], excluded = [];
   for (const m of all) {
     const id = baseId(m.id);
     const isRecent = (m.created || 0) >= recent;
@@ -125,6 +135,8 @@ async function loadOpenRouter(labs) {
     if ((m.created || 0) < cutoff) continue;
     if (seen.has(id)) continue;
     seen.add(id);
+    const kind = kindOf(m, id, excl);
+    if (kind) { excluded.push({ id, name: (m.name || id).replace(/^[^:]+:\s*/, ''), ...kind }); continue; }
     if (id !== m.id) { orphan.push(m.id); out.push({ ...m, id, orVariant: m.id }); }
     else out.push(m);
   }
@@ -132,6 +144,8 @@ async function loadOpenRouter(labs) {
   // Para responder a «¿por qué no aparece X?»: altas recientes que el catálogo descarta.
   if (untracked.length) log(`OpenRouter: altas de ${NEW_DAYS} días de autores no seguidos (curated/labs.json): ${untracked.join(', ')}`);
   if (orphan.length) log(`OpenRouter: modelos que sólo existen como variante (entran con el id base): ${orphan.join(', ')}`);
+  if (excluded.length) log(`OpenRouter: fuera del catálogo por no ser modelos de lenguaje de uso general (${excluded.length}): ${excluded.map(e => `${e.id} (${e.tipo})`).join(', ')}`);
+  out.excluded = excluded;
   // Todo lo que OpenRouter sigue listando, aunque quede fuera de la ventana: salir de la ventana no es una retirada.
   out.listed = new Set(all.map(m => baseId(m.id)));
   return out;
@@ -625,7 +639,8 @@ async function main() {
   if (permisos.aa?.estado === 'permitido') SOURCES.aa.permiso = { fecha: permisos.aa.fecha, forma: permisos.aa.forma, alcance: permisos.aa.alcance };
 
   let orModels;
-  try { orModels = await loadOpenRouter(labs); }
+  const excl = await readJSON(path.join(DATA, 'curated/excluidos.json'), { reglas: [] });
+  try { orModels = await loadOpenRouter(labs, excl); }
   catch (e) { console.error('[collect] OpenRouter falló; no se escribe nada:', e.message); process.exit(2); }
 
   const aaRes = await loadAA(permisos.aa);
@@ -725,6 +740,16 @@ async function main() {
   };
   await writeFile(path.join(DATA, 'history', `${TODAY}.json`), JSON.stringify(snap) + '\n');
   if (!histFiles.includes(`${TODAY}.json`)) histFiles.push(`${TODAY}.json`);
+  // Serie diaria compacta para los gráficos de evolución: un registro por instantánea guardada.
+  const serie = [];
+  for (const f of histFiles.slice().sort()) {
+    const h = f === `${TODAY}.json` ? snap : await readJSON(path.join(DATA, 'history', f));
+    if (!h?.models) continue;
+    const best = w => Object.entries(h.models).filter(([, x]) => x.w === w && x.ii !== null && x.ii !== undefined).sort((x, y) => y[1].ii - x[1].ii)[0];
+    const lead = (id, w) => { const e = id && h.models[id] ? [id, h.models[id]] : best(w); return e ? { id: e[0], n: e[1].n, ii: e[1].ii } : null; };
+    serie.push({ d: h.date, aaV: h.aaIndexVersion ?? null, open: lead(h.leaders?.aa?.open?.id, 'o'), closed: lead(h.leaders?.aa?.closed?.id, 'c'), eciClosedOpen: h.ind?.closedOpen ?? null, eciUsCn: h.ind?.usCn ?? null });
+  }
+  await writeFile(path.join(DATA, 'historia.json'), JSON.stringify({ _doc: 'Serie diaria derivada de data/history/<fecha>.json: líderes por índice de Artificial Analysis (cerrado y abierto) y distancias ECI. Generado; no editar a mano.', generated: NOW_ISO, serie }) + '\n');
   const changeItems = diff(models, base, orModels.listed);
   const baseDate = base ? base.date : null;
 
@@ -744,6 +769,7 @@ async function main() {
       window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días.`
     },
     models,
+    excluded: orModels.excluded || prevCatalog?.excluded || [],
     curatedEvents,
     history: histFiles.map(f => f.slice(0, 10))
   };
@@ -763,6 +789,9 @@ async function main() {
   evLog.events = evLog.events.filter(e => e.kind !== 'precio' || e.data?.basis === 'laboratorio');
   // Tampoco son retiradas los modelos que OpenRouter sigue listando y sólo salieron de la ventana de antigüedad.
   evLog.events = evLog.events.filter(e => e.kind !== 'retirada' || !orModels.listed.has(e.model));
+  // Lo que se ha sacado del catálogo (imagen, audio, enrutadores, seguridad) tampoco cuenta como acontecimiento.
+  const exclIds = new Set((orModels.excluded || []).map(e => e.id));
+  evLog.events = evLog.events.filter(e => !exclIds.has(e.model));
   const keyOf = e => [e.kind, e.model, e.date, e.data?.field || ''].join('|');
   const known = new Set(evLog.events.map(keyOf));
   for (const e of changeItems) if (e.kind !== 'nuevo' && !known.has(keyOf(e))) { evLog.events.push(e); known.add(keyOf(e)); }

@@ -32,6 +32,11 @@ for (const m of c.models || []) {
   if (!['laboratorio', 'proveedor', 'referencia'].includes(m.price?.basis)) errors.push(`${w}: criterio de precio no permitido ${m.price?.basis}`);
   if (m.price?.basis !== 'referencia' && !m.price?.provider) errors.push(`${w}: precio sin proveedor indicado`);
 }
+// Lo que queda fuera del catálogo: tipo conocido y nunca a la vez dentro y fuera.
+for (const e of c.excluded || []) {
+  if (!['imagen', 'audio', 'enrutador', 'seguridad'].includes(e.tipo)) errors.push(`excluido ${e.id}: tipo no válido ${e.tipo}`);
+  if (ids.has(e.id)) errors.push(`excluido ${e.id}: también está en el catálogo`);
+}
 // Acontecimientos curados: fuente primaria con enlace, fecha, tipo conocido y modelo del catálogo.
 const TIPOS_EV = ['anuncio', 'preview', 'producto', 'api', 'pesos', 'precio', 'retirada'];
 for (const e of c.curatedEvents || []) {

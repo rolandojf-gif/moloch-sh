@@ -1,6 +1,6 @@
 /* Vista «Hoy»: qué ha cambiado, cuatro indicadores y capacidad frente a precio. */
 import { esc, fact, src, provLine, usd, num, fmtDate, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, ND, AA_LINK } from './fmt.js';
-import { scatter, tip } from './charts.js';
+import { scatter, daily, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
 const KIND = { nuevo: 'Nuevo modelo', pesos: 'Pesos abiertos', precio: 'Precio del laboratorio', evaluacion: 'Evaluación independiente', retirada: 'Retirada' };
@@ -213,8 +213,26 @@ function renderScatter(d, gapPts) {
   $('#hoy-reading').innerHTML = `<span class="lbl">Lectura automática a partir de las cifras</span>${bits.join(' ')}<span class="m-sub">Capacidad: ${esc(aaIndexName(d.catalog.aaIndexVersion))}, datos de ${AA_LINK}. Precio: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>, el del propio laboratorio o, si no lo sirve, el del proveedor más barato.</span>`;
 }
 
+/* Líderes por índice de AA, un punto por recogida diaria. Sólo la versión vigente del índice: entre versiones no son comparables. */
+function renderDaily(d) {
+  const serie = d.historia?.serie || [];
+  const ver = d.catalog.aaIndexVersion;
+  const pts = serie.filter(p => p.aaV === ver && (p.open || p.closed));
+  const first = pts[0]?.d;
+  daily($('#hoy-daily'), pts, {
+    aria: 'Índice de Artificial Analysis del mejor modelo cerrado y del mejor abierto, por día',
+    yLabel: 'Índice AA', foot: 'Mejor modelo de cada bloque ese día, entre los del catálogo con índice.',
+    series: [
+      { cls: 'ln-closed', name: 'Mejor cerrado', get: p => p.closed?.ii ?? null, who: p => p.closed?.n },
+      { cls: 'ln-open', name: 'Mejor abierto', get: p => p.open?.ii ?? null, who: p => p.open?.n }
+    ]
+  });
+  $('#hoy-daily-note').innerHTML = `Un punto por recogida diaria${first ? `, desde el ${esc(fmtDate(first))}` : ''}: el mejor modelo cerrado y el mejor abierto del catálogo según el ${esc(aaIndexName(ver))} de ${AA_LINK}. Cada día queda guardado en el repositorio (data/history), así que la serie crece con cada recogida; los días con otra versión del índice no se mezclan.`;
+}
+
 export function renderHoy(d) {
   renderNews(d);
   renderKPIs(d, 10);
   renderScatter(d, 10);
+  renderDaily(d);
 }

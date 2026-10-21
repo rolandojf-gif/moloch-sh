@@ -271,6 +271,10 @@ table.mx tr.row[aria-expanded="true"] td { background: rgba(204, 255, 0, .2); bo
 .m-name { font-weight: 600; }
 .m-lab { font: 400 12px var(--f-mono); color: var(--muted); }
 .m-sub { font: 400 11.5px var(--f-mono); color: var(--muted); display: block; }
+.excl { margin-top: 6px; }
+.excl summary { cursor: pointer; }
+.excl ul { margin: 6px 0 0; padding-left: 18px; }
+.excl li { margin: 2px 0; }
 .w { display: inline-block; font: 700 10.5px/1 var(--f-mono); padding: 4px 6px; border: 2px solid var(--ink); text-transform: uppercase; }
 .w.abiertos { background: var(--open); color: #fff; }
 .w.cerrados { background: var(--closed); color: #121211; }
@@ -318,6 +322,12 @@ tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .chart .ln-co { stroke: var(--ink); stroke-width: 2; fill: none; stroke-dasharray: 6 4; }
 .chart .pt-ln-uscn { fill: var(--orange); }
 .chart .pt-ln-co { fill: var(--ink); }
+.chart .ln-closed { stroke: var(--closed); stroke-width: 2.5; fill: none; }
+.chart .ln-open { stroke: var(--open); stroke-width: 2.5; fill: none; }
+.chart .pt-ln-closed { fill: var(--closed); }
+.chart .pt-ln-open { fill: var(--open); }
+.legend i.sw-ln-closed { background: var(--closed); }
+.legend i.sw-ln-open { background: var(--open); }
 .jump { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
 .jump a { display: inline-flex; gap: 8px; align-items: center; font: 600 12px/1.2 var(--f-mono); text-transform: uppercase; text-decoration: none; padding: 7px 10px; border: 2px solid var(--ink); background: var(--card); box-shadow: var(--shadow-sm); }
 .jump a i { font-style: normal; color: var(--orange-ink); font-weight: 700; }
