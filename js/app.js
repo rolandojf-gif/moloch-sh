@@ -78,10 +78,10 @@ function route() {
 
 function initTheme() {
   const root = document.documentElement;
-  const sync = () => $$('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === (root.dataset.theme || 'auto'))));
+  const sync = () => $$('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === (root.dataset.theme || 'light'))));
   $$('[data-theme-set]').forEach(b => b.addEventListener('click', () => {
     root.dataset.theme = b.dataset.themeSet;
-    try { b.dataset.themeSet === 'auto' ? localStorage.removeItem('moloch.theme') : localStorage.setItem('moloch.theme', b.dataset.themeSet); } catch {}
+    try { localStorage.setItem('moloch.theme', b.dataset.themeSet); } catch {}
     sync();
   }));
   sync();

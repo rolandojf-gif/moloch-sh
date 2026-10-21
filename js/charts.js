@@ -387,24 +387,34 @@ export function gaps(el, points) {
 
 /* Ancho del viewBox igual al del contenedor, para que el texto se vea a su tamaño real en columnas estrechas. */
 const fitWidth = el => Math.round(Math.min(1200, Math.max(520, el.clientWidth || 860)));
+/* Los gráficos de vistas ocultas se dibujan sin ancho y luego se escalan: se redibujan cuando cambia el ancho real. */
+function watchWidth(el, redraw) {
+  if (typeof ResizeObserver === 'undefined') return;
+  el._ro?.disconnect();
+  let w = el.clientWidth;
+  const ro = new ResizeObserver(() => { const n = el.clientWidth; if (n && Math.abs(n - w) > 24) { w = n; ro.disconnect(); redraw(); } });
+  ro.observe(el); el._ro = ro;
+}
 
 /* ── Barras horizontales ────────────────────────────────────────────────── */
 /* rows: [{ label, v, cls?, tip, value? }]; ref: { v, label } dibuja una línea de referencia (p. ej. saturación al 90 %). */
-export function hbars(el, rows, { fmt = v => num(v, 0), max = null, ref = null, aria = '' } = {}) {
+export function hbars(el, rows, opts = {}) {
+  const { fmt = v => num(v, 0), max = null, ref = null, aria = '' } = opts;
   if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
-  const W = fitWidth(el), rowH = 26, G = { W, L: Math.min(250, Math.round(W * 0.3)), R: Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8 };
+  watchWidth(el, () => hbars(el, rows, opts));
+  const W = fitWidth(el), rowH = 30, G = { W, L: Math.min(250, Math.round(W * 0.3)), R: Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8 };
   const H = G.T + rows.length * rowH + G.B;
   const top = max ?? Math.max(...rows.map(r => r.v), ref?.v ?? 0);
   const X = v => G.L + Math.max(0, v) / (top || 1) * (G.W - G.L - G.R);
   let s = `<svg viewBox="0 0 ${G.W} ${H}" role="img" aria-label="${esc(aria)}">`;
   const targets = rows.map((r, i) => {
     const y = G.T + i * rowH;
-    const max = Math.floor((G.L - 14) / 7);
+    const max = Math.floor((G.L - 14) / 8);
     const label = r.label.length > max ? r.label.slice(0, max - 1) + '…' : r.label;
     s += `<g data-k="${i}" class="bar ${r.cls || ''}"><rect class="bar-bg" x="0" y="${y}" width="${G.W}" height="${rowH}"/>`;
-    s += `<text class="bar-l" x="${G.L - 10}" y="${y + rowH / 2 + 4}" text-anchor="end">${esc(label)}</text>`;
+    s += `<text class="bar-l" x="${G.L - 10}" y="${y + rowH / 2 + 5}" text-anchor="end">${esc(label)}</text>`;
     s += `<rect class="bar-v" x="${G.L}" y="${y + 5}" width="${Math.max(1.5, X(r.v) - G.L).toFixed(1)}" height="${rowH - 10}"/>`;
-    s += `<text class="bar-n" x="${(X(r.v) + 8).toFixed(1)}" y="${y + rowH / 2 + 4}">${esc(r.value ?? fmt(r.v))}</text></g>`;
+    s += `<text class="bar-n" x="${(X(r.v) + 8).toFixed(1)}" y="${y + rowH / 2 + 5}">${esc(r.value ?? fmt(r.v))}</text></g>`;
     return { box: [0, y, G.W, y + rowH], html: r.tip || tip(r.label, [['Valor', r.value ?? fmt(r.v)]]) };
   });
   if (ref) {
@@ -419,8 +429,10 @@ export function hbars(el, rows, { fmt = v => num(v, 0), max = null, ref = null, 
 
 /* ── Columnas por periodo ───────────────────────────────────────────────── */
 /* rows: [{ label, v, tip, cls? }] en orden temporal; se rotula una de cada «every» columnas. */
-export function columns(el, rows, { fmt = v => num(v, 0), yLabel = '', every = 1, aria = '' } = {}) {
+export function columns(el, rows, opts = {}) {
+  const { fmt = v => num(v, 0), yLabel = '', every = 1, aria = '' } = opts;
   if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
+  watchWidth(el, () => columns(el, rows, opts));
   const G = { W: fitWidth(el), H: 260, L: 64, R: 12, T: 14, B: 40 };
   const { W, H, L, R, T, B } = G;
   const top = Math.max(...rows.map(r => r.v));
@@ -447,8 +459,10 @@ export function columns(el, rows, { fmt = v => num(v, 0), yLabel = '', every = 1
 
 /* ── Puntos con intervalo (laboratorios) ────────────────────────────────── */
 /* rows: [{ label, v, lo, hi, tip }]. Muestra si los intervalos se solapan. */
-export function dotci(el, rows, { aria = '', unit = '' } = {}) {
+export function dotci(el, rows, opts = {}) {
+  const { aria = '', unit = '' } = opts;
   if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
+  watchWidth(el, () => dotci(el, rows, opts));
   const W = fitWidth(el), rowH = 30, G = { W, L: Math.min(250, Math.round(W * 0.3)), R: 40, T: 8, B: 34 };
   const H = G.T + rows.length * rowH + G.B;
   const lo = Math.floor(Math.min(...rows.map(r => r.lo ?? r.v)) - 1), hi = Math.ceil(Math.max(...rows.map(r => r.hi ?? r.v)) + 1);
@@ -462,7 +476,7 @@ export function dotci(el, rows, { aria = '', unit = '' } = {}) {
   const targets = rows.map((r, i) => {
     const y = G.T + i * rowH + rowH / 2;
     s += `<g data-k="${i}" class="ci-row"><rect class="bar-bg" x="0" y="${y - rowH / 2}" width="${G.W}" height="${rowH}"/>`;
-    const max = Math.floor((G.L - 14) / 7);
+    const max = Math.floor((G.L - 14) / 8);
     s += `<text class="bar-l" x="${G.L - 10}" y="${y + 4}" text-anchor="end">${esc(r.label.length > max ? r.label.slice(0, max - 1) + '…' : r.label)}</text>`;
     if (r.lo != null && r.hi != null) s += `<line class="ci" x1="${X(r.lo).toFixed(1)}" x2="${X(r.hi).toFixed(1)}" y1="${y}" y2="${y}"/>`;
     s += `<circle class="ci-dot" cx="${X(r.v).toFixed(1)}" cy="${y}" r="5.5"/></g>`;

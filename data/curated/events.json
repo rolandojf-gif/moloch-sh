@@ -1,5 +1,5 @@
 {
-  "_doc": "Acontecimientos que el recolector no puede deducir: anuncios, previews restringidas, retiradas. Cada entrada exige 'url' de la fuente primaria (anuncio del laboratorio, documentación o repositorio). Tipos: anuncio | preview | api | pesos | precio | retirada. 'model' es el id de OpenRouter si existe. 'delta' resume qué aporta frente a la versión anterior, según la fuente.",
+  "_doc": "Acontecimientos que el recolector no puede deducir: anuncios, previews restringidas, retiradas. Cada entrada exige 'url' de la fuente primaria (anuncio del laboratorio, documentación o repositorio). Tipos: anuncio | preview (acceso restringido a organizaciones o personas seleccionadas) | producto (solo dentro de productos o suscripciones del laboratorio, sin API) | api | pesos | precio | retirada. 'model' es el id de OpenRouter si existe. 'delta' resume qué aporta frente a la versión anterior, según la fuente.",
   "events": [
     {
       "model": "anthropic/claude-fable-5.1",
@@ -290,7 +290,7 @@
     },
     {
       "model": "minimax/minimax-m3.1-flash",
-      "type": "preview",
+      "type": "producto",
       "date": "2026-09-27",
       "url": "https://agent.minimax.io/tools/m3-1-flash-preview",
       "fuente": "MiniMax, página de M3.1-Flash-Preview",
@@ -454,7 +454,7 @@
     },
     {
       "model": "qwen/qwen3.8-2.4t-a95b",
-      "type": "preview",
+      "type": "producto",
       "date": "2026-07-19",
       "url": "https://x.com/Alibaba_Qwen/status/2078759124914098291",
       "fuente": "Qwen (@Alibaba_Qwen) en X, «Qwen3.8 is launching and going open-weight soon!»",
@@ -600,7 +600,7 @@
     },
     {
       "model": "z-ai/glm-5.3",
-      "type": "preview",
+      "type": "producto",
       "date": "2026-08-14",
       "url": "https://x.com/Zai_org/status/2088132969630212372",
       "fuente": "Z.ai (@Zai_org) en X, «GLM-5.3 is available now through GLM Coding Plan and ZCode. API access and open weights will be released in stages…»",

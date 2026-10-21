@@ -33,7 +33,7 @@ for (const m of c.models || []) {
   if (m.price?.basis !== 'referencia' && !m.price?.provider) errors.push(`${w}: precio sin proveedor indicado`);
 }
 // Acontecimientos curados: fuente primaria con enlace, fecha, tipo conocido y modelo del catálogo.
-const TIPOS_EV = ['anuncio', 'preview', 'api', 'pesos', 'precio', 'retirada'];
+const TIPOS_EV = ['anuncio', 'preview', 'producto', 'api', 'pesos', 'precio', 'retirada'];
 for (const e of c.curatedEvents || []) {
   const w = `evento curado ${e.model || e.title}`;
   if (!/^https:\/\/\S+$/.test(e.url || '')) errors.push(`${w}: sin URL de la fuente primaria`);

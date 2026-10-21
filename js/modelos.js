@@ -40,7 +40,7 @@ function speedCell(m) {
   const s = speed(m);
   if (!s) return ND;
   const ttft = s.ttft !== null && s.ttft !== undefined ? `${num(s.ttft, 2)} s` : 'sin datos';
-  return `<span class="big">${num(s.tps, 0)}</span> tok/s${src(s.f)}<span class="m-sub">espera inicial ${ttft}</span><span class="m-sub" title="${esc(s.provider)}">${esc(s.short)}</span>`;
+  return `<span class="big">${num(s.tps, 0)}</span> tok/s${src(s.f)}<span class="m-sub">latencia ${ttft}</span><span class="m-sub" title="${esc(s.provider)}">${esc(s.short)}</span>`;
 }
 
 function detail(m) {
@@ -69,7 +69,7 @@ function detail(m) {
   ];
   const provTable = eps.length ? `
     <table class="subt"><caption class="sr-only">Proveedores en OpenRouter</caption>
-      <thead><tr><th>Proveedor (OpenRouter)</th><th>Cuantización</th><th class="num">Entrada</th><th class="num">Salida</th><th class="num">Contexto</th><th class="num">tok/s p50</th><th class="num">Espera inicial p50</th><th class="num">Disponibilidad 30 min</th></tr></thead>
+      <thead><tr><th>Proveedor (OpenRouter)</th><th>Cuantización</th><th class="num">Entrada</th><th class="num">Salida</th><th class="num">Contexto</th><th class="num">tok/s p50</th><th class="num">Latencia p50</th><th class="num">Disponibilidad 30 min</th></tr></thead>
       <tbody>${eps.map(e => `<tr>
         <td>${esc(e.provider || '—')}</td><td>${esc(e.quant || 'sin datos')}</td>
         <td class="num">${e.in !== null ? usd(e.in) : 'sin datos'}</td><td class="num">${e.out !== null ? usd(e.out) : 'sin datos'}</td>
@@ -98,9 +98,9 @@ function renderTable() {
       <td class="c-name"><div class="m-name">${esc(m.name)}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></td>
       <td data-label="Pesos">${weightsBadge(m)}${m.license.v && m.weights.v === 'abiertos' ? `<span class="m-sub">${esc(m.license.v)}</span>` : ''}</td>
       <td class="num" data-label="Inteligencia (AA)">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfigShort(m) ? `<span class="m-sub" title="Configuración de AA con mayor índice: ${esc(aaConfig(m))}">${esc(aaConfigShort(m))}</span>` : ''}` : ND}</td>
-      <td class="num" data-label="ECI (Epoch)">${m.epoch ? fact(m.epoch.eci, v => num(v)) : ND}</td>
+      <td class="num" data-label="ECI (Epoch)">${m.epoch ? `<span class="big">${fact(m.epoch.eci, v => num(v))}</span>` : ND}</td>
       <td class="num" data-label="Velocidad">${speedCell(m)}</td>
-      <td class="num" data-label="Entrada / salida">${fact(m.price.in, usd)}<span class="m-sub">${fact(m.price.out, usd)}</span>${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}, el más barato` : ''}</span>` : ''}</td>
+      <td class="num" data-label="Entrada / salida"><span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">salida ${fact(m.price.out, usd)}</span>${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}, el más barato` : ''}</span>` : ''}</td>
     </tr>${open ? `<tr class="detail"><td colspan="7">${detail(m)}</td></tr>` : ''}`;
   }).join('');
 }
@@ -121,7 +121,7 @@ function renderCompare() {
     ['Capacidad (ECI)', m => m.epoch ? fact(m.epoch.eci, v => num(v)) : ND, m => eci(m), 'max'],
     ['SWE-bench Verified', m => m.epoch ? fact(m.epoch.swe, v => num(v) + ' %') : ND, m => swe(m), 'max'],
     ['Velocidad (tok/s)', (m, i) => sp[i] ? `${num(sp[i].tps, 0)}${src(sp[i].f)} <span class="m-sub">${esc(sp[i].provider)}</span>` : ND, (m, i) => sp[i]?.tps ?? null, 'max'],
-    ['Espera inicial', (m, i) => sp[i] && sp[i].ttft !== null && sp[i].ttft !== undefined ? `${num(sp[i].ttft, 2)} s${src(sp[i].ft)}` : ND, (m, i) => sp[i]?.ttft ?? null, 'min'],
+    ['Latencia', (m, i) => sp[i] && sp[i].ttft !== null && sp[i].ttft !== undefined ? `${num(sp[i].ttft, 2)} s${src(sp[i].ft)}` : ND, (m, i) => sp[i]?.ttft ?? null, 'min'],
     ['Entrada / M', m => fact(m.price.in, usd), m => m.price.in.v, 'min'],
     ['Salida / M', m => fact(m.price.out, usd), m => m.price.out.v, 'min'],
     ['Combinado 3:1', m => blended(m) !== null ? usd(blended(m)) : ND, m => blended(m), 'min'],

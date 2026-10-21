@@ -9,12 +9,13 @@ let D;
 const STAGES = [
   ['anuncio', 'Anuncio'],
   ['preview', 'Acceso restringido'],
+  ['producto', 'Solo en productos del laboratorio'],
   ['api', 'API pública'],
   ['pesos', 'Pesos descargables']
 ];
-const EVT = { pesos: 'Pesos abiertos', evaluacion: 'Primera evaluación', anuncio: 'Anuncio', preview: 'Acceso restringido', api: 'API pública' };
+const EVT = { pesos: 'Pesos abiertos', evaluacion: 'Primera evaluación', anuncio: 'Anuncio', preview: 'Acceso restringido', producto: 'Solo en productos del laboratorio', api: 'API pública' };
 
-/* Etapas de un modelo. Las curadas (anuncio, preview) exigen URL de la fuente primaria; sin anuncio curado se usa la
+/* Etapas de un modelo. Las curadas (anuncio, preview, producto) exigen URL de la fuente primaria; sin anuncio curado se usa la
    fecha de publicación de la base de modelos de Epoch. API y pesos salen del recolector. */
 function stagesOf(m, curated) {
   const st = {};
@@ -87,7 +88,7 @@ function render() {
     html += c.html;
   }
   if (gone.length) html += `<h2 class="sec">Retirados de OpenRouter en el periodo</h2><ul class="changes">${gone.map(e => `<li><span>${esc(fmtDate(e.date))}</span><span>${esc(e.what)}</span>${provLine(e.src)}</li>`).join('')}</ul>`;
-  html += `<p class="note">«API pública» es la fecha de alta en OpenRouter, que puede ser posterior a la API del laboratorio. «Pesos descargables» es la fecha de creación del repositorio en Hugging Face. Anuncios y accesos restringidos constan cuando se han registrado a mano con enlace a la fuente primaria (blog, documentación o repositorio del laboratorio); si no hay anuncio registrado, se toma la fecha de publicación de la base de modelos de Epoch AI. Las etapas sin dato se agrupan en «No constan».</p>`;
+  html += `<p class="note">«API pública» es la fecha de alta en OpenRouter, que puede ser posterior a la API del laboratorio. «Pesos descargables» es la fecha de creación del repositorio en Hugging Face. «Acceso restringido» es una fase en la que sólo podían usarlo organizaciones o personas seleccionadas; «Solo en productos del laboratorio», una fase en la que se podía usar en sus aplicaciones o suscripciones pero no por API. Anuncios y estas dos fases constan cuando se han registrado a mano con enlace a la fuente primaria (blog, documentación o repositorio del laboratorio); si no hay anuncio registrado, se toma la fecha de publicación de la base de modelos de Epoch AI. Las etapas sin dato se agrupan en «No constan».</p>`;
   $('#ln-list').innerHTML = html;
 }
 
