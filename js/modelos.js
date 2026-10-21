@@ -193,8 +193,8 @@ function renderUso() {
   }
   const inCat = new Set(D.catalog.models.map(m => m.id));
   hbars(el, u.top.map(r => ({
-    label: `${r.rank}. ${r.name || r.slug}`, v: r.tokens, value: `${tokB(r.tokens)}${r.share != null ? ` (${num(r.share, 0)} %)` : ''}`,
-    tip: tip(r.name || r.slug, [['Tokens en 7 días', `${tokES(r.tokens)} (entrada + salida)`], ['Cuota del total de OpenRouter', r.share != null ? `${num(r.share, 1)} %` : null], ['Identificador', r.slug], ['En la tabla de arriba', r.id && inCat.has(r.id) ? 'sí' : 'no (laboratorio no seguido o fuera de la ventana)']])
+    label: `${r.rank}. ${r.name || r.slug}${/:free$/.test(r.slug) ? ' :free' : ''}`, v: r.tokens, value: `${tokB(r.tokens)}${r.share != null ? ` (${num(r.share, 0)} %)` : ''}`,
+    tip: tip(r.name || r.slug, [['Tokens en 7 días', `${tokES(r.tokens)} (entrada + salida)`], ['Cuota del total de OpenRouter', r.share != null ? `${num(r.share, 1)} %` : null], ['Identificador', r.slug], ['Variante', /:free$/.test(r.slug) ? 'gratuita: OpenRouter la cuenta aparte de la de pago' : null], ['En la tabla de arriba', r.id && inCat.has(r.id) ? 'sí' : 'no (laboratorio no seguido o fuera de la ventana)']])
   })), { aria: 'Modelos más usados en OpenRouter en los últimos 7 días', right: 112 });
   note.innerHTML = `<span class="lbl">Cómo leerlo</span>B = billones de tokens (un billón es un millón de millones); entre paréntesis, la cuota. Tokens de entrada más salida procesados en OpenRouter del ${esc(fmtDate(u.from))} al ${esc(fmtDate(u.to))} (días UTC completos), sumando el ranking diario. Es el uso en OpenRouter, no en todo el mercado: no cuenta lo que se consume en la API propia de cada laboratorio ni en sus aplicaciones, y los modelos gratuitos o en promoción suben mucho. La cuota es sobre todo el tráfico de OpenRouter esos días. Puede diferir un poco de la página «top weekly», que usa su propia ventana. Fuente: OpenRouter (<a href="${esc(u.url)}" target="_blank" rel="noopener">openrouter.ai/rankings</a>), datos hasta el ${esc(fmtDate(u.asOf))}, CC BY 4.0; consulta ${esc((u.got || '').slice(0, 10))}${u.stale ? ' (la última consulta falló: se muestra el ranking anterior)' : ''}.`;
 }
