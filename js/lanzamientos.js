@@ -1,5 +1,5 @@
 /* Vista «Lanzamientos»: por modelo, qué etapas constan (anuncio, acceso restringido, API pública, pesos) y con qué fuente. */
-import { esc, src, provLine, fmtDate, num, ii, eci, aaConfig } from './fmt.js';
+import { esc, src, weightsTag, provLine, fmtDate, num, ii, eci, aaConfig } from './fmt.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -42,7 +42,7 @@ function cardFor(m, curated) {
     html: `<article class="rel">
       <div class="rel-date">${esc(fmtDate(latest))}</div>
       <div>
-        <h3>${esc(m.name)} <span class="w ${m.weights.v || 'nd'}">${esc(m.weights.v || 'pesos sin datos')}</span>${identity}</h3>
+        <h3>${esc(m.name)} ${weightsTag(m)}${identity}</h3>
         <div class="m-lab">${esc(m.lab.name)}</div>
         <div class="stages">${STAGES.map(([k, label]) => st[k]
           ? `<div class="stage yes"><span class="lbl">${label}</span>${esc(fmtDate(st[k].date))}${st[k].html}${st[k].note ? `<span class="m-sub">${esc(st[k].note)}</span>` : ''}</div>`

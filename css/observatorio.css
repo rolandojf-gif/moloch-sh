@@ -272,6 +272,7 @@ table.mx tr.row[aria-expanded="true"] td { background: rgba(204, 255, 0, .2); bo
 .w.abiertos { background: var(--open); color: #fff; }
 .w.cerrados { background: var(--closed); color: #121211; }
 .w.nd { background: var(--card-2); color: var(--muted); }
+.w.cerrados.inf { background: var(--card-2); color: var(--text); border-style: dashed; border-color: var(--closed); }
 .big { font: 700 17px var(--f-head); }
 tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 22px; }

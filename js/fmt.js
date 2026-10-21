@@ -116,3 +116,10 @@ export function speed(m) {
   const f = { ...(m.endpointsMeta || {}), v: e.tps, note: `proveedor ${e.provider}, mediana de los últimos 30 min`, stale: e.stale };
   return { tps: e.tps, ttft: e.ttft, f, ft: { ...f, v: e.ttft }, provider: e.provider, short: e.provider };
 }
+
+/* Etiqueta de pesos. «Cerrados» inferido (sin repositorio en Hugging Face ni clasificación de Epoch) se distingue del comprobado. */
+export function weightsTag(m) {
+  const v = m.weights?.v;
+  if (v === 'cerrados' && m.weights.inferred) return '<span class="w cerrados inf" title="OpenRouter no enlaza pesos y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; se asume cerrado">cerrados · inferido</span>';
+  return `<span class="w ${v || 'nd'}">${esc(v || 'pesos sin datos')}</span>`;
+}

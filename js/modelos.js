@@ -1,5 +1,5 @@
 /* Vista «Modelos»: comparador, ficha desplegable, comparación de hasta tres y evolución de la frontera. */
-import { esc, fact, src, usd, num, tokens, fmtDate, country, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, speed, priceBasis, ND, AA_LINK } from './fmt.js';
+import { esc, fact, src, weightsTag, usd, num, tokens, fmtDate, country, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, speed, priceBasis, ND, AA_LINK } from './fmt.js';
 import { frontier } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -9,10 +9,7 @@ const PAGE = 40;
 let D;
 
 const yesNo = v => v === true ? 'sí' : v === false ? 'no' : null;
-const weightsBadge = m => {
-  const v = m.weights.v;
-  return `<span class="w ${v || 'nd'}">${v || 'sin datos'}</span>${src(m.weights)}${m.weights.inferred ? '<span class="m-sub" title="OpenRouter no enlaza pesos; se asume cerrado">inferido</span>' : ''}`;
-};
+const weightsBadge = m => `${weightsTag(m)}${src(m.weights)}`;
 
 function sortKey(m) {
   switch (state.sort) {
