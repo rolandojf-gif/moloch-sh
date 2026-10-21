@@ -195,7 +195,7 @@ h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orang
 /* Gráficos de los frentes de «La carrera» */
 .front-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 18px; padding: 16px 18px; border-bottom: 2px solid var(--ink); }
 .fchart { margin: 0; min-width: 0; }
-.fchart figcaption { font: 700 12px var(--f-mono); text-transform: uppercase; letter-spacing: .03em; margin-bottom: 8px; }
+.fchart figcaption { font: 700 13px/1.3 var(--f-mono); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 10px; }
 .fchart .note { margin-top: 6px; font-size: 12.5px; }
 /* Calendario de hitos */
 .chart .lane { fill: transparent; }
@@ -230,7 +230,6 @@ h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orang
 .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px; }
 .reading { margin-top: 12px; border-left: 4px solid var(--orange); padding: 6px 12px; font-size: 14.5px; background: var(--card-2); }
 .reading:empty { display: none; }
-.reading .lbl { font: 700 10.5px var(--f-mono); text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
 .chart-empty { padding: 26px 8px; color: var(--muted); font-size: 14.5px; }
 
 /* ── Comparador ───────────────────────────────────────────────────────── */
@@ -312,15 +311,21 @@ tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .front-n { flex: none; width: 42px; height: 42px; display: grid; place-content: center; background: var(--orange); color: #121211; border: 2px solid var(--ink); font: 700 15px var(--f-mono); }
 .front-head h3 { margin: 0; font: 700 22px/1.15 var(--f-head); text-transform: uppercase; letter-spacing: -.01em; }
 .front-head .q { margin: 4px 0 0; font-size: 16px; color: var(--muted); max-width: 80ch; }
-.front-head .q .lbl, .hito .lbl, .op .lbl, .revs .lbl, .evid .lbl, .valdet .lbl, #a7-scn .lbl, #a7-pace .lbl, .a7-status .lbl, .hito-cols .lbl, .authors .lbl { display: block; font: 700 10.5px var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 3px; }
+.front-head .q .lbl { display: block; font: 700 11px var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 3px; }
+/* Rótulos de apartado: anuncian que debajo hay algo que leer. */
+.reading .lbl, .hito .lbl, .op .lbl, .revs .lbl, .evid .lbl, .valdet .lbl, #a7-scn .lbl, #a7-pace .lbl, .a7-status .lbl, .hito-cols .lbl, .authors .lbl, .ind-row dt, dl.lect dt {
+  display: block; width: fit-content; font: 700 16px/1.25 var(--f-head); letter-spacing: 0; color: var(--text);
+  padding-left: 9px; border-left: 4px solid var(--orange); margin-bottom: 6px;
+}
+.reading .lbl { border-left: 0; padding-left: 0; }
+.hito-cols dl.ind dt, .evid dl.ind dt { font-size: 13.5px; border-left-width: 2px; padding-left: 7px; margin-bottom: 2px; }
 .front-body { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
 .front-data { padding: 14px 16px 18px; min-width: 0; }
-.front-data h4 { font: 700 11.5px var(--f-mono); text-transform: uppercase; letter-spacing: .05em; margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+.front-data h4 { font: 700 13px/1 var(--f-mono); text-transform: uppercase; letter-spacing: .08em; margin: 24px 0 14px; padding: 7px 10px; background: var(--ink); color: var(--paper); }
 .front-data h4:first-child { margin-top: 0; }
-dl.ind { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px 18px; }
+dl.ind { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px 22px; }
 .ind-row { min-width: 0; }
-.ind-row dt { font: 700 10.5px var(--f-mono); text-transform: uppercase; color: var(--muted); letter-spacing: .03em; }
-.ind-row dd { margin: 3px 0 0; display: flex; flex-direction: column; gap: 3px; }
+.ind-row dd { margin: 0; display: flex; flex-direction: column; gap: 3px; }
 .ind-row .v { font: 700 20px/1.15 var(--f-head); overflow-wrap: anywhere; }
 .ind-row .s { font-size: 13px; color: var(--muted); }
 .ind-list { list-style: none; margin: 0; padding: 0; font-size: 13.5px; }
@@ -341,8 +346,8 @@ dl.ind { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minma
 .estado.e-debilitada { border-style: solid; background: var(--asphalt); color: #E8E7E1; }
 .hip { font: 600 16px/1.4 var(--f-body); margin: 0 0 12px; }
 dl.lect { margin: 0; }
-dl.lect dt { font: 700 10.5px var(--f-mono); text-transform: uppercase; color: var(--muted); margin-top: 9px; }
-dl.lect dd { margin: 2px 0 0; font-size: 14px; }
+dl.lect dt { margin-top: 16px; }
+dl.lect dd { margin: 0; font-size: 15px; }
 .hist { margin-top: 12px; font-size: 13px; }
 .hist summary { cursor: pointer; font: 700 11px var(--f-mono); text-transform: uppercase; }
 .hist ol { padding-left: 18px; margin: 8px 0 0; }
@@ -393,7 +398,7 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
 .verdict { padding: 14px 14px; border-right: 2px solid var(--ink); display: flex; flex-direction: column; gap: 6px; border-width: 0 2px 0 0; border-style: solid; border-color: var(--ink); }
 .verdict b { font: 700 17px/1.2 var(--f-head); }
 .verdict small { font-size: 12px; opacity: .8; }
-.verdict .lbl { color: inherit !important; opacity: .75; }
+.verdict .lbl { color: inherit !important; opacity: .75; border-left: 0; padding-left: 0; font: 700 10.5px/1.3 var(--f-mono); text-transform: uppercase; letter-spacing: .05em; }
 .verdict.v-todavia-no-evaluable { border-style: solid; }
 .hito-main { padding: 14px 16px 12px; min-width: 0; }
 .when { font: 500 12.5px var(--f-mono); color: var(--muted); margin-top: 4px; }
@@ -420,7 +425,7 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
 .plazo b { font: 700 15px/1.2 var(--f-head); }
 .plazo small { font: 400 11.5px var(--f-mono); color: var(--muted); }
 .tag.due { margin-top: 4px; background: var(--card-2); }
-.hito-main h4 { margin: 0; font: 700 17px/1.25 var(--f-head); }
+.hito-main h4 { margin: 0; font: 700 20px/1.2 var(--f-head); }
 .pred { margin: 8px 0 0; font-size: 14.5px; }
 .alert { margin: 6px 0 0; font: 700 12px var(--f-mono); color: var(--warn); text-transform: uppercase; }
 .vals { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
