@@ -103,7 +103,7 @@ function renderTable() {
       <td class="num" data-label="Inteligencia (AA)">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfig(m) ? `<span class="m-sub">${esc(aaConfig(m))}</span>` : ''}` : ND}</td>
       <td class="num" data-label="ECI (Epoch)">${m.epoch ? fact(m.epoch.eci, v => num(v)) : ND}</td>
       <td class="num" data-label="Velocidad">${speedCell(m)}</td>
-      <td class="num" data-label="Entrada / salida">${fact(m.price.in, usd)}<span class="m-sub">${fact(m.price.out, usd)}</span>${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? ', el más barato' : ''}</span>` : ''}</td>
+      <td class="num" data-label="Entrada / salida">${fact(m.price.in, usd)}<span class="m-sub">${fact(m.price.out, usd)}</span>${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}, el más barato` : ''}</span>` : ''}</td>
     </tr>${open ? `<tr class="detail"><td colspan="7">${detail(m)}</td></tr>` : ''}`;
   }).join('');
 }

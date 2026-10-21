@@ -79,7 +79,7 @@ export const country = c => c ? (COUNTRY[c] || c) : 'sin confirmar';
 
 /* Quién fija el precio mostrado: el propio laboratorio en OpenRouter o, si no lo sirve, el proveedor más barato. Texto sin escapar. */
 export const priceBasis = m => m.price?.basis === 'laboratorio' ? `precio de ${m.price.provider}`
-  : m.price?.basis === 'proveedor' ? `proveedor más barato: ${m.price.provider}`
+  : m.price?.basis === 'proveedor' ? `proveedor más barato: ${m.price.provider}${m.price.quant ? `, cuantización ${m.price.quant}` : ''}`
   : m.price?.basis === 'referencia' ? 'precio de referencia de OpenRouter' : null;
 /* Precio combinado 3:1 (convención de Artificial Analysis), a partir de los precios de OpenRouter. */
 export function blended(m) {

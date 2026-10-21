@@ -389,10 +389,11 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
   const chosen = labEp || cheapest(priced);
   let price;
   if (chosen) {
-    const note = labEp ? `precio del propio laboratorio (${chosen.provider}) en OpenRouter` : `el laboratorio no lo sirve en OpenRouter: proveedor más barato, ${chosen.provider}`;
+    const quant = chosen.quant && chosen.quant !== 'unknown' ? chosen.quant : null;
+    const note = labEp ? `precio del propio laboratorio (${chosen.provider}) en OpenRouter` : `el laboratorio no lo sirve en OpenRouter: proveedor más barato, ${chosen.provider}${quant ? `, con cuantización ${quant}` : ''}`;
     const u = `${orUrl}/providers`;
     price = {
-      basis: labEp ? 'laboratorio' : 'proveedor', provider: chosen.provider,
+      basis: labEp ? 'laboratorio' : 'proveedor', provider: chosen.provider, quant,
       in: fact(chosen.in, 'openrouter', u, TODAY, { note }),
       out: fact(chosen.out, 'openrouter', u, TODAY, { note }),
       cacheRead: fact(chosen.cacheRead ?? null, 'openrouter', u, TODAY, { note }),
@@ -672,7 +673,7 @@ async function main() {
     method: {
       capability: `En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index${aaVersion ? ` v${aaVersion}` : ''}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.`,
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',
-      price: 'Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado. El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio.',
+      price: 'Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado y con su cuantización cuando OpenRouter la publica (puede no ser la versión que evalúan AA o Epoch). El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio.',
       weights: '«Abiertos» exige un repositorio público en Hugging Face enlazado por OpenRouter. Sin enlace, «cerrados». La licencia procede de la ficha de Hugging Face.',
       speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la espera inicial incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
       window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días.`
