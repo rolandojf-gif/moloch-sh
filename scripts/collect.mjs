@@ -268,8 +268,20 @@ async function loadEpoch() {
     nSwe = best.size;
   } catch (e) { log(`Epoch benchmarks falló: ${e.message}`); out.sweFailed = true; }
   log(`Epoch: ${out.rows.length} modelos con ECI, ${nSwe} con SWE-bench Verified`);
+  // Base de modelos de Epoch: su «Publication date» (publicación, anuncio o lanzamiento) sirve de anuncio cuando no hay uno curado.
+  out.pub = nameIndex([], () => []);
+  for (const u of EPOCH_MODELS) {
+    try {
+      const rows = parseCSV(await getText(u)).map(r => ({ name: r.Model, date: String(r['Publication date'] || '').slice(0, 10) }))
+        .filter(r => r.name && /^\d{4}-\d{2}-\d{2}$/.test(r.date));
+      out.pub = nameIndex(rows, r => [r.name], (a, b) => a.date < b.date);
+      log(`Epoch, base de modelos: ${u} · ${rows.length} con fecha de publicación`);
+      break;
+    } catch (e) { log(`Epoch, base de modelos: ${u} falló: ${e.message}`); }
+  }
   return out;
 }
+const EPOCH_MODELS = ['https://epoch.ai/data/all_ai_models.csv', 'https://epoch.ai/data/notable_ai_models.csv', 'https://epoch.ai/data/large_scale_ai_models.csv'];
 
 /* Frontera por fecha según Epoch: máximo acumulado del ECI en cada grupo de apertura. */
 function epochFrontier(rows) {
@@ -478,15 +490,25 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
     };
   }
 
+  // Publicación según la base de modelos de Epoch: sólo por nombre exacto (el de su ECI o el del catálogo).
+  const name = (m.name || m.id).replace(/^[^:]+:\s*/, '').replace(/\s*\(free\)$/i, '');
+  let epochPub = null;
+  if (ep === 'keep') epochPub = prev?.epochPub || null;
+  else if (ep && !lab.stealth) {
+    const r = (eRow && (ep.pub.exact(eRow.model) || ep.pub.exact(eRow.name))) || ep.pub.exact(name);
+    if (r) epochPub = fact(r.date, 'epoch', 'https://epoch.ai/data/ai-models', r.date, { note: `fecha de publicación en la base de modelos de Epoch AI («${r.name}»)` });
+  }
+
   return {
     id: m.id,
-    name: (m.name || m.id).replace(/^[^:]+:\s*/, '').replace(/\s*\(free\)$/i, ''),
+    name,
     orVariant: m.orVariant || null,
     lab: { id: author, name: lab.name, country: lab.country, url: lab.url, src: 'curated' },
     identity: lab.stealth ? 'sin confirmar' : 'confirmada',
     hfId: lab.stealth ? null : hfId,
     weights, license,
     orCreated: fact(createdISO, 'openrouter', orUrl, createdISO || TODAY, { note: 'fecha de alta en OpenRouter' }),
+    epochPub,
     hfCreated: (hf && hf.ok && hf.createdAt) ? fact(hf.createdAt, 'hf', `https://huggingface.co/${hfId}`, hf.createdAt, { note: 'creación del repositorio' }) : (prev && prev.hfCreated) || null,
     ctx: fact(m.context_length || null, 'openrouter', orUrl),
     reasoning: fact(params.includes('reasoning') || params.includes('include_reasoning') ? true : (params.length ? false : null), 'openrouter', orUrl, TODAY, { note: 'parámetro «reasoning» admitido' }),

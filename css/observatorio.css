@@ -305,6 +305,7 @@ tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .stage .lbl { display: block; font: 700 10px var(--f-mono); text-transform: uppercase; color: var(--muted); }
 .stage.yes { border-color: var(--ink); background: var(--card-2); }
 .stage.no { color: var(--muted); }
+.stages-no { margin-top: 6px; font: 500 12px var(--f-mono); color: var(--muted); }
 .rel .extra { font-size: 13.5px; margin-top: 6px; }
 .rel.evt { grid-template-columns: 96px minmax(0, 1fr); box-shadow: none; border-style: dashed; }
 
