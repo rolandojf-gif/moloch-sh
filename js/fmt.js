@@ -7,8 +7,9 @@ let SOURCES = {};
 export function setSources(s) { SOURCES = s || {}; }
 
 export const ND = '<span class="nd">sin datos</span>';
-/* Artificial Analysis no permite republicar sus datos sin permiso: sólo se enlaza su clasificación. */
-export const AA_LEADERBOARD = '<a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener">clasificación de Artificial Analysis</a>';
+/* Artificial Analysis: sus datos se publican con su permiso por escrito (data/curated/permisos.json), citándolos con enlace. */
+export const AA_LINK = '<a href="https://artificialanalysis.ai" target="_blank" rel="noopener">Artificial Analysis</a>';
+export const aaIndexName = v => `índice de inteligencia de Artificial Analysis${v ? ` v${v}` : ''}`;
 
 export function fmtDate(iso) {
   if (!iso) return '—';
@@ -81,10 +82,16 @@ export function blended(m) {
   const i = m.price?.in?.v, o = m.price?.out?.v;
   return (i === null || i === undefined || o === null || o === undefined) ? null : (3 * i + o) / 4;
 }
-/* Capacidad: Epoch Capabilities Index (CC BY 4.0). Programación: SWE-bench Verified ejecutado por Epoch. */
-export const ii = m => m.epoch?.eci?.v ?? null;
-export const coding = m => m.epoch?.swe?.v ?? null;
-export const capFact = m => m.epoch?.eci ?? null;
+/* Capacidad en las vistas de modelos: Artificial Analysis Intelligence Index (configuración de mayor índice).
+   Epoch Capabilities Index y SWE-bench Verified (Epoch AI, CC BY 4.0) como referencia; las escalas no se mezclan. */
+export const ii = m => m.aa?.intelligence?.v ?? null;
+export const capFact = m => m.aa?.intelligence ?? null;
+export const coding = m => m.aa?.coding?.v ?? null;
+export const agentic = m => m.aa?.agentic?.v ?? null;
+export const eci = m => m.epoch?.eci?.v ?? null;
+export const swe = m => m.epoch?.swe?.v ?? null;
+/* Configuración de AA cuando su nombre no coincide con el del catálogo, p. ej. «(Max)». */
+export const aaConfig = m => m.aa && m.aa.name && m.aa.name !== m.name ? m.aa.name : null;
 
 /* Velocidad: mediana de AA si existe; si no, el proveedor de OpenRouter más rápido, nombrado. */
 export function speed(m) {

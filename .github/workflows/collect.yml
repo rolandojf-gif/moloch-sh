@@ -31,9 +31,8 @@ jobs:
           node-version: '22'
       - name: Recoger
         env:
+          # Clave gratuita de Artificial Analysis; sus datos se publican con el permiso de data/curated/permisos.json.
           AA_API_KEY: ${{ secrets.AA_API_KEY }}
-          # Sólo «permitida» si Artificial Analysis autoriza por escrito republicar sus datos en la web.
-          AA_REDISTRIBUTION: ${{ vars.AA_REDISTRIBUTION }}
         run: node scripts/collect.mjs
       - name: Validar
         run: node scripts/validate.mjs

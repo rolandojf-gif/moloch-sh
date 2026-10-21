@@ -11,8 +11,8 @@
      OpenRouter  /api/v1/models y /endpoints   (sin clave)  precios, contexto, proveedores, velocidad por proveedor
      Hugging Face /api/models/<repo>           (sin clave)  existencia de pesos, licencia, fecha del repositorio
      Epoch AI     eci_scores.csv y benchmarks.csv (CC BY 4.0) índice de capacidades ECI, SWE-bench Verified, apertura
-     Artificial Analysis /api/v2/language/models/free (AA_API_KEY y AA_REDISTRIBUTION=permitida)
-                  Su licencia gratuita no permite republicar datos tabulados; sin permiso expreso no se usa.
+     Artificial Analysis /api/v2/language/models/free (clave AA_API_KEY) índices de inteligencia, programación y agentes, velocidad
+                  Se publica con su permiso por escrito, registrado en data/curated/permisos.json; sin él no se usa.
      Epoch AI y METR, para los indicadores: véase scripts/indicadores.mjs.
 
    Reglas:
@@ -38,13 +38,13 @@ const NEW_DAYS = 14;                                           // «novedad» si
 const PRICE_CHANGE_MIN = 0.05;                                 // cambios de precio por debajo del 5 % no se listan
 const FIXTURES = process.env.FIXTURES;
 const AA_KEY = process.env.AA_API_KEY || '';
-const AA_ALLOWED = process.env.AA_REDISTRIBUTION === 'permitida';
+const AA_PAGES = 10;                                           // tope de páginas de 200 modelos; cada una cuenta para el límite diario de AA
 
 const SOURCES = {
   openrouter: { name: 'OpenRouter', url: 'https://openrouter.ai/models', api: 'https://openrouter.ai/api/v1/models' },
   hf: { name: 'Hugging Face', url: 'https://huggingface.co/models', api: 'https://huggingface.co/api/models' },
   epoch: { name: 'Epoch AI', url: 'https://epoch.ai/benchmarks/eci', api: 'https://epoch.ai/data/eci_scores.csv', bench: 'https://epoch.ai/data/benchmarks.csv', license: 'CC BY 4.0', cite: "Epoch AI, 'Capabilities & benchmarking', epoch.ai" },
-  aa: { name: 'Artificial Analysis', url: 'https://artificialanalysis.ai/leaderboards/models', api: 'https://artificialanalysis.ai/api/v2/language/models/free', legacy: 'https://artificialanalysis.ai/api/v2/data/llms/models' },
+  aa: { name: 'Artificial Analysis', url: 'https://artificialanalysis.ai/leaderboards/models', home: 'https://artificialanalysis.ai', api: 'https://artificialanalysis.ai/api/v2/language/models/free' },
   metr: { name: 'METR', url: 'https://metr.org/time-horizons', api: 'https://metr.org/assets/benchmark_results_1_1.yaml', license: '© METR; sólo se cita el último punto' },
   curated: { name: 'Curado manualmente', url: null }
 };
@@ -261,23 +261,32 @@ function epochFrontier(rows) {
 }
 
 /* ── Artificial Analysis ────────────────────────────────────────────────── */
-async function loadAA() {
+async function loadAA(permiso) {
   if (!AA_KEY && !FIXTURES) { log('AA_API_KEY ausente'); return null; }
-  if (!AA_ALLOWED && !FIXTURES) { log('AA_REDISTRIBUTION no es «permitida»: no se publican datos de AA'); return null; }
+  if (permiso?.estado !== 'permitido') { log('Artificial Analysis sin permiso en data/curated/permisos.json: no se publican sus datos'); return null; }
   try {
-    let res;
-    try { res = await getJSON(SOURCES.aa.api, { 'x-api-key': AA_KEY }); }
-    catch (e) { if (e.status === 404 || e.status === 410) res = await getJSON(SOURCES.aa.legacy, { 'x-api-key': AA_KEY }); else throw e; }
-    const rows = (res.data || []).map(r => ({ ...r, ...(r.performance || {}) }));
-    log(`Artificial Analysis: ${rows.length} modelos`);
-    return rows;
+    const rows = [];
+    let version = null;
+    for (let page = 1; page <= AA_PAGES; page++) {
+      const res = await getJSON(`${SOURCES.aa.api}?page=${page}`, { 'x-api-key': AA_KEY });
+      version = version ?? res.intelligence_index_version ?? null;
+      rows.push(...(res.data || []).map(r => ({ ...r, ...(r.performance || {}) })));
+      if (!res.pagination?.has_more) break;
+    }
+    log(`Artificial Analysis: ${rows.length} modelos, índice de inteligencia v${version ?? '?'}`);
+    return { rows, version };
   } catch (e) {
     log(`Artificial Analysis falló: ${e.message}`);
-    return undefined;   // undefined = fallo (se conservan valores previos); null = sin clave
+    return undefined;   // undefined = fallo (se conservan valores previos); null = sin clave o sin permiso
   }
 }
 
-function matchAA(orModel, lab, aaRows, overrides) {
+/* AA publica una fila por configuración de razonamiento («GPT-6 Sol (High)», «(Max)»…). Se toma la de mayor índice
+   entre ésas; las ediciones especiales («(Daybreak Blue, max)») sólo cuentan si no hay otra. */
+const AA_SETTING = /^(non-reasoning|reasoning|minimal|low|medium|high|xhigh|max)$/;
+const aaSetting = r => ((/\(([^)]*)\)\s*$/.exec(r.name || '') || [])[1] || '').toLowerCase().trim();
+
+function matchAA(orModel, lab, aaRows, overrides, creatorIds) {
   if (!aaRows || !lab.aa_creator) return null;
   if (Object.prototype.hasOwnProperty.call(overrides, orModel.id)) {
     const slug = overrides[orModel.id];
@@ -286,16 +295,19 @@ function matchAA(orModel, lab, aaRows, overrides) {
     return row ? { row, how: 'manual' } : null;
   }
   const target = norm(orModel.name);
-  const cands = aaRows.filter(r => (r.model_creator && r.model_creator.slug) === lab.aa_creator);
+  const cid = creatorIds[lab.aa_creator];
+  const cands = aaRows.filter(r => r.model_creator && (r.model_creator.slug ? r.model_creator.slug === lab.aa_creator : r.model_creator.id === cid));
   const exact = cands.filter(r => norm(r.name) === target);
   const variants = exact.length ? exact : cands.filter(r => {
     const n = norm(r.name);
     return n.startsWith(target + ' ') && !/\d/.test(n.slice(target.length));   // «gpt 5» no casa con «gpt 5.1»
   });
   if (!variants.length) return null;
+  const plain = variants.filter(r => !aaSetting(r) || AA_SETTING.test(aaSetting(r)));
+  const pool = plain.length ? plain : variants;
   const ii = r => (r.evaluations && r.evaluations.artificial_analysis_intelligence_index) ?? -1;
-  const best = variants.slice().sort((a, b) => ii(b) - ii(a))[0];
-  return { row: best, how: exact.length ? 'nombre exacto' : 'variante de mayor índice', variants: variants.length };
+  const best = pool.slice().sort((a, b) => ii(b) - ii(a))[0];
+  return { row: best, how: pool.length > 1 ? `configuración de mayor índice entre ${pool.length}` : exact.length ? 'nombre exacto' : 'variante', variants: pool.length };
 }
 
 /* ── Construcción del catálogo ──────────────────────────────────────────── */
@@ -383,16 +395,19 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
     const r = aaMatch.row;
     const ev = r.evaluations || {};
     const aaUrl = `https://artificialanalysis.ai/models/${r.slug}`;
+    const pr = r.pricing || {};
+    const nowNote = 'valor vigente en Artificial Analysis en la fecha de consulta; AA no publica la fecha de evaluación';
+    const blendAA = Number.isFinite(pr.price_1m_input_tokens) && Number.isFinite(pr.price_1m_output_tokens) ? Math.round((3 * pr.price_1m_input_tokens + pr.price_1m_output_tokens) / 4 * 10000) / 10000 : null;
     aa = {
-      slug: r.slug, name: r.name, how: aaMatch.how, url: aaUrl,
-      intelligence: fact(ev.artificial_analysis_intelligence_index, 'aa', aaUrl),
-      coding: fact(ev.artificial_analysis_coding_index, 'aa', aaUrl),
-      version: r.intelligence_index_version || (r.evaluations && r.evaluations.intelligence_index_version) || null,
+      slug: r.slug, name: r.name, how: aaMatch.how, url: aaUrl, version: aaMatch.version ?? null,
+      intelligence: fact(ev.artificial_analysis_intelligence_index ?? null, 'aa', aaUrl, TODAY, { note: `Artificial Analysis Intelligence Index${aaMatch.version ? ` v${aaMatch.version}` : ''}, configuración «${r.name}»; ${nowNote}` }),
+      coding: fact(ev.artificial_analysis_coding_index ?? null, 'aa', aaUrl, TODAY, { note: `Artificial Analysis Coding Index; ${nowNote}` }),
+      agentic: fact(ev.artificial_analysis_agentic_index ?? null, 'aa', aaUrl, TODAY, { note: `Artificial Analysis Agentic Index; ${nowNote}` }),
       tps: fact(r.median_output_tokens_per_second || null, 'aa', aaUrl, TODAY, { note: 'mediana de AA para el proveedor de referencia del laboratorio' }),
       ttft: fact(r.median_time_to_first_token_seconds || null, 'aa', aaUrl),
-      ttfa: fact(r.median_time_to_first_answer_token || null, 'aa', aaUrl, TODAY, { note: 'incluye el razonamiento previo a la respuesta' }),
-      release: fact(r.release_date || null, 'aa', aaUrl, r.release_date || TODAY),
-      blended: fact(r.pricing ? r.pricing.price_1m_blended_3_to_1 ?? null : null, 'aa', aaUrl, TODAY, { note: 'mezcla 3:1 entrada/salida de AA' })
+      ttfa: fact(r.median_time_to_first_answer_token_seconds || r.median_time_to_first_answer_token || null, 'aa', aaUrl, TODAY, { note: 'incluye el razonamiento previo a la respuesta' }),
+      release: fact(r.release_date || null, 'aa', aaUrl, r.release_date || TODAY, { note: 'fecha del modelo según AA' }),
+      blended: fact(blendAA, 'aa', aaUrl, TODAY, { note: 'precio de AA, mezcla 3:1 entrada/salida' })
     };
   }
 
@@ -437,6 +452,7 @@ function diff(models, base) {
   const prev = base ? base.models : null;
   const cutoff = new Date(NOW.getTime() - NEW_DAYS * 86400e3).toISOString().slice(0, 10);
   const orSrc = m => ({ name: 'OpenRouter', url: `https://openrouter.ai/${m.orVariant || m.id}`, got: NOW_ISO });
+  const baseHasAA = !!prev && Object.values(prev).some(p => p.ii !== null && p.ii !== undefined);
 
   for (const m of models) {
     const p = prev ? prev[m.id] : undefined;
@@ -445,7 +461,7 @@ function diff(models, base) {
       if (!m.orCreated.v || m.orCreated.v < cutoff) continue;
       items.push({ kind: 'nuevo', model: m.id, date: m.orCreated.v, src: orSrc(m),
         what: `${m.name} (${m.lab.name}) aparece en el catálogo de OpenRouter${m.orVariant ? `, de momento sólo como variante ${m.orVariant.slice(m.orVariant.lastIndexOf(':'))}` : ''}.`,
-        data: { weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, eci: m.epoch?.eci?.v ?? null, identity: m.identity } });
+        data: { weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, ii: m.aa?.intelligence?.v ?? null, eci: m.epoch?.eci?.v ?? null, identity: m.identity } });
       continue;
     }
     for (const k of ['in', 'out']) {
@@ -465,6 +481,12 @@ function diff(models, base) {
       items.push({ kind: 'evaluacion', model: m.id, date: TODAY, src: { name: 'Epoch AI', url: SOURCES.epoch.url, got: NOW_ISO },
         what: `${m.name}: primera puntuación en el índice ECI de Epoch AI (${pb}).`, data: { eci: pb } });
     }
+    // Primera puntuación de AA, sólo si la recogida anterior ya traía datos de AA (si no, todos los modelos serían «nuevos» en AA).
+    const qa = m.aa?.intelligence?.v;
+    if (baseHasAA && (p.ii === null || p.ii === undefined) && qa !== null && qa !== undefined) {
+      items.push({ kind: 'evaluacion', model: m.id, date: TODAY, src: { name: 'Artificial Analysis', url: m.aa.url, got: NOW_ISO },
+        what: `${m.name}: primera puntuación en el índice de inteligencia de Artificial Analysis (${qa}${m.aa.version ? `, v${m.aa.version}` : ''}).`, data: { ii: qa } });
+    }
   }
   if (prev) {
     const now = new Set(models.map(m => m.id));
@@ -476,13 +498,19 @@ function diff(models, base) {
   return items;
 }
 
-function leaders(models) {
-  const scored = models.filter(m => m.epoch?.eci?.v !== null && m.epoch?.eci?.v !== undefined && m.identity === 'confirmada');
-  const best = w => scored.filter(m => m.weights.v === w).sort((a, b) => b.epoch.eci.v - a.epoch.eci.v)[0] || null;
-  const o = best('abiertos'), c = best('cerrados');
+/* Líderes abierto y cerrado por índice de AA (vistas de modelos) y por ECI de Epoch (referencia histórica). */
+function leaders(models, version) {
+  const pick = (val) => {
+    const scored = models.filter(m => val(m) !== null && val(m) !== undefined && m.identity === 'confirmada');
+    const best = w => scored.filter(m => m.weights.v === w).sort((a, b) => val(b) - val(a))[0] || null;
+    return [best('abiertos'), best('cerrados')];
+  };
+  const [ao, ac] = pick(m => m.aa?.intelligence?.v);
+  const [o, c] = pick(m => m.epoch?.eci?.v);
   return {
     open: o ? { id: o.id, eci: o.epoch.eci.v } : null,
-    closed: c ? { id: c.id, eci: c.epoch.eci.v } : null
+    closed: c ? { id: c.id, eci: c.epoch.eci.v } : null,
+    aa: { v: version ?? null, open: ao ? { id: ao.id, ii: ao.aa.intelligence.v } : null, closed: ac ? { id: ac.id, ii: ac.aa.intelligence.v } : null }
   };
 }
 
@@ -510,12 +538,18 @@ async function main() {
   const prevCatalog = await readJSON(path.join(DATA, 'catalog.json'));
   const prevMap = new Map((prevCatalog ? prevCatalog.models : []).map(m => [m.id, m]));
   const curated = await readJSON(path.join(DATA, 'curated/sources.json'), {});
+  const permisos = await readJSON(path.join(DATA, 'curated/permisos.json'), {});
+  const aaCreators = await readJSON(path.join(DATA, 'curated/aa-creadores.json'), {});
+  delete aaCreators._doc;
+  if (permisos.aa?.estado === 'permitido') SOURCES.aa.permiso = { fecha: permisos.aa.fecha, forma: permisos.aa.forma, alcance: permisos.aa.alcance };
 
   let orModels;
   try { orModels = await loadOpenRouter(labs); }
   catch (e) { console.error('[collect] OpenRouter falló; no se escribe nada:', e.message); process.exit(2); }
 
-  const aaRows = await loadAA();
+  const aaRes = await loadAA(permisos.aa);
+  const aaRows = aaRes ? aaRes.rows : aaRes;
+  const aaVersion = aaRes ? aaRes.version : (aaRes === undefined ? prevCatalog?.aaIndexVersion ?? null : null);
   let ep;
   try { ep = await loadEpoch(); } catch (e) { log(`Epoch falló: ${e.message}`); ep = 'keep'; }
   const epochOv = ovFile.epoch || {};
@@ -523,7 +557,7 @@ async function main() {
     openrouter: { ok: true, got: NOW_ISO },
     hf: { ok: true, got: NOW_ISO, failed: 0 },
     epoch: ep === 'keep' ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores' } : { ok: true, got: NOW_ISO, ...(ep.sweFailed ? { note: 'SWE-bench no disponible en esta recogida' } : {}) },
-    aa: aaRows === null ? { ok: false, optional: true, reason: !AA_KEY ? 'no conectado' : 'sin permiso de redistribución' } : aaRows === undefined ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores', lastOk: prevCatalog?.status?.aa?.got || prevCatalog?.status?.aa?.lastOk || null } : { ok: true, got: NOW_ISO }
+    aa: aaRows === null ? { ok: false, optional: true, reason: !AA_KEY ? 'no conectado' : 'sin permiso de publicación' } : aaRows === undefined ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores', lastOk: prevCatalog?.status?.aa?.got || prevCatalog?.status?.aa?.lastOk || null } : { ok: true, got: NOW_ISO }
   };
 
   const models = [];
@@ -539,7 +573,8 @@ async function main() {
     ]);
     if (hf && !hf.ok && !hf.notFound) status.hf.failed++;
     if (hf && hf.notFound && m._hfOverride) log(`override HF sin repositorio: ${m.id} → ${m._hfOverride}`);
-    const aaMatch = aaRows === undefined ? 'keep' : matchAA(m, lab, aaRows, overrides);
+    const aaMatch = aaRows === undefined ? 'keep' : matchAA(m, lab, aaRows, overrides, aaCreators);
+    if (aaMatch && aaMatch !== 'keep') aaMatch.version = aaVersion;
     models.push(buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv));
   }
   if (status.hf.failed) status.hf.ok = status.hf.failed < models.length / 4;
@@ -556,6 +591,23 @@ async function main() {
     if (EPOCH_AMBIGUOUS.length) log(`  ambiguos, sin emparejar (${EPOCH_AMBIGUOUS.length}): ${EPOCH_AMBIGUOUS.join(' | ')}`);
   }
 
+  // Diagnóstico de emparejamiento con AA (sólo en el registro): ayuda a completar overrides.aa y aa-creadores.json.
+  if (aaRows) {
+    const ids = new Set(aaRows.map(r => r.model_creator?.id));
+    const dead = Object.entries(aaCreators).filter(([, id]) => !ids.has(id)).map(([k]) => k);
+    if (dead.length) log(`  aa-creadores.json: ids sin modelos en AA: ${dead.join(', ')}`);
+    const recent = new Date(NOW.getTime() - 60 * 86400e3).toISOString().slice(0, 10);
+    const used = new Set(models.map(m => m.aa?.slug).filter(Boolean));
+    const known = new Set(Object.values(aaCreators));
+    const missAA = aaRows.filter(r => (r.release_date || '') >= recent && known.has(r.model_creator?.id) && !used.has(r.slug)).map(r => `${r.slug} «${r.name}»`);
+    const missOr = models.filter(m => !m.aa && m.identity === 'confirmada' && (m.orCreated.v || '') >= recent).map(m => `${m.id} «${m.name}»`);
+    const others = [...new Set(aaRows.filter(r => (r.release_date || '') >= recent && !known.has(r.model_creator?.id)).map(r => r.model_creator?.name))];
+    log(`AA: ${models.filter(m => m.aa).length} modelos emparejados (${models.filter(m => m.aa?.intelligence?.v != null).length} con índice)`);
+    if (missOr.length) log(`  catálogo de los últimos 60 días sin AA (${missOr.length}): ${missOr.join(' | ')}`);
+    if (missAA.length) log(`  AA de los últimos 60 días sin pareja, de laboratorios seguidos (${missAA.length}): ${missAA.slice(0, 80).join(' | ')}`);
+    if (others.length) log(`  creadores de AA con modelos de los últimos 60 días que no se siguen: ${others.join(', ')}`);
+  }
+
   models.sort((a, b) => (b.orCreated.v || '').localeCompare(a.orCreated.v || ''));
 
   // Instantánea del día e histórico
@@ -569,8 +621,8 @@ async function main() {
 
   const snap = {
     date: TODAY, got: NOW_ISO,
-    aaIndexVersion: curated.aaIndexVersion ?? null,
-    leaders: leaders(models),
+    aaIndexVersion: aaVersion ?? curated.aaIndexVersion ?? null,
+    leaders: leaders(models, aaVersion),
     ind: indicatorSnapshot(indicators.ind),
     models: snapshot(models)
   };
@@ -584,13 +636,13 @@ async function main() {
     generated: NOW_ISO,
     sources: SOURCES,
     status,
-    aaIndexVersion: curated.aaIndexVersion ?? null,
+    aaIndexVersion: aaVersion ?? curated.aaIndexVersion ?? null,
     epochFrontier: ep === 'keep' ? (prevCatalog?.epochFrontier || null) : { points: epochFrontier(ep.rows), got: NOW_ISO, src: 'epoch', url: SOURCES.epoch.url, n: ep.rows.length },
     method: {
-      capability: 'La capacidad se mide con el Epoch Capabilities Index (ECI), que combina muchos benchmarks en una escala común con intervalo de confianza; datos de Epoch AI con licencia CC BY 4.0. La programación usa SWE-bench Verified ejecutado por Epoch. El emparejamiento con OpenRouter es por nombre exacto normalizado.',
+      capability: `En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index${aaVersion ? ` v${aaVersion}` : ''}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.`,
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',
       weights: '«Abiertos» exige un repositorio público en Hugging Face enlazado por OpenRouter. Sin enlace, «cerrados». La licencia procede de la ficha de Hugging Face.',
-      speed: 'La velocidad depende de quién sirve el modelo. La API abierta de OpenRouter no publica latencia ni rendimiento, y la licencia gratuita de Artificial Analysis no permite republicar sus datos en tablas, así que de momento no hay fuente publicable.',
+      speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia; si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
       window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días.`
     },
     models,
