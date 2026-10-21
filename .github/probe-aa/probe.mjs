@@ -14,7 +14,7 @@ for (const u of URLS) {
   const lim = ['x-ratelimit-limit', 'x-ratelimit-remaining'].map(h => `${h}=${r.headers.get(h)}`).join(' ');
   console.log(`\n== ${u}\nHTTP ${r.status} ${lim}`);
   const txt = await r.text();
-  if (!r.ok) { console.log(txt.slice(0, 300)); continue; }
+  if (!r.ok) { console.log(txt.slice(0, 300).split(KEY).join('***')); continue; }
   const j = JSON.parse(txt);
   console.log('claves:', Object.keys(j).join(', '), '| versión del índice:', j.intelligence_index_version ?? 'no consta');
   const data = j.data || [];
