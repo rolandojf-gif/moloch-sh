@@ -23,9 +23,37 @@ const plain = (v, due) => !v ? 'Sin valoración' : v.v === 'todavía no evaluabl
 function resolve(val, checks) {
   if (!val?.regla) return val;
   const c = checks?.[val.regla];
-  return c ? { ...val, v: c.v, texto: c.texto, fecha: c.fecha } : { ...val, v: 'sin evidencia suficiente', texto: 'La regla no ha podido calcularse en la última recogida.' };
+  return c ? { ...val, v: c.v, texto: c.texto, fecha: c.fecha, sentido: c.sentido || null } : { ...val, v: 'sin evidencia suficiente', texto: 'La regla no ha podido calcularse en la última recogida.' };
 }
 const valOf = (h, quien, checks) => resolve((h.valoraciones || []).find(v => v.quien === quien), checks) || null;
+
+/* Estimación: sólo para hitos sin valoración posible todavía (plazo no vencido o sin medida directa). */
+const OPEN = ['todavía no evaluable', 'sin evidencia suficiente'];
+const EST_KIND = { regla: 'proyección con los datos recogidos', autores: 'valoración de los autores', ritmo: 'con el ritmo que estiman los autores', fuente: 'estimación del observatorio con fuentes' };
+const addDays = (d, k) => new Date(Date.parse(d) + k * 86400e3).toISOString().slice(0, 10);
+const monthYear = d => new Date(d + 'T00:00:00Z').toLocaleDateString('es-ES', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+function estimate(h, checks, a) {
+  const e = h.estimacion;
+  if (!e) return null;
+  if (e.metodo === 'regla') { const c = checks?.[e.regla]; return c ? { ...e, v: c.v, sentido: c.sentido, texto: c.texto, fecha: c.fecha } : null; }
+  if (e.metodo === 'autores') {
+    const au = valOf(h, 'autores', checks);
+    return au && !OPEN.includes(au.v) ? { ...e, v: au.v, sentido: e.sentido || null, fecha: au.fecha, texto: `No hay una medida pública que permita comprobarlo, así que se toma como estimación la valoración que publicaron los autores (${curDate(au.fecha)}), recogida debajo.` } : null;
+  }
+  if (e.metodo === 'ritmo') {
+    const p = a.ritmo?.puntos?.at(-1), start = a.escenario.publicado;
+    if (!p?.rango) return null;
+    const span = (Date.parse(h.plazo) - Date.parse(start)) / 86400e3;
+    const early = addDays(start, span / p.rango[1]), late = addDays(start, span / p.rango[0]);
+    return {
+      ...e, v: p.rango[1] < 1 ? 'retrasado' : 'compatible', sentido: p.rango[1] < 1 ? 'Llegaría más tarde' : 'Llegaría a tiempo', fecha: p.fecha,
+      texto: `Si la realidad avanza al ${p.valor} de la velocidad del escenario, como estimaban los autores el ${curDate(p.fecha)}, este punto del relato llegaría entre ${monthYear(early)} y ${monthYear(late)}, en vez de ${h.plazo_texto}. Inferencia del observatorio a partir de esa estimación.`,
+      fuentes: [{ texto: 'AI Futures Project', url: p.url }, ...(e.fuentes || [])]
+    };
+  }
+  return { ...e };
+}
+const estLabel = est => est.sentido || PLAIN[est.v] || est.v;
 
 const months = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / (30.44 * 86400e3));
 function when(h, today) {
@@ -41,22 +69,29 @@ function evidence(e, ind) {
   return `<li>${tag}<p>${esc(e.texto)}</p><div class="prov">Fuente: <a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.fuente || 'enlace')}</a> · dato: ${esc(curDate(e.fecha))}</div></li>`;
 }
 
-function hito(h, ind, checks, today) {
+function hito(h, ind, checks, today, a7) {
   const a = valOf(h, 'autores', checks), o = valOf(h, 'observatorio', checks);
+  const est = OPEN.includes(o?.v) ? estimate(h, checks, a7) : null;
   const due = h.plazo < today;
   const measured = (h.evidencia || []).filter(e => e.tipo === 'medida' && e.indicador);
+  // Un hito vencido se valora con lo que había en su fecha; lo de hoy va aparte, como contexto.
+  const atDue = measured.filter(e => e.momento === 'plazo'), now = measured.filter(e => e.momento !== 'plazo');
+  const rows = list => list.length && ind ? `<dl class="ind">${list.map(e => indicatorRow(ind, e.indicador)).join('')}</dl>` : '';
   const rest = (h.evidencia || []).filter(e => !(e.tipo === 'medida' && e.indicador));
   const r = (h.revisiones || []).length;
   return `<article class="hito${due && o?.v === 'todavía no evaluable' ? ' overdue' : ''}" id="hito-${esc(h.id)}">
-    <div class="verdict ${cls(o?.v)}"><span class="lbl">Valoración del observatorio</span><b>${esc(plain(o, due))}</b>${o?.regla ? '<small>Calculada con una regla explícita en cada recogida.</small>' : ''}</div>
+    <div class="verdict ${cls(o?.v)}"><span class="lbl">Valoración del observatorio</span><b>${esc(plain(o, due))}</b>${o?.sentido ? `<span class="sentido">${esc(o.sentido)}</span>` : ''}${o?.regla ? '<small>Calculada con una regla explícita en cada recogida.</small>' : ''}${est ? `<span class="est-line"><i class="chip ${cls(est.v)}"></i><span><span class="lbl">Estimación</span>${esc(estLabel(est))}</span></span>` : ''}</div>
     <div class="hito-main">
       <h4>${esc(h.titulo)}</h4>
       <div class="when">Para <b>${esc(h.plazo_texto)}</b> (${esc(fmtDate(h.plazo))}) · ${esc(when(h, today))}</div>
       <div class="hito-cols">
         <div><span class="lbl">Qué predecía</span><p>${esc(h.prediccion)}</p></div>
-        <div><span class="lbl">Dónde estamos${o?.fecha ? ` (${esc(curDate(o.fecha))})` : ''}</span><p>${esc(o?.texto || 'Sin valoración del observatorio.')}</p>
-          ${measured.length && ind ? `<dl class="ind">${measured.map(e => indicatorRow(ind, e.indicador)).join('')}</dl>` : ''}</div>
+        ${due
+          ? `<div><span class="lbl">Al vencer el plazo (${esc(fmtDate(h.plazo))})</span><p>${esc(o?.texto || 'Sin valoración del observatorio.')}</p>${rows(atDue)}
+          ${now.length ? `<span class="lbl lbl-hoy">Y hoy (${esc(curDate(today))})</span>${rows(now)}` : ''}</div>`
+          : `<div><span class="lbl">Dónde estamos${o?.fecha ? ` (${esc(curDate(o.fecha))})` : ''}</span><p>${esc(o?.texto || 'Sin valoración del observatorio.')}</p>${rows(measured)}</div>`}
       </div>
+      ${est ? `<div class="est-block"><span class="lbl">Estimación · ${esc(est.rotulo || EST_KIND[est.metodo])}</span><p>${esc(est.texto)}</p>${est.muros ? `<p class="muros"><b>Qué podría frenarla o invalidarla.</b> ${esc(est.muros)}</p>` : ''}${est.fuentes?.length ? `<p class="prov">${est.fuentes.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.texto)}</a>`).join(' · ')}</p>` : ''}</div>` : ''}
       <p class="authors"><span class="lbl">Qué dicen los autores</span>${a ? `<span class="val ${cls(a.v)}">${esc(a.v)}</span> ${esc(a.texto || '')}${a.url ? ` <a href="${esc(a.url)}" target="_blank" rel="noopener">Fuente</a>` : ''}` : 'No han publicado una valoración que el observatorio haya encontrado.'}</p>
       <details class="hito-more">
         <summary>Texto original, evidencia${r ? ' y revisiones' : ''}</summary>
@@ -85,7 +120,11 @@ function tally(lines, checks) {
 }
 
 /* Resumen a fecha de hoy, en frases. */
-function status(all, checks, today, ritmo) {
+function status(all, checks, today, a7) {
+  const ritmo = a7.ritmo;
+  const estOf = h => { const o = valOf(h, 'observatorio', checks); return OPEN.includes(o?.v) ? estimate(h, checks, a7) : null; };
+  const tallyEst = (list, words) => { const n = k => list.filter(h => estOf(h)?.v === k).length, none = list.filter(h => !estOf(h)).length; return [[n('adelantado') + n('compatible'), words[0]], [n('retrasado'), words[1]], [none, 'sin estimación']].filter(x => x[0]).map(([k, w]) => `<b>${k}</b> ${w}`).join(', '); };
+  const undecidedDue = due => due.filter(h => OPEN.includes(valOf(h, 'observatorio', checks)?.v));
   const due = all.filter(h => h.plazo < today), next = all.filter(h => h.plazo >= today).sort((x, y) => x.plazo.localeCompare(y.plazo));
   const cnt = k => due.filter(h => valOf(h, 'observatorio', checks)?.v === k).length;
   const parts = [['adelantado', 'va por delante', 'van por delante'], ['compatible', 'se cumple como preveía', 'se cumplen como preveían'], ['retrasado', 'va por detrás', 'van por detrás'], ['sin evidencia suficiente', 'no se puede comprobar con datos públicos', 'no se pueden comprobar con datos públicos'], ['todavía no evaluable', 'está sin evaluar', 'están sin evaluar']]
@@ -93,9 +132,11 @@ function status(all, checks, today, ritmo) {
   const lastPace = ritmo?.puntos?.[ritmo.puntos.length - 1];
   const chips = parts.map(([k, n, one, many]) => `<li><span class="chip ${cls(k)}">${n}</span>${esc(n === 1 ? one : many)}</li>`).join('');
   return `<div class="st-block"><span class="lbl">A ${esc(fmtDate(today))}</span>
-      <p class="st-big">De las <b>${due.length}</b> predicciones cuyo plazo ya ha pasado:</p><ul class="st-list">${chips}</ul></div>
+      <p class="st-big">De las <b>${due.length}</b> predicciones cuyo plazo ya ha pasado:</p><ul class="st-list">${chips}</ul>
+      ${undecidedDue(due).length ? `<p class="st-est">Las que no se pueden comprobar, según las estimaciones: ${tallyEst(undecidedDue(due), ['se cumplirían', 'irían por detrás'])}.</p>` : ''}</div>
     <div class="st-block"><span class="lbl">Lo que viene</span>
       <p class="st-big"><b>${next.length}</b> predicciones por llegar.</p>
+      <p class="st-est">Según las estimaciones: ${tallyEst(next.filter(h => OPEN.includes(valOf(h, 'observatorio', checks)?.v)), ['llegarían a tiempo o antes', 'llegarían tarde'])}.</p>
       ${next[0] ? `<p>La próxima: <a href="#hito-${esc(next[0].id)}" data-jump>${esc(next[0].titulo)}</a>, para ${esc(next[0].plazo_texto)}.</p>` : ''}
       ${next.length > 1 && next[1].plazo === next[0].plazo ? `<p class="m-sub">Y ${next.filter(h => h.plazo === next[0].plazo).length - 1} más con la misma fecha.</p>` : ''}</div>
     ${lastPace ? `<div class="st-block"><span class="lbl">Ritmo según los propios autores</span>
@@ -118,20 +159,21 @@ export function renderAi2027(d) {
     <p>Dos desenlaces: ${e.desenlaces.map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.nombre)}</a>`).join(' y ')}.</p>
     <p class="st-how"><b>Qué hace esta página.</b> Toma ${all.length} predicciones concretas del relato, cada una con su fecha, y las compara con datos públicos. Cada predicción lleva la valoración del observatorio y, cuando existe, la de los propios autores.</p>`;
 
-  $('#a7-status').innerHTML = status(all, checks, today, a.ritmo);
+  $('#a7-status').innerHTML = status(all, checks, today, a);
 
   // Calendario: un carril por línea, cada predicción en su fecha y con el color de la valoración del observatorio.
   const dates = all.map(h => h.plazo).sort();
   const to = new Date(Date.UTC(+dates[dates.length - 1].slice(0, 4), +dates[dates.length - 1].slice(5, 7) + 1, 1)).toISOString().slice(0, 10);
   hitoTimeline($('#a7-timeline'), a.lineas.map(l => ({ id: l.id, title: l.titulo })), all.map(h => {
     const o = valOf(h, 'observatorio', checks), au = valOf(h, 'autores', checks), due = h.plazo < today;
+    const est = OPEN.includes(o?.v) ? estimate(h, checks, a) : null;
     return {
-      lane: h.lane, date: h.plazo, cls: cls(o?.v), short: h.corto || h.titulo,
+      lane: h.lane, date: h.plazo, cls: cls(o?.v), est: est ? cls(est.v) : null, short: h.corto || h.titulo,
       go: () => { const el = document.getElementById(`hito-${h.id}`); el?.scrollIntoView({ behavior: 'smooth', block: 'start' }); el?.classList.add('flash'); setTimeout(() => el?.classList.remove('flash'), 1600); },
-      tip: tip(h.titulo, [['Plazo', `${h.plazo_texto} (${when(h, today)})`], ['Qué predecía', h.prediccion], ['Observatorio', plain(o, due)], ['Autores', au ? au.v : 'sin valoración publicada']], 'Pulsa para ir a su ficha.')
+      tip: tip(h.titulo, [['Plazo', `${h.plazo_texto} (${when(h, today)})`], ['Qué predecía', h.prediccion], ['Observatorio', plain(o, due)], ['Estimación', est ? estLabel(est) : null], ['Autores', au ? au.v : 'sin valoración publicada']], 'Pulsa para ir a su ficha.')
     };
   }), { today, from: '2025-04-01', to });
-  $('#a7-tl-legend').innerHTML = ESCALA.map(k => `<span><i class="chip ${cls(k)}"></i>${esc(PLAIN[k])}</span>`).join('');
+  $('#a7-tl-legend').innerHTML = ESCALA.map(k => `<span><i class="chip ${cls(k)}"></i>${esc(PLAIN[k])}</span>`).join('') + '<span><i class="chip est-key"></i>Anillo: color de la estimación</span>';
 
   $('#a7-tally').innerHTML = tally(a.lineas, checks);
   $('#a7-pace').innerHTML = `<span class="lbl">Ritmo de la realidad frente al escenario, según los autores</span>
@@ -142,7 +184,7 @@ export function renderAi2027(d) {
   $('#a7-index').innerHTML = a.lineas.map((l, i) => `<a href="#linea-${esc(l.id)}" data-jump><i>${String(i + 1).padStart(2, '0')}</i>${esc(l.titulo)}</a>`).join('');
   $('#a7-lines').innerHTML = a.lineas.map((l, i) => `<section class="linea" id="linea-${esc(l.id)}" aria-labelledby="lh-${esc(l.id)}">
       <header class="front-head"><span class="front-n">${String(i + 1).padStart(2, '0')}</span><div><h3 id="lh-${esc(l.id)}">${esc(l.titulo)}</h3><p class="q"><span class="lbl">Qué se comprueba</span>${esc(l.comprobar)}</p></div></header>
-      <div class="hitos">${l.hitos.slice().sort((x, y) => x.plazo.localeCompare(y.plazo)).map(h => hito(h, ind, checks, today)).join('')}</div>
+      <div class="hitos">${l.hitos.slice().sort((x, y) => x.plazo.localeCompare(y.plazo)).map(h => hito(h, ind, checks, today, a)).join('')}</div>
     </section>`).join('');
 
   $('#a7-rev').innerHTML = a.revisiones.slice().sort((x, y) => y.fecha.localeCompare(x.fecha)).map(r => `<li><span class="rev-d">${esc(curDate(r.fecha))}</span><span class="tag ${r.tipo === 'texto' ? 'k-texto' : 'k-valoracion'}">${r.tipo === 'texto' ? 'Cambio en el texto' : 'Valoración o previsión'}</span><span>${esc(r.texto)} <a href="${esc(r.url)}" target="_blank" rel="noopener">Fuente</a></span></li>`).join('');

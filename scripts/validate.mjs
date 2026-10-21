@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 const read = async p => JSON.parse(await readFile(new URL(`../${p}`, import.meta.url), 'utf8'));
 const readOpt = p => read(p).catch(e => (e.code === 'ENOENT' ? null : Promise.reject(e)));
 const c = await read('data/catalog.json');
-const errors = [];
+const errors = [], warnings = [];
 const isFact = f => f && typeof f === 'object' && 'v' in f;
 function checkFact(f, where, sources = c.sources) {
   if (!isFact(f)) return errors.push(`${where}: no es un hecho con procedencia`);
@@ -49,7 +49,7 @@ const DAY = /^\d{4}-\d{2}-\d{2}$/, DAYMONTH = /^\d{4}-\d{2}(-\d{2})?$/, URL_RE =
 const IND_KEY = /^(eci|bench|dc|chips|companies|metr)\.[A-Za-z0-9]+$/;
 const ESTADOS = ['abierta', 'confirmada', 'debilitada'];
 const ESCALA = ['adelantado', 'compatible', 'retrasado', 'todavía no evaluable', 'sin evidencia suficiente'];
-const REGLAS = ['swe85', 'openAgent0', 'openaiRev2025'];
+const REGLAS = ['swe85', 'openAgent0', 'openaiRev2025', 'rivales39', 'deepcent6'];
 const EVID = ['medida', 'declarada', 'valoración de los autores', 'contexto'];
 const need = (o, k, where, re) => { if (!o?.[k] || (re && !re.test(o[k]))) errors.push(`${where}: falta o no es válido «${k}»`); };
 
@@ -102,8 +102,19 @@ if (a7) {
       for (const r of h.revisiones || []) { need(r, 'fecha', `${w}.revisiones`, DAYMONTH); need(r, 'url', `${w}.revisiones`, URL_RE); need(r, 'texto', `${w}.revisiones`); }
       for (const e of h.evidencia || []) {
         if (!EVID.includes(e.tipo)) errors.push(`${w}: tipo de evidencia no válido ${e.tipo}`);
+        if (e.momento && !['plazo', 'hoy'].includes(e.momento)) errors.push(`${w}: momento no válido ${e.momento}`);
         if (e.indicador) { if (!IND_KEY.test(e.indicador)) errors.push(`${w}: indicador no válido ${e.indicador}`); }
         else { need(e, 'texto', `${w}.evidencia`); need(e, 'url', `${w}.evidencia`, URL_RE); need(e, 'fecha', `${w}.evidencia`, DAYMONTH); }
+      }
+      const est = h.estimacion;
+      if (est) {
+        if (!['regla', 'autores', 'ritmo', 'fuente'].includes(est.metodo)) errors.push(`${w}: método de estimación no válido ${est.metodo}`);
+        // Una estimación sin resultado (fuente caída) no bloquea la publicación: la ficha dice «sin estimación».
+        if (est.metodo === 'regla' && !/^est_/.test(est.regla || '')) errors.push(`${w}: regla de estimación no válida ${est.regla}`);
+        else if (est.metodo === 'regla' && ind && !ind.checks?.[est.regla]) warnings.push(`${w}: la estimación ${est.regla} no tiene resultado en indicadores.json`);
+        if (est.metodo === 'fuente') { if (!ESCALA.includes(est.v)) errors.push(`${w}: estimación fuera de la escala ${est.v}`); need(est, 'texto', `${w}.estimacion`); need(est, 'fecha', `${w}.estimacion`, DAYMONTH); }
+        if (est.metodo === 'ritmo' && !a7.ritmo?.puntos?.at(-1)?.rango) errors.push(`${w}: la estimación por ritmo necesita «rango» en la última estimación de ritmo`);
+        for (const f of est.fuentes || []) need(f, 'url', `${w}.estimacion.fuentes`, URL_RE);
       }
       const vals = h.valoraciones || [];
       if (vals.filter(v => v.quien === 'observatorio').length !== 1) errors.push(`${w}: debe tener exactamente una valoración del observatorio`);
@@ -121,5 +132,6 @@ if (a7) {
 }
 if (ind) for (const [k, ch] of Object.entries(ind.checks || {})) if (!ESCALA.includes(ch.v)) errors.push(`indicadores.checks.${k}: valoración fuera de la escala ${ch.v}`);
 
+if (warnings.length) console.warn(`avisos:\n${warnings.join('\n')}`);
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
 console.log(`validación correcta: ${c.models.length} modelos${ind ? ', indicadores' : ''}, ${car?.frentes?.length || 0} frentes, ${(a7?.lineas || []).reduce((n, l) => n + l.hitos.length, 0)} hitos`);

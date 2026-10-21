@@ -44,7 +44,7 @@ function renderFreshness(d) {
     return s.ok ? `<span class="st-ok">● ${esc(name)}</span>` : `<span class="st-bad" title="${esc(s.reason || '')}">○ ${esc(name)}: ${esc(s.reason || 'sin datos')}</span>`;
   }).join('');
   // Indicadores de La carrera y AI 2027: una sola marca si todo va bien; cada fuente que falle, por separado.
-  const IND = { epoch_dc: 'Epoch AI · centros de datos', epoch_chips: 'Epoch AI · chips', epoch_companies: 'Epoch AI · empresas', metr: 'METR' };
+  const IND = { epoch_dc: 'Epoch AI · centros de datos', epoch_chips: 'Epoch AI · chips', epoch_companies: 'Epoch AI · empresas', epoch_models: 'Epoch AI · cómputo de entrenamiento', metr: 'METR' };
   const ist = Object.entries(d.ind?.status || {}).filter(([k]) => k in IND);
   const bad = ist.filter(([, s]) => !s.ok);
   const indSt = !d.ind ? '<span class="st-bad">○ Indicadores: sin datos</span>'

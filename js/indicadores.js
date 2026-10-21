@@ -14,6 +14,25 @@ export const PAIS = { 'United States': 'EE. UU.', 'United States of America': 'E
 /* Hecho «hermano» para listas y valores derivados que no son un hecho propio: misma fuente y fechas. */
 const like = (f, v, extra = {}) => f ? { src: f.src, url: f.url, asOf: f.asOf, got: f.got, stale: f.stale, ...extra, v } : null;
 
+/* Situación en la fecha de un plazo: distancia en puntos al primer rival y, para cada rival, cuándo publicó el líder
+   un modelo de su nivel. Son fechas observadas, no una conversión de puntos en meses. */
+function standing(f, label) {
+  if (!f?.lead) return { label, value: fact(f, pts), sub: '' };
+  const name = k => COUNTRY[k] || k;
+  const rival = r => {
+    const lr = r.leaderReached;
+    const reach = !lr ? `${esc(name(f.lead.key))} no tenía hasta esa fecha un modelo de su nivel.`
+      : lr.date > r.date ? `${esc(name(f.lead.key))} no publicó un modelo de ese nivel hasta el ${esc(fmtDate(lr.date))} (${esc(lr.model)}), después que el rival.`
+      : `${esc(name(f.lead.key))} había publicado un modelo de ese nivel el ${esc(fmtDate(lr.date))} (${esc(lr.model)}).`;
+    return `<b>${esc(name(r.key))}</b>: ${esc(r.model)}, ${num(r.eci, 1)}, publicado el ${esc(fmtDate(r.date))}; ${pts(r.gap)} por debajo${r.overlap ? ', con intervalos de confianza solapados' : ''}. ${reach}`;
+  };
+  return {
+    label, value: fact(f, pts),
+    sub: `Primero: <b>${esc(name(f.lead.key))}</b>, ${esc(f.lead.model)}, ${num(f.lead.eci, 1)}, publicado el ${esc(fmtDate(f.lead.date))}.`,
+    list: f.rivals.map(rival)
+  };
+}
+
 /* Cada entrada devuelve { label, value, sub } o { label, list, sub }. value y list ya llevan su marca de fuente. */
 const REG = {
   'eci.frontier': (I) => ({ label: 'Mejor modelo (ECI)', value: fact(I.eci?.frontier, v => num(v, 1)), sub: I.eci?.frontier?.model ? esc(I.eci.frontier.model) : '' }),
@@ -45,6 +64,8 @@ const REG = {
       sub: `${who(a.closed)} y ${who(a.open)}.`
     };
   },
+  'eci.rivals2025': (I) => standing(I.eci?.rivals2025, 'Distancia entre los dos primeros laboratorios a 31 dic 2025'),
+  'eci.usCn2026': (I) => standing(I.eci?.usCn2026, 'Distancia EE. UU. − China a 31 ago 2026'),
   'bench.saturated': (I) => {
     const f = I.bench?.saturated;
     return { label: 'Evaluaciones saturadas', value: fact(f, v => `${num(v, 0)} de ${num(f.of, 0)}`), sub: 'Evaluaciones ejecutadas por Epoch, con al menos 5 modelos, cuyo mejor resultado llega al 90 %.' };
@@ -144,7 +165,9 @@ export const hasIndicator = key => key in REG;
 /* Fila de indicador para una ficha (dl). */
 export function indicatorRow(ind, key) {
   const r = REG[key] ? REG[key](ind || {}) : { label: key, value: ND, sub: '' };
-  const body = r.list
+  const body = r.list && r.value
+    ? `<span class="v">${r.value}</span>${r.sub ? `<span class="s">${r.sub}</span>` : ''}${r.list.length ? `<ul class="ind-list">${r.list.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}`
+    : r.list
     ? (r.list.length ? `<ul class="ind-list">${r.list.map(x => `<li>${x}</li>`).join('')}</ul>` : '') + (r.sub ? `<span class="s">${r.sub}</span>` : '')
     : `<span class="v">${r.value}</span>${r.sub ? `<span class="s">${r.sub}</span>` : ''}`;
   return `<div class="ind-row"><dt>${esc(r.label)}</dt><dd>${body}</dd></div>`;

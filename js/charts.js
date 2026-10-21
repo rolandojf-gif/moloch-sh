@@ -99,16 +99,21 @@ function placeLabels(cands, { W, T, H, B, L, R }, taken = []) {
   }
   return out;
 }
-const labelSvg = ls => ls.map(l => `<text class="ptlabel" x="${l.lx.toFixed(1)}" y="${l.ly.toFixed(1)}" text-anchor="${l.anchor}">${esc(l.text)}</text>`).join('');
+const labelSvg = ls => ls.map(l => `<text class="ptlabel${l.faint ? ' faint' : ''}" x="${l.lx.toFixed(1)}" y="${l.ly.toFixed(1)}" text-anchor="${l.anchor}">${esc(l.text)}</text>`).join('');
 
 /* ── Ejes ───────────────────────────────────────────────────────────────── */
-function niceLogTicks(min, max) {
-  const out = [];
-  for (let e = Math.floor(Math.log10(min)); e <= Math.ceil(Math.log10(max)); e++) {
-    for (const m of [1, 3]) { const v = m * 10 ** e; if (v >= min * 0.999 && v <= max * 1.001) out.push(v); }
+/* Marcas de una escala logarítmica: 1 y 3 por década; si quedan menos de tres, más finas. */
+function logTicks(min, max) {
+  for (const ms of [[1, 3], [1, 2, 5], [1, 1.5, 2, 3, 4, 5, 6, 7, 8, 9]]) {
+    const out = [];
+    for (let e = Math.floor(Math.log10(min)); e <= Math.ceil(Math.log10(max)); e++) {
+      for (const m of ms) { const v = m * 10 ** e; if (v >= min * 0.999 && v <= max * 1.001) out.push(v); }
+    }
+    if (out.length >= 3) return out;
   }
-  return out;
+  return [min, max];
 }
+
 function niceTicks(min, max, n = 5) {
   const step = 10 ** Math.floor(Math.log10((max - min) / n || 1));
   const s = [1, 2, 5, 10].map(k => k * step).find(k => (max - min) / k <= n) || step * 10;
@@ -147,45 +152,122 @@ function yAxis(ticks, Y, { W, L, R, T, H, B }, fmt = v => num(v, 0), label = '')
   return s;
 }
 
+/* ── Zoom con la rueda y arrastre, como en los gráficos de Epoch ────────── */
+/* full = { x0, x1, y0, y1 }: la ventana completa en unidades de datos (x en log10 si el eje es logarítmico).
+   draw(view, zoomed) vuelve a pintar el gráfico entero para esa ventana. Con la vista completa, girar la rueda
+   hacia abajo desplaza la página; doble clic o «Ver todo» vuelven a la vista completa. */
+function zoomable(el, G, full, draw, { minX, minY }) {
+  el._zoom?.abort();
+  const ac = new AbortController(), on = { signal: ac.signal };
+  el._zoom = ac;
+  el.classList.add('zoomable');
+  const { W, H, L, R, T, B } = G;
+  let v = { ...full }, drag = null, queued = false;
+  const isFull = () => v.x1 - v.x0 >= full.x1 - full.x0 - 1e-9 && v.y1 - v.y0 >= full.y1 - full.y0 - 1e-9;
+  const render = () => { queued = false; hideTip(); draw(v, !isFull()); el.classList.toggle('zoomed', !isFull()); };
+  const later = () => { if (!queued) { queued = true; requestAnimationFrame(render); } };
+  // Encaja un tramo [a, b] dentro de [lo, hi] sin cambiar su anchura (o lo deja completo si no cabe).
+  const fit = (a, b, lo, hi) => b - a >= hi - lo ? [lo, hi] : a < lo ? [lo, lo + b - a] : b > hi ? [hi - (b - a), hi] : [a, b];
+  const at = e => {
+    const ctm = el.querySelector('svg')?.getScreenCTM();
+    if (!ctm) return null;
+    const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
+    return { fx: (p.x - L) / (W - L - R), fy: (p.y - T) / (H - T - B), k: ctm.a || 1 };
+  };
+  el.addEventListener('wheel', e => {
+    const p = e.target.closest('svg') && at(e);
+    if (!p || p.fx < 0 || p.fx > 1 || p.fy < 0 || p.fy > 1) return;
+    const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1);
+    if (dy > 0 && isFull()) return;
+    e.preventDefault();
+    const k = Math.exp(Math.max(-0.5, Math.min(0.5, dy * 0.0015)));
+    const cx = v.x0 + p.fx * (v.x1 - v.x0), cy = v.y1 - p.fy * (v.y1 - v.y0);
+    const sx = Math.min(full.x1 - full.x0, Math.max(minX, (v.x1 - v.x0) * k));
+    const sy = Math.min(full.y1 - full.y0, Math.max(minY, (v.y1 - v.y0) * k));
+    [v.x0, v.x1] = fit(cx - p.fx * sx, cx - p.fx * sx + sx, full.x0, full.x1);
+    [v.y0, v.y1] = fit(cy - (1 - p.fy) * sy, cy - (1 - p.fy) * sy + sy, full.y0, full.y1);
+    later();
+  }, { ...on, passive: false });
+  // Arrastrar mueve la ventana; sólo con ratón o lápiz, para no bloquear el desplazamiento táctil.
+  el.addEventListener('pointerdown', e => {
+    if (e.button !== 0 || e.pointerType === 'touch' || isFull() || !e.target.closest('svg')) return;
+    drag = { x: e.clientX, y: e.clientY, v: { ...v }, moved: false, id: e.pointerId };
+  }, on);
+  el.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+    if (!drag.moved) { drag.moved = true; el.setPointerCapture(e.pointerId); el.classList.add('panning'); }
+    const p = at(e);
+    if (!p) return;
+    const ux = dx / p.k / (W - L - R) * (drag.v.x1 - drag.v.x0), uy = dy / p.k / (H - T - B) * (drag.v.y1 - drag.v.y0);
+    [v.x0, v.x1] = fit(drag.v.x0 - ux, drag.v.x1 - ux, full.x0, full.x1);
+    [v.y0, v.y1] = fit(drag.v.y0 + uy, drag.v.y1 + uy, full.y0, full.y1);
+    later();
+  }, on);
+  const end = e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (drag.moved) { el.classList.remove('panning'); el.addEventListener('click', ev => ev.stopPropagation(), { capture: true, once: true }); }
+    drag = null;
+  };
+  el.addEventListener('pointerup', end, on);
+  el.addEventListener('pointercancel', end, on);
+  const reset = () => { v = { ...full }; later(); };
+  el.addEventListener('dblclick', e => { if (e.target.closest('svg') && !isFull()) { e.preventDefault(); reset(); } }, on);
+  el.addEventListener('click', e => { if (e.target.closest('.zoom-reset')) reset(); }, on);
+  render();
+}
+const zoomUi = zoomed => (zoomed ? '<button type="button" class="zoom-reset">Ver todo</button>' : '')
+  + '<span class="zoom-hint">Rueda del ratón: acercar o alejar · arrastrar: mover · doble clic: ver todo</span>';
+const clip = (id, { W, H, L, R, T, B }) => `<clipPath id="clip-${id}"><rect x="${L}" y="${T - 8}" width="${W - L - R}" height="${H - T - B + 8}"/></clipPath>`;
+
 /* ── Capacidad frente a precio (Hoy) ────────────────────────────────────── */
-/* points: [{ id, x, y, cls, label, tip }]. Etiquetas fijas: las pedidas y los modelos que nadie mejora a la vez en índice y precio. */
+/* points: [{ id, x, y, cls, label, tip }]. Etiquetas fijas: las pedidas y los modelos que nadie mejora a la vez en índice y precio;
+   al acercarse, también el resto de modelos visibles que quepan. */
 export function scatter(el, points, { threshold = null, labels = new Set(), yLabel = 'Índice' } = {}) {
   if (!points.length) { el.innerHTML = '<div class="chart-empty">No hay modelos con índice y precio a la vez.</div>'; return; }
   const G = { W: 860, H: 400, L: 52, R: 16, T: 16, B: 44 };
   const { W, H, L, R, T, B } = G;
   const xs = points.map(p => p.x), ys = points.map(p => p.y);
-  const xmin = Math.min(...xs) / 1.4, xmax = Math.max(...xs) * 1.4;
-  const ymin = Math.max(0, Math.floor((Math.min(...ys) - 5) / 5) * 5), ymax = Math.ceil((Math.max(...ys) + 3) / 5) * 5;
-  const X = v => L + (Math.log10(v) - Math.log10(xmin)) / (Math.log10(xmax) - Math.log10(xmin)) * (W - L - R);
-  const Y = v => T + (1 - (v - ymin) / (ymax - ymin)) * (H - T - B);
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yLabel)} frente a precio combinado por millón de tokens">`;
-  s += yAxis(niceTicks(ymin, ymax), Y, G, v => num(v, 0), yLabel);
-  for (const t of niceLogTicks(xmin, xmax)) s += `<line x1="${X(t)}" x2="${X(t)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${X(t)}" y="${H - B + 18}" text-anchor="middle">${esc(usd(t))}</text>`;
-  s += `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">Precio combinado por millón de tokens (escala logarítmica)</text></g>`;
-  const taken = [];
-  if (threshold !== null && threshold > ymin && threshold < ymax) {
-    s += `<line x1="${L}" x2="${W - R}" y1="${Y(threshold)}" y2="${Y(threshold)}" stroke="currentColor" stroke-dasharray="5 4" opacity=".55"/>`;
-    s += `<text class="lbl" x="${W - R}" y="${Y(threshold) - 6}" text-anchor="end">umbral ${num(threshold, 0)}</text>`;
-    taken.push([W - R - 70, Y(threshold) - 18, W - R, Y(threshold) - 2]);
-  }
+  const full = {
+    x0: Math.log10(Math.min(...xs) / 1.4), x1: Math.log10(Math.max(...xs) * 1.4),
+    y0: Math.max(0, Math.floor((Math.min(...ys) - 5) / 5) * 5), y1: Math.ceil((Math.max(...ys) + 3) / 5) * 5
+  };
   // Frontera de eficiencia: de más barato a más caro, cada modelo que supera el índice de todos los más baratos.
   const pareto = new Set();
   let best = -Infinity;
   for (const p of points.slice().sort((a, b) => a.x - b.x || b.y - a.y)) if (p.y > best) { pareto.add(p.id); best = p.y; }
-  const ord = points.map((p, i) => [p, i]).sort((a, b) => (pareto.has(a[0].id) ? 1 : 0) - (pareto.has(b[0].id) ? 1 : 0));
-  const targets = [];
-  for (const [p, i] of ord) {
-    s += `<circle data-k="${i}" class="pt-${p.cls}${pareto.has(p.id) || labels.has(p.id) ? ' key' : ' faint'}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="6"/>`;
-  }
-  points.forEach(p => targets.push({ x: X(p.x), y: Y(p.y), html: p.tip || tip(p.label, []) }));
-  const cands = points.filter(p => labels.has(p.id)).sort((a, b) => b.y - a.y)
-    .concat(points.filter(p => pareto.has(p.id) && !labels.has(p.id)).sort((a, b) => b.y - a.y))
-    .map(p => ({ x: X(p.x), y: Y(p.y), text: p.label }));
-  s += labelSvg(placeLabels(cands.slice(0, 12), G, taken));
-  s += '</svg>';
-  s += '<div class="legend"><span><i style="background:var(--open)"></i>Pesos abiertos</span><span><i style="background:var(--closed)"></i>Cerrado</span><span><i class="lg-key"></i>Con nombre: líderes y modelos que ninguno supera a la vez en índice y precio</span></div>';
-  el.innerHTML = s;
-  interact(el, targets);
+  const key = p => pareto.has(p.id) || labels.has(p.id);
+  const draw = (v, zoomed) => {
+    const X = val => L + (Math.log10(val) - v.x0) / (v.x1 - v.x0) * (W - L - R);
+    const Y = val => T + (1 - (val - v.y0) / (v.y1 - v.y0)) * (H - T - B);
+    const shown = points.filter(p => X(p.x) >= L - 3 && X(p.x) <= W - R + 3 && Y(p.y) >= T - 3 && Y(p.y) <= H - B + 3);
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yLabel)} frente a precio combinado por millón de tokens">${clip(el.id, G)}`;
+    s += yAxis(niceTicks(v.y0, v.y1), Y, G, val => num(val, 0), yLabel);
+    for (const t of logTicks(10 ** v.x0, 10 ** v.x1)) s += `<line x1="${X(t)}" x2="${X(t)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${X(t)}" y="${H - B + 18}" text-anchor="middle">${esc(usd(t))}</text>`;
+    s += `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">Precio combinado por millón de tokens (escala logarítmica)</text></g>`;
+    const taken = [];
+    if (threshold !== null && threshold > v.y0 && threshold < v.y1) {
+      s += `<line x1="${L}" x2="${W - R}" y1="${Y(threshold)}" y2="${Y(threshold)}" stroke="currentColor" stroke-dasharray="5 4" opacity=".55"/>`;
+      s += `<text class="lbl" x="${W - R}" y="${Y(threshold) - 6}" text-anchor="end">umbral ${num(threshold, 0)}</text>`;
+      taken.push([W - R - 70, Y(threshold) - 18, W - R, Y(threshold) - 2]);
+    }
+    s += `<g clip-path="url(#clip-${el.id})">`;
+    const ord = shown.map((p, i) => [p, i]).sort((a, b) => (key(a[0]) ? 1 : 0) - (key(b[0]) ? 1 : 0));
+    for (const [p, i] of ord) s += `<circle data-k="${i}" class="pt-${p.cls}${key(p) ? ' key' : ' faint'}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="6"/>`;
+    s += '</g>';
+    const targets = shown.map(p => ({ x: X(p.x), y: Y(p.y), html: p.tip || tip(p.label, []) }));
+    const cands = shown.filter(p => labels.has(p.id)).sort((a, b) => b.y - a.y)
+      .concat(shown.filter(p => pareto.has(p.id) && !labels.has(p.id)).sort((a, b) => b.y - a.y))
+      .concat(zoomed ? shown.filter(p => !key(p)).sort((a, b) => b.y - a.y) : [])
+      .map(p => ({ x: X(p.x), y: Y(p.y), text: p.label, faint: !key(p) }));
+    s += labelSvg(placeLabels(cands.slice(0, zoomed ? 30 : 12), G, taken));
+    s += '</svg>';
+    s += `<div class="legend"><span><i style="background:var(--open)"></i>Pesos abiertos</span><span><i style="background:var(--closed)"></i>Cerrado</span><span><i class="lg-key"></i>Con nombre: líderes y modelos que ninguno supera a la vez en índice y precio${zoomed ? '; al acercar, también los demás que caben' : ''}</span>${zoomUi(zoomed)}</div>`;
+    el.innerHTML = s;
+    interact(el, targets);
+  };
+  zoomable(el, G, full, draw, { minX: 0.3, minY: 4 });
 }
 
 /* ── Evolución de la frontera abierta y cerrada (Modelos) ───────────────── */
@@ -206,47 +288,58 @@ export function frontier(el, records, { models = null, yLabel = '' } = {}) {
   const all = (models && models.length ? models : [...rec.open.map(r => ({ ...r, g: 'o', rec: true })), ...rec.closed.map(r => ({ ...r, g: 'c', rec: true }))]);
   const first = Math.min(...[...rec.open, ...rec.closed].map(r => ms(r.d)));
   const pts = all.filter(m => m.d && ms(m.d) >= first);
-  const tmin = first, tmax = Math.max(...pts.map(m => ms(m.d)));
+  const tmax = Math.max(...pts.map(m => ms(m.d)));
   const vals = pts.map(m => m.v);
-  const ymin = Math.max(0, Math.floor((Math.min(...vals) - 3) / 5) * 5), ymax = Math.ceil((Math.max(...vals) + 3) / 5) * 5;
-  const X = v => L + (v - tmin) / (tmax - tmin || 1) * (W - L - R);
-  const Y = v => T + (1 - (v - ymin) / (ymax - ymin)) * (H - T - B);
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución del mejor modelo abierto y del mejor cerrado">`;
-  s += yAxis(niceTicks(ymin, ymax), Y, G, v => num(v, 0), yLabel) + timeAxis(X, tmin, tmax, G) + '</g>';
-  for (const g of ['open', 'closed']) {
-    const r = rec[g];
-    if (!r.length) continue;
-    let d = `M${X(ms(r[0].d)).toFixed(1)},${Y(r[0].v).toFixed(1)}`;
-    for (const p of r.slice(1)) d += ` H${X(ms(p.d)).toFixed(1)} V${Y(p.v).toFixed(1)}`;
-    s += `<path class="ln-${g}" d="${d} H${X(tmax).toFixed(1)}"/>`;
-  }
+  const full = { x0: first, x1: tmax, y0: Math.max(0, Math.floor((Math.min(...vals) - 3) / 5) * 5), y1: Math.ceil((Math.max(...vals) + 3) / 5) * 5 };
   const grp = g => g === 'o' ? 'open' : 'closed';
-  const ordered = pts.map((m, i) => [m, i]).sort((a, b) => (a[0].rec ? 1 : 0) - (b[0].rec ? 1 : 0));
-  for (const [m, i] of ordered) s += `<circle data-k="${i}" class="pt-${grp(m.g)} ${m.rec ? 'key' : 'faint'}" cx="${X(ms(m.d)).toFixed(1)}" cy="${Y(m.v).toFixed(1)}" r="${m.rec ? 5 : 4}"/>`;
-  const targets = pts.map(m => ({
-    x: X(ms(m.d)), y: Y(m.v),
-    html: tip(m.n, [
-      ['Fecha de lanzamiento', fmtDate(m.d)],
-      ['ECI', m.lo != null && m.hi != null ? `${num(m.v, 1)} (intervalo ${num(m.lo, 1)}–${num(m.hi, 1)})` : num(m.v, 1)],
-      ['Pesos', m.g === 'o' ? 'abiertos' : 'cerrados'],
-      ['Organización', m.org || null],
-      ['Nuevo récord', m.rec ? `sí, mejor ${m.g === 'o' ? 'abierto' : 'cerrado'} hasta esa fecha` : 'no']
-    ])
-  }));
-  // Etiquetas fijas: el líder actual de cada grupo y los saltos más grandes, sin pisarse.
-  const leaders = [], jumps = [];
-  for (const g of ['closed', 'open']) {
-    const r = rec[g], prefer = g === 'closed' ? 'up' : 'down';
-    if (!r.length) continue;
-    const lab = p => ({ x: X(ms(p.d)), y: Y(p.v), text: p.n, prefer, jump: p.jump });
-    leaders.push(lab(r[r.length - 1]));
-    jumps.push(...r.slice(0, -1).sort((a, b) => b.jump - a.jump).slice(0, 6).map(lab));
-  }
-  s += labelSvg(placeLabels([...leaders, ...jumps.sort((a, b) => b.jump - a.jump)], G));
-  s += '</svg><div class="legend"><span><i style="background:var(--open)"></i>Mejor con pesos abiertos</span><span><i style="background:var(--closed)"></i>Mejor cerrado</span>';
-  s += models ? '<span><i class="lg-faint"></i>Resto de modelos puntuados</span></div>' : '</div>';
-  el.innerHTML = s;
-  interact(el, targets, 22);
+  const draw = (v, zoomed) => {
+    const X = val => L + (val - v.x0) / (v.x1 - v.x0 || 1) * (W - L - R);
+    const Y = val => T + (1 - (val - v.y0) / (v.y1 - v.y0)) * (H - T - B);
+    const inside = (x, y) => x >= L - 3 && x <= W - R + 3 && y >= T - 3 && y <= H - B + 3;
+    const shown = pts.filter(m => inside(X(ms(m.d)), Y(m.v)));
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución del mejor modelo abierto y del mejor cerrado">${clip(el.id, G)}`;
+    s += yAxis(niceTicks(v.y0, v.y1), Y, G, val => num(val, 0), yLabel) + timeAxis(X, v.x0, v.x1, G) + '</g>';
+    s += `<g clip-path="url(#clip-${el.id})">`;
+    for (const g of ['open', 'closed']) {
+      const r = rec[g];
+      if (!r.length) continue;
+      let d = `M${X(ms(r[0].d)).toFixed(1)},${Y(r[0].v).toFixed(1)}`;
+      for (const p of r.slice(1)) d += ` H${X(ms(p.d)).toFixed(1)} V${Y(p.v).toFixed(1)}`;
+      s += `<path class="ln-${g}" d="${d} H${X(tmax).toFixed(1)}"/>`;
+    }
+    const ordered = shown.map((m, i) => [m, i]).sort((a, b) => (a[0].rec ? 1 : 0) - (b[0].rec ? 1 : 0));
+    for (const [m, i] of ordered) s += `<circle data-k="${i}" class="pt-${grp(m.g)} ${m.rec ? 'key' : 'faint'}" cx="${X(ms(m.d)).toFixed(1)}" cy="${Y(m.v).toFixed(1)}" r="${m.rec ? 5 : 4}"/>`;
+    s += '</g>';
+    const targets = shown.map(m => ({
+      x: X(ms(m.d)), y: Y(m.v),
+      html: tip(m.n, [
+        ['Fecha de lanzamiento', fmtDate(m.d)],
+        ['ECI', m.lo != null && m.hi != null ? `${num(m.v, 1)} (intervalo ${num(m.lo, 1)}–${num(m.hi, 1)})` : num(m.v, 1)],
+        ['Pesos', m.g === 'o' ? 'abiertos' : 'cerrados'],
+        ['Organización', m.org || null],
+        ['Nuevo récord', m.rec ? `sí, mejor ${m.g === 'o' ? 'abierto' : 'cerrado'} hasta esa fecha` : 'no']
+      ])
+    }));
+    // Etiquetas fijas: el líder actual de cada grupo y los saltos más grandes, sin pisarse; al acercar, también el resto visible.
+    const leaders = [], jumps = [], rest = [];
+    for (const g of ['closed', 'open']) {
+      const r = rec[g], prefer = g === 'closed' ? 'up' : 'down';
+      if (!r.length) continue;
+      const lab = p => ({ x: X(ms(p.d)), y: Y(p.v), text: p.n, prefer, jump: p.jump });
+      const vis = p => inside(X(ms(p.d)), Y(p.v));
+      if (vis(r[r.length - 1])) leaders.push(lab(r[r.length - 1]));
+      const big = r.slice(0, -1).sort((a, b) => b.jump - a.jump);
+      jumps.push(...big.filter(vis).slice(0, 6).map(lab));
+      if (zoomed) rest.push(...big.filter(vis).slice(6).map(lab));
+    }
+    if (zoomed) rest.push(...shown.filter(m => !m.rec).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down', faint: true })));
+    s += labelSvg(placeLabels([...leaders, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G));
+    s += '</svg><div class="legend"><span><i style="background:var(--open)"></i>Mejor con pesos abiertos</span><span><i style="background:var(--closed)"></i>Mejor cerrado</span>';
+    s += (models ? '<span><i class="lg-faint"></i>Resto de modelos puntuados</span>' : '') + zoomUi(zoomed) + '</div>';
+    el.innerHTML = s;
+    interact(el, targets, 22);
+  };
+  zoomable(el, G, full, draw, { minX: 60 * 86400e3, minY: 4 });
   return true;
 }
 
@@ -422,7 +515,7 @@ export function hitoTimeline(el, lanes, items, { today, from, to } = {}) {
     const key = `${it.lane}|${it.date}`, k = seen.get(key) || 0, n = group.get(key);
     seen.set(key, k + 1);
     const x = X(ms(it.date)) + (k - (n - 1) / 2) * 20, y = G.T + li * laneH + laneH / 2;
-    dots += `<g data-k="${i}" class="hito-pt ${it.cls}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8"/></g>`;
+    dots += `<g data-k="${i}" class="hito-pt ${it.cls}">${it.est ? `<circle class="est-ring ${it.est}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="12.5"/>` : ''}<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8"/></g>`;
     return { x, y, html: it.tip, go: it.go, short: it.short, li };
   });
   // Etiquetas: el nombre corto junto a cada punto, dentro de su carril, con una guía hasta su punto.
