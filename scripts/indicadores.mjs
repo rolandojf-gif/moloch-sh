@@ -22,7 +22,9 @@ const URLS = {
   chipOrgs: 'https://epoch.ai/data/ai_chip_sales_organizations.csv',
   revenue: 'https://epoch.ai/data/ai_companies_revenue_reports.csv',
   usage: 'https://epoch.ai/data/ai_companies_usage_reports.csv',
-  metr: 'https://metr.org/assets/benchmark_results_1_1.yaml'
+  metr: 'https://metr.org/assets/benchmark_results_1_1.yaml',
+  // Base de modelos de Epoch: cómputo de entrenamiento estimado. Se prueba en este orden.
+  models: ['https://epoch.ai/data/large_scale_ai_models.csv', 'https://epoch.ai/data/notable_ai_models.csv', 'https://epoch.ai/data/all_ai_models.csv']
 };
 const PAGES = {
   eci: 'https://epoch.ai/benchmarks/eci',
@@ -31,7 +33,8 @@ const PAGES = {
   dc: 'https://epoch.ai/data/data-centers',
   chips: 'https://epoch.ai/data/ai-chip-sales',
   companies: 'https://epoch.ai/data/ai-companies',
-  metr: 'https://metr.org/time-horizons'
+  metr: 'https://metr.org/time-horizons',
+  models: 'https://epoch.ai/data/ai-models'
 };
 
 const SAME_ECI = 1;            // Epoch trata como «misma capacidad» dos modelos a menos de 1 punto ECI
@@ -266,6 +269,27 @@ async function companiesBlock(ctx) {
   const list = [...latest.values()].sort((a, b) => b.v - a.v);
   const at = (company, d) => rev.filter(r => r.company === company && r.date <= d).sort((a, b) => a.date.localeCompare(b.date)).pop() || null;
   const oa2025 = at('OpenAI', '2025-12-31');
+  // Ingresos de un año natural: suma mensual del dato anualizado, interpolado entre informes (escala logarítmica)
+  // y mantenido plano fuera de ellos. Plano tras el último informe: estimación prudente si el crecimiento sigue.
+  const calendarYear = (company, year) => {
+    const pts = rev.filter(r => r.company === company).sort((a, b) => a.date.localeCompare(b.date));
+    if (!pts.length) return null;
+    const t = d => Date.parse(d);
+    const rr = d => {
+      const x = t(d);
+      if (x <= t(pts[0].date)) return pts[0].v;
+      for (let i = 1; i < pts.length; i++) if (x <= t(pts[i].date)) {
+        const a = pts[i - 1], b = pts[i], f = (x - t(a.date)) / ((t(b.date) - t(a.date)) || 1);
+        return Math.exp(Math.log(a.v) + f * (Math.log(b.v) - Math.log(a.v)));
+      }
+      return pts[pts.length - 1].v;
+    };
+    let sum = 0;
+    for (let m = 0; m < 12; m++) sum += rr(new Date(Date.UTC(year, m, 15)).toISOString().slice(0, 10)) / 12;
+    const last = pts[pts.length - 1];
+    return { company, est: Math.round(sum), last: { v: last.v, date: last.date, url: last.url }, reports: pts.filter(r => r.date.startsWith(String(year))).length };
+  };
+  const y2026 = [...latest.keys()].map(c => calendarYear(c, 2026)).filter(Boolean).sort((a, b) => b.est - a.est)[0] || null;
 
   let usage = [];
   try {
@@ -283,6 +307,7 @@ async function companiesBlock(ctx) {
     revenue: list.slice(0, 8).map(asFact),
     leader: list.length ? asFact(list[0]) : fact(null, 'epoch', PAGES.companies, TODAY),
     openai2025: oa2025 ? asFact(oa2025) : fact(null, 'epoch', PAGES.companies, '2025-12-31'),
+    y2026: fact(y2026 ? y2026.est : null, 'epoch', PAGES.companies, TODAY, { ...(y2026 || {}), note: 'ingresos del año 2026 estimados con los informes anualizados que recoge Epoch: interpolación entre informes y último dato mantenido hasta fin de año' }),
     usage
   };
 }
@@ -327,6 +352,17 @@ async function metrBlock(ctx) {
 const es = v => String(v).replace('.', ',');
 const dia = d => new Date(d + 'T00:00:00Z').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 const MONTH_DAYS = 30.44;
+const mes = d => new Date(d + 'T00:00:00Z').toLocaleDateString('es-ES', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const addDays = (d, k) => new Date(Date.parse(d) + k * 86400e3).toISOString().slice(0, 10);
+const daysBetween = (a, b) => (Date.parse(b) - Date.parse(a)) / 86400e3;
+const mill = v => `${es(Math.round(v / 1e5) / 10)} millones`;
+const sci = v => { const e = Math.floor(Math.log10(v)); return `${es((v / 10 ** e).toFixed(1))} × 10^${e}`; };
+/* Una fecha prevista frente al plazo: ±90 días cuenta como a tiempo. */
+const byDate = (reach, plazo) => { const k = daysBetween(plazo, reach); return k < -90 ? 'adelantado' : k > 90 ? 'retrasado' : 'compatible'; };
+/* METR, «Time Horizon 1.1» (29 ene 2026): tiempo de duplicación del horizonte al 50 %, en días. */
+const METR_DOUBLING = { reciente: 88.6, largo: 196.5 };
+/* NVIDIA, ficha del DGX H100: 10,2 kW como máximo para 8 GPU de 700 W (5,6 kW). Resto del servidor sobre el TDP de las GPU. */
+const SERVER_OVER_GPU = 10.2 / 5.6;
 /* Desfase del rival más cercano en la fecha del plazo: días desde que el líder publicó por primera vez un modelo
    de su nivel. Rango previsto en meses [lo, hi]; un mes son 30,44 días. */
 function monthsRule(st, lo, hi, { names = {}, sentido, pide, extra = '' }) {
@@ -383,8 +419,86 @@ function checks(ind, TODAY) {
     sentido: { adelantado: 'China iba más cerca de lo previsto', retrasado: 'China iba más lejos de lo previsto', compatible: 'Distancia como la prevista' },
     extra: ' El 12 % del cómputo no se valora: no hay una estimación propia del cómputo chino.'
   });
+  // ── Estimaciones («est_»): extrapolaciones con su método para hitos sin plazo vencido o sin medida directa.
+  //    No son valoraciones del observatorio; la ficha las muestra aparte y con lo que podría romperlas.
+  const ch = ind.chips;
+  if (ch?.quarters?.length && ch.cum?.v) {
+    const qs = ch.cum.incomplete ? ch.quarters.slice(0, -1) : ch.quarters;
+    const last4 = qs.slice(-4), rate = last4.reduce((a, q) => a + q.h100e, 0) / last4.length;
+    const base = qs.reduce((a, q) => a + q.h100e, 0), lastEnd = qs[qs.length - 1].d, QD = 365.25 / 4;
+    const proj = base + rate * daysBetween(lastEnd, '2026-12-31') / QD;
+    const reach = addDays(lastEnd, (40e6 - base) / rate * QD);
+    const v = byDate(reach, '2026-12-31');
+    c.est_h100e40m = {
+      v, proj: Math.round(proj), reach, tdpGW: ch.cum.tdpGW ? r1(ch.cum.tdpGW * proj / ch.cum.v) : null,
+      sentido: { adelantado: 'Llegaría antes de fin de 2026', compatible: 'Llegaría hacia fin de 2026', retrasado: 'Llegaría después de 2026' }[v],
+      texto: `Entregados hasta el ${dia(lastEnd)}, último trimestre completo: ${mill(base)} de H100e${ch.cum.incomplete ? ` (${mill(ch.cum.v)} con lo que va del trimestre en curso)` : ''}. Al ritmo medio de los cuatro últimos trimestres completos (${mill(rate)} por trimestre), a fin de 2026 habría unos ${mill(proj)}, y los 40 millones se alcanzarían hacia ${mes(reach)}.`
+    };
+  }
+  const plan = ind.dc?.plan, tdp = c.est_h100e40m?.tdpGW;
+  if (plan?.end2026?.mw || tdp) {
+    const lo = plan?.end2026?.mw ? plan.end2026.mw / 1000 : null, hi = tdp ? tdp * SERVER_OVER_GPU : null;
+    const v = hi !== null && hi < 29 ? 'retrasado' : lo !== null && lo > 38 ? 'adelantado' : 'compatible';
+    const gw = x => `${es(r1(x))} GW`;
+    c.est_potencia2026 = {
+      v, sentido: { retrasado: 'Por debajo de lo previsto', adelantado: 'Por encima de lo previsto', compatible: 'Dentro del rango estimado' }[v],
+      texto: `${lo !== null ? `Cota inferior: según el calendario de Epoch, los ${plan.centres} centros que sigue tendrían ${gw(lo)} a fin de 2026.` : ''}${hi !== null ? ` Cota superior: los chips entregados sumarían unos ${gw(tdp)} de consumo nominal; con el resto del servidor (un DGX H100 consume 10,2 kW para 5,6 kW de GPU), unos ${gw(hi)} si funcionaran todos a la vez, sin contar la refrigeración.` : ''} La predicción, entre 29 y 38 GW, ${v === 'compatible' ? 'cae dentro de ese rango' : v === 'retrasado' ? 'queda por encima del máximo' : 'queda por debajo del mínimo'}.`.trim()
+    };
+  }
+  const y = ind.companies?.y2026;
+  if (y?.v) {
+    const rel = y.v / 35e9 - 1;
+    const v = rel > REV_TOLERANCE ? 'adelantado' : rel < -REV_TOLERANCE ? 'retrasado' : 'compatible';
+    c.est_ingresos2026 = {
+      v, sentido: { adelantado: 'Superaría lo previsto', compatible: 'Como lo previsto', retrasado: 'Por debajo de lo previsto' }[v],
+      texto: `${y.company} ingresaría unos ${es(Math.round(y.v / 1e8) / 10)} mil millones de $ en 2026 si su último dato anualizado (${es(Math.round(y.last.v / 1e8) / 10)} mil millones, ${dia(y.last.date)}) se mantiene hasta fin de año, frente a 35 previstos (${rel >= 0 ? '+' : ''}${Math.round(rel * 100)} %). Si sigue creciendo, sería más.`
+    };
+  }
+  const m = ind.metr?.sota;
+  if (m?.p80?.est) {
+    const h0 = m.p80.est, from = m.asOf, need = Math.log2(120 / h0);
+    const at = dd => h0 * 2 ** (daysBetween(from, '2026-12-31') / dd);
+    const reachFast = addDays(from, need * METR_DOUBLING.reciente), reachSlow = addDays(from, need * METR_DOUBLING.largo);
+    const v = byDate(reachFast, '2026-12-31');
+    c.est_horizonte3s = {
+      v, sentido: { adelantado: 'Llegaría antes de lo previsto', compatible: 'Llegaría a tiempo', retrasado: 'Llegaría tarde' }[v],
+      texto: `El modelo puntero que mide METR (${dia(from)}) completa con un 80 % de éxito tareas de unas ${es(h0)} horas. Si el horizonte se duplica cada ${es(METR_DOUBLING.reciente)} días, como en los modelos desde 2024, a fin de 2026 serían unas ${es(Math.round(at(METR_DOUBLING.reciente)))} horas y las 120 llegarían hacia ${mes(reachFast)}. Al ritmo de toda la serie (cada ${es(METR_DOUBLING.largo)} días), unas ${es(Math.round(at(METR_DOUBLING.largo)))} horas, y las 120 no antes de ${mes(reachSlow)}.`
+    };
+  }
+  const tr = ind.training;
+  if (tr?.largest2025?.v) {
+    const b = tr.largest2025, f = tr.first1e27;
+    const v = b.v >= 1e27 ? 'compatible' : 'retrasado';
+    c.est_flop27 = {
+      v, sentido: v === 'compatible' ? 'Alcanzado según Epoch' : 'Por debajo según Epoch',
+      texto: `Según las estimaciones de Epoch, el mayor entrenamiento de un modelo publicado hasta el 31 dic 2025 fue el de ${b.model}${b.org ? ` (${b.org})` : ''}: unos ${sci(b.v)} FLOP${b.confidence ? `, con confianza «${b.confidence}»` : ''}, el ${es(Math.round(b.v / 1e25))} % de 10^27. ${f?.v ? `El primero que llega a 10^27 es ${f.model}, publicado el ${dia(f.v)}.` : 'Ninguno llega todavía a 10^27.'}`
+    };
+  }
   for (const k of Object.keys(c)) c[k].fecha = TODAY;
   return c;
+}
+
+/* ── Cómputo de entrenamiento estimado por Epoch ───────────────────────── */
+async function trainingBlock(ctx) {
+  const { getText, parseCSV, fact, TODAY } = ctx;
+  let rows = null, used = null;
+  const errs = [];
+  for (const u of URLS.models) { try { rows = parseCSV(await getText(u)); used = u; break; } catch (e) { errs.push(`${u}: ${e.message}`); } }
+  if (!rows) throw new Error(errs.join(' | '));
+  ctx.log(`Epoch, modelos: ${used} · ${rows.length} filas · columnas: ${Object.keys(rows[0] || {}).slice(0, 30).join(' | ')}`);
+  const ms = rows.map(r => ({ name: col(r, 'Model'), org: col(r, 'Organization'), date: String(col(r, 'Publication date') || '').slice(0, 10), flop: n(col(r, 'Training compute (FLOP)')), conf: col(r, 'Confidence') || null }))
+    .filter(m => m.name && /^\d{4}-\d{2}-\d{2}$/.test(m.date) && m.flop);
+  const largest = d => ms.filter(m => m.date <= d).sort((a, b) => b.flop - a.flop)[0] || null;
+  const firstAbove = v => ms.filter(m => m.flop >= v).sort((a, b) => a.date.localeCompare(b.date))[0] || null;
+  const b = m => m ? { model: m.name, org: firstOrg(m.org), date: m.date, flop: m.flop, confidence: m.conf } : {};
+  const top2025 = largest('2025-12-31'), top = largest(TODAY), f27 = firstAbove(1e27);
+  ctx.log(`cómputo de entrenamiento: mayor hasta 2025 ${top2025?.name ?? '—'} ${top2025?.flop ?? '—'}; mayor hoy ${top?.name ?? '—'} ${top?.flop ?? '—'}; primero ≥1e27 ${f27?.name ?? '—'} ${f27?.date ?? ''}`);
+  const note = 'estimación de Epoch del cómputo de entrenamiento; los laboratorios no lo publican';
+  return {
+    largest2025: fact(top2025?.flop ?? null, 'epoch', PAGES.models, '2025-12-31', { ...b(top2025), note }),
+    largest: fact(top?.flop ?? null, 'epoch', PAGES.models, TODAY, { ...b(top), note }),
+    first1e27: fact(f27?.date ?? null, 'epoch', PAGES.models, TODAY, { ...b(f27), note: 'primer modelo con un cómputo de entrenamiento estimado de al menos 10^27 FLOP' })
+  };
 }
 
 /* Marca como stale todos los hechos de un bloque conservado de la recogida anterior. */
@@ -421,6 +535,7 @@ export async function collectIndicators(ctx, ep, prev) {
   await run('chips', 'epoch_chips', () => chipsBlock(ctx));
   await run('companies', 'epoch_companies', () => companiesBlock(ctx));
   await run('metr', 'metr', () => metrBlock(ctx));
+  await run('training', 'epoch_models', () => trainingBlock(ctx));
   const out = { ind, status, checks: checks(ind, ctx.TODAY) };
   ctx.log(`indicadores: brecha EE. UU.–China ${ind.eci?.gapUsCn?.v ?? '—'} pts, cerrados–abiertos ${ind.eci?.gapClosedOpen?.v ?? '—'} pts, centros ${ind.dc?.now?.v ?? '—'} MW, chips ${ind.chips?.cum?.v ?? '—'} H100e, METR p80 ${ind.metr?.sota?.v ?? '—'} h`);
   return out;

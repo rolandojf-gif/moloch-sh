@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 const read = async p => JSON.parse(await readFile(new URL(`../${p}`, import.meta.url), 'utf8'));
 const readOpt = p => read(p).catch(e => (e.code === 'ENOENT' ? null : Promise.reject(e)));
 const c = await read('data/catalog.json');
-const errors = [];
+const errors = [], warnings = [];
 const isFact = f => f && typeof f === 'object' && 'v' in f;
 function checkFact(f, where, sources = c.sources) {
   if (!isFact(f)) return errors.push(`${where}: no es un hecho con procedencia`);
@@ -106,6 +106,16 @@ if (a7) {
         if (e.indicador) { if (!IND_KEY.test(e.indicador)) errors.push(`${w}: indicador no válido ${e.indicador}`); }
         else { need(e, 'texto', `${w}.evidencia`); need(e, 'url', `${w}.evidencia`, URL_RE); need(e, 'fecha', `${w}.evidencia`, DAYMONTH); }
       }
+      const est = h.estimacion;
+      if (est) {
+        if (!['regla', 'autores', 'ritmo', 'fuente'].includes(est.metodo)) errors.push(`${w}: método de estimación no válido ${est.metodo}`);
+        // Una estimación sin resultado (fuente caída) no bloquea la publicación: la ficha dice «sin estimación».
+        if (est.metodo === 'regla' && !/^est_/.test(est.regla || '')) errors.push(`${w}: regla de estimación no válida ${est.regla}`);
+        else if (est.metodo === 'regla' && ind && !ind.checks?.[est.regla]) warnings.push(`${w}: la estimación ${est.regla} no tiene resultado en indicadores.json`);
+        if (est.metodo === 'fuente') { if (!ESCALA.includes(est.v)) errors.push(`${w}: estimación fuera de la escala ${est.v}`); need(est, 'texto', `${w}.estimacion`); need(est, 'fecha', `${w}.estimacion`, DAYMONTH); }
+        if (est.metodo === 'ritmo' && !a7.ritmo?.puntos?.at(-1)?.rango) errors.push(`${w}: la estimación por ritmo necesita «rango» en la última estimación de ritmo`);
+        for (const f of est.fuentes || []) need(f, 'url', `${w}.estimacion.fuentes`, URL_RE);
+      }
       const vals = h.valoraciones || [];
       if (vals.filter(v => v.quien === 'observatorio').length !== 1) errors.push(`${w}: debe tener exactamente una valoración del observatorio`);
       for (const v of vals) {
@@ -122,5 +132,6 @@ if (a7) {
 }
 if (ind) for (const [k, ch] of Object.entries(ind.checks || {})) if (!ESCALA.includes(ch.v)) errors.push(`indicadores.checks.${k}: valoración fuera de la escala ${ch.v}`);
 
+if (warnings.length) console.warn(`avisos:\n${warnings.join('\n')}`);
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
 console.log(`validación correcta: ${c.models.length} modelos${ind ? ', indicadores' : ''}, ${car?.frentes?.length || 0} frentes, ${(a7?.lineas || []).reduce((n, l) => n + l.hitos.length, 0)} hitos`);

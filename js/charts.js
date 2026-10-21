@@ -422,7 +422,7 @@ export function hitoTimeline(el, lanes, items, { today, from, to } = {}) {
     const key = `${it.lane}|${it.date}`, k = seen.get(key) || 0, n = group.get(key);
     seen.set(key, k + 1);
     const x = X(ms(it.date)) + (k - (n - 1) / 2) * 20, y = G.T + li * laneH + laneH / 2;
-    dots += `<g data-k="${i}" class="hito-pt ${it.cls}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8"/></g>`;
+    dots += `<g data-k="${i}" class="hito-pt ${it.cls}">${it.est ? `<circle class="est-ring ${it.est}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="12.5"/>` : ''}<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8"/></g>`;
     return { x, y, html: it.tip, go: it.go, short: it.short, li };
   });
   // Etiquetas: el nombre corto junto a cada punto, dentro de su carril, con una guía hasta su punto.

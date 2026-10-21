@@ -1,5 +1,5 @@
 {
-  "_doc": "Seguimiento de AI 2027. «corto» es el rótulo del hito en el calendario. Cada hito conserva la predicción original («prediccion», y «cita» cuando el texto es literal); las revisiones de los autores se añaden fechadas en «revisiones» y nunca sustituyen la original. «evidencia» separa lo medido, lo declarado por laboratorios y lo que valoran los autores. «evidencia».momento: «plazo» si la medida se toma en la fecha del hito; si falta, es la situación de hoy. «evidencia».tipo: medida (dato de un tercero independiente), declarada (cifra de un laboratorio o empresa sobre sí mismo), valoración de los autores o contexto (otro hecho con fuente). «valoraciones»: una de los autores (sus palabras, situadas por el observatorio en la escala común) y una del observatorio, fija o derivada de una regla de scripts/indicadores.mjs («regla»). Escala: adelantado, compatible, retrasado, todavía no evaluable, sin evidencia suficiente.",
+  "_doc": "Seguimiento de AI 2027. «corto» es el rótulo del hito en el calendario. Cada hito conserva la predicción original («prediccion», y «cita» cuando el texto es literal); las revisiones de los autores se añaden fechadas en «revisiones» y nunca sustituyen la original. «evidencia» separa lo medido, lo declarado por laboratorios y lo que valoran los autores. «estimacion»: para hitos sin plazo vencido o sin medida directa; metodo «regla» (cálculo del recolector, scripts/indicadores.mjs, claves est_), «autores» (su valoración), «ritmo» (fecha ajustada con el ritmo que estiman los autores) o «fuente» (estimación del observatorio con fuentes); «muros» dice qué podría frenarla o invalidarla. No sustituye la valoración del observatorio. «evidencia».momento: «plazo» si la medida se toma en la fecha del hito; si falta, es la situación de hoy. «evidencia».tipo: medida (dato de un tercero independiente), declarada (cifra de un laboratorio o empresa sobre sí mismo), valoración de los autores o contexto (otro hecho con fuente). «valoraciones»: una de los autores (sus palabras, situadas por el observatorio en la escala común) y una del observatorio, fija o derivada de una regla de scripts/indicadores.mjs («regla»). Escala: adelantado, compatible, retrasado, todavía no evaluable, sin evidencia suficiente.",
   "schema": 1,
   "actualizado": "2026-10-20",
   "escenario": {
@@ -19,7 +19,7 @@
     "puntos": [
       { "fecha": "2026-02-12", "valor": "≈65 %", "detalle": "Entre el 58 y el 66 % según el método de agregación, en su evaluación de las predicciones de 2025.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
       { "fecha": "2026-07", "valor": "≈75 %", "detalle": "Nota añadida a esa misma evaluación: con datos de julio de 2026, más cerca del 75 %.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
-      { "fecha": "2026-08-16", "valor": "70–90 %", "detalle": "«Reality seems to be going at roughly 70-90% the speed of AI 2027», según qué métricas se incluyan y cómo se agreguen.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
+      { "fecha": "2026-08-16", "valor": "70–90 %", "rango": [0.7, 0.9], "detalle": "«Reality seems to be going at roughly 70-90% the speed of AI 2027», según qué métricas se incluyan y cómo se agreguen.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
     ]
   },
   "revisiones": [
@@ -83,6 +83,7 @@
           "cita": null,
           "plazo": "2026-12-31",
           "plazo_texto": "finales de 2026",
+          "estimacion": {"metodo": "regla", "regla": "est_horizonte3s", "muros": "Los tiempos de duplicación que publica METR son del horizonte al 50 %; aquí se aplican al del 80 % suponiendo la misma pendiente. METR no da por fiables valores por encima de unas 16 horas, así que mucho antes de 120 puede quedarse sin medida. Los autores, con una trayectoria que se acelera, lo veían en camino en febrero de 2026.", "fuentes": [{"texto": "METR, «Time Horizon 1.1» (29 ene 2026)", "url": "https://metr.org/blog/2026-1-29-time-horizon-1-1/"}]},
           "revisiones": [],
           "evidencia": [
             { "tipo": "medida", "indicador": "metr.sota" },
@@ -103,6 +104,7 @@
           "cita": "Superhuman coder (SC): An AI system that can do the job of the best human coder on tasks involved in AI research but faster, and cheaply enough to run lots of copies. Mar 2027",
           "plazo": "2027-03-31",
           "plazo_texto": "marzo de 2027",
+          "estimacion": {"metodo": "ritmo", "muros": "Supone que el ritmo que estiman los autores se mantiene igual en todo el relato y que el programador sobrehumano llega cuando la realidad alcanza ese punto. Es un hito interno de un laboratorio: puede ocurrir sin hacerse público."},
           "revisiones": [
             { "fecha": "2025-07", "texto": "La actualización del 7 de mayo de 2025 retrasa la mediana año y medio; 2027 sigue siendo una posibilidad seria.", "url": "https://ai-2027.com/research/timelines-forecast" },
             { "fecha": "2025-11-22", "texto": "2027 era el año más probable al publicar; las medianas, algo más tardías.", "url": "https://ai-2027.com/" },
@@ -136,6 +138,7 @@
           "cita": "Overall, they are making algorithmic progress 50% faster than they would without AI assistants—and more importantly, faster than their competitors.",
           "plazo": "2026-04-30",
           "plazo_texto": "principios de 2026",
+          "estimacion": {"metodo": "autores", "muros": "No existe una medida directa del progreso algorítmico de un laboratorio; los autores se apoyan en encuestas y en estudios de programación individual."},
           "revisiones": [
             { "fecha": "2026-08-16", "texto": "Los autores rebajan su estimación de la aceleración real al inicio del escenario y pasan a estimar por separado la de uso público y la interna.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
           ],
@@ -159,6 +162,7 @@
           "cita": null,
           "plazo": "2026-12-31",
           "plazo_texto": "finales de 2026",
+          "estimacion": {"metodo": "fuente", "v": "retrasado", "sentido": "Probablemente tarde", "texto": "Según los autores, en abril de 2026 la aceleración iba por detrás del 1,5× previsto, y Kokotajlo sitúa la actual en unas 2× sólo al programar, que es una parte de la I+D. Llegar a 1,9× en toda la I+D a finales de 2026 exigiría que la aceleración creciera más deprisa que hasta ahora. Inferencia del observatorio.", "fuentes": [{"texto": "AI Futures Project, agosto de 2026", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift"}], "fecha": "2026-10-21", "muros": "Las cifras altas de aceleración son autodeclaradas por empleados de los laboratorios; un salto en agentes de programación podría cambiarlo deprisa."},
           "revisiones": [],
           "evidencia": [
             { "tipo": "declarada", "texto": "Según encuestas a empleados de Anthropic, la aceleración declarada al programar pasó de 1,25× a 4× en siete meses.", "fuente": "AI Futures Project, a partir de encuestas de Anthropic", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
@@ -185,6 +189,7 @@
           "cita": "OpenBrain's latest public model—Agent-0—was trained with 10^27 FLOP.",
           "plazo": "2025-12-31",
           "plazo_texto": "finales de 2025",
+          "estimacion": {"metodo": "regla", "regla": "est_flop27", "muros": "Son estimaciones de Epoch a partir del hardware, la duración del entrenamiento y lo anunciado; los laboratorios no publican el cómputo y la confianza varía de un modelo a otro."},
           "revisiones": [
             { "fecha": "2026-08-16", "texto": "Los autores retiran las predicciones de cómputo de finales de 2025 de su cálculo de ritmo. La predicción original se mantiene aquí.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
           ],
@@ -206,6 +211,7 @@
           "cita": "We expect the total stock of AI-relevant compute in the world will grow 2.25x per year over the next three years, from 10M H100e today to 100M H100e by the end of 2027.",
           "plazo": "2026-12-31",
           "plazo_texto": "finales de 2026",
+          "estimacion": {"metodo": "regla", "regla": "est_h100e40m", "muros": "Epoch cuenta chips entregados, no instalados, y no descuenta los retirados. Pueden frenarlo el empaquetado avanzado, la memoria HBM o la energía para conectar los centros. Los 100 millones de 2027 y los 600.000 millones de gasto no se estiman aquí."},
           "revisiones": [],
           "evidencia": [
             { "tipo": "medida", "indicador": "chips.cum" },
@@ -227,6 +233,7 @@
           "cita": null,
           "plazo": "2026-12-31",
           "plazo_texto": "2026",
+          "estimacion": {"metodo": "regla", "regla": "est_potencia2026", "muros": "El rango es amplio: la cota inferior sólo cubre los centros que sigue Epoch y la superior supone todos los chips entregados funcionando a la vez. La cota superior no cuenta refrigeración ni pérdidas, que la subirían; la inferior probablemente sí las incluye. Inferencia del observatorio.", "fuentes": [{"texto": "NVIDIA, ficha del DGX H100", "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/nvidia-dgx-h100-datasheet.pdf"}]},
           "revisiones": [
             { "fecha": "2025-04-23", "texto": "Suben las proyecciones a diciembre de 2027: mundo de 39 a 60 GW, EE. UU. de 31,5 a 50 GW y empresa líder de 5,4 a 10 GW.", "url": "https://ai-2027.com/about" }
           ],
@@ -278,11 +285,13 @@
           "plazo_texto": "mediados de 2025",
           "revisiones": [],
           "evidencia": [
+            { "tipo": "declarada", "texto": "OpenAI cierra una ronda de 40.000 millones de $ con una valoración de 300.000 millones tras la inversión.", "fuente": "OpenAI", "url": "https://openai.com/index/march-funding-updates/", "fecha": "2025-03-31" },
+            { "tipo": "contexto", "texto": "OpenAI completa una venta de acciones de empleados por 6.600 millones de $ con una valoración de 500.000 millones.", "fuente": "CNBC", "url": "https://www.cnbc.com/2025/10/02/openai-share-sale-500-billion-valuation.html", "fecha": "2025-10-02" },
             { "tipo": "valoración de los autores", "texto": "OpenAI llegó a esa valoración en octubre de 2025.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
           ],
           "valoraciones": [
             { "quien": "autores", "v": "retrasado", "fecha": "2026-02-12", "texto": "Alcanzada en octubre de 2025, no a mediados de año.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
-            { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "El observatorio no recoge valoraciones de empresas." }
+            { "quien": "observatorio", "v": "retrasado", "fecha": "2026-10-21", "texto": "OpenAI, la empresa de IA con mayor valoración, estaba en 300.000 millones de $ desde su ronda del 31 mar 2025 y llegó a 500.000 millones el 2 oct 2025 con una venta de acciones de empleados, tres meses después del plazo." }
           ]
         },
         {
@@ -295,6 +304,7 @@
           "cita": null,
           "plazo": "2026-12-31",
           "plazo_texto": "año 2026",
+          "estimacion": {"metodo": "regla", "regla": "est_ingresos2026", "muros": "OpenBrain es ficticio: se toma la empresa con más ingresos estimados. Los informes que recoge Epoch son sobre todo cifras anualizadas publicadas por la prensa. El gasto en cómputo (40.000 millones) y el coste del cómputo activo (200.000 millones) no se estiman."},
           "revisiones": [
             { "fecha": "2026-03-05", "texto": "Cifra de ingresos corregida de 45.000 a 35.000 millones: la anterior partía de ingresos anualizados antiguos y no cuadraba con el panel lateral.", "url": "https://ai-2027.com/about" }
           ],
@@ -316,6 +326,7 @@
           "cita": null,
           "plazo": "2026-12-31",
           "plazo_texto": "2026",
+          "estimacion": {"metodo": "fuente", "v": "retrasado", "sentido": "Ingresos alcanzados; valoración lejos", "texto": "Ingresos: Anthropic ya supera los 55.000 millones de $ anualizados (65.000 millones con datos de julio de 2026, según el informe que recoge Epoch). Valoración: la más alta de una empresa de IA es la de Anthropic, 965.000 millones de $ en su ronda de mayo de 2026, el 39 % de los 2,5 billones del escenario.", "fuentes": [{"texto": "Anthropic, ronda Series H (28 may 2026)", "url": "https://www.anthropic.com/news/series-h"}, {"texto": "Bloomberg, 17 ago 2026, vía Epoch", "url": "https://www.bloomberg.com/news/articles/2026-08-17/anthropic-revenue-run-rate-surpasses-65-billion-ahead-of-ipo"}], "fecha": "2026-10-21", "muros": "Una salida a bolsa puede mover la valoración de golpe."},
           "revisiones": [],
           "evidencia": [
             { "tipo": "medida", "indicador": "companies.leader" },
@@ -410,6 +421,7 @@
           "cita": "Almost 50% of China's AI-relevant compute is now working for the DeepCent-led collective, and over 80% of new chips are directed to the CDZ.",
           "plazo": "2026-08-31",
           "plazo_texto": "mediados de 2026",
+          "estimacion": {"metodo": "autores", "muros": "Los autores lo deducen de que no hay noticias de una centralización; una discreta podría no conocerse."},
           "revisiones": [],
           "evidencia": [
             { "tipo": "valoración de los autores", "texto": "«China Wakes Up» no parece haberse producido: lo habrían sabido si el Partido hubiera consolidado los proyectos chinos y priorizado conseguir cómputo.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
@@ -429,6 +441,7 @@
           "cita": "OpenBrain has improved security to RAND's SL3",
           "plazo": "2026-08-31",
           "plazo_texto": "mediados de 2026",
+          "estimacion": {"metodo": "autores", "muros": "No hay auditorías públicas: es una valoración a partir de lo que publican los laboratorios."},
           "revisiones": [],
           "evidencia": [
             { "tipo": "valoración de los autores", "texto": "Anthropic y OpenAI todavía no están protegidas frente a agentes de IA, así que no merecerían la designación SL3; si se mira sólo la seguridad de los pesos, el panorama podría ser mejor.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
@@ -448,6 +461,7 @@
           "cita": null,
           "plazo": "2027-02-28",
           "plazo_texto": "febrero de 2027",
+          "estimacion": {"metodo": "ritmo", "muros": "Es un suceso, no una tendencia: puede no ocurrir nunca o no hacerse público. El ritmo sólo dice cuándo llegaría la realidad a ese punto del relato."},
           "revisiones": [],
           "evidencia": [],
           "valoraciones": [
@@ -464,6 +478,7 @@
           "cita": "How could such an agreement be monitored and enforced? […] And overall, treaties are viewed less favorably than attempts at unilaterally increasing America's lead over China.",
           "plazo": "2027-08-31",
           "plazo_texto": "agosto de 2027",
+          "estimacion": {"metodo": "fuente", "v": "compatible", "sentido": "Por ahora, como prevé", "texto": "No hay tratado ni un medio técnico acordado para que EE. UU. y China comprueben los compromisos del otro sobre sus modelos. La situación de hoy encaja con lo que el escenario prevé para 2027.", "fuentes": [{"texto": "CSIS, 21 sep 2026", "url": "https://www.csis.org/analysis/state-ai-global-governance-and-its-implications-us-china-summit"}], "fecha": "2026-10-21", "muros": "Una cumbre o un incidente grave podría cambiarlo antes del plazo."},
           "revisiones": [],
           "evidencia": [
             { "tipo": "contexto", "texto": "No existe ningún medio técnico establecido para que EE. UU. o China comprueben los compromisos del otro sobre sus modelos (CSIS, 21 de septiembre de 2026). Véase el frente «Coordinación» en La carrera.", "fuente": "CSIS", "url": "https://www.csis.org/analysis/state-ai-global-governance-and-its-implications-us-china-summit", "fecha": "2026-09-21" }
