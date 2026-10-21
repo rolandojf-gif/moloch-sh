@@ -611,30 +611,40 @@ export function recordChart(el, pts, { yLabel = '', fmt = v => num(v, 0), ref = 
   const { W, H, L, R, T, B } = G;
   const tmin = ms(pts[0].d), tmax = Math.max(ms(pts[pts.length - 1].d), Date.now());
   const vals = pts.map(p => p.v).concat(ref ? [ref.v] : []);
-  const ymin = Math.max(0, Math.floor((Math.min(...vals) - 5) / 10) * 10), ymax = Math.min(100, Math.ceil((Math.max(...vals) + 3) / 10) * 10);
-  const X = v => L + (v - tmin) / (tmax - tmin || 1) * (W - L - R);
-  const Y = v => T + (1 - (v - ymin) / (ymax - ymin || 1)) * (H - T - B);
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yLabel)} a lo largo del tiempo">`;
-  s += yAxis(niceTicks(ymin, ymax), Y, G, fmt, yLabel) + timeAxis(X, tmin, tmax, G) + '</g>';
-  const taken = [];
-  if (ref) {
-    s += `<line class="ref" x1="${L}" x2="${W - R}" y1="${Y(ref.v).toFixed(1)}" y2="${Y(ref.v).toFixed(1)}"/>`;
-    s += `<text class="ref-t" x="${L + 6}" y="${(Y(ref.v) - 6).toFixed(1)}">${esc(ref.label)}</text>`;
-    taken.push([L, Y(ref.v) - 18, L + 6 + ref.label.length * CH, Y(ref.v) - 2]);
-  }
+  const full = { x0: tmin, x1: tmax, y0: Math.max(0, Math.floor((Math.min(...vals) - 5) / 10) * 10), y1: Math.min(100, Math.ceil((Math.max(...vals) + 3) / 10) * 10) };
   const rec = pts.filter(p => p.rec);
-  let d = `M${X(ms(rec[0].d)).toFixed(1)},${Y(rec[0].v).toFixed(1)}`;
-  for (const p of rec.slice(1)) d += ` H${X(ms(p.d)).toFixed(1)} V${Y(p.v).toFixed(1)}`;
-  s += `<path class="ln-closed" d="${d} H${X(tmax).toFixed(1)}"/>`;
-  const ord = pts.map((p, i) => [p, i]).sort((a, b) => (a[0].rec ? 1 : 0) - (b[0].rec ? 1 : 0));
-  for (const [p, i] of ord) s += `<circle data-k="${i}" class="pt-closed ${p.rec ? 'key' : 'faint'}" cx="${X(ms(p.d)).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${p.rec ? 5 : 4}"/>`;
-  const targets = pts.map(p => ({ x: X(ms(p.d)), y: Y(p.v), html: tip(p.n, [['Fecha de publicación', fmtDate(p.d)], ['Resultado', `${fmt(p.v)}${unit}`], ['Nuevo récord', p.rec ? 'sí' : 'no']]) }));
-  const jumps = rec.map((p, i) => ({ p, jump: i ? p.v - rec[i - 1].v : 0 }));
-  const cands = [jumps[jumps.length - 1], ...jumps.slice(0, -1).sort((a, b) => b.jump - a.jump).slice(0, 5)]
-    .map(({ p }) => ({ x: X(ms(p.d)), y: Y(p.v), text: `${p.n} · ${fmt(p.v)}${unit}`, prefer: 'up' }));
-  s += labelSvg(placeLabels(cands, G, taken));
-  s += '</svg><div class="legend"><span><i style="background:var(--closed)"></i>Mejor resultado hasta esa fecha</span><span><i class="lg-faint"></i>Resto de modelos</span></div>';
-  el.innerHTML = s;
-  interact(el, targets, 22);
+  const draw = (v, zoomed) => {
+    const X = val => L + (val - v.x0) / (v.x1 - v.x0 || 1) * (W - L - R);
+    const Y = val => T + (1 - (val - v.y0) / (v.y1 - v.y0 || 1)) * (H - T - B);
+    const inside = (x, y) => x >= L - 3 && x <= W - R + 3 && y >= T - 3 && y <= H - B + 3;
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yLabel)} a lo largo del tiempo">${clip(el.id, G)}`;
+    s += yAxis(niceTicks(v.y0, v.y1), Y, G, fmt, yLabel) + timeAxis(X, v.x0, v.x1, G) + '</g>';
+    const taken = [];
+    s += `<g clip-path="url(#clip-${el.id})">`;
+    if (ref && ref.v >= v.y0 && ref.v <= v.y1) {
+      s += `<line class="ref" x1="${L}" x2="${W - R}" y1="${Y(ref.v).toFixed(1)}" y2="${Y(ref.v).toFixed(1)}"/>`;
+      s += `<text class="ref-t" x="${L + 6}" y="${(Y(ref.v) - 6).toFixed(1)}">${esc(ref.label)}</text>`;
+      taken.push([L, Y(ref.v) - 18, L + 6 + ref.label.length * CH, Y(ref.v) - 2]);
+    }
+    let d = `M${X(ms(rec[0].d)).toFixed(1)},${Y(rec[0].v).toFixed(1)}`;
+    for (const p of rec.slice(1)) d += ` H${X(ms(p.d)).toFixed(1)} V${Y(p.v).toFixed(1)}`;
+    s += `<path class="ln-closed" d="${d} H${X(tmax).toFixed(1)}"/>`;
+    const shown = pts.filter(p => inside(X(ms(p.d)), Y(p.v)));
+    const ord = shown.map((p, i) => [p, i]).sort((a, b) => (a[0].rec ? 1 : 0) - (b[0].rec ? 1 : 0));
+    for (const [p, i] of ord) s += `<circle data-k="${i}" class="pt-closed ${p.rec ? 'key' : 'faint'}" cx="${X(ms(p.d)).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${p.rec ? 5 : 4}"/>`;
+    s += '</g>';
+    const targets = shown.map(p => ({ x: X(ms(p.d)), y: Y(p.v), html: tip(p.n, [['Fecha de publicación', fmtDate(p.d)], ['Resultado', `${fmt(p.v)}${unit}`], ['Nuevo récord', p.rec ? 'sí' : 'no']]) }));
+    // Etiquetas: el último récord y los mayores saltos; al acercar, también el resto de puntos visibles que quepan.
+    const vis = p => inside(X(ms(p.d)), Y(p.v));
+    const lab = (p, faint) => ({ x: X(ms(p.d)), y: Y(p.v), text: `${p.n} · ${fmt(p.v)}${unit}`, prefer: 'up', faint });
+    const jumps = rec.map((p, i) => ({ p, jump: i ? p.v - rec[i - 1].v : 0 }));
+    const cands = [jumps[jumps.length - 1], ...jumps.slice(0, -1).sort((a, b) => b.jump - a.jump).slice(0, zoomed ? 40 : 5)].filter(j => vis(j.p)).map(({ p }) => lab(p));
+    if (zoomed) cands.push(...shown.filter(p => !p.rec).sort((a, b) => b.v - a.v).map(p => lab(p, true)));
+    s += labelSvg(placeLabels(cands.slice(0, zoomed ? 40 : 6), G, taken));
+    s += '</svg><div class="legend"><span><i style="background:var(--closed)"></i>Mejor resultado hasta esa fecha</span><span><i class="lg-faint"></i>Resto de modelos</span>' + zoomUi(zoomed) + '</div>';
+    el.innerHTML = s;
+    interact(el, targets, 22);
+  };
+  zoomable(el, G, full, draw, { minX: 30 * 86400e3, minY: 4 });
   return true;
 }
