@@ -12,6 +12,7 @@
      Hugging Face /api/models/<repo>           (sin clave)  existencia de pesos, licencia, fecha del repositorio
      Epoch AI     eci_scores.csv y benchmarks.csv (CC BY 4.0) índice de capacidades ECI, SWE-bench Verified, apertura
      Artificial Analysis /api/v2/language/models/free (clave AA_API_KEY) índices de inteligencia, programación y agentes, velocidad
+     OpenRouter   /api/v1/datasets/rankings-daily (clave OPENROUTER_API_KEY, CC BY 4.0) tokens diarios de los 50 modelos más usados
                   Se publica con su permiso por escrito, registrado en data/curated/permisos.json; sin él no se usa.
      Epoch AI y METR, para los indicadores: véase scripts/indicadores.mjs.
 
@@ -39,6 +40,8 @@ const HOY_DAYS = 7;                                            // ventana de «H
 const PRICE_CHANGE_MIN = 0.05;                                 // cambios de precio por debajo del 5 % no se listan
 const FIXTURES = process.env.FIXTURES;
 const AA_KEY = process.env.AA_API_KEY || '';
+const OR_KEY = process.env.OPENROUTER_API_KEY || '';
+const USO_DAYS = 7;                                            // ranking de uso: últimos siete días UTC completos
 const AA_PAGES = 10;                                           // tope de páginas de 200 modelos; cada una cuenta para el límite diario de AA
 
 const SOURCES = {
@@ -46,6 +49,7 @@ const SOURCES = {
   hf: { name: 'Hugging Face', url: 'https://huggingface.co/models', api: 'https://huggingface.co/api/models' },
   epoch: { name: 'Epoch AI', url: 'https://epoch.ai/benchmarks/eci', api: 'https://epoch.ai/data/eci_scores.csv', bench: 'https://epoch.ai/data/benchmarks.csv', license: 'CC BY 4.0', cite: "Epoch AI, 'Capabilities & benchmarking', epoch.ai" },
   aa: { name: 'Artificial Analysis', url: 'https://artificialanalysis.ai/leaderboards/models', home: 'https://artificialanalysis.ai', api: 'https://artificialanalysis.ai/api/v2/language/models/free' },
+  uso: { name: 'OpenRouter · uso', url: 'https://openrouter.ai/rankings', home: 'https://openrouter.ai/rankings', api: 'https://openrouter.ai/api/v1/datasets/rankings-daily', license: 'CC BY 4.0', cite: 'Source: OpenRouter (openrouter.ai/rankings), as of {as_of}' },
   metr: { name: 'METR', url: 'https://metr.org/time-horizons', api: 'https://metr.org/assets/benchmark_results_1_1.yaml', license: '© METR; sólo se cita el último punto' },
   curated: { name: 'Curado manualmente', url: null }
 };
@@ -148,6 +152,13 @@ async function loadOpenRouter(labs, excl = { reglas: [] }) {
   out.excluded = excluded;
   // Todo lo que OpenRouter sigue listando, aunque quede fuera de la ventana: salir de la ventana no es una retirada.
   out.listed = new Set(all.map(m => baseId(m.id)));
+  // Nombre por id y por «canonical_slug» (el permaslug del ranking de uso), para todo lo listado.
+  out.names = new Map();
+  for (const m of all) {
+    const e = { id: baseId(m.id), name: (m.name || m.id).replace(/^[^:]+:\s*/, '').replace(/\s*\(free\)$/i, '') };
+    if (!out.names.has(e.id)) out.names.set(e.id, e);
+    if (m.canonical_slug && !out.names.has(m.canonical_slug)) out.names.set(m.canonical_slug, e);
+  }
   return out;
 }
 
@@ -333,6 +344,40 @@ async function loadAA(permiso) {
   } catch (e) {
     log(`Artificial Analysis falló: ${e.message}`);
     return undefined;   // undefined = fallo (se conservan valores previos); null = sin clave o sin permiso
+  }
+}
+
+/* Ranking de uso de OpenRouter: tokens (entrada + salida) por modelo en los últimos USO_DAYS días UTC completos,
+   sumando las filas diarias del conjunto de datos «rankings-daily» (50 modelos por día más una fila «other»).
+   Devuelve null sin clave y undefined si la consulta falla (se conserva el ranking anterior). */
+async function loadUso(names) {
+  if (!OR_KEY && !FIXTURES) { log('OPENROUTER_API_KEY ausente: sin ranking de uso'); return null; }
+  const day = n => new Date(NOW.getTime() - n * 86400e3).toISOString().slice(0, 10);
+  const from = day(USO_DAYS), to = day(1);
+  try {
+    const res = await getJSON(`${SOURCES.uso.api}?start_date=${from}&end_date=${to}`, { authorization: `Bearer ${OR_KEY}` });
+    const rows = Array.isArray(res) ? res : res.data || res.rows || [];
+    if (rows[0]) log(`ranking de uso: ${rows.length} filas; campos ${Object.keys(rows[0]).join(', ')}`);
+    const slugOf = r => r.model_permaslug || r.permaslug || r.model || r.model_slug || null;
+    const tokOf = r => { const t = Number(r.total_tokens ?? r.tokens ?? ((Number(r.prompt_tokens) || 0) + (Number(r.completion_tokens) || 0))); return Number.isFinite(t) ? t : 0; };
+    const per = new Map(); let total = 0; const days = new Set();
+    for (const r of rows) {
+      const t = tokOf(r); total += t; if (r.date) days.add(String(r.date).slice(0, 10));
+      const slug = slugOf(r);
+      if (!slug || /^other$/i.test(slug)) continue;
+      per.set(slug, (per.get(slug) || 0) + t);
+    }
+    if (!per.size) throw new Error('respuesta sin filas de modelos');
+    // Permaslug = id de OpenRouter con sufijo de fecha o versión; se empareja con el id más largo que sea prefijo.
+    const ids = [...names.keys()].sort((a, b) => b.length - a.length);
+    const who = slug => names.get(slug) || names.get(ids.find(id => slug.startsWith(id + '-'))) || null;
+    const top = [...per.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([slug, t], i) => ({ rank: i + 1, slug, id: who(slug)?.id || null, name: who(slug)?.name || null, tokens: t, share: total ? Math.round(t / total * 1000) / 10 : null }));
+    const asOf = res.as_of || res.asOf || [...days].sort().pop() || to;
+    log(`ranking de uso ${from}…${to}: ${top.map(r => `${r.rank}. ${r.slug} ${(r.tokens / 1e9).toFixed(0)} mil M`).join(' | ')}`);
+    return { from, to, asOf, days: days.size || USO_DAYS, total, top, got: NOW_ISO, src: 'uso', url: SOURCES.uso.url };
+  } catch (e) {
+    log(`ranking de uso falló: ${e.message}`);
+    return undefined;
   }
 }
 
@@ -644,6 +689,7 @@ async function main() {
   catch (e) { console.error('[collect] OpenRouter falló; no se escribe nada:', e.message); process.exit(2); }
 
   const aaRes = await loadAA(permisos.aa);
+  const usoRes = await loadUso(orModels.names);
   const aaRows = aaRes ? aaRes.rows : aaRes;
   const aaVersion = aaRes ? aaRes.version : (aaRes === undefined ? prevCatalog?.aaIndexVersion ?? null : null);
   let ep;
@@ -655,6 +701,7 @@ async function main() {
     epoch: ep === 'keep' ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores' } : { ok: true, got: NOW_ISO, ...(ep.sweFailed ? { note: 'SWE-bench no disponible en esta recogida' } : {}) },
     aa: aaRows === null ? { ok: false, optional: true, reason: !AA_KEY ? 'no conectado' : 'sin permiso de publicación' } : aaRows === undefined ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores', lastOk: prevCatalog?.status?.aa?.got || prevCatalog?.status?.aa?.lastOk || null } : { ok: true, got: NOW_ISO }
   };
+  status.uso = usoRes === null ? { ok: false, optional: true, reason: 'no conectado' } : usoRes === undefined ? { ok: false, reason: 'la consulta falló; se conserva el ranking anterior', lastOk: prevCatalog?.uso?.got || null } : { ok: true, got: NOW_ISO };
 
   // Organizaciones de Hugging Face de cada laboratorio: las que ya usan sus modelos enlazados (OpenRouter u overrides).
   const labOrgs = new Map();
@@ -770,6 +817,7 @@ async function main() {
     },
     models,
     excluded: orModels.excluded || prevCatalog?.excluded || [],
+    uso: usoRes || (usoRes === undefined && prevCatalog?.uso ? { ...prevCatalog.uso, stale: true } : null),
     curatedEvents,
     history: histFiles.map(f => f.slice(0, 10))
   };

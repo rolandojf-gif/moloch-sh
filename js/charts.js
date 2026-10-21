@@ -442,10 +442,10 @@ function watchWidth(el, redraw) {
 /* ── Barras horizontales ────────────────────────────────────────────────── */
 /* rows: [{ label, v, cls?, tip, value? }]; ref: { v, label } dibuja una línea de referencia (p. ej. saturación al 90 %). */
 export function hbars(el, rows, opts = {}) {
-  const { fmt = v => num(v, 0), max = null, ref = null, aria = '' } = opts;
+  const { fmt = v => num(v, 0), max = null, ref = null, aria = '', right = null } = opts;
   if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
   watchWidth(el, () => hbars(el, rows, opts));
-  const W = fitWidth(el), rowH = 30, G = { W, L: Math.min(250, Math.round(W * 0.3)), R: Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8 };
+  const W = fitWidth(el), rowH = 30, G = { W, L: Math.min(250, Math.round(W * 0.3)), R: right ?? Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8 };
   const H = G.T + rows.length * rowH + G.B;
   const top = max ?? Math.max(...rows.map(r => r.v), ref?.v ?? 0);
   const X = v => G.L + Math.max(0, v) / (top || 1) * (G.W - G.L - G.R);
