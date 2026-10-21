@@ -50,7 +50,7 @@ function renderFreshness(d) {
   const indSt = !d.ind ? '<span class="st-bad">○ Indicadores: sin datos</span>'
     : bad.length ? bad.map(([k, s]) => `<span class="st-bad" title="${esc(s.reason || '')}">○ ${esc(IND[k])}: ${esc(s.reason || 'sin datos')}</span>`).join('')
     : `<span class="st-ok" title="${esc(ist.map(([k]) => IND[k]).join(', '))}">● Indicadores</span>`;
-  el.innerHTML = `<span>Recogida <b>${esc(fmtDateTime(c.generated))}</b> <span class="${cls}">(${ageTxt}${warn})</span></span>${st}${indSt}`;
+  el.innerHTML = `<span>Recogida <b>${esc(fmtDateTime(c.generated))}</b> <span class="${cls}">(${ageTxt}${warn})</span></span>${st}${indSt}<a class="refresh" href="https://github.com/rolandojf-gif/moloch-sh/actions/workflows/collect.yml" target="_blank" rel="noopener" title="Abre la recogida en GitHub: pulsa «Run workflow» en la rama main. Tarda un par de minutos en verse publicada.">Actualizar ahora ↗</a>`;
 }
 
 function renderMethod(d) {

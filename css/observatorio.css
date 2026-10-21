@@ -105,6 +105,8 @@ button { cursor: pointer; }
   font: 600 12px/1.4 var(--f-mono); border-bottom: 2px solid #000;
 }
 .freshness b { color: var(--lime); font-weight: 700; }
+.freshness .refresh { margin-left: auto; color: var(--lime); font-weight: 700; text-decoration: none; border: 1px solid var(--lime); padding: 1px 8px; }
+.freshness .refresh:hover { background: var(--lime); color: #121211; }
 .freshness .st-ok { color: #34D399; }
 .freshness .st-warn { color: #FBBF24; }
 .freshness .st-bad { color: #FF5C7A; }
