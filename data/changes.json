@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-21T10:23:38Z",
+ "generated": "2026-10-21T10:50:37Z",
  "window": 7,
  "since": "2026-10-15",
  "base": "2026-10-20",
@@ -11,7 +11,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash:free",
-    "got": "2026-10-21T10:23:38Z"
+    "got": "2026-10-21T10:50:37Z"
    },
    "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
    "data": {
@@ -30,7 +30,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
-    "got": "2026-10-21T10:23:38Z"
+    "got": "2026-10-21T10:50:37Z"
    },
    "what": "DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -49,7 +49,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/meta/muse-spark-open",
-    "got": "2026-10-21T10:23:38Z"
+    "got": "2026-10-21T10:50:37Z"
    },
    "what": "Muse Spark Open (Meta) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -68,7 +68,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/nvidia/nemotron-3.5-super-vl",
-    "got": "2026-10-21T10:23:38Z"
+    "got": "2026-10-21T10:50:37Z"
    },
    "what": "Nemotron 3.5 Super VL (NVIDIA) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -78,6 +78,20 @@
     "ii": 26.5,
     "eci": null,
     "identity": "confirmada"
+   }
+  },
+  {
+   "kind": "pesos",
+   "model": "inclusionai/ling-3.1-flash",
+   "date": "2026-10-13",
+   "src": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co/inclusionAI/Ling-3.1-flash",
+    "got": "2026-10-21T10:50:37Z"
+   },
+   "what": "Ling 3.1 Flash: pesos descargables en Hugging Face (licencia mit).",
+   "data": {
+    "license": "mit"
    }
   }
  ]
