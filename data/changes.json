@@ -1,8 +1,8 @@
 {
- "generated": "2026-10-21T18:48:18Z",
+ "generated": "2026-10-22T08:22:56Z",
  "window": 7,
- "since": "2026-10-15",
- "base": "2026-10-20",
+ "since": "2026-10-16",
+ "base": "2026-10-21",
  "items": [
   {
    "kind": "nuevo",
@@ -11,7 +11,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash:free",
-    "got": "2026-10-21T18:48:18Z"
+    "got": "2026-10-22T08:22:56Z"
    },
    "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
    "data": {
@@ -30,54 +30,116 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
-    "got": "2026-10-21T18:48:18Z"
+    "got": "2026-10-22T08:22:56Z"
    },
    "what": "DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter.",
    "data": {
     "weights": "abiertos",
-    "in": 0.15,
-    "out": 0.6,
+    "in": 0.3,
+    "out": 1.2,
     "ii": 45.1,
     "eci": null,
     "identity": "confirmada"
    }
   },
   {
-   "kind": "nuevo",
-   "model": "meta/muse-spark-open",
-   "date": "2026-10-15",
+   "kind": "precio",
+   "model": "deepseek/deepseek-v4.1-flash-1017",
+   "date": "2026-10-22",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/meta/muse-spark-open",
-    "got": "2026-10-21T18:48:18Z"
+    "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers",
+    "got": "2026-10-22T08:22:56Z"
    },
-   "what": "Muse Spark Open (Meta) aparece en el catálogo de OpenRouter.",
+   "what": "DeepSeek sube el precio de DeepSeek V4.1 Flash 1017 en OpenRouter: entrada de 0,15 $ a 0,3 $ y salida de 0,6 $ a 1,2 $ por millón de tokens.",
    "data": {
-    "weights": "abiertos",
-    "in": 1.25,
-    "out": 4.25,
-    "ii": 38.9,
-    "eci": 155.11,
-    "identity": "confirmada"
+    "basis": "laboratorio",
+    "provider": "DeepSeek",
+    "from": {
+     "in": 0.15,
+     "out": 0.6
+    },
+    "to": {
+     "in": 0.3,
+     "out": 1.2
+    },
+    "pct": 100,
+    "since": "2026-10-21"
    }
   },
   {
-   "kind": "nuevo",
-   "model": "nvidia/nemotron-3.5-super-vl",
-   "date": "2026-10-15",
+   "kind": "precio",
+   "model": "tencent/hy4-preview",
+   "date": "2026-10-22",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/nvidia/nemotron-3.5-super-vl",
-    "got": "2026-10-21T18:48:18Z"
+    "url": "https://openrouter.ai/tencent/hy4-preview/providers",
+    "got": "2026-10-22T08:22:56Z"
    },
-   "what": "Nemotron 3.5 Super VL (NVIDIA) aparece en el catálogo de OpenRouter.",
+   "what": "Tencent sube el precio de Hy4 preview en OpenRouter: entrada de 0,7506 $ a 0,834 $ y salida de 2,2509 $ a 2,501 $ por millón de tokens.",
    "data": {
-    "weights": null,
-    "in": 0.1,
-    "out": 0.4,
-    "ii": 26.5,
-    "eci": null,
-    "identity": "confirmada"
+    "basis": "laboratorio",
+    "provider": "Tencent",
+    "from": {
+     "in": 0.7506,
+     "out": 2.2509
+    },
+    "to": {
+     "in": 0.834,
+     "out": 2.501
+    },
+    "pct": 11.1,
+    "since": "2026-10-21"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "deepseek/deepseek-v4-pro-0813",
+   "date": "2026-10-22",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers",
+    "got": "2026-10-22T08:22:56Z"
+   },
+   "what": "DeepSeek sube el precio de DeepSeek V4 Pro 0813 en OpenRouter: entrada de 0,66 $ a 1,32 $ y salida de 1,98 $ a 3,96 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "provider": "DeepSeek",
+    "from": {
+     "in": 0.66,
+     "out": 1.98
+    },
+    "to": {
+     "in": 1.32,
+     "out": 3.96
+    },
+    "pct": 100,
+    "since": "2026-10-21"
+   }
+  },
+  {
+   "kind": "precio",
+   "model": "tencent/hy3",
+   "date": "2026-10-22",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/tencent/hy3/providers",
+    "got": "2026-10-22T08:22:56Z"
+   },
+   "what": "Tencent sube el precio de Hy3 en OpenRouter: entrada de 0,0825 $ a 0,132 $ y salida de 0,33 $ a 0,528 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "provider": "Tencent",
+    "from": {
+     "in": 0.0825,
+     "out": 0.33
+    },
+    "to": {
+     "in": 0.132,
+     "out": 0.528
+    },
+    "pct": 60,
+    "since": "2026-10-21"
    }
   },
   {
