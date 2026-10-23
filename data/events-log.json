@@ -89,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash/providers",
-    "got": "2026-10-23T03:09:38Z"
+    "got": "2026-10-23T03:11:09Z"
    },
    "what": "Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter: 0,15 $ de entrada y 0,6 $ de salida por millón de tokens. Hasta ahora era gratis.",
    "data": {
@@ -144,7 +144,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6-luna-pro/providers",
-    "got": "2026-10-23T03:09:38Z"
+    "got": "2026-10-23T03:11:09Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6 Luna Pro (0,05 $ de entrada y 0,25 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,1 $ de entrada y 0,5 $ de salida.",
    "data": {
@@ -205,7 +205,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6-luna/providers",
-    "got": "2026-10-23T03:09:38Z"
+    "got": "2026-10-23T03:11:09Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6 Luna (0,05 $ de entrada y 0,25 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,1 $ de entrada y 0,5 $ de salida.",
    "data": {
@@ -421,7 +421,7 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
-    "got": "2026-10-23T03:09:38Z"
+    "got": "2026-10-23T03:11:09Z"
    },
    "what": "MiniMax M3.1 Flash: pesos descargables en Hugging Face (licencia minimax-community).",
    "data": {
