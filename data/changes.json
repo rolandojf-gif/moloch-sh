@@ -1,8 +1,28 @@
 {
- "generated": "2026-10-23T02:38:13Z",
+ "generated": "2026-10-23T02:56:15Z",
  "window": 7,
  "since": "2026-10-17",
  "base": "2026-10-22",
+ "parte": {
+  "fecha": "2026-10-23",
+  "noticias": [],
+  "ultima": {
+   "key": "precio|deepseek/deepseek-v4.1-flash-1017|2026-10-22",
+   "fecha": "2026-10-22",
+   "titular": "DeepSeek duplica el precio de DeepSeek V4.1 Flash 1017",
+   "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017"
+  },
+  "reglas": [
+   "Cambia el mejor modelo abierto o cerrado del índice de Artificial Analysis, con la misma versión del índice y al menos 1 punto de margen.",
+   "Artificial Analysis cambia la versión de su índice.",
+   "Cambia la valoración del observatorio de un hito de AI 2027.",
+   "Un modelo nuevo, o uno que recibe su primera puntuación de AA, entra en el top 20 del índice de AA.",
+   "Publica pesos abiertos un modelo del top 20 del índice de AA.",
+   "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), o lo deja gratis. No cuenta que retire o añada una tarifa.",
+   "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, una distancia que cambia al menos 1 punto ECI, o potencia, chips o ingresos que cambian al menos un 10 %.",
+   "Cambia el modelo más usado en OpenRouter en los últimos 7 días."
+  ]
+ },
  "items": [
   {
    "kind": "nuevo",
@@ -15,7 +35,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash",
-    "got": "2026-10-23T02:38:13Z"
+    "got": "2026-10-23T02:56:15Z"
    },
    "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -27,7 +47,11 @@
     "identity": "confirmada",
     "rankAA": 21,
     "of": 141
-   }
+   },
+   "titular": "MiniMax M3.1 Flash (MiniMax) llega a OpenRouter: puesto 21 del índice de AA",
+   "importancia": null,
+   "ficha": "#modelos/minimax/minimax-m3.1-flash",
+   "consecuencia": "Índice de AA 42,7: a 3,6 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 21 de 141. Precio combinado 0,262 $ por millón de tokens. De los 10 modelos con un índice de AA parecido (±2 puntos de su 42,7), 3 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $."
   },
   {
    "kind": "nuevo",
@@ -40,7 +64,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
-    "got": "2026-10-23T02:38:13Z"
+    "got": "2026-10-23T02:56:15Z"
    },
    "what": "DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -52,7 +76,15 @@
     "identity": "confirmada",
     "rankAA": 15,
     "of": 141
-   }
+   },
+   "titular": "DeepSeek V4.1 Flash 1017 (DeepSeek) llega a OpenRouter: puesto 15 del índice de AA",
+   "importancia": {
+    "tier": 3,
+    "w": 6,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 15 de 141)"
+   },
+   "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
+   "consecuencia": "Índice de AA 45,1: a 1,2 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 15 de 141. Precio combinado 0,525 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $."
   },
   {
    "kind": "precio",
@@ -65,7 +97,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash/providers",
-    "got": "2026-10-23T02:38:13Z"
+    "got": "2026-10-23T02:56:15Z"
    },
    "what": "Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter: 0,15 $ de entrada y 0,6 $ de salida por millón de tokens. Hasta ahora era gratis.",
    "data": {
@@ -96,7 +128,72 @@
     "since": "2026-10-22",
     "rankAA": 21,
     "of": 141
-   }
+   },
+   "titular": "Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/minimax/minimax-m3.1-flash",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de gratis a 0,262 $ por millón de tokens. De los 10 modelos con un índice de AA parecido (±2 puntos de su 42,7), 3 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|openai/gpt-6-luna-pro|2026-10-23",
+   "published": null,
+   "detected": "2026-10-23",
+   "date": "2026-10-23",
+   "mag": {
+    "v": 100,
+    "unit": "%"
+   },
+   "model": "openai/gpt-6-luna-pro",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/openai/gpt-6-luna-pro/providers",
+    "got": "2026-10-23T02:56:15Z"
+   },
+   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6 Luna Pro (0,05 $ de entrada y 0,25 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,1 $ de entrada y 0,5 $ de salida.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-retirada",
+    "provider": "OpenAI",
+    "from": {
+     "in": 0.05,
+     "out": 0.25
+    },
+    "to": {
+     "in": 0.1,
+     "out": 0.5
+    },
+    "pct": 100,
+    "tiersFrom": [
+     [
+      0.05,
+      0.25
+     ],
+     [
+      0.1,
+      0.5
+     ],
+     [
+      0.2,
+      1
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.1,
+      0.5
+     ],
+     [
+      0.2,
+      1
+     ]
+    ],
+    "since": "2026-10-22"
+   },
+   "titular": "OpenAI retira la tarifa más barata de GPT-6 Luna Pro en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-6-luna-pro",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 0,1 $ a 0,2 $ por millón de tokens."
   },
   {
    "kind": "precio",
@@ -112,7 +209,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6-luna/providers",
-    "got": "2026-10-23T02:38:13Z"
+    "got": "2026-10-23T02:56:15Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6 Luna (0,05 $ de entrada y 0,25 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,1 $ de entrada y 0,5 $ de salida.",
    "data": {
@@ -155,7 +252,11 @@
     "since": "2026-10-22",
     "rankAA": 40,
     "of": 141
-   }
+   },
+   "titular": "OpenAI retira la tarifa más barata de GPT-6 Luna en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-6-luna",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 0,1 $ a 0,2 $ por millón de tokens. De los 13 modelos con un índice de AA parecido (±2 puntos de su 38,1), 2 cuestan menos; el más barato es DeepSeek V4.1 Flash, a 0,113 $."
   },
   {
    "kind": "precio",
@@ -171,7 +272,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-3.8-flash/providers",
-    "got": "2026-10-23T02:38:13Z"
+    "got": "2026-10-23T02:56:15Z"
    },
    "what": "Google AI Studio deja de ofrecer en OpenRouter su tarifa más barata de Gemini 3.8 Flash (0,375 $ de entrada y 1,875 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,75 $ de entrada y 3,75 $ de salida.",
    "data": {
@@ -211,10 +312,6 @@
       3.75
      ],
      [
-      0.825,
-      4.125
-     ],
-     [
       1.35,
       6.75
      ]
@@ -222,7 +319,66 @@
     "since": "2026-10-22",
     "rankAA": 26,
     "of": 141
-   }
+   },
+   "titular": "Google AI Studio retira la tarifa más barata de Gemini 3.8 Flash en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/google/gemini-3.8-flash",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 0,75 $ a 1,5 $ por millón de tokens. De los 14 modelos con un índice de AA parecido (±2 puntos de su 40,9), 6 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|x-ai/grok-4.3|2026-10-23",
+   "published": null,
+   "detected": "2026-10-23",
+   "date": "2026-10-23",
+   "mag": {
+    "v": 100,
+    "unit": "%"
+   },
+   "model": "x-ai/grok-4.3",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/x-ai/grok-4.3/providers",
+    "got": "2026-10-23T02:56:15Z"
+   },
+   "what": "xAI deja de ofrecer en OpenRouter su tarifa más barata de Grok 4.3 (1,25 $ de entrada y 2,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2,5 $ de entrada y 5 $ de salida.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-retirada",
+    "provider": "xAI",
+    "from": {
+     "in": 1.25,
+     "out": 2.5
+    },
+    "to": {
+     "in": 2.5,
+     "out": 5
+    },
+    "pct": 100,
+    "tiersFrom": [
+     [
+      1.25,
+      2.5
+     ],
+     [
+      2.5,
+      5
+     ]
+    ],
+    "tiersTo": [
+     [
+      2.5,
+      5
+     ]
+    ],
+    "since": "2026-10-22",
+    "rankAA": 73,
+    "of": 141
+   },
+   "titular": "xAI retira la tarifa más barata de Grok 4.3 en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/x-ai/grok-4.3",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 1,56 $ a 3,13 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 24,9), 15 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $."
   },
   {
    "kind": "precio",
@@ -254,7 +410,15 @@
    "mag": {
     "v": 100,
     "unit": "%"
-   }
+   },
+   "titular": "DeepSeek duplica el precio de DeepSeek V4.1 Flash 1017",
+   "importancia": {
+    "tier": 5,
+    "w": 100,
+    "porque": "el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %)"
+   },
+   "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,262 $ a 0,525 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $."
   },
   {
    "kind": "precio",
@@ -286,7 +450,11 @@
    "mag": {
     "v": 11.1,
     "unit": "%"
-   }
+   },
+   "titular": "Tencent sube un 11 % el precio de Hy4 preview",
+   "importancia": null,
+   "ficha": "#modelos/tencent/hy4-preview",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 1,13 $ a 1,25 $ por millón de tokens."
   },
   {
    "kind": "precio",
@@ -318,7 +486,15 @@
    "mag": {
     "v": 100,
     "unit": "%"
-   }
+   },
+   "titular": "DeepSeek duplica el precio de DeepSeek V4 Pro 0813",
+   "importancia": {
+    "tier": 5,
+    "w": 100,
+    "porque": "el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %)"
+   },
+   "ficha": "#modelos/deepseek/deepseek-v4-pro-0813",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,99 $ a 1,98 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $."
   },
   {
    "kind": "precio",
@@ -350,7 +526,15 @@
    "mag": {
     "v": 60,
     "unit": "%"
-   }
+   },
+   "titular": "Tencent sube un 60 % el precio de Hy3",
+   "importancia": {
+    "tier": 5,
+    "w": 60,
+    "porque": "el propio laboratorio sube su precio combinado un 60 % (umbral: +50 % o −33 %)"
+   },
+   "ficha": "#modelos/tencent/hy3",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,144 $ a 0,231 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 25,3), 2 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $."
   },
   {
    "kind": "pesos",
@@ -363,7 +547,7 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
-    "got": "2026-10-23T02:38:13Z"
+    "got": "2026-10-23T02:56:15Z"
    },
    "what": "MiniMax M3.1 Flash: pesos descargables en Hugging Face (licencia minimax-community).",
    "data": {
@@ -371,7 +555,11 @@
     "weightsSrc": "hf",
     "rankAA": 21,
     "of": 141
-   }
+   },
+   "titular": "Pesos abiertos de MiniMax M3.1 Flash, puesto 21 del índice de AA",
+   "importancia": null,
+   "ficha": "#modelos/minimax/minimax-m3.1-flash",
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: minimax-community. Índice de AA 42,7: a 3,6 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 21 de 141."
   },
   {
    "kind": "pesos",
@@ -389,7 +577,11 @@
    "key": "pesos|inclusionai/ling-3.1-flash",
    "published": "2026-10-13",
    "detected": "2026-10-21",
-   "mag": null
+   "mag": null,
+   "titular": "Pesos abiertos de Ling 3.1 Flash",
+   "importancia": null,
+   "ficha": "#modelos/inclusionai/ling-3.1-flash",
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: mit. Índice de AA 41,1: a 5,2 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 25 de 141."
   }
  ]
 }
