@@ -68,18 +68,30 @@ export function detectChanges(ctx) {
     const p = prev[m.id];
     if (!p) continue;   // las altas salen de la fecha de OpenRouter (novedades), no de la comparación
     // Precio: sólo el del propio laboratorio, comparado con su precio de la recogida anterior; uno por modelo y día.
+    // Con las tarifas del laboratorio de ambos días se distingue un cambio de precio de la retirada (o el alta) de una tarifa.
     if (p.pb === 'laboratorio' && m.price.basis === 'laboratorio' && p.in !== null && p.out !== null && m.price.in.v !== null && m.price.out.v !== null) {
       const ci = delta(p.in, m.price.in.v), co = delta(p.out, m.price.out.v);
       if (Math.max(Math.abs(ci), Math.abs(co)) >= PRICE_CHANGE_MIN) {
-        const ba = (3 * p.in + p.out) / 4, bb = (3 * m.price.in.v + m.price.out.v) / 4;
-        const verb = bb > ba ? 'sube' : bb < ba ? 'baja' : 'cambia';
-        const part = (k, a, b) => a === b ? `${k} sin cambio (${money(a)})` : `${k} de ${money(a)} a ${money(b)}`;
-        const pct = Math.round(delta(ba, bb) * 1000) / 10;
+        const a = { in: p.in, out: p.out }, b = { in: m.price.in.v, out: m.price.out.v };
+        const ba = (3 * a.in + a.out) / 4, bb = (3 * b.in + b.out) / 4;
+        const had = ctx.prevTiers?.(m.id) || null, has = m.price.tiers || null;
+        const inT = (t, x) => !!t && t.some(([i, o]) => i === x.in && o === x.out);
+        const sub = ba === 0 ? 'cobra' : bb === 0 ? 'gratis' : had && has && inT(had, b) && !inT(has, a) ? 'tarifa-retirada' : had && has && inT(has, a) && !inT(had, b) ? 'tarifa-nueva' : 'precio';
+        const pct = ba === 0 ? null : Math.round(delta(ba, bb) * 1000) / 10;
+        const pair = x => `${money(x.in)} de entrada y ${money(x.out)} de salida`;
+        const part = (k, x, y) => x === y ? `${k} sin cambio (${money(x)})` : `${k} de ${money(x)} a ${money(y)}`;
+        const who = m.price.provider, verb = bb > ba ? 'sube' : bb < ba ? 'baja' : 'cambia';
+        const what = {
+          cobra: `${who} empieza a cobrar ${m.name} en OpenRouter: ${pair(b)} por millón de tokens. Hasta ahora era gratis.`,
+          gratis: `${who} ofrece ${m.name} gratis en OpenRouter. Antes costaba ${pair(a)} por millón de tokens.`,
+          'tarifa-retirada': `${who} deja de ofrecer en OpenRouter su tarifa más barata de ${m.name} (${pair(a)} por millón de tokens). La más barata que le queda, que ya existía, es de ${pair(b)}.`,
+          'tarifa-nueva': `${who} añade en OpenRouter una tarifa más barata de ${m.name}: ${pair(b)} por millón de tokens. La anterior (${pair(a)}) sigue disponible.`,
+          precio: `${who} ${verb} el precio de ${m.name} en OpenRouter: ${part('entrada', a.in, b.in)} y ${part('salida', a.out, b.out)} por millón de tokens.`
+        }[sub];
         out.push(item('precio', `precio|${m.id}|${TODAY}`, {
-          model: m.id, mag: { v: pct, unit: '%' },
+          model: m.id, mag: pct === null ? null : { v: pct, unit: '%' },
           src: { name: 'OpenRouter', url: `https://openrouter.ai/${m.orVariant || m.id}/providers`, got: NOW_ISO },
-          what: `${m.price.provider} ${verb} el precio de ${m.name} en OpenRouter: ${part('entrada', p.in, m.price.in.v)} y ${part('salida', p.out, m.price.out.v)} por millón de tokens.`,
-          data: { basis: 'laboratorio', provider: m.price.provider, from: { in: p.in, out: p.out }, to: { in: m.price.in.v, out: m.price.out.v }, pct, since: base.date, ...rk(m.id) }
+          what, data: { basis: 'laboratorio', sub, provider: who, from: a, to: b, pct, tiersFrom: had, tiersTo: has, since: base.date, ...rk(m.id) }
         }));
       }
     }

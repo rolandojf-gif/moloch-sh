@@ -439,6 +439,12 @@ function speedFromEndpoints(endpoints) {
   return rows;
 }
 
+function labTiers(eps, own) {
+  const seen = new Map();
+  for (const e of eps || []) if (own.has(e.provider) && e.in !== null && e.out !== null) seen.set(`${e.in}|${e.out}`, [e.in, e.out]);
+  return [...seen.values()].sort((a, b) => (3 * a[0] + a[1]) - (3 * b[0] + b[1]));
+}
+
 function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
   const orUrl = `https://openrouter.ai/${m.orVariant || m.id}`;
   const createdISO = m.created ? new Date(m.created * 1000).toISOString().slice(0, 10) : null;
@@ -494,6 +500,8 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
   const priced = (fresh || []).filter(e => e.in !== null && e.out !== null);
   const cheapest = rows => rows.slice().sort((a, b) => (3 * a.in + a.out) - (3 * b.in + b.out))[0] || null;
   const labEp = cheapest(priced.filter(e => own.has(e.provider)));
+  // Todas las tarifas del laboratorio (entrada, salida): distinguen una subida de precio de la retirada de su tarifa más barata.
+  const tiers = labTiers(fresh, own);
   const chosen = labEp || cheapest(priced);
   let price;
   if (chosen) {
@@ -501,7 +509,7 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv) {
     const note = labEp ? `precio del propio laboratorio (${chosen.provider}) en OpenRouter` : `el laboratorio no lo sirve en OpenRouter: proveedor más barato, ${chosen.provider}${quant ? `, con cuantización ${quant}` : ''}`;
     const u = `${orUrl}/providers`;
     price = {
-      basis: labEp ? 'laboratorio' : 'proveedor', provider: chosen.provider, quant,
+      basis: labEp ? 'laboratorio' : 'proveedor', provider: chosen.provider, quant, ...(labEp ? { tiers } : {}),
       in: fact(chosen.in, 'openrouter', u, TODAY, { note }),
       out: fact(chosen.out, 'openrouter', u, TODAY, { note }),
       cacheRead: fact(chosen.cacheRead ?? null, 'openrouter', u, TODAY, { note }),
@@ -613,7 +621,7 @@ function snapshot(models) {
     out[m.id] = {
       n: m.name,
       w: m.weights.v === 'abiertos' ? 'o' : m.weights.v === 'cerrados' ? 'c' : null,
-      in: m.price.in.v, out: m.price.out.v, pb: m.price.basis, pp: m.price.provider,
+      in: m.price.in.v, out: m.price.out.v, pb: m.price.basis, pp: m.price.provider, ...(m.price.tiers ? { lp: m.price.tiers } : {}),
       eci: m.epoch?.eci?.v ?? null, swe: m.epoch?.swe?.v ?? null,
       ii: m.aa?.intelligence?.v ?? null
     };
@@ -762,9 +770,13 @@ async function main() {
   // hasta que la base lo tenga, se compara con el de la recogida anterior si es de otro día.
   const hoyFrom = new Date(NOW.getTime() - (HOY_DAYS - 1) * 86400e3).toISOString().slice(0, 10);
   const usoPrev = base?.uso ?? (prevCatalog?.uso?.top && prevCatalog.generated.slice(0, 10) < TODAY ? prevCatalog.uso.top.map(r => r.slug) : null);
+  // Tarifas del laboratorio en la base; las instantáneas anteriores al 23 oct 2026 no las guardan: si la recogida anterior
+  // es del mismo día que la base, se sacan de sus proveedores.
+  const prevSameDay = base && prevCatalog?.generated?.slice(0, 10) === base.date;
+  const prevTiers = id => base?.models?.[id]?.lp ?? (prevSameDay && prevMap.get(id) ? labTiers(prevMap.get(id).endpoints, new Set(labs[id.split('/')[0]]?.or_provider || [])) : null);
   const { items: changeItems, novedades } = detectChanges({
     models, base, listed: orModels.listed, leaders: snap.leaders, ind: indicators.ind, checks: indicators.checks, ai2027,
-    uso: usoNow, usoPrev, firstSeen, hoyFrom, TODAY, NOW_ISO
+    uso: usoNow, usoPrev, prevTiers, firstSeen, hoyFrom, TODAY, NOW_ISO
   });
   const baseDate = base ? base.date : null;
 

@@ -60,9 +60,9 @@ function consequence(item, d) {
       ? `Sin puntuación todavía en Artificial Analysis. ECI ${num(eci(m))}${src(m.epoch.eci)} en Epoch AI.`
       : 'Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI.');
   }
-  if (item.kind === 'precio') {
-    const pct = item.data.pct;
-    parts.push(`El precio combinado ${pct < 0 ? 'baja' : 'sube'} un ${num(Math.abs(pct))} % respecto a la recogida del ${fmtDate(item.data.since)}.`);
+  if (item.kind === 'precio' && item.data.pct != null) {
+    const pct = item.data.pct, tier = /^tarifa/.test(item.data.sub || '');
+    parts.push(`${tier ? 'Su precio combinado más barato en OpenRouter' : 'El precio combinado'} ${pct < 0 ? 'baja' : 'sube'} un ${num(Math.abs(pct))} % respecto a la recogida del ${fmtDate(item.data.since)}.`);
   }
   if (item.kind === 'nuevo' || item.kind === 'precio') {
     const b = blended(m);
