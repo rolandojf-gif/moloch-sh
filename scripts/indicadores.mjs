@@ -513,7 +513,7 @@ function checks(ind, TODAY) {
         const ev = byDate(late ? TODAY : due, PLAZO3S);
         c.est_mirror80 = {
           v: ev, sentido: { adelantado: 'Llegaría antes de lo previsto', compatible: 'Llegaría a tiempo', retrasado: 'Llegaría tarde' }[ev],
-          texto: `El récord de MirrorCode ha pasado del ${es(first.v)} % (${dia(first.d)}) al ${es(last.v)} % (${dia(last.d)}) en ${k} récords, unos ${es(r1(slope * MONTH_DAYS))} puntos al mes. A ese ritmo desde el récord actual, ${late ? `el ${MIRROR_UMBRAL} % ya tocaría: bastaría con el próximo modelo puntero que mida Epoch` : `el ${MIRROR_UMBRAL} % llegaría hacia ${mes(due)}`}, y a fin de 2026 estaría en un ${es(Math.round(atPlazo))} %.`
+          texto: `El récord de MirrorCode ha pasado del ${es(first.v)} % (${dia(first.d)}) al ${es(last.v)} % (${dia(last.d)}) en ${k} récords, unos ${es(r1(slope * MONTH_DAYS))} puntos al mes. A ese ritmo desde el récord actual, ${late ? `el ${MIRROR_UMBRAL} % ya tocaría: bastaría con el próximo modelo puntero que mida Epoch` : `el ${MIRROR_UMBRAL} % llegaría hacia ${mes(due)}`}${atPlazo >= 100 ? ', y antes de fin de 2026 llegaría al techo de la prueba' : `, y a fin de 2026 estaría en un ${es(Math.round(atPlazo))} %`}.`
         };
       }
     }
