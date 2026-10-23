@@ -64,7 +64,7 @@ const DAY = /^\d{4}-\d{2}-\d{2}$/, DAYMONTH = /^\d{4}-\d{2}(-\d{2})?$/, URL_RE =
 const IND_KEY = /^(eci|bench|dc|chips|companies|metr)\.[A-Za-z0-9]+$/;
 const ESTADOS = ['abierta', 'confirmada', 'debilitada'];
 const ESCALA = ['adelantado', 'compatible', 'retrasado', 'todavía no evaluable', 'sin evidencia suficiente'];
-const REGLAS = ['swe85', 'openAgent0', 'openaiRev2025', 'rivales39', 'deepcent6'];
+const REGLAS = ['swe85', 'openAgent0', 'variosAgent0', 'openaiRev2025', 'rivales39', 'deepcent6'];
 const EVID = ['medida', 'declarada', 'valoración de los autores', 'contexto'];
 const need = (o, k, where, re) => { if (!o?.[k] || (re && !re.test(o[k]))) errors.push(`${where}: falta o no es válido «${k}»`); };
 
@@ -74,6 +74,7 @@ for (const f of car?.frentes || []) {
   const w = `carrera.${f.id}`;
   for (const k of ['id', 'titulo', 'pregunta']) need(f, k, w);
   for (const k of f.indicadores || []) if (!IND_KEY.test(k)) errors.push(`${w}: clave de indicador no válida ${k}`);
+  for (const k of f.sabemos || []) if (!(f.indicadores || []).includes(k)) errors.push(`${w}: «sabemos» usa ${k}, que no está entre sus indicadores`);
   if (!f.hechos?.length) errors.push(`${w}: sin hechos`);
   f.hechos?.forEach((h, i) => {
     const wh = `${w}.hechos[${i}]`;
@@ -131,6 +132,19 @@ if (a7) {
         if (est.metodo === 'ritmo' && !a7.ritmo?.puntos?.at(-1)?.rango) errors.push(`${w}: la estimación por ritmo necesita «rango» en la última estimación de ritmo`);
         for (const f of est.fuentes || []) need(f, 'url', `${w}.estimacion.fuentes`, URL_RE);
       }
+      // Partes: lectura del observatorio que separa afirmaciones de una misma predicción; cada una con su valoración.
+      const pids = new Set();
+      for (const pt of h.partes || []) {
+        const wp = `${w}.partes.${pt.id}`;
+        need(pt, 'id', wp); need(pt, 'texto', wp);
+        if (pids.has(pt.id)) errors.push(`${wp}: id duplicado`); pids.add(pt.id);
+        if (pt.plazo) { need(pt, 'plazo', wp, DAY); need(pt, 'plazo_texto', wp); }
+        const v = pt.valoracion;
+        if (!v) errors.push(`${wp}: sin valoración`);
+        else if (v.regla) { if (!REGLAS.includes(v.regla)) errors.push(`${wp}: regla no válida ${v.regla}`); else if (ind && !ind.checks?.[v.regla]) warnings.push(`${wp}: la regla ${v.regla} no tiene resultado en indicadores.json`); }
+        else { if (!ESCALA.includes(v.v)) errors.push(`${wp}: valoración fuera de la escala ${v.v}`); need(v, 'fecha', wp, DAYMONTH); need(v, 'texto', wp); for (const f of v.fuentes || []) need(f, 'url', `${wp}.fuentes`, URL_RE); }
+      }
+      if ((h.partes || []).length === 1) errors.push(`${w}: una sola parte no divide nada`);
       const vals = h.valoraciones || [];
       if (vals.filter(v => v.quien === 'observatorio').length !== 1) errors.push(`${w}: debe tener exactamente una valoración del observatorio`);
       for (const v of vals) {

@@ -38,6 +38,7 @@ const PAGES = {
 };
 
 const SAME_ECI = 1;            // Epoch trata como «misma capacidad» dos modelos a menos de 1 punto ECI
+const VARIOS = 2;              // «varios modelos de la competencia»: al menos dos laboratorios (lectura del observatorio)
 const REV_TOLERANCE = 0.10;    // margen para dar por «compatible» una cifra de ingresos prevista
 
 const n = s => { const v = Number(String(s ?? '').replace(/,/g, '')); return s !== '' && s !== undefined && s !== null && Number.isFinite(v) ? v : null; };
@@ -412,6 +413,11 @@ function checks(ind, TODAY) {
       const ok = open.eci >= closed.eci - SAME_ECI;
       c.openAgent0 = { v: ok ? 'compatible' : 'retrasado', texto: `Mejor modelo cerrado a 31 dic 2025: ${closed.model} (${es(closed.eci)}). Mejor de pesos abiertos a 30 abr 2026: ${open.model} (${es(open.eci)}). Regla: «iguala» si queda a menos de ${SAME_ECI} punto ECI, el criterio de Epoch.` };
     } else c.openAgent0 = { v: 'sin evidencia suficiente', texto: 'Faltan datos de ECI para alguna de las dos fechas.' };
+    const rv = ind.eci.agent0?.rivals;
+    if (closed && rv) {
+      const list = rv.map(r => `${firstOrg(r.org)} (${r.model}, ${es(r.eci)}, ${r.date})`).join('; ');
+      c.variosAgent0 = { v: rv.length >= VARIOS ? 'compatible' : 'retrasado', texto: `Hasta el 30 abr 2026, ${rv.length ? `${rv.length} laboratorio${rv.length > 1 ? 's' : ''} distinto${rv.length > 1 ? 's' : ''} de ${firstOrg(closed.org)} publicaron un modelo a menos de ${SAME_ECI} punto ECI de ${closed.model} (${es(closed.eci)}) o por encima: ${list}` : `ningún laboratorio distinto de ${firstOrg(closed.org)} publicó un modelo a menos de ${SAME_ECI} punto ECI de ${closed.model} (${es(closed.eci)})`}. Regla: «varios» son al menos ${VARIOS}.` };
+    } else c.variosAgent0 = { v: 'sin evidencia suficiente', texto: 'Faltan datos de ECI hasta el 30 abr 2026.' };
   }
   const oa = ind.companies?.openai2025;
   if (oa) {
@@ -535,6 +541,15 @@ export async function collectIndicators(ctx, ep, prev) {
       const b = eciBlock(ep.rows, ctx);
       const byGroup = bestBy(ep.rows, r => r.group === 'Open weights' ? 'open' : r.group === 'Closed weights' ? 'closed' : null);
       b.agent0 = { closed: brief(byGroup('closed', '2025-12-31')), open: brief(byGroup('open', '2026-04-30')) };
+      // «Varios modelos públicos de la competencia igualan o superan a Agent-0»: laboratorios distintos del de Agent-0 con
+      // un modelo publicado hasta el 30 abr 2026 a menos de SAME_ECI puntos (o por encima); de cada uno, el primero en llegar.
+      const a0 = b.agent0.closed;
+      if (a0) {
+        const firsts = new Map();
+        for (const r of ep.rows.filter(r => r.date && r.date <= '2026-04-30' && r.eci >= a0.eci - SAME_ECI && firstOrg(r.org) !== firstOrg(a0.org)).sort((x, y) => x.date.localeCompare(y.date)))
+          if (!firsts.has(firstOrg(r.org))) firsts.set(firstOrg(r.org), brief(r));
+        b.agent0.rivals = [...firsts.values()];
+      }
       // Plazos de AI 2027 sobre distancias: «rivales a 3–9 meses» (fin de 2025) y «China a unos 6 meses» (mediados de 2026).
       const at = (keyOf, d, note) => { const st = standingAt(ep.rows, keyOf, d); return ctx.fact(st ? st.rivals[0].gap : null, 'epoch', PAGES.eci, d, { ...st, note }); };
       b.rivals2025 = at(r => firstOrg(r.org), '2025-12-31', 'mejor modelo de cada laboratorio publicado hasta el 31 dic 2025; distancia del primero al segundo');
@@ -557,12 +572,4 @@ export async function collectIndicators(ctx, ep, prev) {
 }
 
 /* Valores compactos para la instantánea diaria (series históricas). */
-export function indicatorSnapshot(ind) {
-  return {
-    eci: ind.eci?.frontier?.v ?? null, usCn: ind.eci?.gapUsCn?.v ?? null, closedOpen: ind.eci?.gapClosedOpen?.v ?? null, labs: ind.eci?.gapLabs?.v ?? null,
-    dcMW: ind.dc?.now?.v ?? null, chipsH100e: ind.chips?.cum?.v ?? null,
-    revLeader: ind.companies?.leader?.v ?? null, metrP80h: ind.metr?.sota?.v ?? null
-  };
-}
-
 export const IND_URLS = URLS;

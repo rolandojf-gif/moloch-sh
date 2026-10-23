@@ -1,6 +1,7 @@
-/* Vista «La carrera»: distancias en la frontera y seis frentes con hechos, indicadores y una lectura marcada como interpretación. */
+/* Vista «La carrera»: distancias en la frontera y seis frentes. Cada uno empieza por qué sabemos, qué ha cambiado y qué
+   cambiaría la lectura; después, gráficos, indicadores, hechos con fuente y la lectura marcada como interpretación. */
 import { esc, fmtDate, num, ND } from './fmt.js';
-import { indicatorRow, indicatorKpi, mw, mh100, usdB, PAIS } from './indicadores.js';
+import { indicatorRow, indicatorKpi, indicatorBrief, mw, mh100, usdB, PAIS } from './indicadores.js';
 import { gaps, hbars, columns, dotci, recordChart, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -14,6 +15,25 @@ export function factItem(h) {
   return `<li><p>${esc(h.texto)}</p><div class="prov">Fuente: <a href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.fuente)}</a> · dato: ${esc(curDate(h.fecha))} · consulta: ${esc(curDate(h.consulta))}${h.verificacion ? ` · <span class="verif v-${h.verificacion === 'buscador' ? 'buscador' : 'directa'}">${esc(VERIF[h.verificacion] || h.verificacion)}</span>` : ''}</div></li>`;
 }
 
+/* Cabecera de cada frente: qué sabemos (sus indicadores principales), qué ha cambiado (lo que detecta el recolector al
+   comparar recogidas, y los cambios de estado de la hipótesis) y qué cambiaría la lectura. */
+function resumen(f, ind, log) {
+  const sab = ind ? (f.sabemos || []).map(k => { const r = indicatorBrief(ind, k); return `<li><span class="k">${esc(r.label)}</span><b>${r.value}</b></li>`; }).join('') : '';
+  const vig = (log?.vigilados || []).filter(v => f.indicadores.includes(v.path));
+  const ev = (log?.events || []).filter(e => e.kind === 'indicador' && f.indicadores.includes(e.data?.path)).map(e => ({ fecha: e.detected, html: `${esc(e.what)}${e.src?.url ? ` <a href="${esc(e.src.url)}" target="_blank" rel="noopener">${esc(e.src.name)}</a>` : ''}` }))
+    .concat((f.lectura.historial || []).slice(1).map(h => ({ fecha: h.fecha, html: `La hipótesis pasa a «${esc((ESTADO[h.estado] || h.estado).toLowerCase())}».${h.nota ? ` ${esc(h.nota)}` : ''}` })))
+    .sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const desde = vig.map(v => v.desde).sort()[0];
+  const cambios = ev.length
+    ? `<ul class="sum-ev">${ev.slice(0, 4).map(x => `<li><span>${esc(curDate(x.fecha))}</span>${x.html}</li>`).join('')}</ul>${ev.length > 4 ? `<p class="m-sub">Y ${ev.length - 4} cambios anteriores.</p>` : ''}`
+    : `<p>${vig.length ? `Ningún cambio en sus indicadores vigilados desde el ${esc(curDate(desde))}.` : 'El recolector no vigila todavía ningún indicador de este frente.'}</p>`;
+  return `<div class="front-sum">
+    <div><span class="lbl">Qué sabemos</span>${sab ? `<ul class="sum-ind">${sab}</ul>` : `<p>${ND}</p>`}<p class="m-sub">Detalle, fuentes y hechos, más abajo.</p></div>
+    <div><span class="lbl">Qué ha cambiado</span>${cambios}${vig.length ? `<p class="m-sub">Se comparan en cada recogida: ${vig.map(v => esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))).join('; ')}.</p>` : ''}</div>
+    <div class="sum-lect"><span class="lbl">Qué cambiaría la lectura · interpretación</span><p><b>La reforzaría:</b> ${esc(f.lectura.reforzaria)}</p><p><b>La debilitaría:</b> ${esc(f.lectura.debilitaria)}</p></div>
+  </div>`;
+}
+
 function lectura(l) {
   const hist = (l.historial || []).map(h => `<li><b>${esc(curDate(h.fecha))}</b> · ${esc(ESTADO[h.estado] || h.estado)}${h.nota ? `. ${esc(h.nota)}` : ''}</li>`).join('');
   return `<aside class="lectura" aria-label="Lectura Moloch: interpretación">
@@ -23,9 +43,8 @@ function lectura(l) {
       <dt>Quién gana acelerando</dt><dd>${esc(l.gana)}</dd>
       <dt>Qué se pierde frenando</dt><dd>${esc(l.pierde)}</dd>
       <dt>Qué costes desplaza</dt><dd>${esc(l.desplaza)}</dd>
-      <dt>La reforzaría</dt><dd>${esc(l.reforzaria)}</dd>
-      <dt>La debilitaría</dt><dd>${esc(l.debilitaria)}</dd>
     </dl>
+    <p class="m-sub">Qué la reforzaría o la debilitaría, al principio del frente.</p>
     <details class="hist"><summary>Historial de la hipótesis (desde ${esc(curDate(l.desde))})</summary><ol>${hist}</ol></details>
   </aside>`;
 }
@@ -63,7 +82,7 @@ function chipsTrend(ch) {
   const rows = [...years.entries()].sort((a, b) => a[0] - b[0]).map(([yr, e]) => {
     const full = e.nReal === 4;
     return {
-      label: String(yr), v: e.v, cls: full ? '' : 'part', lo: full ? null : e.lo, hi: full ? null : e.hi,
+      label: String(yr), v: e.v, cls: full ? '' : 'proj', real: full ? null : e.real, lo: full ? null : e.lo, hi: full ? null : e.hi,
       tip: tip(`${yr}${full ? '' : e.nReal ? ' · en parte extrapolado' : ' · extrapolado'}`, [
         [full ? 'Entregados' : 'Tendencia central', mh(e.v)],
         ['Horquilla', full ? null : `${mh(e.lo)} – ${mh(e.hi)}`],
@@ -95,7 +114,7 @@ const CHARTS = {
       return {
         title: `Chips de IA entregados por año: tendencia extrapolada hasta ${t.rows[t.rows.length - 1].label}`,
         wide: true,
-        note: `Extrapolación propia, no una previsión de Epoch: los datos son los de ${EPOCH('«AI chip sales»', I.chips.cum?.url || 'https://epoch.ai/data/ai-chip-sales').replace('Fuente: ', '')} Cada trimestre futuro repite el crecimiento interanual reciente: ×${x(t.g)} al año en la barra (los cuatro últimos trimestres completos frente a los cuatro anteriores), y la horquilla va del menor al mayor crecimiento interanual de esos cuatro trimestres (×${x(t.lo)} a ×${x(t.hi)}). Escala logarítmica: cada marca es diez veces la anterior. Negro: año con datos completos; gris: año con trimestres extrapolados. Empieza en 2024, el primer año en que la serie cubre todos los fabricantes. Muestra lo que pasaría si nada frenara la tendencia; no es lo que espera nadie. Al pasar el ratón se ve el consumo nominal que tendrían esos chips con la eficiencia actual, para compararlo con la potencia prevista del frente 02.`,
+        note: `Extrapolación propia, no una previsión de Epoch: los datos son los de ${EPOCH('«AI chip sales»', I.chips.cum?.url || 'https://epoch.ai/data/ai-chip-sales').replace('Fuente: ', '')} Cada trimestre futuro repite el crecimiento interanual reciente: ×${x(t.g)} al año en la barra (los cuatro últimos trimestres completos frente a los cuatro anteriores), y la horquilla va del menor al mayor crecimiento interanual de esos cuatro trimestres (×${x(t.lo)} a ×${x(t.hi)}). Escala logarítmica: cada marca es diez veces la anterior. Negro: entregado; <span class="proj-key"></span>rayado: extrapolado, como en todo el observatorio. En el año en curso, la parte negra es lo ya entregado en trimestres completos. Empieza en 2024, el primer año en que la serie cubre todos los fabricantes. Muestra lo que pasaría si nada frenara la tendencia; no es lo que espera nadie. Al pasar el ratón se ve el consumo nominal que tendrían esos chips con la eficiencia actual, para compararlo con la potencia prevista del frente 02.`,
         draw: el => columns(el, t.rows, { log: true, left: 86, fmt: v => `${num(v / 1e6, 0)} M`, yLabel: 'H100e al año', aria: 'Chips de IA entregados por año, con la tendencia extrapolada' })
       };
     })(),
@@ -119,12 +138,12 @@ const CHARTS = {
     I.dc?.plan?.series?.length && {
       title: `Potencia prevista hasta ${new Date((I.dc.plan.seriesEnd || I.dc.plan.lastDate) + 'T00:00:00Z').getUTCFullYear()}, según el calendario de Epoch`,
       wide: true,
-      note: `${EPOCH('«AI data centers», calendario de obras', I.dc.plan.url || 'https://epoch.ai/data/data-centers')} Potencia de cada centro al final de cada trimestre: lo pasado (negro) está construido; lo futuro (gris) es la estimación de Epoch a partir de obras, permisos y anuncios de ${num(I.dc.plan.centres, 0)} centros. Es la columna «Power (MW)» del calendario, probablemente con refrigeración y pérdidas, por eso supera a la potencia de TI de arriba. El calendario no recoge entradas nuevas más allá de este punto, así que la serie se corta ahí; cuanto más lejos, menos proyectos conocidos: puede quedarse corto por obras aún no anunciadas o pasarse si las anunciadas se retrasan.`,
+      note: `${EPOCH('«AI data centers», calendario de obras', I.dc.plan.url || 'https://epoch.ai/data/data-centers')} Potencia de cada centro al final de cada trimestre: lo pasado (negro) está construido; lo futuro (<span class="proj-key"></span>rayado, como todo lo previsto en el observatorio) es la estimación de Epoch a partir de obras, permisos y anuncios de ${num(I.dc.plan.centres, 0)} centros. Es la columna «Power (MW)» del calendario, probablemente con refrigeración y pérdidas, por eso supera a la potencia de TI de arriba. El calendario no recoge entradas nuevas más allá de este punto, así que la serie se corta ahí; cuanto más lejos, menos proyectos conocidos: puede quedarse corto por obras aún no anunciadas o pasarse si las anunciadas se retrasan.`,
       draw: el => {
         const today = I.dc.plan.asOf || new Date().toISOString().slice(0, 10);
         columns(el, I.dc.plan.series.map(p => {
           const fut = p.d > today;
-          return { label: quarter(p.d), v: p.mw, cls: fut ? 'part' : '', tip: tip(`${quarter(p.d)}${fut ? ' · previsto' : ''}`, [['Potencia total', mw(p.mw)], ['EE. UU.', mw(p.US)], ['China', mw(p.CN)], ['Otros o sin país', mw(p.otros)], ['Centros con dato', num(p.centres, 0)]]) };
+          return { label: quarter(p.d), v: p.mw, cls: fut ? 'proj' : '', tip: tip(`${quarter(p.d)}${fut ? ' · previsto' : ''}`, [['Potencia total', mw(p.mw)], ['EE. UU.', mw(p.US)], ['China', mw(p.CN)], ['Otros o sin país', mw(p.otros)], ['Centros con dato', num(p.centres, 0)]]) };
         }), { fmt: v => `${num(v / 1000, 0)} GW`, yLabel: 'potencia', every: 4, aria: 'Potencia prevista de los centros de datos por trimestre' });
       }
     }
@@ -160,10 +179,11 @@ const CHARTS = {
 };
 const chartsOf = (f, ind) => ind && CHARTS[f.id] ? CHARTS[f.id](ind).filter(Boolean) : [];
 
-function front(f, i, ind) {
+function front(f, i, ind, log) {
   const n = String(i + 1).padStart(2, '0');
   return `<article class="front" id="frente-${esc(f.id)}" aria-labelledby="fh-${esc(f.id)}">
     <header class="front-head"><span class="front-n">${n}</span><div><h3 id="fh-${esc(f.id)}">${esc(f.titulo)}</h3><p class="q">${esc(f.pregunta)}</p></div></header>
+    ${resumen(f, ind, log)}
     ${chartsOf(f, ind).length ? `<div class="front-charts">${chartsOf(f, ind).map((c, k) => `<figure class="fchart${c.wide ? ' wide' : ''}"><figcaption>${esc(c.title)}</figcaption><div class="chart" id="fc-${esc(f.id)}-${k}"></div><p class="note">${c.note}</p></figure>`).join('')}</div>` : ''}
     <div class="front-body">
       <div class="front-data">
@@ -195,7 +215,7 @@ export function renderCarrera(d) {
     $('#ca-gaps').innerHTML = '';
   }
   $('#ca-index').innerHTML = cur.frentes.map((f, i) => `<a href="#frente-${esc(f.id)}" data-jump><i>${String(i + 1).padStart(2, '0')}</i>${esc(f.titulo)}</a>`).join('');
-  $('#ca-fronts').innerHTML = cur.frentes.map((f, i) => front(f, i, ind)).join('');
+  $('#ca-fronts').innerHTML = cur.frentes.map((f, i) => front(f, i, ind, d.evLog)).join('');
   for (const f of cur.frentes) chartsOf(f, ind).forEach((c, k) => c.draw(document.getElementById(`fc-${f.id}-${k}`)));
   /* Los anclajes internos no deben cambiar de vista: se desplaza sin tocar el hash. */
   $('#ca-index').addEventListener('click', e => {

@@ -9,8 +9,8 @@ Sitio estático (HTML, CSS y JavaScript sin build) para entrar, entender qué ha
 | Hoy | ¿Qué ha cambiado y por qué importa? | parte diario: hasta tres noticias de la última recogida, elegidas con una regla fija que la página publica, o «sin cambios significativos»; lo nuevo desde la última visita (guardado sólo en el navegador) y todo lo detectado en 7 días |
 | Modelos | ¿Cómo se comparan abiertos y cerrados? | fase 1 |
 | Lanzamientos | ¿Qué ha salido realmente? | fase 1 |
-| La carrera | ¿Qué acelera o frena el avance? | fase 2: distancias en índice entre EE. UU. y China, cerrados y abiertos, y los dos primeros laboratorios; seis frentes con datos, hechos con fuente y una «Lectura Moloch» marcada como interpretación |
-| AI 2027 | ¿Cómo encaja la realidad con aquel escenario? | fase 2: cinco líneas y 19 hitos con la predicción original intacta, revisiones fechadas de los autores y valoración propia en una escala fija |
+| La carrera | ¿Qué acelera o frena el avance? | distancias en índice entre EE. UU. y China, cerrados y abiertos, y los dos primeros laboratorios; seis frentes que empiezan por qué sabemos, qué ha cambiado (lo que detecta el recolector en sus indicadores) y qué cambiaría la lectura, con datos, hechos con fuente y una «Lectura Moloch» marcada como interpretación |
+| AI 2027 | ¿Cómo encaja la realidad con aquel escenario? | cinco líneas y 19 hitos con la predicción original intacta, revisiones fechadas de los autores y valoración propia en una escala fija; las predicciones que juntan varias afirmaciones se valoran también por partes, y se señalan las tres próximas que se podrán comprobar con datos |
 
 Direcciones propias: `#modelos/<id de OpenRouter>` abre la ficha de un modelo (vale también la parte tras la barra, p. ej. `#modelos/kimi-k3`, si no es ambigua), `#modelos/comparar/<id>,<id>,<id>` abre una comparación, `#ai2027/<hito>` y `#carrera/<frente>` llevan a esa ficha.
 
@@ -46,8 +46,9 @@ La carrera y AI 2027 siguen reglas propias, comprobadas por `validate.mjs`:
 
 - Toda «Lectura Moloch» es una hipótesis con estado (abierta, confirmada o debilitada) y un historial fechado que empieza en «abierta»: ninguna tesis nace confirmada. Dice quién gana acelerando, qué se pierde frenando, qué costes desplaza y qué la reforzaría o debilitaría.
 - Las distancias se expresan en puntos del índice, nunca en meses.
+- Lo extrapolado o previsto, que no está medido, lleva siempre el mismo rayado gris, sea una extrapolación propia o una previsión de la fuente.
 - AI 2027 se presenta como uno de varios futuros posibles, con sus dos desenlaces. La predicción original de cada hito no se borra: las revisiones de los autores van aparte, con fecha y enlace. El ritmo publicado por los autores (por ejemplo, 70–90 % en agosto de 2026) no es una probabilidad.
-- Cada hito puede llevar valoraciones de los autores (con URL), traducidas a la escala común, y lleva exactamente una del observatorio, en la escala adelantado, compatible, retrasado, todavía no evaluable o sin evidencia suficiente. Tres de ellas (`swe85`, `openAgent0`, `openaiRev2025`) se recalculan en cada recogida con una regla explícita en `scripts/indicadores.mjs`.
+- Cada hito puede llevar valoraciones de los autores (con URL), traducidas a la escala común, y lleva exactamente una del observatorio, en la escala adelantado, compatible, retrasado, todavía no evaluable o sin evidencia suficiente. Cinco de ellas (`swe85`, `openAgent0`, `openaiRev2025`, `rivales39`, `deepcent6`) se recalculan en cada recogida con una regla explícita en `scripts/indicadores.mjs`, y también una de las partes en que se divide una predicción (`variosAgent0`). Las partes son lectura del observatorio: separan afirmaciones que el escenario dice juntas, sin tocar la predicción ni la cita originales.
 
 País, licencia y disponibilidad de pesos son campos separados. «Abiertos» exige un repositorio público en Hugging Face (enlazado desde OpenRouter o añadido en `overrides.hf` y comprobado); si no lo hay, manda la clasificación de Epoch, y en último término se infiere «cerrados» y se marca como inferido. Los modelos anónimos figuran como «identidad sin confirmar».
 

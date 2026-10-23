@@ -161,6 +161,8 @@ const REG = {
 };
 
 export const hasIndicator = key => key in REG;
+/* Etiqueta y valor (con su marca de fuente) de un indicador, sin la explicación: para resúmenes. */
+export const indicatorBrief = (ind, key) => REG[key] ? REG[key](ind || {}) : { label: key, value: ND };
 
 /* Fila de indicador para una ficha (dl). */
 export function indicatorRow(ind, key) {

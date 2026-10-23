@@ -38,6 +38,7 @@ const blend = p => p && p.in != null && p.out != null ? (3 * p.in + p.out) / 4 :
 const blendM = m => blend({ in: m.price.in.v, out: m.price.out.v });
 const PLAIN = { adelantado: 'va por delante del escenario', compatible: 'se cumple como preveía', retrasado: 'va por detrás del escenario', 'todavía no evaluable': 'aún no se puede evaluar', 'sin evidencia suficiente': 'se queda sin datos públicos para comprobarlo' };
 const GAP = { usCn: 'EE. UU. − China', closedOpen: 'cerrados − abiertos', labs: 'entre los dos primeros laboratorios' };
+const CIFRAS = new Set(['dcMW', 'chipsH100e', 'revLeader']);   // potencia, chips e ingresos; el resto de indicadores vigilados sólo va a su frente
 
 /* ── Importancia: { tier, w, porque } o null. tier ordena (menor primero) y w desempata dentro de cada tier. ── */
 export function importancia(e) {
@@ -65,7 +66,7 @@ export function importancia(e) {
       if (d.ind === 'eci') return { tier: 6, w: 100, porque: 'cambia el mejor modelo según el ECI de Epoch' };
       if (d.ind === 'metrP80h') return { tier: 6, w: 90, porque: 'METR publica un nuevo punto del modelo puntero' };
       if (GAP[d.ind]) return Math.abs(d.to - d.from) >= DIST ? { tier: 6, w: 50 + Math.abs(d.to - d.from), porque: `la distancia ${GAP[d.ind]} cambia al menos ${DIST} punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad` } : null;
-      return rel >= CIFRA ? { tier: 6, w: rel, porque: `la cifra cambia un ${pct(rel)} (umbral: ${CIFRA} %)` } : null;
+      return CIFRAS.has(d.ind) && rel >= CIFRA ? { tier: 6, w: rel, porque: `la cifra cambia un ${pct(rel)} (umbral: ${CIFRA} %)` } : null;
     }
     case 'uso':
       return d.sub === 'primero' ? { tier: 7, w: 0, porque: 'cambia el modelo más usado en OpenRouter en los últimos 7 días' } : null;

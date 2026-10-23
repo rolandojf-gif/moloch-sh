@@ -1,5 +1,5 @@
 {
-  "_doc": "Seguimiento de AI 2027. «corto» es el rótulo del hito en el calendario. Cada hito conserva la predicción original («prediccion», y «cita» cuando el texto es literal); las revisiones de los autores se añaden fechadas en «revisiones» y nunca sustituyen la original. «evidencia» separa lo medido, lo declarado por laboratorios y lo que valoran los autores. «estimacion»: para hitos sin plazo vencido o sin medida directa; metodo «regla» (cálculo del recolector, scripts/indicadores.mjs, claves est_), «autores» (su valoración), «ritmo» (fecha ajustada con el ritmo que estiman los autores) o «fuente» (estimación del observatorio con fuentes); «muros» dice qué podría frenarla o invalidarla; «rotulo» cambia el nombre del método en la ficha. No sustituye la valoración del observatorio. «evidencia».momento: «plazo» si la medida se toma en la fecha del hito; si falta, es la situación de hoy. «evidencia».tipo: medida (dato de un tercero independiente), declarada (cifra de un laboratorio o empresa sobre sí mismo), valoración de los autores o contexto (otro hecho con fuente). «valoraciones»: una de los autores (sus palabras, situadas por el observatorio en la escala común) y una del observatorio, fija o derivada de una regla de scripts/indicadores.mjs («regla»). Escala: adelantado, compatible, retrasado, todavía no evaluable, sin evidencia suficiente.",
+  "_doc": "Seguimiento de AI 2027. «corto» es el rótulo del hito en el calendario. Cada hito conserva la predicción original («prediccion», y «cita» cuando el texto es literal); las revisiones de los autores se añaden fechadas en «revisiones» y nunca sustituyen la original. «evidencia» separa lo medido, lo declarado por laboratorios y lo que valoran los autores. «estimacion»: para hitos sin plazo vencido o sin medida directa; metodo «regla» (cálculo del recolector, scripts/indicadores.mjs, claves est_), «autores» (su valoración), «ritmo» (fecha ajustada con el ritmo que estiman los autores) o «fuente» (estimación del observatorio con fuentes); «muros» dice qué podría frenarla o invalidarla; «rotulo» cambia el nombre del método en la ficha. No sustituye la valoración del observatorio. «evidencia».momento: «plazo» si la medida se toma en la fecha del hito; si falta, es la situación de hoy. «evidencia».tipo: medida (dato de un tercero independiente), declarada (cifra de un laboratorio o empresa sobre sí mismo), valoración de los autores o contexto (otro hecho con fuente). «partes»: cuando la predicción junta varias afirmaciones, el observatorio las separa para valorar cada una (lectura propia; la predicción y la cita originales no cambian); cada parte lleva su texto, un plazo si no es el del hito y su valoración, fija o con «regla». «valoraciones»: una de los autores (sus palabras, situadas por el observatorio en la escala común) y una del observatorio, fija o derivada de una regla de scripts/indicadores.mjs («regla»). Escala: adelantado, compatible, retrasado, todavía no evaluable, sin evidencia suficiente.",
   "schema": 1,
   "actualizado": "2026-10-20",
   "escenario": {
@@ -196,6 +196,10 @@
           "evidencia": [
             { "tipo": "valoración de los autores", "texto": "No consta ningún entrenamiento claramente mayor que el de GPT-4.5 (febrero de 2025), con una incertidumbre que ellos mismos califican de muy amplia.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
           ],
+          "partes": [
+            { "id": "agent0flop", "texto": "Agent-0, el último modelo público de OpenBrain, se ha entrenado con 10^27 FLOP.", "valoracion": { "v": "sin evidencia suficiente", "fecha": "2026-10-23", "texto": "Los laboratorios no publican el cómputo de entrenamiento de sus modelos punteros. La estimación de la ficha, con los cálculos de Epoch, es de esta parte." } },
+            { "id": "centros1e28", "texto": "Los nuevos centros de OpenBrain permitirán entrenar con 10^28 FLOP.", "valoracion": { "v": "sin evidencia suficiente", "fecha": "2026-10-23", "texto": "Habla de lo que permitirán los centros en obras de un laboratorio ficticio; no hay una medida pública con la que compararlo." } }
+          ],
           "valoraciones": [
             { "quien": "autores", "v": "retrasado", "fecha": "2026-02-12", "texto": "«Posiblemente» por detrás; el resto del cómputo, en general a ritmo.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
             { "quien": "observatorio", "v": "sin evidencia suficiente", "fecha": "2026-10-20", "texto": "Los laboratorios no publican el cómputo de entrenamiento de sus modelos punteros." }
@@ -218,6 +222,11 @@
             { "tipo": "medida", "indicador": "dc.now" }
           ],
           "comparabilidad": "Las entregas que suma Epoch empiezan en 2022 (Nvidia), 2023 (Google) y 2024 (el resto) y no descuentan chips retirados: no son exactamente el «cómputo disponible» del escenario.",
+          "partes": [
+            { "id": "h40m", "texto": "El cómputo de IA disponible en el mundo llega a 40 millones de H100e a finales de 2026.", "valoracion": { "v": "todavía no evaluable", "fecha": "2026-10-23", "texto": "El plazo no ha vencido. La estimación de la ficha es de esta parte." } },
+            { "id": "h100m", "texto": "Llega a 100 millones de H100e a finales de 2027.", "plazo": "2027-12-31", "plazo_texto": "finales de 2027", "valoracion": { "v": "todavía no evaluable", "fecha": "2026-10-23", "texto": "El plazo no ha vencido. Se comprobará con las mismas entregas de chips que suma Epoch." } },
+            { "id": "gasto600", "texto": "El gasto en centros de IA llega a 600.000 millones de dólares en 2026.", "valoracion": { "v": "todavía no evaluable", "fecha": "2026-10-23", "texto": "El plazo no ha vencido. El observatorio no recoge el gasto anual en centros de IA: Epoch estima el coste de capital acumulado de los centros que sigue, que no es el gasto de un año. Puede acabar en «sin evidencia suficiente»." } }
+          ],
           "valoraciones": [
             { "quien": "autores", "v": "compatible", "fecha": "2026-02-12", "texto": "Sobre las cifras de 2025: el cómputo va en general al ritmo previsto, salvo quizá el mayor entrenamiento.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
             { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido." }
@@ -242,6 +251,10 @@
             { "tipo": "medida", "texto": "La demanda eléctrica de los centros dedicados a IA creció en torno a un 50 % en 2025.", "fuente": "IEA, «Key Questions on Energy and AI» (comprobado a través de un buscador)", "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary", "fecha": "2026-04-16" }
           ],
           "comparabilidad": "El escenario habla de demanda de potencia en el pico. El calendario de Epoch suma la columna «Power (MW)», que hoy queda por encima de la potencia de TI de los mismos centros y probablemente es la potencia total de la instalación (inferencia del observatorio). En ambos casos sólo cubre los centros que sigue Epoch, no el total mundial.",
+          "partes": [
+            { "id": "mundo", "texto": "La IA demanda en 2026 entre 29 GW (tabla del suplemento de cómputo) y 38 GW (pico, en las métricas clave) de potencia en el mundo.", "valoracion": { "v": "todavía no evaluable", "fecha": "2026-10-23", "texto": "El plazo no ha vencido. La estimación de la ficha es de esta parte." } },
+            { "id": "eeuu", "texto": "En EE. UU., la IA ocupa el 2,5 % de la capacidad eléctrica: 33 GW de 1,34 TW.", "valoracion": { "v": "todavía no evaluable", "fecha": "2026-10-23", "texto": "El plazo no ha vencido. El observatorio sólo tiene la potencia de los centros de EE. UU. que sigue Epoch, no la de todos. Puede acabar en «sin evidencia suficiente»." } }
+          ],
           "valoraciones": [
             { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido. Epoch sólo cubre los centros que sigue y la IEA da sobre todo la electricidad de todos los centros de datos, no sólo de IA: puede acabar en «sin evidencia suficiente»." }
           ]
@@ -312,6 +325,11 @@
             { "tipo": "medida", "indicador": "companies.leader" }
           ],
           "comparabilidad": "Epoch recoge sobre todo ingresos anualizados; el dato anual de 2026 sólo se conocerá en 2027.",
+          "partes": [
+            { "id": "ingresos35", "texto": "OpenBrain ingresa 35.000 millones de dólares en el conjunto de 2026.", "valoracion": { "v": "todavía no evaluable", "fecha": "2026-10-23", "texto": "El plazo no ha vencido. La estimación de la ficha es de esta parte." } },
+            { "id": "computo40", "texto": "Gasta 40.000 millones de dólares en cómputo en 2026.", "valoracion": { "v": "todavía no evaluable", "fecha": "2026-10-23", "texto": "El plazo no ha vencido. El observatorio no recoge el gasto en cómputo de los laboratorios. Puede acabar en «sin evidencia suficiente»." } },
+            { "id": "coste200", "texto": "El coste de propiedad de su cómputo activo ronda los 200.000 millones de dólares.", "valoracion": { "v": "todavía no evaluable", "fecha": "2026-10-23", "texto": "El plazo no ha vencido. El observatorio no recoge ese coste. Puede acabar en «sin evidencia suficiente»." } }
+          ],
           "valoraciones": [
             { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido." }
           ]
@@ -331,6 +349,10 @@
           "evidencia": [
             { "tipo": "medida", "indicador": "companies.leader" },
             { "tipo": "valoración de los autores", "texto": "Hasta ahora, los ingresos se han multiplicado por 10 por cada 15 puntos de ECI.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
+          ],
+          "partes": [
+            { "id": "ingresos55", "texto": "El laboratorio líder llega en 2026 a 55.000 millones de dólares de ingresos anualizados.", "valoracion": { "v": "compatible", "fecha": "2026-10-23", "texto": "Anthropic los supera: 65.000 millones de dólares anualizados con datos de julio de 2026, según el informe que recoge Epoch. El escenario no dice en qué mes de 2026 se alcanzan, así que no puede decirse que vaya por delante.", "fuentes": [{ "texto": "Bloomberg, 17 ago 2026, vía Epoch", "url": "https://www.bloomberg.com/news/articles/2026-08-17/anthropic-revenue-run-rate-surpasses-65-billion-ahead-of-ipo" }] } },
+            { "id": "valoracion25", "texto": "Y una valoración de 2,5 billones de dólares.", "valoracion": { "v": "todavía no evaluable", "fecha": "2026-10-23", "texto": "El plazo no ha vencido. La valoración más alta de una empresa de IA es la de Anthropic, 965.000 millones de dólares en su ronda de mayo de 2026: el 39 % de esa cifra.", "fuentes": [{ "texto": "Anthropic, ronda Series H (28 may 2026)", "url": "https://www.anthropic.com/news/series-h" }] } }
           ],
           "valoraciones": [
             { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido. El observatorio no recoge valoraciones de empresas." }
@@ -382,6 +404,10 @@
             { "tipo": "medida", "indicador": "eci.agent0", "momento": "plazo" },
             { "tipo": "medida", "indicador": "eci.gapClosedOpen" }
           ],
+          "partes": [
+            { "id": "varios", "texto": "Varios modelos públicos de la competencia igualan o superan a Agent-0.", "valoracion": { "regla": "variosAgent0" } },
+            { "id": "abierto", "texto": "Entre ellos hay uno de pesos abiertos.", "valoracion": { "regla": "openAgent0" } }
+          ],
           "valoraciones": [
             { "quien": "autores", "v": "compatible", "fecha": "2026-08-16", "texto": "Consideran la sección de principios de 2026 «very on-point»; no valoran esta frase por separado.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" },
             { "quien": "observatorio", "regla": "openAgent0" }
@@ -406,6 +432,10 @@
             { "tipo": "medida", "indicador": "chips.byDesignerCountry" },
             { "tipo": "valoración de los autores", "texto": "«Basically right»: citan un análisis de Epoch con unos 7 meses de distancia según el ECI. El 12 % «still seems like a reasonable estimate».", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
           ],
+          "partes": [
+            { "id": "seisMeses", "texto": "DeepCent va unos seis meses por detrás de los mejores modelos de OpenBrain.", "valoracion": { "regla": "deepcent6" } },
+            { "id": "computo12", "texto": "China mantiene alrededor del 12 % del cómputo de IA mundial.", "valoracion": { "v": "sin evidencia suficiente", "fecha": "2026-10-23", "texto": "El observatorio no tiene una estimación del cómputo de IA que hay en China. Los chips que suma Epoch van por país del diseñador, no por país donde se usan: sirven de contexto, no de medida." } }
+          ],
           "valoraciones": [
             { "quien": "autores", "v": "compatible", "fecha": "2026-08-16", "texto": "La distancia de unos seis meses y el 12 % les parecen razonables.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" },
             { "quien": "observatorio", "regla": "deepcent6" }
@@ -425,6 +455,10 @@
           "revisiones": [],
           "evidencia": [
             { "tipo": "valoración de los autores", "texto": "«China Wakes Up» no parece haberse producido: lo habrían sabido si el Partido hubiera consolidado los proyectos chinos y priorizado conseguir cómputo.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift", "fecha": "2026-08-16" }
+          ],
+          "partes": [
+            { "id": "colectivo", "texto": "China nacionaliza su investigación en IA: un colectivo liderado por DeepCent reúne casi la mitad de su cómputo de IA.", "valoracion": { "v": "sin evidencia suficiente", "fecha": "2026-10-23", "texto": "No hay datos públicos sobre cómo se reparte el cómputo chino entre organizaciones." } },
+            { "id": "tianwan", "texto": "Una zona de desarrollo centralizada junto a la central nuclear de Tianwan recibe más del 80 % de los chips nuevos.", "valoracion": { "v": "sin evidencia suficiente", "fecha": "2026-10-23", "texto": "No hay datos públicos sobre a dónde van los chips nuevos que se instalan en China." } }
           ],
           "valoraciones": [
             { "quien": "autores", "v": "retrasado", "fecha": "2026-08-16", "texto": "«It seems that “China Wakes Up” has not yet happened».", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" },

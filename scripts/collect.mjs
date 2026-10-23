@@ -29,8 +29,8 @@
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
-import { collectIndicators, indicatorSnapshot } from './indicadores.mjs';
-import { detectChanges, mergeLog, snapshotExtras } from './cambios.mjs';
+import { collectIndicators } from './indicadores.mjs';
+import { detectChanges, mergeLog, snapshotExtras, indSnapshot, VIGILADOS } from './cambios.mjs';
 import { enrich, parte, rss } from './parte.mjs';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
@@ -750,7 +750,7 @@ async function main() {
     date: TODAY, got: NOW_ISO,
     aaIndexVersion: aaVersion ?? curated.aaIndexVersion ?? null,
     leaders: leaders(models, aaVersion),
-    ind: indicatorSnapshot(indicators.ind),
+    ind: indSnapshot(indicators.ind),
     ...snapshotExtras({ ai2027, checks: indicators.checks, uso: usoNow }),
     models: snapshot(models)
   };
@@ -833,7 +833,7 @@ async function main() {
   };
   enrich(evLog.events, P, TODAY);
   enrich(novedades, P, TODAY);
-  await writeFile(logPath, JSON.stringify({ _doc: evLog._doc, events: evLog.events }, null, 1) + '\n');
+  await writeFile(logPath, JSON.stringify({ _doc: evLog._doc, vigilados: VIGILADOS, events: evLog.events }, null, 1) + '\n');
   // «Hoy»: altas de la última semana más los cambios registrados en ella.
   // Un cambio entra por su fecha o por la de su detección (unos pesos publicados hace semanas pero detectados hoy).
   const hoyItems = novedades.concat(evLog.events.filter(e => e.date >= hoyFrom || e.detected >= hoyFrom));
