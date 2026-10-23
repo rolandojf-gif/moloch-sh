@@ -1,5 +1,82 @@
 {
  "_doc": "Cambios detectados por el recolector (scripts/cambios.mjs) al comparar cada recogida con la del día anterior. Generado; no editar a mano.",
+ "vigilados": [
+  {
+   "path": "eci.frontier",
+   "label": "Mejor modelo en el ECI de Epoch",
+   "desde": "2026-10-20"
+  },
+  {
+   "path": "eci.gapUsCn",
+   "label": "Distancia EE. UU. − China en el ECI",
+   "desde": "2026-10-20"
+  },
+  {
+   "path": "eci.gapClosedOpen",
+   "label": "Distancia cerrados − abiertos en el ECI",
+   "desde": "2026-10-20"
+  },
+  {
+   "path": "eci.gapLabs",
+   "label": "Distancia entre los dos primeros laboratorios en el ECI",
+   "desde": "2026-10-20"
+  },
+  {
+   "path": "dc.now",
+   "label": "Potencia de TI en servicio en los centros que sigue Epoch",
+   "desde": "2026-10-20"
+  },
+  {
+   "path": "chips.cum",
+   "label": "Chips de IA entregados, acumulado",
+   "desde": "2026-10-20"
+  },
+  {
+   "path": "companies.leader",
+   "label": "Mayores ingresos anualizados",
+   "desde": "2026-10-20"
+  },
+  {
+   "path": "metr.sota",
+   "label": "Horizonte al 80 % del modelo puntero (METR)",
+   "desde": "2026-10-20"
+  },
+  {
+   "path": "eci.rate12m",
+   "label": "Avance de la frontera del ECI en 12 meses",
+   "desde": "2026-10-23"
+  },
+  {
+   "path": "dc.plan",
+   "label": "Potencia prevista para fin de 2026 en el calendario de Epoch",
+   "desde": "2026-10-23"
+  },
+  {
+   "path": "chips.tdp",
+   "label": "Consumo nominal (TDP) de los chips entregados",
+   "desde": "2026-10-23"
+  },
+  {
+   "path": "dc.capex",
+   "label": "Coste de capital de los centros que sigue Epoch",
+   "desde": "2026-10-23"
+  },
+  {
+   "path": "metr.ratio",
+   "label": "Relación entre los horizontes al 80 % y al 50 % de METR",
+   "desde": "2026-10-23"
+  },
+  {
+   "path": "bench.sweBest",
+   "label": "Mejor SWE-bench Verified en las ejecuciones de Epoch",
+   "desde": "2026-10-23"
+  },
+  {
+   "path": "bench.saturated",
+   "label": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)",
+   "desde": "2026-10-23"
+  }
+ ],
  "events": [
   {
    "kind": "precio",
@@ -12,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash/providers",
-    "got": "2026-10-23T02:57:42Z"
+    "got": "2026-10-23T03:09:38Z"
    },
    "what": "Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter: 0,15 $ de entrada y 0,6 $ de salida por millón de tokens. Hasta ahora era gratis.",
    "data": {
@@ -67,7 +144,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6-luna-pro/providers",
-    "got": "2026-10-23T02:57:42Z"
+    "got": "2026-10-23T03:09:38Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6 Luna Pro (0,05 $ de entrada y 0,25 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,1 $ de entrada y 0,5 $ de salida.",
    "data": {
@@ -128,7 +205,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6-luna/providers",
-    "got": "2026-10-23T02:57:42Z"
+    "got": "2026-10-23T03:09:38Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6 Luna (0,05 $ de entrada y 0,25 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,1 $ de entrada y 0,5 $ de salida.",
    "data": {
@@ -176,61 +253,6 @@
    "importancia": null,
    "ficha": "#modelos/openai/gpt-6-luna",
    "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 0,1 $ a 0,2 $ por millón de tokens. De los 13 modelos con un índice de AA parecido (±2 puntos de su 38,1), 2 cuestan menos; el más barato es DeepSeek V4.1 Flash, a 0,113 $."
-  },
-  {
-   "kind": "precio",
-   "key": "precio|x-ai/grok-4.3|2026-10-23",
-   "published": null,
-   "detected": "2026-10-23",
-   "date": "2026-10-23",
-   "mag": {
-    "v": 100,
-    "unit": "%"
-   },
-   "model": "x-ai/grok-4.3",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/x-ai/grok-4.3/providers",
-    "got": "2026-10-23T02:57:42Z"
-   },
-   "what": "xAI deja de ofrecer en OpenRouter su tarifa más barata de Grok 4.3 (1,25 $ de entrada y 2,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2,5 $ de entrada y 5 $ de salida.",
-   "data": {
-    "basis": "laboratorio",
-    "sub": "tarifa-retirada",
-    "provider": "xAI",
-    "from": {
-     "in": 1.25,
-     "out": 2.5
-    },
-    "to": {
-     "in": 2.5,
-     "out": 5
-    },
-    "pct": 100,
-    "tiersFrom": [
-     [
-      1.25,
-      2.5
-     ],
-     [
-      2.5,
-      5
-     ]
-    ],
-    "tiersTo": [
-     [
-      2.5,
-      5
-     ]
-    ],
-    "since": "2026-10-22",
-    "rankAA": 73,
-    "of": 141
-   },
-   "titular": "xAI retira la tarifa más barata de Grok 4.3 en OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/x-ai/grok-4.3",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 1,56 $ a 3,13 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 24,9), 15 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $."
   },
   {
    "kind": "precio",
@@ -399,7 +421,7 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
-    "got": "2026-10-23T02:57:42Z"
+    "got": "2026-10-23T03:09:38Z"
    },
    "what": "MiniMax M3.1 Flash: pesos descargables en Hugging Face (licencia minimax-community).",
    "data": {
