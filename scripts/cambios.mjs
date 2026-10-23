@@ -24,17 +24,33 @@ const r2 = v => Math.round(v * 100) / 100;
 const delta = (a, b) => a > 0 ? (b - a) / a : (b > 0 ? 1 : 0);
 const at = (o, path) => path.split('.').reduce((x, k) => x?.[k], o);
 
-/* Indicadores de La carrera que se vigilan: clave de la instantánea diaria, hecho en data/indicadores.json y cómo se cuenta. */
+/* Indicadores de La carrera que se vigilan: clave de la instantánea diaria, indicador de la web (path, el de
+   js/indicadores.js), hecho de data/indicadores.json que lo contiene (fact, si no es el mismo), cómo se lee su valor
+   (get) y cómo se cuenta. «desde»: primera instantánea que lo guarda. */
+const es0 = v => es(v, 0), es1 = v => es(v, 1);
 const IND = [
   { k: 'eci', path: 'eci.frontier', label: 'Mejor modelo en el ECI de Epoch', unit: 'puntos ECI', n: v => es(v), u: 'puntos', ctx: f => f.model },
   { k: 'usCn', path: 'eci.gapUsCn', label: 'Distancia EE. UU. − China en el ECI', unit: 'puntos ECI', n: v => es(v), u: 'puntos', ctx: f => f.us && f.cn ? `${f.us.model} frente a ${f.cn.model}` : null },
   { k: 'closedOpen', path: 'eci.gapClosedOpen', label: 'Distancia cerrados − abiertos en el ECI', unit: 'puntos ECI', n: v => es(v), u: 'puntos', ctx: f => f.closed && f.open ? `${f.closed.model} frente a ${f.open.model}` : null },
   { k: 'labs', path: 'eci.gapLabs', label: 'Distancia entre los dos primeros laboratorios en el ECI', unit: 'puntos ECI', n: v => es(v), u: 'puntos', ctx: f => f.first && f.second ? `${f.first.org} frente a ${f.second.org}` : null },
-  { k: 'dcMW', path: 'dc.now', label: 'Potencia de TI en servicio en los centros que sigue Epoch', unit: 'MW', n: v => es(v, 0), u: 'MW' },
+  { k: 'dcMW', path: 'dc.now', label: 'Potencia de TI en servicio en los centros que sigue Epoch', unit: 'MW', n: es0, u: 'MW' },
   { k: 'chipsH100e', path: 'chips.cum', label: 'Chips de IA entregados, acumulado', unit: 'H100e', n: v => es(v / 1e6, 1), u: 'millones de H100e' },
   { k: 'revLeader', path: 'companies.leader', label: 'Mayores ingresos anualizados', unit: '$', n: v => es(v / 1e9, 1), u: 'mil millones de $', ctx: f => f.company },
-  { k: 'metrP80h', path: 'metr.sota', label: 'Horizonte al 80 % del modelo puntero (METR)', unit: 'h', n: v => es(v, 1), u: 'h' }
+  { k: 'metrP80h', path: 'metr.sota', label: 'Horizonte al 80 % del modelo puntero (METR)', unit: 'h', n: es1, u: 'h' },
+  { k: 'rate12m', path: 'eci.rate12m', label: 'Avance de la frontera del ECI en 12 meses', unit: 'puntos ECI', n: es1, u: 'puntos', desde: '2026-10-23' },
+  { k: 'dcPlan26', path: 'dc.plan', get: f => f.end2026?.mw, label: 'Potencia prevista para fin de 2026 en el calendario de Epoch', unit: 'MW', n: es0, u: 'MW', desde: '2026-10-23' },
+  { k: 'tdpGW', path: 'chips.tdp', fact: 'chips.cum', get: f => f.tdpGW, label: 'Consumo nominal (TDP) de los chips entregados', unit: 'GW', n: es1, u: 'GW', desde: '2026-10-23' },
+  { k: 'capexB', path: 'dc.capex', fact: 'dc.now', get: f => f.capexB, label: 'Coste de capital de los centros que sigue Epoch', unit: 'mil millones de $', n: es0, u: 'mil millones de $', desde: '2026-10-23' },
+  { k: 'metrRatio', path: 'metr.ratio', fact: 'metr.sota', get: f => f.ratio, label: 'Relación entre los horizontes al 80 % y al 50 % de METR', unit: '', n: v => es(v, 2), u: '', desde: '2026-10-23' },
+  { k: 'sweBest', path: 'bench.sweBest', label: 'Mejor SWE-bench Verified en las ejecuciones de Epoch', unit: '%', n: es1, u: '%', ctx: f => f.model, desde: '2026-10-23' },
+  { k: 'saturated', path: 'bench.saturated', label: 'Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)', unit: 'evaluaciones', n: es0, u: 'evaluaciones', ctx: f => f.of ? `de ${f.of}` : null, desde: '2026-10-23' }
 ];
+const factOf = (ind, d) => at(ind, d.fact || d.path);
+const valueOf = (ind, d) => { const f = factOf(ind, d); return f ? (d.get ? d.get(f) : f.v) ?? null : null; };
+/* Valores de la instantánea diaria (clave k de cada indicador vigilado). */
+export const indSnapshot = ind => Object.fromEntries(IND.map(d => [d.k, ind ? valueOf(ind, d) : null]));
+/* Lista para la web: qué se vigila y desde cuándo. */
+export const VIGILADOS = IND.map(d => ({ path: d.path, label: d.label, desde: d.desde || '2026-10-20' }));
 const SRC_NAME = { epoch: 'Epoch AI', metr: 'METR' };
 
 /* Puesto de cada modelo por índice de AA entre los de identidad confirmada: sirve para «un modelo del top 20». */
@@ -160,14 +176,14 @@ export function detectChanges(ctx) {
 
   /* ── Indicadores de La carrera ── */
   if (base.ind && ctx.ind) for (const d of IND) {
-    const f = at(ctx.ind, d.path), a = base.ind[d.k], b = f?.v;
+    const f = factOf(ctx.ind, d), a = base.ind[d.k], b = valueOf(ctx.ind, d);
     if (a == null || b == null || f.stale || r2(a) === r2(b)) continue;
     const c = d.ctx?.(f);
     out.push(item('indicador', `indicador|${d.k}|${TODAY}`, {
       published: f.asOf && f.asOf !== (f.got || '').slice(0, 10) ? f.asOf : null,
       mag: { v: r2(b - a), pct: a ? r1((b - a) / a * 100) : null, unit: d.unit },
       src: { name: SRC_NAME[f.src] || f.src, url: f.url, got: f.got || NOW_ISO },
-      what: `${d.label}: de ${d.n(a)} a ${d.n(b)} ${d.u}${c ? ` (${c})` : ''}.`,
+      what: `${d.label}: de ${d.n(a)} a ${d.n(b)}${d.u ? ` ${d.u}` : ''}${c ? ` (${c})` : ''}.`,
       data: { ind: d.k, path: d.path, from: a, to: b }
     }));
   }

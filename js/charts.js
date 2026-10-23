@@ -500,7 +500,10 @@ export function columns(el, rows, opts = {}) {
   s += '</g>';
   const targets = rows.map((r, i) => {
     const x = L + i * bw;
-    s += `<rect data-k="${i}" class="col ${r.cls || ''}" x="${(x + bw * 0.15).toFixed(1)}" y="${Y(r.v).toFixed(1)}" width="${(bw * 0.7).toFixed(1)}" height="${(Y(y0) - Y(r.v)).toFixed(1)}"/>`;
+    // Con «real», la barra es medida hasta ese valor (sólida) y extrapolada encima (rayada).
+    const bx = (x + bw * 0.15).toFixed(1), bwid = (bw * 0.7).toFixed(1);
+    if (r.real > 0 && r.real < r.v) s += `<rect class="col" x="${bx}" y="${Y(r.real).toFixed(1)}" width="${bwid}" height="${(Y(y0) - Y(r.real)).toFixed(1)}"/><rect data-k="${i}" class="col ${r.cls || ''}" x="${bx}" y="${Y(r.v).toFixed(1)}" width="${bwid}" height="${(Y(r.real) - Y(r.v)).toFixed(1)}"/>`;
+    else s += `<rect data-k="${i}" class="col ${r.cls || ''}" x="${bx}" y="${Y(r.v).toFixed(1)}" width="${bwid}" height="${(Y(y0) - Y(r.v)).toFixed(1)}"/>`;
     if (r.lo != null && r.hi != null) {
       const cx = (x + bw / 2).toFixed(1), w = Math.min(10, bw * 0.25);
       s += `<g class="whisk"><line x1="${cx}" x2="${cx}" y1="${Y(r.hi).toFixed(1)}" y2="${Y(r.lo).toFixed(1)}"/><line x1="${(x + bw / 2 - w).toFixed(1)}" x2="${(x + bw / 2 + w).toFixed(1)}" y1="${Y(r.hi).toFixed(1)}" y2="${Y(r.hi).toFixed(1)}"/><line x1="${(x + bw / 2 - w).toFixed(1)}" x2="${(x + bw / 2 + w).toFixed(1)}" y1="${Y(r.lo).toFixed(1)}" y2="${Y(r.lo).toFixed(1)}"/></g>`;

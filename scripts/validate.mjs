@@ -64,7 +64,7 @@ const DAY = /^\d{4}-\d{2}-\d{2}$/, DAYMONTH = /^\d{4}-\d{2}(-\d{2})?$/, URL_RE =
 const IND_KEY = /^(eci|bench|dc|chips|companies|metr)\.[A-Za-z0-9]+$/;
 const ESTADOS = ['abierta', 'confirmada', 'debilitada'];
 const ESCALA = ['adelantado', 'compatible', 'retrasado', 'todavía no evaluable', 'sin evidencia suficiente'];
-const REGLAS = ['swe85', 'openAgent0', 'openaiRev2025', 'rivales39', 'deepcent6'];
+const REGLAS = ['swe85', 'openAgent0', 'variosAgent0', 'openaiRev2025', 'rivales39', 'deepcent6'];
 const EVID = ['medida', 'declarada', 'valoración de los autores', 'contexto'];
 const need = (o, k, where, re) => { if (!o?.[k] || (re && !re.test(o[k]))) errors.push(`${where}: falta o no es válido «${k}»`); };
 
@@ -74,6 +74,7 @@ for (const f of car?.frentes || []) {
   const w = `carrera.${f.id}`;
   for (const k of ['id', 'titulo', 'pregunta']) need(f, k, w);
   for (const k of f.indicadores || []) if (!IND_KEY.test(k)) errors.push(`${w}: clave de indicador no válida ${k}`);
+  for (const k of f.sabemos || []) if (!(f.indicadores || []).includes(k)) errors.push(`${w}: «sabemos» usa ${k}, que no está entre sus indicadores`);
   if (!f.hechos?.length) errors.push(`${w}: sin hechos`);
   f.hechos?.forEach((h, i) => {
     const wh = `${w}.hechos[${i}]`;
@@ -131,6 +132,19 @@ if (a7) {
         if (est.metodo === 'ritmo' && !a7.ritmo?.puntos?.at(-1)?.rango) errors.push(`${w}: la estimación por ritmo necesita «rango» en la última estimación de ritmo`);
         for (const f of est.fuentes || []) need(f, 'url', `${w}.estimacion.fuentes`, URL_RE);
       }
+      // Partes: lectura del observatorio que separa afirmaciones de una misma predicción; cada una con su valoración.
+      const pids = new Set();
+      for (const pt of h.partes || []) {
+        const wp = `${w}.partes.${pt.id}`;
+        need(pt, 'id', wp); need(pt, 'texto', wp);
+        if (pids.has(pt.id)) errors.push(`${wp}: id duplicado`); pids.add(pt.id);
+        if (pt.plazo) { need(pt, 'plazo', wp, DAY); need(pt, 'plazo_texto', wp); }
+        const v = pt.valoracion;
+        if (!v) errors.push(`${wp}: sin valoración`);
+        else if (v.regla) { if (!REGLAS.includes(v.regla)) errors.push(`${wp}: regla no válida ${v.regla}`); else if (ind && !ind.checks?.[v.regla]) warnings.push(`${wp}: la regla ${v.regla} no tiene resultado en indicadores.json`); }
+        else { if (!ESCALA.includes(v.v)) errors.push(`${wp}: valoración fuera de la escala ${v.v}`); need(v, 'fecha', wp, DAYMONTH); need(v, 'texto', wp); for (const f of v.fuentes || []) need(f, 'url', `${wp}.fuentes`, URL_RE); }
+      }
+      if ((h.partes || []).length === 1) errors.push(`${w}: una sola parte no divide nada`);
       const vals = h.valoraciones || [];
       if (vals.filter(v => v.quien === 'observatorio').length !== 1) errors.push(`${w}: debe tener exactamente una valoración del observatorio`);
       for (const v of vals) {
@@ -158,6 +172,24 @@ for (const [where, list] of [['changes', chg?.items], ['events-log', evl?.events
   if (e.published !== null && !DAY.test(e.published || '')) errors.push(`${w}: fecha de publicación no válida ${e.published}`);
   if (!/^(https:\/\/|#)\S+$/.test(e.src?.url || '')) errors.push(`${w}: sin enlace a la evidencia`);
   if (!e.what) errors.push(`${w}: sin descripción`);
+  if (e.importancia && !e.importancia.porque) errors.push(`${w}: noticia sin motivo`);
+}
+/* El parte: hasta tres noticias de ese día, todas en la lista de cambios, que cumplen la regla y no repiten modelo ni hito. */
+if (chg?.parte) {
+  const p = chg.parte, byKey = new Map((chg.items || []).map(e => [e.key, e]));
+  if (!DAY.test(p.fecha || '')) errors.push('parte: sin fecha');
+  if (!Array.isArray(p.noticias) || p.noticias.length > 3) errors.push('parte: más de tres noticias');
+  if (!p.reglas?.length) errors.push('parte: sin la regla publicada');
+  const quien = new Set();
+  for (const k of p.noticias || []) {
+    const e = byKey.get(k);
+    if (!e) { errors.push(`parte: ${k} no está en la lista de cambios`); continue; }
+    if (!e.importancia || e.detected !== p.fecha || !e.titular) errors.push(`parte: ${k} no cumple la regla, no es de ese día o no tiene titular`);
+    const q = e.model || e.data?.hito || e.key;
+    if (quien.has(q)) errors.push(`parte: ${q} sale dos veces`);
+    quien.add(q);
+  }
+  if (p.noticias?.length && p.ultima) errors.push('parte: con noticias no lleva «la última anterior»');
 }
 
 if (warnings.length) console.warn(`avisos:\n${warnings.join('\n')}`);
