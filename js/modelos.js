@@ -45,22 +45,19 @@ const freeOnly = m => !!m.orVariant && /:free$/.test(m.orVariant) && !m.price.in
 function speedCell(m) {
   const s = speed(m);
   if (!s) return ND;
-  const ttft = s.ttft !== null && s.ttft !== undefined ? `${num(s.ttft, 2)} s` : 'sin datos';
-  return `<span class="big">${num(s.tps, 0)}</span> tok/s${src(s.f)}<span class="m-sub">latencia ${ttft}</span><span class="m-sub" title="${esc(s.provider)}">${esc(s.short)}</span>`;
+  const lat = s.lat !== null && s.lat !== undefined ? `${num(s.lat, 2)} s` : 'sin datos';
+  return `<span class="big">${num(s.tps, 0)}</span> tok/s${src(s.f)}<span class="m-sub">${s.aa ? 'respuesta en' : 'primer token en'} ${lat}</span><span class="m-sub" title="${esc(s.provider)}">${esc(s.short)}</span>`;
 }
 
 /* «Frente a otros modelos»: dónde queda el modelo en la carrera frente a tres referencias del catálogo. Describe su
    posición, no recomienda. Índice parecido: ±PARECIDO puntos de AA, el mismo criterio que el parte de Hoy. */
 const PARECIDO = 2;
 const signed = (v, d = 1) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${num(Math.abs(v), d)}`;
-/* Latencia para comparar: segundos hasta el primer token de la respuesta (AA, con la configuración que obtiene el índice,
-   incluido el tiempo de pensar). El primer token de la tabla no sirve aquí: con los modelos que muestran su razonamiento
-   llega en un segundo y con los que lo ocultan tras minutos. Sin AA, el primer token del proveedor más rápido. */
+/* Latencia: la de speed(), hasta la respuesta según AA o, sin AA, hasta el primer token del proveedor más rápido. */
 function latOf(m) {
   const s = speed(m);
-  if (!s) return null;
-  if (/^AA/.test(s.short)) return m.aa.ttfa?.v ? { v: m.aa.ttfa.v, aa: true, how: s.short === 'AA' ? '' : ` con la configuración ${s.short.slice(4)}` } : null;
-  return s.ttft !== null && s.ttft !== undefined ? { v: s.ttft, aa: false, how: ` (primer token, en ${s.provider})` } : null;
+  if (!s || s.lat === null || s.lat === undefined) return null;
+  return { v: s.lat, aa: s.aa, how: s.aa ? (s.cfg ? ` con la configuración ${s.cfg}` : '') : ` (primer token, en ${s.provider})` };
 }
 function race(m) {
   const me = ii(m);
@@ -97,7 +94,7 @@ function race(m) {
     <p>Puesto <b>${rank}</b> de ${all.length} en el ${esc(aaIndexName(D.catalog.aaIndexVersion))}${rankB ? `; ${rankB}.º de ${block.length} entre los ${esc(m.weights.v)}` : ''}. ${myLat ? `Tarda ${num(myLat.v, 2)} s en empezar a responder${esc(myLat.how)}.` : 'Sin dato de latencia.'}</p>
     ${refs.length ? `<ul>${refs.map(r => `<li><span class="k">${esc(r.k)}</span>${r.x ? `<a href="#modelos/${esc(r.x.id)}">${esc(r.x.name)}</a> <span class="m-lab">${esc(r.x.lab.name)} · ${esc(r.x.weights.v || 'pesos sin datos')}</span><span class="d">${dist(r.x)}</span>` : esc(r.t)}</li>`).join('')}</ul>` : ''}
     ${cmp.length > 1 ? `<p class="m-link"><a href="#modelos/comparar/${cmp.map(x => esc(x.id)).join(',')}">Comparar con ${cmp.length > 2 ? 'ellos' : 'él'}</a></p>` : ''}
-    <p class="note">Describe dónde queda este modelo en la carrera, no es una recomendación. Entre paréntesis, la diferencia con este modelo. Latencia: segundos hasta el primer token de la respuesta según AA, con la configuración que obtiene el índice e incluido el tiempo de pensar; por eso unos modelos tardan minutos y otros segundos en llegar a un índice parecido. No es la latencia de la tabla, que cuenta el primer token de cualquier tipo. Si AA no la mide, el primer token del proveedor más rápido de OpenRouter; sólo se comparan latencias de la misma fuente.</p>
+    <p class="note">Describe dónde queda este modelo en la carrera, no es una recomendación. Entre paréntesis, la diferencia con este modelo. Latencia: segundos hasta el primer token de la respuesta según AA, con la configuración que obtiene el índice e incluido el tiempo de pensar; por eso unos modelos tardan minutos y otros segundos en llegar a un índice parecido. Si AA no la mide, el primer token del proveedor más rápido de OpenRouter; sólo se comparan latencias de la misma fuente.</p>
   </div>`;
 }
 
@@ -127,7 +124,7 @@ function detail(m) {
   ];
   const provTable = eps.length ? `
     <table class="subt"><caption class="sr-only">Proveedores en OpenRouter</caption>
-      <thead><tr><th>Proveedor (OpenRouter)</th><th>Cuantización</th><th class="num">Entrada</th><th class="num">Salida</th><th class="num">Contexto</th><th class="num">tok/s p50</th><th class="num">Latencia p50</th><th class="num">Disponibilidad 30 min</th></tr></thead>
+      <thead><tr><th>Proveedor (OpenRouter)</th><th>Cuantización</th><th class="num">Entrada</th><th class="num">Salida</th><th class="num">Contexto</th><th class="num">tok/s p50</th><th class="num">Primer token p50</th><th class="num">Disponibilidad 30 min</th></tr></thead>
       <tbody>${eps.map(e => `<tr>
         <td>${esc(e.provider || '—')}</td><td>${esc(e.quant || 'sin datos')}</td>
         <td class="num">${e.in !== null ? usd(e.in) : 'sin datos'}</td><td class="num">${e.out !== null ? usd(e.out) : 'sin datos'}</td>
@@ -196,7 +193,8 @@ function renderCompare() {
     ['Capacidad (ECI)', m => m.epoch ? fact(m.epoch.eci, v => num(v)) : ND, m => eci(m), 'max'],
     ['SWE-bench Verified', m => m.epoch ? fact(m.epoch.swe, v => num(v) + ' %') : ND, m => swe(m), 'max'],
     ['Velocidad (tok/s)', (m, i) => sp[i] ? `${num(sp[i].tps, 0)}${src(sp[i].f)} <span class="m-sub">${esc(sp[i].provider)}</span>` : ND, (m, i) => sp[i]?.tps ?? null, 'max'],
-    ['Latencia', (m, i) => sp[i] && sp[i].ttft !== null && sp[i].ttft !== undefined ? `${num(sp[i].ttft, 2)} s${src(sp[i].ft)}` : ND, (m, i) => sp[i]?.ttft ?? null, 'min'],
+    // Sólo compiten las latencias de AA (hasta la respuesta); la del proveedor mide otra cosa.
+    ['Latencia (hasta la respuesta)', (m, i) => sp[i] && sp[i].lat !== null && sp[i].lat !== undefined ? `${num(sp[i].lat, 2)} s${src(sp[i].fl)}${sp[i].aa ? '' : ' <span class="m-sub">primer token, proveedor</span>'}` : ND, (m, i) => sp[i]?.aa ? sp[i].lat ?? null : null, 'min'],
     ['Entrada / M', m => fact(m.price.in, usd), m => m.price.in.v, 'min'],
     ['Salida / M', m => fact(m.price.out, usd), m => m.price.out.v, 'min'],
     ['Combinado 3:1', m => blended(m) !== null ? usd(blended(m)) : ND, m => blended(m), 'min'],

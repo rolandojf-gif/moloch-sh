@@ -107,14 +107,17 @@ export const aaConfigShort = m => {
 /* Velocidad: mediana de AA si existe; si no, el proveedor de OpenRouter más rápido, nombrado. */
 export function speed(m) {
   const a = m.aa;
-  // AA mide con la misma configuración que puntúa (la de mayor índice): con el razonamiento al máximo, la espera incluye el tiempo de pensar.
+  // AA mide con la misma configuración que puntúa (la de mayor índice). Latencia: hasta el primer token de la respuesta,
+  // incluido el tiempo de pensar. Su «primer token» no sirve para comparar: en los modelos que muestran el razonamiento
+  // es el primer token pensado (un segundo) y en los que lo ocultan, la respuesta (minutos).
   const cfg = a && ((/\(([^)]*)\)\s*$/.exec(a.name || '') || [])[1] || null);
-  if (a && a.tps && a.tps.v) return { tps: a.tps.v, ttft: a.ttft?.v ?? null, f: a.tps, ft: a.ttft, provider: `referencia de AA${cfg ? `, configuración ${cfg}` : ''}`, short: `AA${cfg ? `, ${cfg}` : ''}` };
+  if (a && a.tps && a.tps.v) return { tps: a.tps.v, lat: a.ttfa?.v ?? null, f: a.tps, fl: a.ttfa, aa: true, provider: `referencia de AA${cfg ? `, configuración ${cfg}` : ''}`, short: `AA${cfg ? `, ${cfg}` : ''}`, cfg };
   const eps = (m.endpoints || []).filter(e => e.tps);
   if (!eps.length) return null;
   const e = eps.slice().sort((x, y) => y.tps - x.tps)[0];
   const f = { ...(m.endpointsMeta || {}), v: e.tps, note: `proveedor ${e.provider}, mediana de los últimos 30 min`, stale: e.stale };
-  return { tps: e.tps, ttft: e.ttft, f, ft: { ...f, v: e.ttft }, provider: e.provider, short: e.provider };
+  // Sin AA, la latencia es la del proveedor más rápido de OpenRouter: hasta el primer token, sea o no de la respuesta.
+  return { tps: e.tps, lat: e.ttft, f, fl: { ...f, v: e.ttft }, aa: false, provider: e.provider, short: e.provider };
 }
 
 /* Etiqueta de pesos. «Cerrados» inferido (sin repositorio en Hugging Face ni clasificación de Epoch) se distingue del comprobado. */
