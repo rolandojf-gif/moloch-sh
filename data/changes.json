@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-23T04:24:03Z",
+ "generated": "2026-10-23T04:25:22Z",
  "window": 7,
  "since": "2026-10-17",
  "base": "2026-10-22",
@@ -34,7 +34,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash",
-    "got": "2026-10-23T04:24:03Z"
+    "got": "2026-10-23T04:25:22Z"
    },
    "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -63,7 +63,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
-    "got": "2026-10-23T04:24:03Z"
+    "got": "2026-10-23T04:25:22Z"
    },
    "what": "DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -96,7 +96,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash/providers",
-    "got": "2026-10-23T04:24:03Z"
+    "got": "2026-10-23T04:25:22Z"
    },
    "what": "Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter: 0,15 $ de entrada y 0,6 $ de salida por millón de tokens. Hasta ahora era gratis.",
    "data": {
@@ -151,7 +151,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers",
-    "got": "2026-10-23T04:24:03Z"
+    "got": "2026-10-23T04:25:22Z"
    },
    "what": "DeepSeek baja el precio de DeepSeek V4.1 Flash 1017 en OpenRouter: entrada de 0,3 $ a 0,15 $ y salida de 1,2 $ a 0,6 $ por millón de tokens.",
    "data": {
@@ -206,7 +206,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-sol/providers",
-    "got": "2026-10-23T04:24:03Z"
+    "got": "2026-10-23T04:25:22Z"
    },
    "what": "OpenAI añade en OpenRouter una tarifa más barata de GPT-6.1 Sol: 1 $ de entrada y 5 $ de salida por millón de tokens. La anterior (2 $ de entrada y 10 $ de salida) sigue disponible.",
    "data": {
@@ -277,7 +277,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers",
-    "got": "2026-10-23T04:24:03Z"
+    "got": "2026-10-23T04:25:22Z"
    },
    "what": "DeepSeek baja el precio de DeepSeek V4 Pro 0813 en OpenRouter: entrada de 1,32 $ a 0,66 $ y salida de 3,96 $ a 1,98 $ por millón de tokens.",
    "data": {
@@ -332,7 +332,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-5.4/providers",
-    "got": "2026-10-23T04:24:03Z"
+    "got": "2026-10-23T04:25:22Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-5.4 (1,25 $ de entrada y 7,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2,5 $ de entrada y 15 $ de salida.",
    "data": {
@@ -548,7 +548,7 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
-    "got": "2026-10-23T04:24:03Z"
+    "got": "2026-10-23T04:25:22Z"
    },
    "what": "MiniMax M3.1 Flash: pesos descargables en Hugging Face (licencia minimax-community).",
    "data": {
