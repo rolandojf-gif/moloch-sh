@@ -46,7 +46,7 @@ function cardFor(m, curated) {
     html: `<article class="rel">
       <div class="rel-date">${esc(fmtDate(latest))}</div>
       <div>
-        <h3>${esc(m.name)} ${weightsTag(m)}${identity}</h3>
+        <h3><a class="m-open" href="#modelos/${esc(m.id)}" title="Abrir su ficha en Modelos">${esc(m.name)}</a> ${weightsTag(m)}${identity}</h3>
         <div class="m-lab">${esc(m.lab.name)}</div>
         <div class="stages">${STAGES.filter(([k]) => st[k]).sort((a, b) => st[a[0]].date.localeCompare(st[b[0]].date)).map(([k, label]) =>
           `<div class="stage yes"><span class="lbl">${label}</span>${esc(fmtDate(st[k].date))}${st[k].html}${st[k].note ? `<span class="m-sub">${esc(st[k].note)}</span>` : ''}</div>`).join('')}</div>

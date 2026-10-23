@@ -1,7 +1,7 @@
 /* MOLOCH.SH · observatorio — carga de datos, navegación y tema. */
 import { esc, setSources, fmtDate, fmtDateTime, daysAgo } from './fmt.js';
 import { renderHoy } from './hoy.js';
-import { renderModelos } from './modelos.js';
+import { renderModelos, showModelPath } from './modelos.js';
 import { renderLanzamientos } from './lanzamientos.js';
 import { renderCarrera } from './carrera.js';
 import { renderAi2027 } from './ai2027.js';
@@ -74,11 +74,30 @@ function renderMethod(d) {
     <p>Los datos se generan con <code>scripts/collect.mjs</code>; el código y el histórico están en el repositorio.</p>`;
 }
 
+/* Direcciones: #vista o #vista/<parte>: #modelos/<id> abre la ficha de un modelo (o #modelos/comparar/<id>,<id>),
+   #ai2027/<hito> y #carrera/<frente> llevan a esa ficha. */
 function route() {
-  const v = location.hash.replace('#', '');
+  const [v, ...rest] = location.hash.replace('#', '').split('/');
   const view = VIEWS.includes(v) ? v : 'hoy';
   $$('.view').forEach(s => { s.hidden = s.dataset.view !== view; });
   $$('.navtab[data-view]').forEach(a => a.dataset.view === view ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  let sub = rest.join('/');
+  try { sub = decodeURIComponent(sub); } catch {}
+  return { view, sub: VIEWS.includes(v) && sub ? sub : null };
+}
+
+function jump(el) {
+  if (!el) return false;
+  el.scrollIntoView({ block: 'start' });
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  return true;
+}
+function showPath({ view, sub }) {
+  if (!sub) return false;
+  if (view === 'modelos') { showModelPath(sub); return true; }
+  if (view === 'ai2027') return jump(document.getElementById(`hito-${sub}`));
+  if (view === 'carrera') return jump(document.getElementById(`frente-${sub}`));
+  return false;
 }
 
 function initTheme() {
@@ -94,7 +113,8 @@ function initTheme() {
 
 async function main() {
   initTheme();
-  window.addEventListener('hashchange', () => { route(); window.scrollTo(0, 0); });
+  let ready = false;
+  window.addEventListener('hashchange', () => { const r = route(); if (!(ready && showPath(r))) window.scrollTo(0, 0); });
   route();
   let d;
   try { d = await loadData(); }
@@ -113,6 +133,8 @@ async function main() {
   renderLanzamientos(d);
   renderCarrera(d);
   renderAi2027(d);
+  ready = true;
+  showPath(route());
 }
 
 main();

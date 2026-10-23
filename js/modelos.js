@@ -83,7 +83,7 @@ function detail(m) {
         <td class="num">${e.uptime !== null && e.uptime !== undefined ? num(e.uptime, 1) + ' %' : 'sin datos'}</td></tr>`).join('')}</tbody>
     </table>
     <div class="prov">Proveedores: ${src(m.endpointsMeta)} ${m.endpointsMeta ? `consulta ${esc(m.endpointsMeta.got.slice(0, 10))}` : ''}. Velocidad y espera dependen de quién sirve el modelo.</div>` : '<p class="note">Sin datos de proveedores.</p>';
-  return `<dl class="dgrid">${dl.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${provTable}`;
+  return `<p class="m-link"><a href="#modelos/${esc(m.id)}" title="Dirección propia de esta ficha, para volver a ella o compartirla">Enlace a esta ficha</a></p><dl class="dgrid">${dl.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${provTable}`;
 }
 
 function syncHeads() {
@@ -151,7 +151,7 @@ function renderCompare() {
     ['Razonamiento', m => fact(m.reasoning, yesNo)]
   ];
   const cols = ms.length;
-  let html = `<div class="compare-head"><span>Comparación (${cols} de 3)</span><button type="button" id="cmp-clear">Vaciar</button></div>`;
+  let html = `<div class="compare-head"><span>Comparación (${cols} de 3)</span><a href="#modelos/comparar/${ms.map(m => esc(m.id)).join(',')}" title="Dirección propia de esta comparación, para compartirla">Enlace a esta comparación</a><button type="button" id="cmp-clear">Vaciar</button></div>`;
   html += `<div class="cmp-grid" style="grid-template-columns: minmax(110px, .8fr) repeat(${cols}, minmax(140px, 1fr))"><div class="rh ch"></div>${ms.map(m => `<div class="ch">${esc(m.name)}<span class="m-sub">${esc(m.lab.name)}</span></div>`).join('')}`;
   for (const [label, show, val, better] of rowsDef) {
     let bestIdx = -1;
@@ -200,6 +200,38 @@ function renderUso(u, el, note, dias) {
   note.innerHTML = `<span class="lbl">Cómo leerlo</span>B = billones de tokens (un billón es un millón de millones); entre paréntesis, la cuota. Tokens de entrada más salida procesados en OpenRouter del ${esc(fmtDate(u.from))} al ${esc(fmtDate(u.to))} (días UTC completos), sumando el ranking diario. Es el uso en OpenRouter, no en todo el mercado: no cuenta lo que se consume en la API propia de cada laboratorio ni en sus aplicaciones, y los modelos gratuitos o en promoción suben mucho. La cuota es sobre todo el tráfico de OpenRouter esos días. Puede diferir un poco de las páginas de OpenRouter, que usan su propia ventana. Fuente: OpenRouter (<a href="${esc(u.url)}" target="_blank" rel="noopener">openrouter.ai/rankings</a>), datos hasta el ${esc(fmtDate(u.asOf))}, CC BY 4.0; consulta ${esc((u.got || '').slice(0, 10))}${u.stale ? ' (la última consulta falló: se muestra el ranking anterior)' : ''}.`;
 }
 
+/* Dirección propia de cada modelo: #modelos/<id de OpenRouter> (también vale sólo la parte tras «/» si no es ambigua)
+   y #modelos/comparar/<id>,<id>,<id>. Muestra la ficha abierta aunque un filtro o la paginación la ocultaran. */
+function findModel(s) {
+  if (D.byId.has(s)) return s;
+  const hits = D.catalog.models.filter(m => m.id.split('/').slice(1).join('/') === s);
+  return hits.length === 1 ? hits[0].id : null;
+}
+export function showModelPath(sub) {
+  if (!D) return;
+  $('#mx-notfound')?.remove();
+  if (sub.startsWith('comparar/')) {
+    const ids = [...new Set(sub.slice(9).split(',').map(findModel).filter(Boolean))].slice(0, 3);
+    if (ids.length) { state.cmp = ids; renderCompare(); renderTable(); $('#mx-compare').scrollIntoView({ block: 'start' }); return; }
+  }
+  const id = sub.startsWith('comparar/') ? null : findModel(sub);
+  if (!id) {
+    $('.table-wrap').insertAdjacentHTML('beforebegin', `<p class="note" id="mx-notfound">«${esc(sub)}» no está en el catálogo: puede que OpenRouter ya no lo liste, que sea de un laboratorio que no se sigue o que tenga más de ${esc(String(D.catalog.method?.window?.match(/\d+/)?.[0] || 540))} días.</p>`);
+    $('#mx-notfound').scrollIntoView({ block: 'center' });
+    return;
+  }
+  const m = D.byId.get(id);
+  if (state.w !== 'all' && m.weights.v !== state.w) { state.w = 'all'; $$('#mx-weights [data-w]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.w === 'all'))); }
+  if (state.q && !`${m.name} ${m.lab.name} ${m.id}`.toLowerCase().includes(state.q.trim().toLowerCase())) { state.q = ''; $('#mx-q').value = ''; }
+  if (rows().findIndex(x => x.id === id) >= PAGE) state.all = true;
+  state.open.add(id);
+  renderTable();
+  const tr = $(`tr.row[data-id="${CSS.escape(id)}"]`);
+  tr?.scrollIntoView({ block: 'start' });
+  tr?.classList.add('flash');
+  tr?.focus({ preventScroll: true });
+}
+
 export function renderModelos(d) {
   D = d;
   if (!d.catalog.models.some(m => ii(m) !== null)) {
@@ -228,7 +260,13 @@ export function renderModelos(d) {
     state.cmp = e.target.checked ? [...state.cmp, id].slice(0, 3) : state.cmp.filter(x => x !== id);
     renderCompare(); renderTable();
   });
-  const toggle = tr => { const id = tr.dataset.id; state.open.has(id) ? state.open.delete(id) : state.open.add(id); renderTable(); };
+  // Abrir una ficha le da su dirección (#modelos/<id>) sin recargar ni mover la página; cerrarla la quita.
+  const toggle = tr => {
+    const id = tr.dataset.id;
+    if (state.open.has(id)) { state.open.delete(id); if (location.hash === `#modelos/${id}`) history.replaceState(null, '', '#modelos'); }
+    else { state.open.add(id); history.replaceState(null, '', `#modelos/${id}`); }
+    renderTable();
+  };
   body.addEventListener('click', e => {
     if (e.target.closest('a, input, label')) return;
     const tr = e.target.closest('tr.row'); if (tr) toggle(tr);

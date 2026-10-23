@@ -301,6 +301,9 @@ tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .compare { background: var(--card); border: 2px solid var(--ink); box-shadow: var(--shadow); padding: 14px; margin-bottom: 16px; }
 .compare-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; font: 700 12px var(--f-mono); text-transform: uppercase; }
 .compare-head button { font: 700 11px var(--f-mono); border: 2px solid var(--ink); background: var(--card-2); padding: 5px 8px; text-transform: uppercase; }
+.compare-head a { margin-left: auto; font: 700 11px var(--f-mono); }
+a.m-open { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.m-link { margin: 0 0 10px; font: 700 11px var(--f-mono); text-transform: uppercase; }
 .cmp-grid { display: grid; gap: 0; overflow-x: auto; }
 .cmp-grid > div { padding: 7px 10px; border-bottom: 1px solid var(--line); font-size: 14px; min-width: 0; }
 .cmp-grid .rh { font: 700 10.5px var(--f-mono); text-transform: uppercase; color: var(--muted); }
@@ -429,7 +432,7 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
 .hito:last-child { border-bottom: 0; }
 .hito.overdue { box-shadow: inset 6px 0 0 var(--warn); }
 .hito { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 0; }
-.hito.flash { animation: flash 1.6s ease-out; }
+.hito.flash, .front.flash, table.mx tr.row.flash td { animation: flash 1.6s ease-out; }
 @keyframes flash { from { background: rgba(204, 255, 0, .45); } to { background: transparent; } }
 .verdict { padding: 14px 14px; border-right: 2px solid var(--ink); display: flex; flex-direction: column; gap: 6px; border-width: 0 2px 0 0; border-style: solid; border-color: var(--ink); }
 .verdict b { font: 700 17px/1.2 var(--f-head); }

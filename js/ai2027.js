@@ -4,6 +4,7 @@ import { esc, fmtDate } from './fmt.js';
 import { indicatorRow } from './indicadores.js';
 import { curDate } from './carrera.js';
 import { hitoTimeline, tip } from './charts.js';
+import { OPEN, valOf, estimateCore } from './valoracion.js';
 
 const $ = s => document.querySelector(s);
 export const ESCALA = ['adelantado', 'compatible', 'retrasado', 'todavía no evaluable', 'sin evidencia suficiente'];
@@ -19,39 +20,21 @@ const PLAIN = {
 };
 const plain = (v, due) => !v ? 'Sin valoración' : v.v === 'todavía no evaluable' && due ? 'Plazo vencido, todavía sin evaluar' : PLAIN[v.v] || v.v;
 
-/* Valoración del observatorio: fija, o calculada por una regla del recolector (data/indicadores.json → checks). */
-function resolve(val, checks) {
-  if (!val?.regla) return val;
-  const c = checks?.[val.regla];
-  return c ? { ...val, v: c.v, texto: c.texto, fecha: c.fecha, sentido: c.sentido || null } : { ...val, v: 'sin evidencia suficiente', texto: 'La regla no ha podido calcularse en la última recogida.' };
-}
-const valOf = (h, quien, checks) => resolve((h.valoraciones || []).find(v => v.quien === quien), checks) || null;
-
-/* Estimación: sólo para hitos sin valoración posible todavía (plazo no vencido o sin medida directa). */
-const OPEN = ['todavía no evaluable', 'sin evidencia suficiente'];
-const EST_KIND = { regla: 'proyección con los datos recogidos', autores: 'valoración de los autores', ritmo: 'con el ritmo que estiman los autores', fuente: 'estimación del observatorio con fuentes' };
-const addDays = (d, k) => new Date(Date.parse(d) + k * 86400e3).toISOString().slice(0, 10);
+/* Valoración y estimación vigentes: js/valoracion.js, compartido con el detector de cambios del recolector. */
 const monthYear = d => new Date(d + 'T00:00:00Z').toLocaleDateString('es-ES', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const EST_KIND = { regla: 'proyección con los datos recogidos', autores: 'valoración de los autores', ritmo: 'con el ritmo que estiman los autores', fuente: 'estimación del observatorio con fuentes' };
 function estimate(h, checks, a) {
-  const e = h.estimacion;
-  if (!e) return null;
-  if (e.metodo === 'regla') { const c = checks?.[e.regla]; return c ? { ...e, v: c.v, sentido: c.sentido, texto: c.texto, fecha: c.fecha } : null; }
-  if (e.metodo === 'autores') {
-    const au = valOf(h, 'autores', checks);
-    return au && !OPEN.includes(au.v) ? { ...e, v: au.v, sentido: e.sentido || null, fecha: au.fecha, texto: `No hay una medida pública que permita comprobarlo, así que se toma como estimación la valoración que publicaron los autores (${curDate(au.fecha)}), recogida debajo.` } : null;
-  }
-  if (e.metodo === 'ritmo') {
-    const p = a.ritmo?.puntos?.at(-1), start = a.escenario.publicado;
-    if (!p?.rango) return null;
-    const span = (Date.parse(h.plazo) - Date.parse(start)) / 86400e3;
-    const early = addDays(start, span / p.rango[1]), late = addDays(start, span / p.rango[0]);
+  const e = estimateCore(h, checks, a);
+  if (e?.metodo === 'autores') return { ...e, texto: `No hay una medida pública que permita comprobarlo, así que se toma como estimación la valoración que publicaron los autores (${curDate(e.fecha)}), recogida debajo.` };
+  if (e?.metodo === 'ritmo') {
+    const { early, late, punto: p, ...rest } = e;
     return {
-      ...e, v: p.rango[1] < 1 ? 'retrasado' : 'compatible', sentido: p.rango[1] < 1 ? 'Llegaría más tarde' : 'Llegaría a tiempo', fecha: p.fecha,
+      ...rest,
       texto: `Si la realidad avanza al ${p.valor} de la velocidad del escenario, como estimaban los autores el ${curDate(p.fecha)}, este punto del relato llegaría entre ${monthYear(early)} y ${monthYear(late)}, en vez de ${h.plazo_texto}. Inferencia del observatorio a partir de esa estimación.`,
-      fuentes: [{ texto: 'AI Futures Project', url: p.url }, ...(e.fuentes || [])]
+      fuentes: [{ texto: 'AI Futures Project', url: p.url }, ...(h.estimacion.fuentes || [])]
     };
   }
-  return { ...e };
+  return e;
 }
 const estLabel = est => est.sentido || PLAIN[est.v] || est.v;
 
