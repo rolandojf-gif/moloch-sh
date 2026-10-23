@@ -83,15 +83,16 @@
           "cita": null,
           "plazo": "2026-12-31",
           "plazo_texto": "finales de 2026",
-          "estimacion": {"metodo": "regla", "regla": "est_horizonte3s", "muros": "Los tiempos de duplicación que publica METR son del horizonte al 50 %; aquí se aplican al del 80 % suponiendo la misma pendiente. METR no da por fiables valores por encima de unas 16 horas, así que mucho antes de 120 puede quedarse sin medida. Los autores, con una trayectoria que se acelera, lo veían en camino en febrero de 2026.", "fuentes": [{"texto": "METR, «Time Horizon 1.1» (29 ene 2026)", "url": "https://metr.org/blog/2026-1-29-time-horizon-1-1/"}]},
+          "estimacion": {"metodo": "regla", "regla": "est_mirror80", "rotulo": "con MirrorCode", "muros": "Una recta por pocos récords. La puntuación tiene techo en el 100 % y las últimas tareas suelen ser las más difíciles, así que puede frenar antes del 80 %. MirrorCode sólo mide programación con especificación y pruebas cerradas; Epoch advierte de que eso da horizontes más largos que los de METR.", "fuentes": [{"texto": "Epoch AI, «MirrorCode»", "url": "https://epoch.ai/benchmarks/mirrorcode"}]},
           "revisiones": [],
           "evidencia": [
+            { "tipo": "medida", "indicador": "bench.mirror" },
             { "tipo": "medida", "indicador": "metr.sota" },
             { "tipo": "valoración de los autores", "texto": "En febrero de 2026 situaban el horizonte al 80 % en 1,04 veces su trayectoria central.", "fuente": "AI Futures Project", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12" }
           ],
           "valoraciones": [
             { "quien": "autores", "v": "todavía no evaluable", "fecha": "2026-02-12", "texto": "Lo plantean como objetivo para finales de 2026 y advierten de que será más difícil de medir.", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions" },
-            { "quien": "observatorio", "v": "todavía no evaluable", "fecha": "2026-10-20", "texto": "El plazo no ha vencido. Puede quedarse sin medida: METR ya no actualiza la serie y no da por fiables valores por encima de 16 horas." }
+            { "quien": "observatorio", "regla": "mirror80" }
           ]
         },
         {
@@ -113,6 +114,7 @@
             { "fecha": "2026-08-16", "texto": "Si la realidad sigue al 75 % del ritmo del escenario, programador automatizado a mediados de 2027; al 60 %, a principios de 2028. Previsiones condicionales a avanzar tan rápido como sea técnicamente posible.", "url": "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }
           ],
           "evidencia": [
+            { "tipo": "medida", "indicador": "bench.mirror" },
             { "tipo": "medida", "indicador": "metr.sota" },
             { "tipo": "medida", "indicador": "bench.sweBest" }
           ],

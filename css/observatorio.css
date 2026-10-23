@@ -621,3 +621,5 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
   table.mx tr.row + tr.row, table.mx tr.detail + tr.row { margin-top: 12px; }
   .subt { display: block; overflow-x: auto; }
 }
+/* Serie detenida: se muestra con su fecha, pero ya no se compara ni se dibuja. */
+.stop { display: inline-block; margin-left: 6px; padding: 0 5px; border: 1px dashed var(--unknown); color: var(--muted); font: 700 10px var(--f-mono); text-transform: uppercase; letter-spacing: .04em; vertical-align: 2px; }

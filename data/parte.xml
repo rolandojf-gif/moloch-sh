@@ -6,13 +6,27 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.xml" rel="self" type="application/rss+xml"/>
   <description>Las noticias de la carrera por la IA que detecta cada día el observatorio, elegidas con una regla fija. Cifras de OpenRouter, Artificial Analysis, Epoch AI, Hugging Face y METR, con su fuente.</description>
   <language>es</language>
-  <lastBuildDate>Fri, 23 Oct 2026 03:11:09 GMT</lastBuildDate>
+  <lastBuildDate>Fri, 23 Oct 2026 04:25:22 GMT</lastBuildDate>
   <item>
     <title>Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter</title>
     <link>https://moloch-sh.netlify.app/#modelos/minimax/minimax-m3.1-flash</link>
     <guid isPermaLink="false">precio|minimax/minimax-m3.1-flash|2026-10-23</guid>
-    <pubDate>Fri, 23 Oct 2026 03:11:09 GMT</pubDate>
+    <pubDate>Fri, 23 Oct 2026 04:25:22 GMT</pubDate>
     <description>Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter: 0,15 $ de entrada y 0,6 $ de salida por millón de tokens. Hasta ahora era gratis. Su precio combinado en OpenRouter pasa de gratis a 0,262 $ por millón de tokens. De los 10 modelos con un índice de AA parecido (±2 puntos de su 42,7), 3 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $. Está en el parte porque el propio laboratorio empieza a cobrarlo en OpenRouter, donde era gratis. Detectado el 2026-10-23. Fuente: OpenRouter (https://openrouter.ai/minimax/minimax-m3.1-flash/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+  </item>
+  <item>
+    <title>DeepSeek reduce a la mitad el precio de DeepSeek V4.1 Flash 1017</title>
+    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4.1-flash-1017</link>
+    <guid isPermaLink="false">precio|deepseek/deepseek-v4.1-flash-1017|2026-10-23</guid>
+    <pubDate>Fri, 23 Oct 2026 04:25:22 GMT</pubDate>
+    <description>DeepSeek baja el precio de DeepSeek V4.1 Flash 1017 en OpenRouter: entrada de 0,3 $ a 0,15 $ y salida de 1,2 $ a 0,6 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,525 $ a 0,262 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $. Está en el parte porque el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %). Detectado el 2026-10-23. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+  </item>
+  <item>
+    <title>DeepSeek reduce a la mitad el precio de DeepSeek V4 Pro 0813</title>
+    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4-pro-0813</link>
+    <guid isPermaLink="false">precio|deepseek/deepseek-v4-pro-0813|2026-10-23</guid>
+    <pubDate>Fri, 23 Oct 2026 04:25:22 GMT</pubDate>
+    <description>DeepSeek baja el precio de DeepSeek V4 Pro 0813 en OpenRouter: entrada de 1,32 $ a 0,66 $ y salida de 3,96 $ a 1,98 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 1,98 $ a 0,99 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $. Está en el parte porque el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %). Detectado el 2026-10-23. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
     <title>DeepSeek duplica el precio de DeepSeek V4.1 Flash 1017</title>
@@ -40,7 +54,7 @@
     <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4.1-flash-1017</link>
     <guid isPermaLink="false">nuevo|deepseek/deepseek-v4.1-flash-1017</guid>
     <pubDate>Tue, 20 Oct 2026 05:00:00 GMT</pubDate>
-    <description>DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter. Índice de AA 45,1: a 1,2 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 15 de 141. Precio combinado 0,525 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 15 de 141). Publicado el 2026-10-17; detectado el 2026-10-20. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+    <description>DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter. Índice de AA 45,1: a 1,2 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 15 de 141. Precio combinado 0,262 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 15 de 141). Publicado el 2026-10-17; detectado el 2026-10-20. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
 </channel>
 </rss>

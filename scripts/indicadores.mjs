@@ -30,6 +30,7 @@ const PAGES = {
   eci: 'https://epoch.ai/benchmarks/eci',
   bench: 'https://epoch.ai/benchmarks',
   swe: 'https://epoch.ai/benchmarks/swe-bench-verified',
+  mirror: 'https://epoch.ai/benchmarks/mirrorcode',
   dc: 'https://epoch.ai/data/data-centers',
   chips: 'https://epoch.ai/data/ai-chip-sales',
   companies: 'https://epoch.ai/data/ai-companies',
@@ -40,6 +41,8 @@ const PAGES = {
 const SAME_ECI = 1;            // Epoch trata como «misma capacidad» dos modelos a menos de 1 punto ECI
 const VARIOS = 3;              // «several competing AIs»: en inglés, más de dos; al menos tres laboratorios (lectura del observatorio)
 const REV_TOLERANCE = 0.10;    // margen para dar por «compatible» una cifra de ingresos prevista
+const PARADA = 92;             // serie detenida: más de tres meses sin medir un modelo publicado después (o su editor la cierra)
+const MIRROR_UMBRAL = 80;      // hito «horizonte de tres semanas»: el mejor resultado en MirrorCode llega al 80 % (lectura del observatorio)
 
 const n = s => { const v = Number(String(s ?? '').replace(/,/g, '')); return s !== '' && s !== undefined && s !== null && Number.isFinite(v) ? v : null; };
 const r1 = v => v === null ? null : Math.round(v * 10) / 10;
@@ -158,24 +161,35 @@ function benchBlock(bench, ctx) {
     .sort((a, b) => b.models - a.models);
   const saturated = list.filter(t => t.best >= 90).length;
 
-  const swe = ok.filter(r => /^swe-bench verified$/i.test(r.task || ''))
+  const runs = re => ok.filter(r => re.test(r.task || ''))
     .map(r => ({ v: n(r['Best score (across scorers)']), model: r['Display name'] || r.Model, release: r['Version release date'] || (r.started_at || '').slice(0, 10) }));
-  const sweBest = swe.slice().sort((a, b) => b.v - a.v)[0] || null;
   // Serie para el gráfico: mejor resultado de cada modelo por fecha de publicación, marcando los récords.
-  const perModel = new Map();
-  for (const r of swe) if (r.release && (!perModel.has(r.model) || r.v > perModel.get(r.model).v)) perModel.set(r.model, r);
-  let top = -1;
-  const sweSeries = [...perModel.values()].sort((a, b) => a.release.localeCompare(b.release) || b.v - a.v)
-    .map(r => { const rec = r.v > top; if (rec) top = r.v; return { d: r.release, v: r1(r.v * 100), n: r.model, rec }; });
+  const series = rs => {
+    const perModel = new Map();
+    for (const r of rs) if (r.release && (!perModel.has(r.model) || r.v > perModel.get(r.model).v)) perModel.set(r.model, r);
+    let top = -1;
+    return [...perModel.values()].sort((a, b) => a.release.localeCompare(b.release) || b.v - a.v)
+      .map(r => { const rec = r.v > top; if (rec) top = r.v; return { d: r.release, v: r1(r.v * 100), n: r.model, rec }; });
+  };
+  // Serie detenida: el modelo más reciente que ha medido se publicó hace más de PARADA días.
+  const stop = rs => { const last = rs.map(r => r.release).filter(Boolean).sort().pop() || null; return { ultimo: last, detenida: last ? daysBetween(last, TODAY) > PARADA : null }; };
+  const swe = runs(/^swe-bench verified$/i), sweStop = stop(swe);
+  const sweBest = swe.slice().sort((a, b) => b.v - a.v)[0] || null;
+  const sweSeries = series(swe);
   const first85 = swe.filter(s => s.v >= 0.85 && s.release).sort((a, b) => a.release.localeCompare(b.release))[0] || null;
   const byMid2025 = swe.filter(s => s.release && s.release <= '2025-06-30').sort((a, b) => b.v - a.v)[0] || null;
+  const mc = runs(/^mirrorcode$/i), mcStop = stop(mc);
+  const mcBest = mc.slice().sort((a, b) => b.v - a.v)[0] || null;
+  const mcNote = 'MirrorCode ejecutado por Epoch: reimplementar programas enteros a partir de su comportamiento; a un ingeniero, algunas tareas le llevarían semanas';
 
   return {
     tasks: fact(list.length ? list : null, 'epoch', PAGES.bench, TODAY, { note: 'mejor resultado de cada evaluación ejecutada por Epoch (tareas con al menos 5 modelos)' }),
     saturated: fact(list.length ? saturated : null, 'epoch', PAGES.bench, TODAY, { of: list.length, note: 'evaluaciones cuyo mejor resultado alcanza el 90 %' }),
-    sweBest: fact(sweBest ? r1(sweBest.v * 100) : null, 'epoch', PAGES.swe, sweBest?.release || TODAY, { model: sweBest?.model || null, note: 'SWE-bench Verified ejecutado por Epoch' }),
+    sweBest: fact(sweBest ? r1(sweBest.v * 100) : null, 'epoch', PAGES.swe, sweBest?.release || TODAY, { model: sweBest?.model || null, ...sweStop, note: 'SWE-bench Verified ejecutado por Epoch' }),
     swe85: fact(first85 ? first85.release : null, 'epoch', PAGES.swe, TODAY, { model: first85?.model || null, score: first85 ? r1(first85.v * 100) : null, note: 'fecha de publicación del primer modelo que llega al 85 % en las ejecuciones de Epoch' }),
-    sweSeries: fact(sweSeries.length ? sweSeries : null, 'epoch', PAGES.swe, TODAY, { note: 'mejor resultado de cada modelo en las ejecuciones de Epoch, por fecha de publicación del modelo' }),
+    sweSeries: fact(sweSeries.length ? sweSeries : null, 'epoch', PAGES.swe, TODAY, { ...sweStop, note: 'mejor resultado de cada modelo en las ejecuciones de Epoch, por fecha de publicación del modelo' }),
+    mirror: fact(mcBest ? r1(mcBest.v * 100) : null, 'epoch', PAGES.mirror, mcBest?.release || TODAY, { model: mcBest?.model || null, models: new Set(mc.map(r => r.model)).size, ...mcStop, note: mcNote }),
+    mirrorSeries: fact(mc.length ? series(mc) : null, 'epoch', PAGES.mirror, TODAY, { ...mcStop, note: `${mcNote}; mejor resultado de cada modelo, por fecha de publicación del modelo` }),
     sweMid2025: fact(byMid2025 ? r1(byMid2025.v * 100) : null, 'epoch', PAGES.swe, '2025-06-30', { model: byMid2025?.model || null, note: 'mejor resultado de un modelo publicado antes del 30 jun 2025' })
   };
 }
@@ -358,7 +372,7 @@ async function metrBlock(ctx) {
     sota: fact(last ? h(last.p80)?.est ?? null : null, 'metr', PAGES.metr, last?.release || TODAY, {
       key: last?.key || null, p50: h(last?.p50), p80: h(last?.p80),
       ratio: last && last.p80 && last.p50 ? r2(last.p80.estimate / last.p50.estimate) : null,
-      models: rows.length, latestRelease,
+      models: rows.length, latestRelease, ultimo: latestRelease, detenida: latestRelease ? daysBetween(latestRelease, TODAY) > PARADA : null,
       note: 'horas de trabajo humano experto de las tareas que el agente completa con un 80 % de éxito; no son horas de autonomía'
     })
   };
@@ -375,8 +389,6 @@ const mill = v => `${es(Math.round(v / 1e5) / 10)} millones`;
 const sci = v => { const e = Math.floor(Math.log10(v)); return `${es((v / 10 ** e).toFixed(1))} × 10^${e}`; };
 /* Una fecha prevista frente al plazo: ±90 días cuenta como a tiempo. */
 const byDate = (reach, plazo) => { const k = daysBetween(plazo, reach); return k < -90 ? 'adelantado' : k > 90 ? 'retrasado' : 'compatible'; };
-/* METR, «Time Horizon 1.1» (29 ene 2026): tiempo de duplicación del horizonte al 50 %, en días. */
-const METR_DOUBLING = { reciente: 88.6, largo: 196.5 };
 /* NVIDIA, ficha del DGX H100: 10,2 kW como máximo para 8 GPU de 700 W (5,6 kW). Resto del servidor sobre el TDP de las GPU. */
 const SERVER_OVER_GPU = 10.2 / 5.6;
 /* Desfase del rival más cercano en la fecha del plazo: días desde que el líder publicó por primera vez un modelo
@@ -475,16 +487,36 @@ function checks(ind, TODAY) {
       texto: `Interpolando los ingresos anualizados que recoge Epoch y manteniendo el último (${es(Math.round(y.last.v / 1e8) / 10)} mil millones, ${dia(y.last.date)}) hasta fin de año, ${y.company} ingresaría unos ${es(Math.round(y.v / 1e8) / 10)} mil millones de $ en 2026, frente a 35 previstos (${rel >= 0 ? '+' : ''}${Math.round(rel * 100)} %). Si sigue creciendo, sería más.`
     };
   }
-  const m = ind.metr?.sota;
-  if (m?.p80?.est) {
-    const h0 = m.p80.est, from = m.asOf, need = Math.log2(120 / h0);
-    const at = dd => h0 * 2 ** (daysBetween(from, '2026-12-31') / dd);
-    const reachFast = addDays(from, need * METR_DOUBLING.reciente), reachSlow = addDays(from, need * METR_DOUBLING.largo);
-    const v = byDate(reachFast, '2026-12-31');
-    c.est_horizonte3s = {
-      v, sentido: { adelantado: 'Llegaría antes de lo previsto', compatible: 'Llegaría a tiempo', retrasado: 'Llegaría tarde' }[v],
-      texto: `El modelo puntero que mide METR (${dia(from)}) completa con un 80 % de éxito tareas de unas ${es(h0)} horas. Si el horizonte se duplica cada ${es(METR_DOUBLING.reciente)} días, como en los modelos desde 2024, a fin de 2026 serían unas ${es(Math.round(at(METR_DOUBLING.reciente)))} horas y las 120 llegarían hacia ${mes(reachFast)}. Al ritmo de toda la serie (cada ${es(METR_DOUBLING.largo)} días), unas ${es(Math.round(at(METR_DOUBLING.largo)))} horas, y las 120 no antes de ${mes(reachSlow)}.`
+  // «Horizonte de tres semanas» (fin de 2026): los autores lo plantean con el horizonte al 80 % de METR, que ya no mide
+  // por encima de 16 horas. Se contrasta con MirrorCode: «compatible» si el mejor resultado llega al MIRROR_UMBRAL.
+  const ms = ind.bench?.mirrorSeries, mt = ind.metr?.sota, PLAZO3S = '2026-12-31';
+  if (ms?.v?.length) {
+    const upto = ms.v.filter(p => p.d <= PLAZO3S), best = upto.slice().sort((a, b) => b.v - a.v)[0];
+    const reach = upto.find(p => p.v >= MIRROR_UMBRAL) || null, over = TODAY > PLAZO3S;
+    const v = reach ? byDate(reach.d, PLAZO3S) : over ? 'retrasado' : 'todavía no evaluable';
+    const metr = mt?.v != null ? `${mt.detenida ? `, y el último modelo que ha medido se publicó el ${dia(mt.ultimo)}` : ''}` : '';
+    c.mirror80 = {
+      v, sentido: { adelantado: 'Llegó al 80 % mucho antes del plazo', compatible: 'Llegó al 80 % a tiempo', retrasado: 'No llegó al 80 % a tiempo' }[v] || null,
+      texto: `Los autores lo plantean con el horizonte al 80 % de METR, que no mide con fiabilidad por encima de 16 horas${metr}. El observatorio lo contrasta con MirrorCode, de Epoch y METR: reimplementar programas enteros a partir de su comportamiento, con tareas que a un ingeniero le llevarían semanas. ${reach ? `El primer modelo que llega al ${MIRROR_UMBRAL} % es ${reach.n}, con un ${es(reach.v)} %, publicado el ${dia(reach.d)}.` : `Mejor resultado ${over ? 'hasta el plazo' : 'hasta hoy'}: ${es(best.v)} %, de ${best.n}, publicado el ${dia(best.d)}.`} Regla (lectura del observatorio): «compatible» si al vencer el plazo el mejor resultado llega al ${MIRROR_UMBRAL} %. MirrorCode sólo cubre programación y su puntuación no es el porcentaje de éxito en tareas de tres semanas.`
     };
+    // Estimación: desde el récord actual, al ritmo de la recta que mejor se ajusta a los récords de los últimos 12 meses
+    // (o a todos, si hay menos de dos).
+    const recs = ms.v.filter(p => p.rec), yr = recs.filter(p => daysBetween(p.d, TODAY) <= 365), pts = yr.length >= 2 ? yr : recs;
+    if (!reach && pts.length >= 2) {
+      const t = pts.map(p => daysBetween(pts[0].d, p.d)), y = pts.map(p => p.v), k = pts.length;
+      const mt_ = t.reduce((a, b) => a + b, 0) / k, my = y.reduce((a, b) => a + b, 0) / k;
+      const slope = t.reduce((a, ti, i) => a + (ti - mt_) * (y[i] - my), 0) / t.reduce((a, ti) => a + (ti - mt_) ** 2, 0);
+      if (slope > 0) {
+        const first = pts[0], last = pts[pts.length - 1];
+        const due = addDays(last.d, (MIRROR_UMBRAL - last.v) / slope), late = due <= TODAY;
+        const atPlazo = Math.min(100, last.v + slope * daysBetween(last.d, PLAZO3S));
+        const ev = byDate(late ? TODAY : due, PLAZO3S);
+        c.est_mirror80 = {
+          v: ev, sentido: { adelantado: 'Llegaría antes de lo previsto', compatible: 'Llegaría a tiempo', retrasado: 'Llegaría tarde' }[ev],
+          texto: `El récord de MirrorCode ha pasado del ${es(first.v)} % (${dia(first.d)}) al ${es(last.v)} % (${dia(last.d)}) en ${k} récords, unos ${es(r1(slope * MONTH_DAYS))} puntos al mes. A ese ritmo desde el récord actual, ${late ? `el ${MIRROR_UMBRAL} % ya tocaría: bastaría con el próximo modelo puntero que mida Epoch` : `el ${MIRROR_UMBRAL} % llegaría hacia ${mes(due)}`}${atPlazo >= 100 ? ', y antes de fin de 2026 llegaría al techo de la prueba' : `, y a fin de 2026 estaría en un ${es(Math.round(atPlazo))} %`}.`
+        };
+      }
+    }
   }
   const tr = ind.training;
   if (tr?.largest2025?.v) {

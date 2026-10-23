@@ -19,7 +19,8 @@ export function factItem(h) {
    comparar recogidas, y los cambios de estado de la hipótesis) y qué cambiaría la lectura. */
 function resumen(f, ind, log) {
   const sab = ind ? (f.sabemos || []).map(k => { const r = indicatorBrief(ind, k); return `<li><span class="k">${esc(r.label)}</span><b>${r.value}</b></li>`; }).join('') : '';
-  const vig = (log?.vigilados || []).filter(v => f.indicadores.includes(v.path));
+  const own = (log?.vigilados || []).filter(v => f.indicadores.includes(v.path));
+  const vig = own.filter(v => !v.detenida), stopped = own.filter(v => v.detenida);
   const ev = (log?.events || []).filter(e => e.kind === 'indicador' && f.indicadores.includes(e.data?.path)).map(e => ({ fecha: e.detected, html: `${esc(e.what)}${e.src?.url ? ` <a href="${esc(e.src.url)}" target="_blank" rel="noopener">${esc(e.src.name)}</a>` : ''}` }))
     .concat((f.lectura.historial || []).slice(1).map(h => ({ fecha: h.fecha, html: `La hipótesis pasa a «${esc((ESTADO[h.estado] || h.estado).toLowerCase())}».${h.nota ? ` ${esc(h.nota)}` : ''}` })))
     .sort((a, b) => b.fecha.localeCompare(a.fecha));
@@ -29,7 +30,7 @@ function resumen(f, ind, log) {
     : `<p>${vig.length ? `Ningún cambio en sus indicadores vigilados desde el ${esc(curDate(desde))}.` : 'El recolector no vigila todavía ningún indicador de este frente.'}</p>`;
   return `<div class="front-sum">
     <div><span class="lbl">Qué sabemos</span>${sab ? `<ul class="sum-ind">${sab}</ul>` : `<p>${ND}</p>`}<p class="m-sub">Detalle, fuentes y hechos, más abajo.</p></div>
-    <div><span class="lbl">Qué ha cambiado</span>${cambios}${vig.length ? `<p class="m-sub">Se comparan en cada recogida: ${vig.map(v => esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))).join('; ')}.</p>` : ''}</div>
+    <div><span class="lbl">Qué ha cambiado</span>${cambios}${vig.length ? `<p class="m-sub">Se comparan en cada recogida: ${vig.map(v => esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))).join('; ')}.</p>` : ''}${stopped.length ? `<p class="m-sub">Ya no se comparan, porque la serie se ha detenido: ${stopped.map(v => `${esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))} (último modelo medido, del ${esc(curDate(v.detenida))})`).join('; ')}.</p>` : ''}</div>
     <div class="sum-lect"><span class="lbl">Qué cambiaría la lectura · interpretación</span><p><b>La reforzaría:</b> ${esc(f.lectura.reforzaria)}</p><p><b>La debilitaría:</b> ${esc(f.lectura.debilitaria)}</p></div>
   </div>`;
 }
@@ -149,7 +150,12 @@ const CHARTS = {
     }
   ],
   agentes: I => [
-    I.bench?.sweSeries?.v?.length && {
+    I.bench?.mirrorSeries?.v?.length && !I.bench.mirrorSeries.detenida && {
+      title: 'Mejor resultado en MirrorCode',
+      note: `Ejecuciones propias de ${EPOCH('«MirrorCode»', I.bench.mirrorSeries.url).replace('Fuente: ', '')} Por fecha de publicación del modelo. Reimplementar programas enteros a partir de su comportamiento; a un ingeniero, algunas tareas le llevarían semanas. La línea discontinua es el umbral con el que el observatorio contrasta el hito de AI 2027 «Horizonte de unas tres semanas de trabajo» (lectura propia: los autores lo plantean con el horizonte de METR).`,
+      draw: el => recordChart(el, I.bench.mirrorSeries.v, { yLabel: '% de la puntuación', unit: ' %', ref: { v: 80, label: 'Umbral del observatorio para fin de 2026: 80 %' } })
+    },
+    I.bench?.sweSeries?.v?.length && !I.bench.sweSeries.detenida && {
       title: 'Mejor resultado en SWE-bench Verified',
       note: `Ejecuciones propias de ${EPOCH('«SWE-bench Verified»', I.bench.sweSeries.url).replace('Fuente: ', '')} Por fecha de publicación del modelo. La línea discontinua es la predicción de AI 2027 para mediados de 2025.`,
       draw: el => recordChart(el, I.bench.sweSeries.v, { yLabel: '% resuelto', unit: ' %', ref: { v: 85, label: 'AI 2027: 85 % a mediados de 2025' } })

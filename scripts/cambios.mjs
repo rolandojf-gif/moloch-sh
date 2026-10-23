@@ -43,14 +43,15 @@ const IND = [
   { k: 'capexB', path: 'dc.capex', fact: 'dc.now', get: f => f.capexB, label: 'Coste de capital de los centros que sigue Epoch', unit: 'mil millones de $', n: es0, u: 'mil millones de $', desde: '2026-10-23' },
   { k: 'metrRatio', path: 'metr.ratio', fact: 'metr.sota', get: f => f.ratio, label: 'Relación entre los horizontes al 80 % y al 50 % de METR', unit: '', n: v => es(v, 2), u: '', desde: '2026-10-23' },
   { k: 'sweBest', path: 'bench.sweBest', label: 'Mejor SWE-bench Verified en las ejecuciones de Epoch', unit: '%', n: es1, u: '%', ctx: f => f.model, desde: '2026-10-23' },
+  { k: 'mirror', path: 'bench.mirror', label: 'Mejor resultado en MirrorCode (ejecuciones de Epoch)', unit: '%', n: es1, u: '%', ctx: f => f.model, desde: '2026-10-23' },
   { k: 'saturated', path: 'bench.saturated', label: 'Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)', unit: 'evaluaciones', n: es0, u: 'evaluaciones', ctx: f => f.of ? `de ${f.of}` : null, desde: '2026-10-23' }
 ];
 const factOf = (ind, d) => at(ind, d.fact || d.path);
 const valueOf = (ind, d) => { const f = factOf(ind, d); return f ? (d.get ? d.get(f) : f.v) ?? null : null; };
 /* Valores de la instantánea diaria (clave k de cada indicador vigilado). */
 export const indSnapshot = ind => Object.fromEntries(IND.map(d => [d.k, ind ? valueOf(ind, d) : null]));
-/* Lista para la web: qué se vigila y desde cuándo. */
-export const VIGILADOS = IND.map(d => ({ path: d.path, label: d.label, desde: d.desde || '2026-10-20' }));
+/* Lista para la web: qué se vigila y desde cuándo. Una serie detenida (scripts/indicadores.mjs) deja de compararse. */
+export const vigilados = ind => IND.map(d => ({ path: d.path, label: d.label, desde: d.desde || '2026-10-20', ...(factOf(ind || {}, d)?.detenida ? { detenida: factOf(ind, d).ultimo } : {}) }));
 const SRC_NAME = { epoch: 'Epoch AI', metr: 'METR' };
 
 /* Puesto de cada modelo por índice de AA entre los de identidad confirmada: sirve para «un modelo del top 20». */
@@ -177,7 +178,7 @@ export function detectChanges(ctx) {
   /* ── Indicadores de La carrera ── */
   if (base.ind && ctx.ind) for (const d of IND) {
     const f = factOf(ctx.ind, d), a = base.ind[d.k], b = valueOf(ctx.ind, d);
-    if (a == null || b == null || f.stale || r2(a) === r2(b)) continue;
+    if (a == null || b == null || f.stale || f.detenida || r2(a) === r2(b)) continue;
     const c = d.ctx?.(f);
     out.push(item('indicador', `indicador|${d.k}|${TODAY}`, {
       published: f.asOf && f.asOf !== (f.got || '').slice(0, 10) ? f.asOf : null,
