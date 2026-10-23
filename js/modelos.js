@@ -1,4 +1,5 @@
-/* Vista «Modelos»: comparador, ficha desplegable, comparación de hasta tres y evolución de la frontera. */
+/* Vista «Modelos»: comparador, ficha desplegable (con su posición frente a otros modelos), comparación de hasta tres y
+   evolución de la frontera. */
 import { esc, fact, src, weightsTag, usd, num, tokens, fmtDate, country, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, speed, priceBasis, ND, AA_LINK } from './fmt.js';
 import { frontier, hbars, tip } from './charts.js';
 
@@ -48,6 +49,58 @@ function speedCell(m) {
   return `<span class="big">${num(s.tps, 0)}</span> tok/s${src(s.f)}<span class="m-sub">latencia ${ttft}</span><span class="m-sub" title="${esc(s.provider)}">${esc(s.short)}</span>`;
 }
 
+/* «Frente a otros modelos»: dónde queda el modelo en la carrera frente a tres referencias del catálogo. Describe su
+   posición, no recomienda. Índice parecido: ±PARECIDO puntos de AA, el mismo criterio que el parte de Hoy. */
+const PARECIDO = 2;
+const signed = (v, d = 1) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${num(Math.abs(v), d)}`;
+/* Latencia para comparar: segundos hasta el primer token de la respuesta (AA, con la configuración que obtiene el índice,
+   incluido el tiempo de pensar). El primer token de la tabla no sirve aquí: con los modelos que muestran su razonamiento
+   llega en un segundo y con los que lo ocultan tras minutos. Sin AA, el primer token del proveedor más rápido. */
+function latOf(m) {
+  const s = speed(m);
+  if (!s) return null;
+  if (/^AA/.test(s.short)) return m.aa.ttfa?.v ? { v: m.aa.ttfa.v, aa: true, how: s.short === 'AA' ? '' : ` con la configuración ${s.short.slice(4)}` } : null;
+  return s.ttft !== null && s.ttft !== undefined ? { v: s.ttft, aa: false, how: ` (primer token, en ${s.provider})` } : null;
+}
+function race(m) {
+  const me = ii(m);
+  if (me === null) return `<div class="race"><h4>Frente a otros modelos del catálogo</h4><p class="note">Sin índice de Artificial Analysis: no se puede situar frente a los demás en la misma escala.</p></div>`;
+  const scored = D.catalog.models.filter(x => ii(x) !== null && x.identity === 'confirmada');
+  const all = scored.slice().sort((a, b) => ii(b) - ii(a));
+  const block = m.weights.v === 'abiertos' || m.weights.v === 'cerrados' ? all.filter(x => x.weights.v === m.weights.v) : [];
+  const rank = all.findIndex(x => x.id === m.id) + 1, rankB = block.findIndex(x => x.id === m.id) + 1;
+  const near = scored.filter(x => x.id !== m.id && Math.abs(ii(x) - me) <= PARECIDO);
+  const price = x => !freeOnly(x) && blended(x) > 0 ? blended(x) : null;
+  const myLat = latOf(m);
+  // Cada referencia es otro modelo o, si este mismo ya es el mejor en ese criterio, una frase que lo dice.
+  const refs = [];
+  const bestOpen = all.find(x => x.weights.v === 'abiertos');
+  if (bestOpen) refs.push(bestOpen.id === m.id ? { k: 'Mejor modelo abierto', t: 'Es este: el de mayor índice de AA entre los abiertos.' } : { k: 'Mejor modelo abierto', x: bestOpen });
+  const kCheap = `El más barato con un índice parecido (±${PARECIDO})`, kFast = `El que antes empieza a responder con un índice parecido (±${PARECIDO})`;
+  const priced = near.filter(x => price(x) !== null);
+  const cheap = priced.sort((a, b) => price(a) - price(b))[0];
+  if (cheap) refs.push(price(m) !== null && price(m) <= price(cheap) ? { k: kCheap, t: `Es este: ninguno de los ${priced.length} con un índice parecido y precio cuesta menos.` } : { k: kCheap, x: cheap });
+  const timed = myLat ? near.filter(x => latOf(x) && latOf(x).aa === myLat.aa) : [];
+  const fast = timed.sort((a, b) => latOf(a).v - latOf(b).v)[0];
+  if (fast) refs.push(myLat.v <= latOf(fast).v ? { k: kFast, t: `Es este: ninguno de los ${timed.length} con un índice parecido y latencia de la misma fuente responde antes.` } : { k: kFast, x: fast });
+  const rel = (pa, pb) => pb === pa ? 'el mismo' : pb < pa ? `un ${num((1 - pb / pa) * 100, 0)} % más barato` : pb / pa < 2 ? `un ${num((pb / pa - 1) * 100, 0)} % más caro` : `${num(pb / pa, 1)} veces su precio`;
+  const dist = x => {
+    const bits = [`índice AA ${num(ii(x))} (${signed(Math.round((ii(x) - me) * 10) / 10)} puntos)`];
+    const pa = price(m), pb = price(x);
+    if (pb !== null) bits.push(`precio combinado ${usd(pb)} / M${pa !== null ? ` (${rel(pa, pb)})` : ''}`);
+    const lx = latOf(x);
+    if (lx && myLat && lx.aa === myLat.aa) bits.push(`hasta la respuesta ${num(lx.v, 2)} s${esc(lx.how)} (${signed(lx.v - myLat.v, 2)} s)`);
+    return bits.join(' · ');
+  };
+  const cmp = [m, ...new Map(refs.filter(r => r.x).map(r => [r.x.id, r.x])).values()].slice(0, 3);
+  return `<div class="race"><h4>Frente a otros modelos del catálogo</h4>
+    <p>Puesto <b>${rank}</b> de ${all.length} en el ${esc(aaIndexName(D.catalog.aaIndexVersion))}${rankB ? `; ${rankB}.º de ${block.length} entre los ${esc(m.weights.v)}` : ''}. ${myLat ? `Tarda ${num(myLat.v, 2)} s en empezar a responder${esc(myLat.how)}.` : 'Sin dato de latencia.'}</p>
+    ${refs.length ? `<ul>${refs.map(r => `<li><span class="k">${esc(r.k)}</span>${r.x ? `<a href="#modelos/${esc(r.x.id)}">${esc(r.x.name)}</a> <span class="m-lab">${esc(r.x.lab.name)} · ${esc(r.x.weights.v || 'pesos sin datos')}</span><span class="d">${dist(r.x)}</span>` : esc(r.t)}</li>`).join('')}</ul>` : ''}
+    ${cmp.length > 1 ? `<p class="m-link"><a href="#modelos/comparar/${cmp.map(x => esc(x.id)).join(',')}">Comparar con ${cmp.length > 2 ? 'ellos' : 'él'}</a></p>` : ''}
+    <p class="note">Describe dónde queda este modelo en la carrera, no es una recomendación. Entre paréntesis, la diferencia con este modelo. Latencia: segundos hasta el primer token de la respuesta según AA, con la configuración que obtiene el índice e incluido el tiempo de pensar; por eso unos modelos tardan minutos y otros segundos en llegar a un índice parecido. No es la latencia de la tabla, que cuenta el primer token de cualquier tipo. Si AA no la mide, el primer token del proveedor más rápido de OpenRouter; sólo se comparan latencias de la misma fuente.</p>
+  </div>`;
+}
+
 function detail(m) {
   const eps = (m.endpoints || []);
   const aa = m.aa;
@@ -83,7 +136,7 @@ function detail(m) {
         <td class="num">${e.uptime !== null && e.uptime !== undefined ? num(e.uptime, 1) + ' %' : 'sin datos'}</td></tr>`).join('')}</tbody>
     </table>
     <div class="prov">Proveedores: ${src(m.endpointsMeta)} ${m.endpointsMeta ? `consulta ${esc(m.endpointsMeta.got.slice(0, 10))}` : ''}. Velocidad y espera dependen de quién sirve el modelo.</div>` : '<p class="note">Sin datos de proveedores.</p>';
-  return `<p class="m-link"><a href="#modelos/${esc(m.id)}" title="Dirección propia de esta ficha, para volver a ella o compartirla">Enlace a esta ficha</a></p><dl class="dgrid">${dl.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${provTable}`;
+  return `<p class="m-link"><a href="#modelos/${esc(m.id)}" title="Dirección propia de esta ficha, para volver a ella o compartirla">Enlace a esta ficha</a></p><dl class="dgrid">${dl.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${race(m)}${provTable}`;
 }
 
 function syncHeads() {

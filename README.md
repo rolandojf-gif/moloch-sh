@@ -7,7 +7,7 @@ Sitio estático (HTML, CSS y JavaScript sin build) para entrar, entender qué ha
 | Vista | Pregunta | Estado |
 | --- | --- | --- |
 | Hoy | ¿Qué ha cambiado y por qué importa? | parte diario: hasta tres noticias de la última recogida, elegidas con una regla fija que la página publica, o «sin cambios significativos»; lo nuevo desde la última visita (guardado sólo en el navegador) y todo lo detectado en 7 días |
-| Modelos | ¿Cómo se comparan abiertos y cerrados? | fase 1 |
+| Modelos | ¿Cómo se comparan abiertos y cerrados? | tabla ordenable, comparación de hasta tres y evolución de la frontera; la ficha de cada modelo dice su puesto en el índice de AA y la distancia, en índice, precio y tiempo hasta la respuesta, con el mejor abierto, el más barato de índice parecido (±2 puntos) y el que antes empieza a responder con ese índice. Describe su posición en la carrera, no recomienda |
 | Lanzamientos | ¿Qué ha salido realmente? | fase 1 |
 | La carrera | ¿Qué acelera o frena el avance? | distancias en índice entre EE. UU. y China, cerrados y abiertos, y los dos primeros laboratorios; seis frentes que empiezan por qué sabemos, qué ha cambiado (lo que detecta el recolector en sus indicadores) y qué cambiaría la lectura, con datos, hechos con fuente y una «Lectura Moloch» marcada como interpretación |
 | AI 2027 | ¿Cómo encaja la realidad con aquel escenario? | cinco líneas y 19 hitos con la predicción original intacta, revisiones fechadas de los autores y valoración propia en una escala fija; las predicciones que juntan varias afirmaciones se valoran también por partes, y se señalan las tres próximas que se podrán comprobar con datos |

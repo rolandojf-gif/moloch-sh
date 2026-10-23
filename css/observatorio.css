@@ -321,6 +321,15 @@ tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .compare-head a { margin-left: auto; font: 700 11px var(--f-mono); }
 a.m-open { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .m-link { margin: 0 0 10px; font: 700 11px var(--f-mono); text-transform: uppercase; }
+.race { margin: 16px 0 6px; padding: 12px 14px; border: 2px solid var(--ink); background: var(--card-2); }
+.race h4 { margin: 0 0 8px; font: 700 12px var(--f-mono); text-transform: uppercase; letter-spacing: .06em; }
+.race p { margin: 0 0 6px; font-size: 14px; }
+.race ul { list-style: none; margin: 4px 0 8px; padding: 0; }
+.race li { padding: 6px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+.race li .k { display: block; font: 700 10.5px var(--f-mono); text-transform: uppercase; color: var(--muted); }
+.race li .m-lab { color: var(--muted); font-size: 13px; margin-left: 4px; }
+.race li .d { display: block; font-size: 13.5px; }
+.race .m-link { margin: 6px 0; }
 .cmp-grid { display: grid; gap: 0; overflow-x: auto; }
 .cmp-grid > div { padding: 7px 10px; border-bottom: 1px solid var(--line); font-size: 14px; min-width: 0; }
 .cmp-grid .rh { font: 700 10.5px var(--f-mono); text-transform: uppercase; color: var(--muted); }
