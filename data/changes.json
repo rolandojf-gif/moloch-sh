@@ -1,36 +1,46 @@
 {
- "generated": "2026-10-22T08:22:56Z",
+ "generated": "2026-10-23T02:35:11Z",
  "window": 7,
- "since": "2026-10-16",
- "base": "2026-10-21",
+ "since": "2026-10-17",
+ "base": "2026-10-22",
  "items": [
   {
    "kind": "nuevo",
+   "key": "nuevo|minimax/minimax-m3.1-flash",
    "model": "minimax/minimax-m3.1-flash",
+   "published": "2026-10-19",
+   "detected": "2026-10-20",
    "date": "2026-10-19",
+   "mag": null,
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/minimax/minimax-m3.1-flash:free",
-    "got": "2026-10-22T08:22:56Z"
+    "url": "https://openrouter.ai/minimax/minimax-m3.1-flash",
+    "got": "2026-10-23T02:35:11Z"
    },
-   "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
+   "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter.",
    "data": {
-    "weights": "cerrados",
-    "in": 0,
-    "out": 0,
+    "weights": "abiertos",
+    "in": 0.15,
+    "out": 0.6,
     "ii": 42.7,
     "eci": null,
-    "identity": "confirmada"
+    "identity": "confirmada",
+    "rankAA": 21,
+    "of": 141
    }
   },
   {
    "kind": "nuevo",
+   "key": "nuevo|deepseek/deepseek-v4.1-flash-1017",
    "model": "deepseek/deepseek-v4.1-flash-1017",
+   "published": "2026-10-17",
+   "detected": "2026-10-20",
    "date": "2026-10-17",
+   "mag": null,
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
-    "got": "2026-10-22T08:22:56Z"
+    "got": "2026-10-23T02:35:11Z"
    },
    "what": "DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -39,7 +49,111 @@
     "out": 1.2,
     "ii": 45.1,
     "eci": null,
-    "identity": "confirmada"
+    "identity": "confirmada",
+    "rankAA": 15,
+    "of": 141
+   }
+  },
+  {
+   "kind": "precio",
+   "key": "precio|minimax/minimax-m3.1-flash|2026-10-23",
+   "published": null,
+   "detected": "2026-10-23",
+   "date": "2026-10-23",
+   "mag": {
+    "v": 100,
+    "unit": "%"
+   },
+   "model": "minimax/minimax-m3.1-flash",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/minimax/minimax-m3.1-flash/providers",
+    "got": "2026-10-23T02:35:11Z"
+   },
+   "what": "Minimax sube el precio de MiniMax M3.1 Flash en OpenRouter: entrada de 0 $ a 0,15 $ y salida de 0 $ a 0,6 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "provider": "Minimax",
+    "from": {
+     "in": 0,
+     "out": 0
+    },
+    "to": {
+     "in": 0.15,
+     "out": 0.6
+    },
+    "pct": 100,
+    "since": "2026-10-22",
+    "rankAA": 21,
+    "of": 141
+   }
+  },
+  {
+   "kind": "precio",
+   "key": "precio|openai/gpt-6-luna|2026-10-23",
+   "published": null,
+   "detected": "2026-10-23",
+   "date": "2026-10-23",
+   "mag": {
+    "v": 100,
+    "unit": "%"
+   },
+   "model": "openai/gpt-6-luna",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/openai/gpt-6-luna/providers",
+    "got": "2026-10-23T02:35:11Z"
+   },
+   "what": "OpenAI sube el precio de GPT-6 Luna en OpenRouter: entrada de 0,05 $ a 0,1 $ y salida de 0,25 $ a 0,5 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "provider": "OpenAI",
+    "from": {
+     "in": 0.05,
+     "out": 0.25
+    },
+    "to": {
+     "in": 0.1,
+     "out": 0.5
+    },
+    "pct": 100,
+    "since": "2026-10-22",
+    "rankAA": 40,
+    "of": 141
+   }
+  },
+  {
+   "kind": "precio",
+   "key": "precio|google/gemini-3.8-flash|2026-10-23",
+   "published": null,
+   "detected": "2026-10-23",
+   "date": "2026-10-23",
+   "mag": {
+    "v": 100,
+    "unit": "%"
+   },
+   "model": "google/gemini-3.8-flash",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/google/gemini-3.8-flash/providers",
+    "got": "2026-10-23T02:35:11Z"
+   },
+   "what": "Google AI Studio sube el precio de Gemini 3.8 Flash en OpenRouter: entrada de 0,375 $ a 0,75 $ y salida de 1,875 $ a 3,75 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "provider": "Google AI Studio",
+    "from": {
+     "in": 0.375,
+     "out": 1.875
+    },
+    "to": {
+     "in": 0.75,
+     "out": 3.75
+    },
+    "pct": 100,
+    "since": "2026-10-22",
+    "rankAA": 26,
+    "of": 141
    }
   },
   {
@@ -65,6 +179,13 @@
     },
     "pct": 100,
     "since": "2026-10-21"
+   },
+   "key": "precio|deepseek/deepseek-v4.1-flash-1017|2026-10-22",
+   "published": null,
+   "detected": "2026-10-22",
+   "mag": {
+    "v": 100,
+    "unit": "%"
    }
   },
   {
@@ -90,6 +211,13 @@
     },
     "pct": 11.1,
     "since": "2026-10-21"
+   },
+   "key": "precio|tencent/hy4-preview|2026-10-22",
+   "published": null,
+   "detected": "2026-10-22",
+   "mag": {
+    "v": 11.1,
+    "unit": "%"
    }
   },
   {
@@ -115,6 +243,13 @@
     },
     "pct": 100,
     "since": "2026-10-21"
+   },
+   "key": "precio|deepseek/deepseek-v4-pro-0813|2026-10-22",
+   "published": null,
+   "detected": "2026-10-22",
+   "mag": {
+    "v": 100,
+    "unit": "%"
    }
   },
   {
@@ -140,6 +275,34 @@
     },
     "pct": 60,
     "since": "2026-10-21"
+   },
+   "key": "precio|tencent/hy3|2026-10-22",
+   "published": null,
+   "detected": "2026-10-22",
+   "mag": {
+    "v": 60,
+    "unit": "%"
+   }
+  },
+  {
+   "kind": "pesos",
+   "key": "pesos|minimax/minimax-m3.1-flash",
+   "published": "2026-10-17",
+   "detected": "2026-10-23",
+   "date": "2026-10-17",
+   "mag": null,
+   "model": "minimax/minimax-m3.1-flash",
+   "src": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
+    "got": "2026-10-23T02:35:11Z"
+   },
+   "what": "MiniMax M3.1 Flash: pesos descargables en Hugging Face (licencia minimax-community).",
+   "data": {
+    "license": "minimax-community",
+    "weightsSrc": "hf",
+    "rankAA": 21,
+    "of": 141
    }
   },
   {
@@ -154,7 +317,11 @@
    "what": "Ling 3.1 Flash: pesos descargables en Hugging Face (licencia mit).",
    "data": {
     "license": "mit"
-   }
+   },
+   "key": "pesos|inclusionai/ling-3.1-flash",
+   "published": "2026-10-13",
+   "detected": "2026-10-21",
+   "mag": null
   }
  ]
 }
