@@ -6,7 +6,7 @@ Sitio estático (HTML, CSS y JavaScript sin build) para entrar, entender qué ha
 
 | Vista | Pregunta | Estado |
 | --- | --- | --- |
-| Hoy | ¿Qué ha cambiado y por qué importa? | fase 1 |
+| Hoy | ¿Qué ha cambiado y por qué importa? | parte diario: hasta tres noticias de la última recogida, elegidas con una regla fija que la página publica, o «sin cambios significativos»; lo nuevo desde la última visita (guardado sólo en el navegador) y todo lo detectado en 7 días |
 | Modelos | ¿Cómo se comparan abiertos y cerrados? | fase 1 |
 | Lanzamientos | ¿Qué ha salido realmente? | fase 1 |
 | La carrera | ¿Qué acelera o frena el avance? | fase 2: distancias en índice entre EE. UU. y China, cerrados y abiertos, y los dos primeros laboratorios; seis frentes con datos, hechos con fuente y una «Lectura Moloch» marcada como interpretación |
@@ -21,7 +21,8 @@ Ninguna cifra está escrita a mano en el código. `scripts/collect.mjs` consulta
 | Archivo | Contenido |
 | --- | --- |
 | `data/catalog.json` | Catálogo actual. Cada cifra es `{ v, src, url, asOf, got }`: valor, fuente, enlace, fecha del dato y fecha de consulta. |
-| `data/changes.json` | Lo que muestra «Hoy»: los cambios de los últimos 7 días (modelos nuevos, primeras puntuaciones, pesos abiertos, cambios de precio del propio laboratorio, retiradas, cambios de líder y de versión del índice de AA, indicadores de La carrera, valoraciones de AI 2027 y ranking de uso). |
+| `data/changes.json` | Lo que muestra «Hoy»: los cambios de los últimos 7 días (modelos nuevos, primeras puntuaciones, pesos abiertos, cambios de precio del propio laboratorio, retiradas, cambios de líder y de versión del índice de AA, indicadores de La carrera, valoraciones de AI 2027 y ranking de uso), y el parte del día (`parte`). `scripts/parte.mjs` decide qué cambios son noticia con una regla fija y redacta titular y consecuencia con plantillas a partir de las cifras, sin modelo de lenguaje. |
+| `data/parte.xml` | Fuente RSS del parte: las noticias de los últimos 30 días, con titular, consecuencia, motivo, fechas y fuente. |
 | `data/events-log.json` | Registro acumulado de esos cambios (salvo las altas). Cada uno lleva tipo, magnitud, fecha de publicación si la fuente la da, fecha de detección y enlace a la evidencia; los detecta `scripts/cambios.mjs` comparando cada recogida con la del día anterior. |
 | `data/history/AAAA-MM-DD.json` | Instantánea diaria compacta para las series históricas (incluye los indicadores). |
 | `data/indicadores.json` | Indicadores agregados de «La carrera» y «AI 2027» con la misma forma de hecho, el estado de cada fuente y el resultado de las reglas de valoración (`checks`). |

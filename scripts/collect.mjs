@@ -5,6 +5,7 @@
      data/catalog.json        catálogo actual: cada cifra lleva fuente, URL, fecha del dato y fecha de consulta
      data/changes.json        cambios de la ventana de «Hoy» (scripts/cambios.mjs: modelos, líderes, indicadores, valoraciones, uso)
      data/events-log.json     registro acumulado de esos cambios
+     data/parte.xml           fuente RSS del parte diario (scripts/parte.mjs)
      data/history/<fecha>.json instantánea compacta para series históricas
      data/indicadores.json     cifras de «La carrera» y «AI 2027» (scripts/indicadores.mjs)
 
@@ -30,6 +31,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { collectIndicators, indicatorSnapshot } from './indicadores.mjs';
 import { detectChanges, mergeLog, snapshotExtras } from './cambios.mjs';
+import { enrich, parte, rss } from './parte.mjs';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DATA = path.join(ROOT, 'data');
@@ -823,11 +825,22 @@ async function main() {
   const exclIds = new Set((orModels.excluded || []).map(e => e.id));
   evLog.events = evLog.events.filter(e => !exclIds.has(e.model));
   evLog.events = mergeLog(evLog.events, changeItems, TODAY);
+  // Parte diario: titular, importancia según la regla fija y consecuencia de cada cambio (scripts/parte.mjs).
+  const carrera = await readJSON(path.join(DATA, 'curated/carrera.json'));
+  const P = {
+    byId: new Map(models.map(m => [m.id, m])), models, base, leaders: snap.leaders, ind: indicators.ind, checks: indicators.checks, ai2027, carrera,
+    hitos: new Map((ai2027?.lineas || []).flatMap(l => (l.hitos || []).map(h => [h.id, h]))), uso: usoNow || catalog.uso
+  };
+  enrich(evLog.events, P, TODAY);
+  enrich(novedades, P, TODAY);
   await writeFile(logPath, JSON.stringify({ _doc: evLog._doc, events: evLog.events }, null, 1) + '\n');
   // «Hoy»: altas de la última semana más los cambios registrados en ella.
   // Un cambio entra por su fecha o por la de su detección (unos pesos publicados hace semanas pero detectados hoy).
   const hoyItems = novedades.concat(evLog.events.filter(e => e.date >= hoyFrom || e.detected >= hoyFrom));
-  await writeFile(path.join(DATA, 'changes.json'), JSON.stringify({ generated: NOW_ISO, window: HOY_DAYS, since: hoyFrom, base: baseDate, items: hoyItems }, null, 1) + '\n');
+  const brief = parte(hoyItems, TODAY, novedades.concat(evLog.events));
+  await writeFile(path.join(DATA, 'changes.json'), JSON.stringify({ generated: NOW_ISO, window: HOY_DAYS, since: hoyFrom, base: baseDate, parte: brief, items: hoyItems }, null, 1) + '\n');
+  await writeFile(path.join(DATA, 'parte.xml'), rss(novedades.concat(evLog.events), { NOW_ISO, TODAY }));
+  log(`parte del ${TODAY}: ${brief.noticias.length ? brief.noticias.join(' | ') : `sin noticias${brief.ultima ? ` (la última, ${brief.ultima.key}, del ${brief.ultima.fecha})` : ''}`}`);
   log(`escrito: ${models.length} modelos (${models.filter(m => m.epoch?.eci?.v).length} con ECI), ${changeItems.length} cambios frente al ${baseDate || '—'} (${Object.entries(changeItems.reduce((a, e) => ({ ...a, [e.kind]: (a[e.kind] || 0) + 1 }), {})).map(([k, n]) => `${k} ${n}`).join(', ') || 'ninguno'}), ${hoyItems.length} en la ventana de Hoy, AA ${status.aa.ok ? 'ok' : status.aa.reason}`);
 }
 

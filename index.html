@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap">
 <link rel="stylesheet" href="css/observatorio.css">
+<link rel="alternate" type="application/rss+xml" title="MOLOCH.SH · parte diario" href="data/parte.xml">
 <script src="js/theme-init.js"></script>
 <script type="module" src="js/app.js"></script>
 </head>
@@ -51,6 +52,8 @@
       <p class="lede" id="hoy-period"></p>
     </div>
     <div class="news" id="hoy-news"></div>
+    <div class="visit" id="hoy-visit" hidden></div>
+    <details class="more" id="hoy-reglas" hidden><summary>Cómo se eligen las noticias</summary><div id="hoy-reglas-body"></div></details>
     <details class="more" id="hoy-all"><summary></summary><ul class="changes" id="hoy-all-list"></ul></details>
 
     <h2 class="sec">Indicadores</h2>

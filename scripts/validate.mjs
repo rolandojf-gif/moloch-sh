@@ -158,6 +158,24 @@ for (const [where, list] of [['changes', chg?.items], ['events-log', evl?.events
   if (e.published !== null && !DAY.test(e.published || '')) errors.push(`${w}: fecha de publicación no válida ${e.published}`);
   if (!/^(https:\/\/|#)\S+$/.test(e.src?.url || '')) errors.push(`${w}: sin enlace a la evidencia`);
   if (!e.what) errors.push(`${w}: sin descripción`);
+  if (e.importancia && !e.importancia.porque) errors.push(`${w}: noticia sin motivo`);
+}
+/* El parte: hasta tres noticias de ese día, todas en la lista de cambios, que cumplen la regla y no repiten modelo ni hito. */
+if (chg?.parte) {
+  const p = chg.parte, byKey = new Map((chg.items || []).map(e => [e.key, e]));
+  if (!DAY.test(p.fecha || '')) errors.push('parte: sin fecha');
+  if (!Array.isArray(p.noticias) || p.noticias.length > 3) errors.push('parte: más de tres noticias');
+  if (!p.reglas?.length) errors.push('parte: sin la regla publicada');
+  const quien = new Set();
+  for (const k of p.noticias || []) {
+    const e = byKey.get(k);
+    if (!e) { errors.push(`parte: ${k} no está en la lista de cambios`); continue; }
+    if (!e.importancia || e.detected !== p.fecha || !e.titular) errors.push(`parte: ${k} no cumple la regla, no es de ese día o no tiene titular`);
+    const q = e.model || e.data?.hito || e.key;
+    if (quien.has(q)) errors.push(`parte: ${q} sale dos veces`);
+    quien.add(q);
+  }
+  if (p.noticias?.length && p.ultima) errors.push('parte: con noticias no lleva «la última anterior»');
 }
 
 if (warnings.length) console.warn(`avisos:\n${warnings.join('\n')}`);
