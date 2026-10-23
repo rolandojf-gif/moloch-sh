@@ -38,7 +38,7 @@ const PAGES = {
 };
 
 const SAME_ECI = 1;            // Epoch trata como «misma capacidad» dos modelos a menos de 1 punto ECI
-const VARIOS = 2;              // «varios modelos de la competencia»: al menos dos laboratorios (lectura del observatorio)
+const VARIOS = 3;              // «several competing AIs»: en inglés, más de dos; al menos tres laboratorios (lectura del observatorio)
 const REV_TOLERANCE = 0.10;    // margen para dar por «compatible» una cifra de ingresos prevista
 
 const n = s => { const v = Number(String(s ?? '').replace(/,/g, '')); return s !== '' && s !== undefined && s !== null && Number.isFinite(v) ? v : null; };
@@ -415,7 +415,7 @@ function checks(ind, TODAY) {
     } else c.openAgent0 = { v: 'sin evidencia suficiente', texto: 'Faltan datos de ECI para alguna de las dos fechas.' };
     const rv = ind.eci.agent0?.rivals;
     if (closed && rv) {
-      const list = rv.map(r => `${firstOrg(r.org)} (${r.model}, ${es(r.eci)}, ${r.date})`).join('; ');
+      const list = rv.map(r => `${firstOrg(r.org)} (${r.model}, ${es(r.eci)}, publicado el ${dia(r.date)})`).join('; ');
       c.variosAgent0 = { v: rv.length >= VARIOS ? 'compatible' : 'retrasado', texto: `Hasta el 30 abr 2026, ${rv.length ? `${rv.length} laboratorio${rv.length > 1 ? 's' : ''} distinto${rv.length > 1 ? 's' : ''} de ${firstOrg(closed.org)} publicaron un modelo a menos de ${SAME_ECI} punto ECI de ${closed.model} (${es(closed.eci)}) o por encima: ${list}` : `ningún laboratorio distinto de ${firstOrg(closed.org)} publicó un modelo a menos de ${SAME_ECI} punto ECI de ${closed.model} (${es(closed.eci)})`}. Regla: «varios» son al menos ${VARIOS}.` };
     } else c.variosAgent0 = { v: 'sin evidencia suficiente', texto: 'Faltan datos de ECI hasta el 30 abr 2026.' };
   }
