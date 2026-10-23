@@ -89,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash/providers",
-    "got": "2026-10-23T03:11:09Z"
+    "got": "2026-10-23T03:58:10Z"
    },
    "what": "Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter: 0,15 $ de entrada y 0,6 $ de salida por millón de tokens. Hasta ahora era gratis.",
    "data": {
@@ -132,127 +132,74 @@
   },
   {
    "kind": "precio",
-   "key": "precio|openai/gpt-6-luna-pro|2026-10-23",
+   "key": "precio|openai/gpt-6.1-sol|2026-10-23",
    "published": null,
    "detected": "2026-10-23",
    "date": "2026-10-23",
    "mag": {
-    "v": 100,
+    "v": -50,
     "unit": "%"
    },
-   "model": "openai/gpt-6-luna-pro",
+   "model": "openai/gpt-6.1-sol",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/openai/gpt-6-luna-pro/providers",
-    "got": "2026-10-23T03:11:09Z"
+    "url": "https://openrouter.ai/openai/gpt-6.1-sol/providers",
+    "got": "2026-10-23T03:58:10Z"
    },
-   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6 Luna Pro (0,05 $ de entrada y 0,25 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,1 $ de entrada y 0,5 $ de salida.",
+   "what": "OpenAI añade en OpenRouter una tarifa más barata de GPT-6.1 Sol: 1 $ de entrada y 5 $ de salida por millón de tokens. La anterior (2 $ de entrada y 10 $ de salida) sigue disponible.",
    "data": {
     "basis": "laboratorio",
-    "sub": "tarifa-retirada",
+    "sub": "tarifa-nueva",
     "provider": "OpenAI",
     "from": {
-     "in": 0.05,
-     "out": 0.25
+     "in": 2,
+     "out": 10
     },
     "to": {
-     "in": 0.1,
-     "out": 0.5
+     "in": 1,
+     "out": 5
     },
-    "pct": 100,
+    "pct": -50,
     "tiersFrom": [
      [
-      0.05,
-      0.25
+      2,
+      10
      ],
      [
-      0.1,
-      0.5
+      4,
+      20
      ],
      [
-      0.2,
-      1
+      12,
+      60
      ]
     ],
     "tiersTo": [
      [
-      0.1,
-      0.5
+      1,
+      5
      ],
      [
-      0.2,
-      1
-     ]
-    ],
-    "since": "2026-10-22"
-   },
-   "titular": "OpenAI retira la tarifa más barata de GPT-6 Luna Pro en OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/openai/gpt-6-luna-pro",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 0,1 $ a 0,2 $ por millón de tokens."
-  },
-  {
-   "kind": "precio",
-   "key": "precio|openai/gpt-6-luna|2026-10-23",
-   "published": null,
-   "detected": "2026-10-23",
-   "date": "2026-10-23",
-   "mag": {
-    "v": 100,
-    "unit": "%"
-   },
-   "model": "openai/gpt-6-luna",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/openai/gpt-6-luna/providers",
-    "got": "2026-10-23T03:11:09Z"
-   },
-   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6 Luna (0,05 $ de entrada y 0,25 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,1 $ de entrada y 0,5 $ de salida.",
-   "data": {
-    "basis": "laboratorio",
-    "sub": "tarifa-retirada",
-    "provider": "OpenAI",
-    "from": {
-     "in": 0.05,
-     "out": 0.25
-    },
-    "to": {
-     "in": 0.1,
-     "out": 0.5
-    },
-    "pct": 100,
-    "tiersFrom": [
-     [
-      0.05,
-      0.25
+      2,
+      10
      ],
      [
-      0.1,
-      0.5
+      4,
+      20
      ],
      [
-      0.2,
-      1
-     ]
-    ],
-    "tiersTo": [
-     [
-      0.1,
-      0.5
-     ],
-     [
-      0.2,
-      1
+      12,
+      60
      ]
     ],
     "since": "2026-10-22",
-    "rankAA": 40,
+    "rankAA": 7,
     "of": 141
    },
-   "titular": "OpenAI retira la tarifa más barata de GPT-6 Luna en OpenRouter",
+   "titular": "OpenAI añade una tarifa más barata de GPT-6.1 Sol en OpenRouter",
    "importancia": null,
-   "ficha": "#modelos/openai/gpt-6-luna",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 0,1 $ a 0,2 $ por millón de tokens. De los 13 modelos con un índice de AA parecido (±2 puntos de su 38,1), 2 cuestan menos; el más barato es DeepSeek V4.1 Flash, a 0,113 $."
+   "ficha": "#modelos/openai/gpt-6.1-sol",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 4 $ a 2 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 51,8), ninguno cuesta menos."
   },
   {
    "kind": "precio",
@@ -421,7 +368,7 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
-    "got": "2026-10-23T03:11:09Z"
+    "got": "2026-10-23T03:58:10Z"
    },
    "what": "MiniMax M3.1 Flash: pesos descargables en Hugging Face (licencia minimax-community).",
    "data": {
