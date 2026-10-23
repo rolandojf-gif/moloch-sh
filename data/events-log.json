@@ -12,7 +12,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash/providers",
-    "got": "2026-10-23T02:56:15Z"
+    "got": "2026-10-23T02:57:42Z"
    },
    "what": "Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter: 0,15 $ de entrada y 0,6 $ de salida por millón de tokens. Hasta ahora era gratis.",
    "data": {
@@ -45,7 +45,11 @@
     "of": 141
    },
    "titular": "Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter",
-   "importancia": null,
+   "importancia": {
+    "tier": 5,
+    "w": 100,
+    "porque": "el propio laboratorio empieza a cobrarlo en OpenRouter, donde era gratis"
+   },
    "ficha": "#modelos/minimax/minimax-m3.1-flash",
    "consecuencia": "Su precio combinado en OpenRouter pasa de gratis a 0,262 $ por millón de tokens. De los 10 modelos con un índice de AA parecido (±2 puntos de su 42,7), 3 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $."
   },
@@ -63,7 +67,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6-luna-pro/providers",
-    "got": "2026-10-23T02:56:15Z"
+    "got": "2026-10-23T02:57:42Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6 Luna Pro (0,05 $ de entrada y 0,25 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,1 $ de entrada y 0,5 $ de salida.",
    "data": {
@@ -124,7 +128,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6-luna/providers",
-    "got": "2026-10-23T02:56:15Z"
+    "got": "2026-10-23T02:57:42Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6 Luna (0,05 $ de entrada y 0,25 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,1 $ de entrada y 0,5 $ de salida.",
    "data": {
@@ -175,73 +179,6 @@
   },
   {
    "kind": "precio",
-   "key": "precio|google/gemini-3.8-flash|2026-10-23",
-   "published": null,
-   "detected": "2026-10-23",
-   "date": "2026-10-23",
-   "mag": {
-    "v": 100,
-    "unit": "%"
-   },
-   "model": "google/gemini-3.8-flash",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/google/gemini-3.8-flash/providers",
-    "got": "2026-10-23T02:56:15Z"
-   },
-   "what": "Google AI Studio deja de ofrecer en OpenRouter su tarifa más barata de Gemini 3.8 Flash (0,375 $ de entrada y 1,875 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,75 $ de entrada y 3,75 $ de salida.",
-   "data": {
-    "basis": "laboratorio",
-    "sub": "tarifa-retirada",
-    "provider": "Google AI Studio",
-    "from": {
-     "in": 0.375,
-     "out": 1.875
-    },
-    "to": {
-     "in": 0.75,
-     "out": 3.75
-    },
-    "pct": 100,
-    "tiersFrom": [
-     [
-      0.375,
-      1.875
-     ],
-     [
-      0.75,
-      3.75
-     ],
-     [
-      0.825,
-      4.125
-     ],
-     [
-      1.35,
-      6.75
-     ]
-    ],
-    "tiersTo": [
-     [
-      0.75,
-      3.75
-     ],
-     [
-      1.35,
-      6.75
-     ]
-    ],
-    "since": "2026-10-22",
-    "rankAA": 26,
-    "of": 141
-   },
-   "titular": "Google AI Studio retira la tarifa más barata de Gemini 3.8 Flash en OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/google/gemini-3.8-flash",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 0,75 $ a 1,5 $ por millón de tokens. De los 14 modelos con un índice de AA parecido (±2 puntos de su 40,9), 6 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $."
-  },
-  {
-   "kind": "precio",
    "key": "precio|x-ai/grok-4.3|2026-10-23",
    "published": null,
    "detected": "2026-10-23",
@@ -254,7 +191,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/x-ai/grok-4.3/providers",
-    "got": "2026-10-23T02:56:15Z"
+    "got": "2026-10-23T02:57:42Z"
    },
    "what": "xAI deja de ofrecer en OpenRouter su tarifa más barata de Grok 4.3 (1,25 $ de entrada y 2,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2,5 $ de entrada y 5 $ de salida.",
    "data": {
@@ -462,7 +399,7 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
-    "got": "2026-10-23T02:56:15Z"
+    "got": "2026-10-23T02:57:42Z"
    },
    "what": "MiniMax M3.1 Flash: pesos descargables en Hugging Face (licencia minimax-community).",
    "data": {
