@@ -24,7 +24,7 @@ export const REGLAS = [
   'Cambia la valoración del observatorio de un hito de AI 2027.',
   `Un modelo nuevo, o uno que recibe su primera puntuación de AA, entra en el top ${TOP} del índice de AA.`,
   `Publica pesos abiertos un modelo del top ${TOP} del índice de AA.`,
-  `El propio laboratorio cambia su precio en OpenRouter al menos un +${SUBE} % o un ${String(BAJA).replace('-', '−')} % (precio combinado), o lo deja gratis. No cuenta que retire o añada una tarifa.`,
+  `El propio laboratorio cambia su precio en OpenRouter al menos un +${SUBE} % o un ${String(BAJA).replace('-', '−')} % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa.`,
   `La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, una distancia que cambia al menos ${DIST} punto ECI, o potencia, chips o ingresos que cambian al menos un ${CIFRA} %.`,
   'Cambia el modelo más usado en OpenRouter en los últimos 7 días.'
 ];
@@ -57,6 +57,7 @@ export function importancia(e) {
       return d.rankAA && d.rankAA <= TOP ? { tier: 4, w: TOP + 1 - d.rankAA, porque: `publica pesos abiertos un modelo del top ${TOP} del índice de AA (puesto ${d.rankAA})` } : null;
     case 'precio':
       if (d.sub === 'gratis') return { tier: 5, w: 100, porque: 'el propio laboratorio lo deja gratis en OpenRouter' };
+      if (d.sub === 'cobra') return { tier: 5, w: 100, porque: 'el propio laboratorio empieza a cobrarlo en OpenRouter, donde era gratis' };
       return (d.sub || 'precio') === 'precio' && d.pct != null && (d.pct >= SUBE || d.pct <= BAJA)
         ? { tier: 5, w: Math.abs(d.pct), porque: `el propio laboratorio ${d.pct > 0 ? 'sube' : 'baja'} su precio combinado un ${pct(d.pct)} (umbral: +${SUBE} % o ${String(BAJA).replace('-', '−')} %)` } : null;
     case 'indicador': {
