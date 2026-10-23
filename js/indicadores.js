@@ -11,6 +11,11 @@ const COUNTRY = { US: 'EE. UU.', CN: 'China', otros: 'otros' };
 /* Epoch da el país de cada centro en inglés. */
 export const PAIS = { 'United States': 'EE. UU.', 'United States of America': 'EE. UU.', China: 'China', Malaysia: 'Malasia', 'United Arab Emirates': 'EAU', 'Saudi Arabia': 'Arabia Saudí', 'United Kingdom': 'Reino Unido', Norway: 'Noruega', Japan: 'Japón', 'South Korea': 'Corea del Sur', Germany: 'Alemania', France: 'Francia', Spain: 'España', Canada: 'Canadá', Singapore: 'Singapur', Taiwan: 'Taiwán', Qatar: 'Catar', Sweden: 'Suecia', Finland: 'Finlandia', Netherlands: 'Países Bajos' };
 
+/* Serie detenida (scripts/indicadores.mjs): su editor la cerró o lleva más de tres meses sin medir un modelo nuevo. Se
+   muestra con su fecha, pero ya no se compara, no se dibuja ni se extrapola. */
+const stopTag = f => f?.detenida ? ' <span class="stop">serie detenida</span>' : '';
+const stopNote = f => f?.detenida ? ` Serie detenida: el último modelo medido se publicó el ${esc(fmtDate(f.ultimo))}; ya no se compara ni se extrapola.` : '';
+
 /* Hecho «hermano» para listas y valores derivados que no son un hecho propio: misma fuente y fechas. */
 const like = (f, v, extra = {}) => f ? { src: f.src, url: f.url, asOf: f.asOf, got: f.got, stale: f.stale, ...extra, v } : null;
 
@@ -77,7 +82,15 @@ const REG = {
   },
   'bench.sweBest': (I) => {
     const f = I.bench?.sweBest;
-    return { label: 'Mejor SWE-bench Verified (ejecución de Epoch)', value: fact(f, v => `${num(v, 1)} %`), sub: f?.model ? esc(f.model) : '' };
+    return { label: 'Mejor SWE-bench Verified (ejecución de Epoch)', value: fact(f, v => `${num(v, 1)} %`) + stopTag(f), sub: `${f?.model ? esc(f.model) + '.' : ''}${stopNote(f)}` };
+  },
+  'bench.mirror': (I) => {
+    const f = I.bench?.mirror;
+    return {
+      label: 'Mejor resultado en MirrorCode (ejecución de Epoch)',
+      value: fact(f, v => `${num(v, 1)} %`) + stopTag(f),
+      sub: f?.v != null ? `${esc(f.model)}, publicado el ${esc(fmtDate(f.asOf))}; ${num(f.models, 0)} modelos medidos. Reimplementar programas enteros a partir de su comportamiento: a un ingeniero, algunas tareas le llevarían semanas.${stopNote(f)}` : ''
+    };
   },
   'bench.swe85': (I) => {
     const f = I.bench?.swe85;
@@ -150,13 +163,13 @@ const REG = {
     const f = I.metr?.sota;
     return {
       label: 'Horizonte al 80 % del modelo puntero (METR)',
-      value: fact(f, v => `${num(v, 1)} h`),
-      sub: f?.v != null ? `Intervalo ${num(f.p80?.lo, 1)}–${num(f.p80?.hi, 1)} h; al 50 %: ${num(f.p50?.est, 1)} h. ${esc(f.key || '')}, publicado el ${esc(fmtDate(f.asOf))}. Horas de trabajo de un experto humano, no horas de autonomía.` : ''
+      value: fact(f, v => `${num(v, 1)} h`) + stopTag(f),
+      sub: f?.v != null ? `Intervalo ${num(f.p80?.lo, 1)}–${num(f.p80?.hi, 1)} h; al 50 %: ${num(f.p50?.est, 1)} h. ${esc(f.key || '')}, publicado el ${esc(fmtDate(f.asOf))}. Horas de trabajo de un experto humano, no horas de autonomía.${stopNote(f)}` : ''
     };
   },
   'metr.ratio': (I) => {
     const f = I.metr?.sota;
-    return { label: 'Relación entre los horizontes al 80 % y al 50 %', value: f?.ratio != null ? `${num(f.ratio, 2)}${src(like(f, f.ratio))}` : ND, sub: 'Cuanto más baja, más ancha es la franja de tareas que el agente sólo completa a veces.' };
+    return { label: 'Relación entre los horizontes al 80 % y al 50 %', value: f?.ratio != null ? `${num(f.ratio, 2)}${src(like(f, f.ratio))}${stopTag(f)}` : ND, sub: `Cuanto más baja, más ancha es la franja de tareas que el agente sólo completa a veces.${stopNote(f)}` };
   }
 };
 

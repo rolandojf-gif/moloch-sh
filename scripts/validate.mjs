@@ -64,7 +64,7 @@ const DAY = /^\d{4}-\d{2}-\d{2}$/, DAYMONTH = /^\d{4}-\d{2}(-\d{2})?$/, URL_RE =
 const IND_KEY = /^(eci|bench|dc|chips|companies|metr)\.[A-Za-z0-9]+$/;
 const ESTADOS = ['abierta', 'confirmada', 'debilitada'];
 const ESCALA = ['adelantado', 'compatible', 'retrasado', 'todavía no evaluable', 'sin evidencia suficiente'];
-const REGLAS = ['swe85', 'openAgent0', 'variosAgent0', 'openaiRev2025', 'rivales39', 'deepcent6'];
+const REGLAS = ['swe85', 'openAgent0', 'variosAgent0', 'openaiRev2025', 'rivales39', 'deepcent6', 'mirror80'];
 const EVID = ['medida', 'declarada', 'valoración de los autores', 'contexto'];
 const need = (o, k, where, re) => { if (!o?.[k] || (re && !re.test(o[k]))) errors.push(`${where}: falta o no es válido «${k}»`); };
 

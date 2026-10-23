@@ -57,14 +57,14 @@
       "id": "agentes",
       "titulo": "Fiabilidad de agentes",
       "pregunta": "¿Cuánto trabajo exige todavía supervisión o corrección?",
-      "indicadores": ["metr.sota", "metr.ratio", "bench.sweBest"],
-      "sabemos": ["metr.sota", "metr.ratio"],
+      "indicadores": ["bench.mirror", "metr.sota", "metr.ratio", "bench.sweBest"],
+      "sabemos": ["bench.mirror", "metr.sota"],
       "hechos": [
         { "texto": "El horizonte temporal mide cuánto le llevarían las tareas a un experto humano, no cuánto tiempo puede trabajar el agente sin supervisión.", "fuente": "METR, «Time horizons» (preguntas frecuentes)", "url": "https://metr.org/time-horizons", "fecha": "2026-09-08", "consulta": "2026-10-20", "verificacion": "lectura directa" },
         { "texto": "METR ya no actualiza activamente su página de horizontes temporales; la última actualización es del 8 de septiembre de 2026.", "fuente": "METR, «Time horizons»", "url": "https://metr.org/time-horizons", "fecha": "2026-09-08", "consulta": "2026-10-20", "verificacion": "lectura directa" },
         { "texto": "En el estudio de METR con grupo de control, los desarrolladores tardaron un 19 % más con IA a principios de 2025 (intervalo: +2 % a +39 %). A finales de 2025 tardaron un 18 % menos (−38 % a +9 %) los participantes originales y un 4 % menos (−15 % a +9 %) los nuevos. METR considera poco fiable esta segunda cifra por efectos de selección (entre un 30 y un 50 % de las tareas quedaron fuera) y la toma como cota inferior de la aceleración.", "fuente": "METR, «Uplift update»", "url": "https://metr.org/blog/2026-02-24-uplift-update", "fecha": "2026-02-24", "consulta": "2026-10-20", "verificacion": "lectura directa" }
       ],
-      "faltan": ["Una medición independiente que sustituya a la de METR cuando su serie deje de cubrir los modelos nuevos.", "Datos de campo sobre cuánto trabajo de agentes se revisa o se rehace."],
+      "faltan": ["Una medida de fiabilidad (éxito al 80 %) en tareas largas que se siga actualizando: MirrorCode mide tareas de semanas, pero sólo de programación y con una puntuación global.", "Datos de campo sobre cuánto trabajo de agentes se revisa o se rehace."],
       "lectura": {
         "hipotesis": "La fiabilidad crece más despacio que la capacidad: lo que un agente completa 4 de cada 5 veces queda muy por debajo de lo que completa la mitad de las veces, y esa distancia es trabajo de supervisión humana.",
         "estado": "abierta",

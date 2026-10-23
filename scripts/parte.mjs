@@ -25,7 +25,7 @@ export const REGLAS = [
   `Un modelo nuevo, o uno que recibe su primera puntuación de AA, entra en el top ${TOP} del índice de AA.`,
   `Publica pesos abiertos un modelo del top ${TOP} del índice de AA.`,
   `El propio laboratorio cambia su precio en OpenRouter al menos un +${SUBE} % o un ${String(BAJA).replace('-', '−')} % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa.`,
-  `La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, una distancia que cambia al menos ${DIST} punto ECI, o potencia, chips o ingresos que cambian al menos un ${CIFRA} %.`,
+  `La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos ${DIST} punto ECI, o potencia, chips o ingresos que cambian al menos un ${CIFRA} %.`,
   'Cambia el modelo más usado en OpenRouter en los últimos 7 días.'
 ];
 
@@ -65,6 +65,7 @@ export function importancia(e) {
       const rel = d.from ? Math.abs((d.to - d.from) / d.from * 100) : 100;
       if (d.ind === 'eci') return { tier: 6, w: 100, porque: 'cambia el mejor modelo según el ECI de Epoch' };
       if (d.ind === 'metrP80h') return { tier: 6, w: 90, porque: 'METR publica un nuevo punto del modelo puntero' };
+      if (d.ind === 'mirror') return d.to > d.from ? { tier: 6, w: 90, porque: 'nuevo récord en MirrorCode, la medida de tareas de semanas con la que el observatorio sustituye a METR' } : null;
       if (GAP[d.ind]) return Math.abs(d.to - d.from) >= DIST ? { tier: 6, w: 50 + Math.abs(d.to - d.from), porque: `la distancia ${GAP[d.ind]} cambia al menos ${DIST} punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad` } : null;
       return CIFRAS.has(d.ind) && rel >= CIFRA ? { tier: 6, w: rel, porque: `la cifra cambia un ${pct(rel)} (umbral: ${CIFRA} %)` } : null;
     }
@@ -107,6 +108,7 @@ export function titular(e, C) {
       if (d.ind === 'chipsH100e') return `Epoch ${up ? 'eleva' : 'rebaja'} a ${es(d.to / 1e6, 1)} millones de H100e los chips de IA entregados`;
       if (d.ind === 'revLeader') return `${f.company || 'El líder'}: ${es(d.to / 1e9, 1)} mil millones de $ de ingresos anualizados`;
       if (d.ind === 'metrP80h') return `METR: el modelo puntero ${up ? 'sube' : 'baja'} a ${es(d.to, 1)} h de horizonte al 80 %`;
+      if (d.ind === 'mirror') return `${f.model || 'Un modelo'} marca un nuevo récord en MirrorCode: ${es(d.to, 1)} %`;
       return e.what;
     }
     case 'uso': return d.sub === 'primero' ? `${name} pasa a ser el modelo más usado en OpenRouter` : `${name} entra en el top 10 de uso de OpenRouter`;
@@ -174,7 +176,8 @@ export function consecuencia(e, C) {
         dcMW: `${f.n ? `${f.n} centros. ` : ''}Potencia de los equipos, sin refrigeración; no es el total mundial.`,
         chipsH100e: 'Chips entregados según Epoch, no necesariamente instalados.',
         revLeader: f.company ? `${f.company}, ${f.type || 'ingresos'}, confianza de Epoch: ${f.confidence || 'sin datos'}.` : '',
-        metrP80h: 'Horas de trabajo de un experto humano en las tareas que completa, no horas de autonomía.'
+        metrP80h: 'Horas de trabajo de un experto humano en las tareas que completa, no horas de autonomía.',
+        mirror: `Antes, ${es(d.from, 1)} %. Reimplementar programas enteros a partir de su comportamiento, tareas que a un ingeniero le llevarían semanas; ejecuciones de Epoch.`
       }[d.ind] || '';
       const uses = [...C.hitos.values()].filter(h => (h.evidencia || []).some(x => x.indicador === d.path)).map(h => `«${h.titulo}»`);
       return `${ctx}${uses.length ? ` En AI 2027 es evidencia de ${uses.join(' y ')}.` : ''}`.trim() || null;
