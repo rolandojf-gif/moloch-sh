@@ -3,7 +3,11 @@ import { esc, fact, src, provLine, usd, num, fmtDate, blended, ii, capFact, eci,
 import { scatter, daily, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
-const KIND = { nuevo: 'Nuevo modelo', pesos: 'Pesos abiertos', precio: 'Precio del laboratorio', evaluacion: 'Evaluación independiente', retirada: 'Retirada' };
+const KIND = { nuevo: 'Nuevo modelo', pesos: 'Pesos abiertos', precio: 'Precio del laboratorio', evaluacion: 'Evaluación independiente', retirada: 'Retirada',
+  lider: 'Cambio de líder', version: 'Versión del índice AA', indicador: 'La carrera', valoracion: 'Seguimiento de AI 2027', uso: 'Uso en OpenRouter' };
+/* Las tarjetas, de momento, sólo para cambios de un modelo; el resto del detector va a la lista completa. */
+const CARD_KINDS = new Set(['nuevo', 'pesos', 'precio', 'evaluacion', 'retirada']);
+const modelLink = (d, id, name) => d.byId.has(id) ? `<a class="m-open" href="#modelos/${esc(id)}" title="Abrir su ficha en Modelos">${esc(name)}</a>` : esc(name);
 /* Orden de las tarjetas: modelos nuevos, evaluaciones y pesos antes que precios y retiradas. */
 const TIER = { nuevo: 0, evaluacion: 0, pesos: 0, precio: 1, retirada: 2 };
 const GAPS = [5, 10, 15];
@@ -76,10 +80,10 @@ function renderNews(d) {
   // Lista completa: cronológica, lo más reciente primero.
   const byDate = (a, b) => (b.date || '').localeCompare(a.date || '');
   const all = (d.changes.items || []).slice();
-  const cards = all.slice().sort((a, b) => (TIER[a.kind] ?? 3) - (TIER[b.kind] ?? 3) || byDate(a, b) || relevance(b, d.byId) - relevance(a, d.byId));
+  const cards = all.filter(it => CARD_KINDS.has(it.kind)).sort((a, b) => (TIER[a.kind] ?? 3) - (TIER[b.kind] ?? 3) || byDate(a, b) || relevance(b, d.byId) - relevance(a, d.byId));
   const items = all.sort((a, b) => byDate(a, b) || (TIER[a.kind] ?? 3) - (TIER[b.kind] ?? 3) || relevance(b, d.byId) - relevance(a, d.byId));
   const days = d.changes.window || 7;
-  $('#hoy-period').innerHTML = `Últimos ${days} días, desde el ${esc(fmtDate(d.changes.since))}: modelos nuevos en OpenRouter, primeras puntuaciones, pesos abiertos, cambios de precio del propio laboratorio y retiradas.`;
+  $('#hoy-period').innerHTML = `Últimos ${days} días, desde el ${esc(fmtDate(d.changes.since))}: modelos nuevos en OpenRouter, primeras puntuaciones, pesos abiertos, cambios de precio del propio laboratorio y retiradas. En la lista completa, también cambios de líder, de los indicadores de La carrera, de las valoraciones de AI 2027 y del ranking de uso de OpenRouter.`;
   if (!items.length) {
     $('#hoy-news').innerHTML = `<div class="empty">Nada en los últimos ${days} días: ningún modelo nuevo, primera puntuación, pesos nuevos, cambio de precio del laboratorio de al menos un 5 % ni retirada en los laboratorios seguidos.</div>`;
     $('#hoy-all').hidden = true;
@@ -88,10 +92,10 @@ function renderNews(d) {
   // Una tarjeta por modelo: un modelo nuevo con su primera puntuación no ocupa dos.
   const seen = new Set();
   const top = cards.filter(it => !seen.has(it.model) && seen.add(it.model)).slice(0, 3);
-  $('#hoy-news').innerHTML = top.map(it => `
+  $('#hoy-news').innerHTML = !top.length ? `<div class="empty">Ningún modelo nuevo, primera puntuación, pesos nuevos, cambio de precio del laboratorio de al menos un 5 % ni retirada en ${days} días. Otros cambios, en la lista completa.</div>` : top.map(it => `
     <article class="news-card">
       <span class="tag k-${esc(it.kind)}">${esc(KIND[it.kind] || it.kind)}</span>
-      <h3>${esc(d.byId.get(it.model)?.name || it.data?.name || it.model)}</h3>
+      <h3>${modelLink(d, it.model, d.byId.get(it.model)?.name || it.data?.name || it.model)}</h3>
       <p><span class="lbl">Qué ocurrió</span>${esc(it.what)}</p>
       <p><span class="lbl">Qué cambia</span>${consequence(it, d)}</p>
       ${provLine({ ...it.src, date: it.date })}
@@ -99,7 +103,8 @@ function renderNews(d) {
   const more = $('#hoy-all');
   more.hidden = items.length <= top.length;
   more.querySelector('summary').textContent = `Ver todo lo ocurrido en ${days} días (${items.length})`;
-  $('#hoy-all-list').innerHTML = items.map(it => `<li><span>${esc(fmtDate(it.date))}</span><span><b>${esc(KIND[it.kind] || it.kind)}.</b> ${esc(it.what)}</span>${provLine(it.src)}</li>`).join('');
+  const more2 = it => it.data?.ficha ? ` <a href="${esc(it.data.ficha)}">Ver la ficha</a>` : it.model && d.byId.has(it.model) ? ` <a href="#modelos/${esc(it.model)}">Abrir el modelo</a>` : '';
+  $('#hoy-all-list').innerHTML = items.map(it => `<li><span>${esc(fmtDate(it.date))}</span><span><b>${esc(KIND[it.kind] || it.kind)}.</b> ${esc(it.what)}${more2(it)}</span>${provLine(it.src)}</li>`).join('');
 }
 
 const priceBy = m => priceBasis(m) ? `, ${esc(priceBasis(m))}` : '';
@@ -124,7 +129,7 @@ function renderKPIs(d, gapPts) {
     let delta = '';
     if (prevLead && prevLead.id !== m.id && prevLead.ii !== undefined) delta = ` Antes: ${esc(prev.models[prevLead.id]?.n || prevLead.id)} (${num(prevLead.ii)}).`;
     const ep = eci(m) !== null ? ` ECI en Epoch AI: ${fact(m.epoch.eci, v => num(v))}.` : '';
-    return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small">${esc(m.name)}</span>
+    return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small">${modelLink(d, m.id, m.name)}</span>
       <span class="s">${esc(m.lab.name)} · índice AA ${fact(capFact(m), v => num(v))}${aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : ''}.${ep}${delta}</span></div>`;
   };
 

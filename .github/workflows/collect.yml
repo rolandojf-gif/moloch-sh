@@ -1,11 +1,15 @@
 name: Recogida de datos
 
-# Recogida diaria programada a las 05:00 de Madrid todo el año (GitHub sólo ejecuta el cron en la
+# Recogida diaria programada a las 04:17 de Madrid todo el año (GitHub sólo ejecuta el cron en la
 # rama principal), manual, o al cambiar el recolector o los datos curados en una rama de trabajo
-# (para su vista previa).
+# (para su vista previa). GitHub retrasa los programados, más en las horas en punto (el 22 oct la de
+# las 05:00 salió a las 10:22): por eso un minuto impar y un disparo de respaldo a las 06:47, que no
+# hace nada si ya hay una recogida completa del día (scripts/frescura.mjs).
 on:
   schedule:
-    - cron: '0 5 * * *'
+    - cron: '17 4 * * *'
+      timezone: 'Europe/Madrid'
+    - cron: '47 6 * * *'
       timezone: 'Europe/Madrid'
   workflow_dispatch:
   push:
@@ -32,7 +36,12 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: '22'
+      - name: Comprobar si hace falta
+        id: frescura
+        if: github.event_name == 'schedule'
+        run: node scripts/frescura.mjs >> "$GITHUB_OUTPUT"
       - name: Recoger
+        if: steps.frescura.outputs.falta != 'false'
         env:
           # Clave gratuita de Artificial Analysis; sus datos se publican con el permiso de data/curated/permisos.json.
           AA_API_KEY: ${{ secrets.AA_API_KEY }}
@@ -40,8 +49,10 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.MOLOCHSH_API_KEY }}
         run: node scripts/collect.mjs
       - name: Validar
+        if: steps.frescura.outputs.falta != 'false'
         run: node scripts/validate.mjs
       - name: Publicar datos
+        if: steps.frescura.outputs.falta != 'false'
         run: |
           git config user.name 'moloch-collector'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -67,7 +78,7 @@ jobs:
               --body "La recogida de $(date -u +%Y-%m-%d) ha fallado y la web sigue con los datos anteriores. Registro: $RUN_URL"
           fi
       - name: Cerrar el aviso
-        if: success() && github.ref == 'refs/heads/main'
+        if: success() && github.ref == 'refs/heads/main' && steps.frescura.outputs.falta != 'false'
         env:
           GH_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

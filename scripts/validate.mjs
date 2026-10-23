@@ -147,6 +147,19 @@ if (a7) {
 }
 if (ind) for (const [k, ch] of Object.entries(ind.checks || {})) if (!ESCALA.includes(ch.v)) errors.push(`indicadores.checks.${k}: valoración fuera de la escala ${ch.v}`);
 
+/* Cambios detectados (scripts/cambios.mjs): tipo conocido, clave, fechas de detección y, si la hay, de publicación, y evidencia enlazada. */
+const KINDS = ['nuevo', 'precio', 'pesos', 'evaluacion', 'retirada', 'lider', 'version', 'indicador', 'valoracion', 'uso'];
+const chg = await readOpt('data/changes.json'), evl = await readOpt('data/events-log.json');
+for (const [where, list] of [['changes', chg?.items], ['events-log', evl?.events]]) for (const e of list || []) {
+  const w = `${where} ${e.key || e.kind}`;
+  if (!KINDS.includes(e.kind)) errors.push(`${w}: tipo de cambio desconocido ${e.kind}`);
+  if (!e.key) errors.push(`${w}: sin clave`);
+  if (!DAY.test(e.detected || '')) errors.push(`${w}: falta la fecha de detección`);
+  if (e.published !== null && !DAY.test(e.published || '')) errors.push(`${w}: fecha de publicación no válida ${e.published}`);
+  if (!/^(https:\/\/|#)\S+$/.test(e.src?.url || '')) errors.push(`${w}: sin enlace a la evidencia`);
+  if (!e.what) errors.push(`${w}: sin descripción`);
+}
+
 if (warnings.length) console.warn(`avisos:\n${warnings.join('\n')}`);
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
 console.log(`validación correcta: ${c.models.length} modelos${ind ? ', indicadores' : ''}, ${car?.frentes?.length || 0} frentes, ${(a7?.lineas || []).reduce((n, l) => n + l.hitos.length, 0)} hitos`);

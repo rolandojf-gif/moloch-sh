@@ -12,6 +12,8 @@ Sitio estático (HTML, CSS y JavaScript sin build) para entrar, entender qué ha
 | La carrera | ¿Qué acelera o frena el avance? | fase 2: distancias en índice entre EE. UU. y China, cerrados y abiertos, y los dos primeros laboratorios; seis frentes con datos, hechos con fuente y una «Lectura Moloch» marcada como interpretación |
 | AI 2027 | ¿Cómo encaja la realidad con aquel escenario? | fase 2: cinco líneas y 19 hitos con la predicción original intacta, revisiones fechadas de los autores y valoración propia en una escala fija |
 
+Direcciones propias: `#modelos/<id de OpenRouter>` abre la ficha de un modelo (vale también la parte tras la barra, p. ej. `#modelos/kimi-k3`, si no es ambigua), `#modelos/comparar/<id>,<id>,<id>` abre una comparación, `#ai2027/<hito>` y `#carrera/<frente>` llevan a esa ficha.
+
 ## Datos y procedencia
 
 Ninguna cifra está escrita a mano en el código. `scripts/collect.mjs` consulta las fuentes y genera:
@@ -19,8 +21,8 @@ Ninguna cifra está escrita a mano en el código. `scripts/collect.mjs` consulta
 | Archivo | Contenido |
 | --- | --- |
 | `data/catalog.json` | Catálogo actual. Cada cifra es `{ v, src, url, asOf, got }`: valor, fuente, enlace, fecha del dato y fecha de consulta. |
-| `data/changes.json` | Lo que muestra «Hoy»: los últimos 7 días de modelos nuevos, primeras puntuaciones, pesos abiertos, cambios de precio del propio laboratorio y retiradas. |
-| `data/events-log.json` | Registro acumulado de cambios de precio del propio laboratorio, pesos nuevos, retiradas y primeras evaluaciones. |
+| `data/changes.json` | Lo que muestra «Hoy»: los cambios de los últimos 7 días (modelos nuevos, primeras puntuaciones, pesos abiertos, cambios de precio del propio laboratorio, retiradas, cambios de líder y de versión del índice de AA, indicadores de La carrera, valoraciones de AI 2027 y ranking de uso). |
+| `data/events-log.json` | Registro acumulado de esos cambios (salvo las altas). Cada uno lleva tipo, magnitud, fecha de publicación si la fuente la da, fecha de detección y enlace a la evidencia; los detecta `scripts/cambios.mjs` comparando cada recogida con la del día anterior. |
 | `data/history/AAAA-MM-DD.json` | Instantánea diaria compacta para las series históricas (incluye los indicadores). |
 | `data/indicadores.json` | Indicadores agregados de «La carrera» y «AI 2027» con la misma forma de hecho, el estado de cada fuente y el resultado de las reglas de valoración (`checks`). |
 | `data/curated/*.json` | Lo único que se edita a mano: laboratorios seguidos (con país), emparejamientos con Epoch, Hugging Face y AA, ids de creador de AA, permisos de fuentes, anuncios con URL, los frentes de `carrera.json` y los hitos de `ai2027.json`. |
@@ -50,7 +52,7 @@ País, licencia y disponibilidad de pesos son campos separados. «Abiertos» exi
 
 ## Recogida
 
-El flujo `.github/workflows/collect.yml` ejecuta el recolector, valida y confirma los JSON. Corre a diario a las 05:00 de Madrid, también con el cambio de hora (GitHub sólo programa el cron en la rama principal), a mano (Actions → Recogida de datos → Run workflow) o al subir cambios del recolector o de los datos curados a una rama de trabajo, para su vista previa. El registro de cada ejecución lista los modelos que no se han podido emparejar con Epoch, para completar `overrides.epoch`.
+El flujo `.github/workflows/collect.yml` ejecuta el recolector, valida y confirma los JSON. Corre a diario a las 04:17 de Madrid, también con el cambio de hora, con un disparo de respaldo a las 06:47 que no hace nada si ya hay una recogida completa del día (`scripts/frescura.mjs`; GitHub retrasa los programados y sólo los ejecuta en la rama principal), a mano (Actions → Recogida de datos → Run workflow) o al subir cambios del recolector o de los datos curados a una rama de trabajo, para su vista previa. El registro de cada ejecución lista los modelos que no se han podido emparejar con Epoch, para completar `overrides.epoch`.
 
 En local:
 
