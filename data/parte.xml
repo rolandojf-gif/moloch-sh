@@ -6,19 +6,26 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.xml" rel="self" type="application/rss+xml"/>
   <description>Las noticias de la carrera por la IA que detecta cada día el observatorio, elegidas con una regla fija. Cifras de OpenRouter, Artificial Analysis, Epoch AI, Hugging Face y METR, con su fuente.</description>
   <language>es</language>
-  <lastBuildDate>Sat, 24 Oct 2026 05:18:44 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 24 Oct 2026 06:13:33 GMT</lastBuildDate>
+  <item>
+    <title>Kimi K3.1 Pro pasa a ser el mejor modelo abierto del índice de AA</title>
+    <link>https://moloch-sh.netlify.app/#modelos/moonshotai/kimi-k3.1-pro</link>
+    <guid isPermaLink="false">lider|open|moonshotai/kimi-k3.1-pro|2026-10-24</guid>
+    <pubDate>Sat, 24 Oct 2026 06:13:33 GMT</pubDate>
+    <description>Kimi K3.1 Pro pasa a ser el mejor modelo abierto del catálogo en el índice de inteligencia de Artificial Analysis v4.3: 55,1 puntos, 8,8 más que MiMo-V2.6-Pro (46,3). Sus pesos están anunciados por el laboratorio, pero aún no se pueden descargar. La distancia entre el mejor cerrado y el mejor abierto en el índice de AA queda en 2,5 puntos (11,3 el día anterior). No equivale a meses de retraso. Está en el parte porque cambia el mejor modelo abierto con la misma versión del índice de AA y 8,8 puntos de margen (mínimo 1). Detectado el 2026-10-24. Fuente: Artificial Analysis (https://artificialanalysis.ai/models/kimi-k3-1-pro). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+  </item>
   <item>
     <title>Kimi K3.1 Pro (Moonshot AI) llega a OpenRouter: puesto 3 del índice de AA</title>
     <link>https://moloch-sh.netlify.app/#modelos/moonshotai/kimi-k3.1-pro</link>
     <guid isPermaLink="false">nuevo|moonshotai/kimi-k3.1-pro</guid>
-    <pubDate>Sat, 24 Oct 2026 05:18:44 GMT</pubDate>
-    <description>Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter. Índice de AA 55,1: a 2,5 puntos del mejor cerrado (Claude Opus 5.5). Puesto 3 de 142. Precio combinado 4 $ por millón de tokens. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 142). Publicado el 2026-10-23; detectado el 2026-10-24. Fuente: OpenRouter (https://openrouter.ai/moonshotai/kimi-k3.1-pro). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+    <pubDate>Sat, 24 Oct 2026 06:13:33 GMT</pubDate>
+    <description>Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter. Índice de AA 55,1: supera en 8,8 puntos al mejor abierto anterior (MiMo-V2.6-Pro). Puesto 3 de 142. Precio combinado 4 $ por millón de tokens. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 142). Publicado el 2026-10-23; detectado el 2026-10-24. Fuente: OpenRouter (https://openrouter.ai/moonshotai/kimi-k3.1-pro). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
     <title>DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter</title>
     <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4.1-flash-1017</link>
     <guid isPermaLink="false">uso|primero|deepseek/deepseek-v4.1-flash-20261017|2026-10-24</guid>
-    <pubDate>Sat, 24 Oct 2026 05:18:44 GMT</pubDate>
+    <pubDate>Sat, 24 Oct 2026 06:13:33 GMT</pubDate>
     <description>DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter en los últimos 7 días (14,9 % de los tokens), por delante de DeepSeek V4.1 Flash. 14,9 % de los tokens de OpenRouter del 2026-10-17 al 2026-10-23; antes el primero era deepseek/deepseek-v4.1-flash-20260910. Es el uso en OpenRouter, no en todo el mercado. Está en el parte porque cambia el modelo más usado en OpenRouter en los últimos 7 días. Publicado el 2026-10-23; detectado el 2026-10-24. Fuente: OpenRouter · uso (https://openrouter.ai/rankings).</description>
   </item>
   <item>
