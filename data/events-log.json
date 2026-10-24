@@ -88,6 +88,105 @@
  "events": [
   {
    "kind": "precio",
+   "key": "precio|openai/gpt-5.4|2026-10-24",
+   "published": null,
+   "detected": "2026-10-24",
+   "date": "2026-10-24",
+   "mag": {
+    "v": -50,
+    "unit": "%"
+   },
+   "model": "openai/gpt-5.4",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/openai/gpt-5.4/providers",
+    "got": "2026-10-24T05:18:44Z"
+   },
+   "what": "OpenAI añade en OpenRouter una tarifa más barata de GPT-5.4: 1,25 $ de entrada y 7,5 $ de salida por millón de tokens. La anterior (2,5 $ de entrada y 15 $ de salida) sigue disponible.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-nueva",
+    "provider": "OpenAI",
+    "from": {
+     "in": 2.5,
+     "out": 15
+    },
+    "to": {
+     "in": 1.25,
+     "out": 7.5
+    },
+    "pct": -50,
+    "tiersFrom": [
+     [
+      2.5,
+      15
+     ],
+     [
+      5,
+      30
+     ]
+    ],
+    "tiersTo": [
+     [
+      1.25,
+      7.5
+     ],
+     [
+      2.5,
+      15
+     ],
+     [
+      5,
+      30
+     ]
+    ],
+    "since": "2026-10-23",
+    "rankAA": 35,
+    "of": 142
+   },
+   "titular": "OpenAI añade una tarifa más barata de GPT-5.4 en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-5.4",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 5,63 $ a 2,81 $ por millón de tokens. De los 16 modelos con un índice de AA parecido (±2 puntos de su 39), 10 cuestan menos; el más barato es DeepSeek V4.1 Flash, a 0,094 $."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|primero|deepseek/deepseek-v4.1-flash-20261017|2026-10-24",
+   "published": "2026-10-23",
+   "detected": "2026-10-24",
+   "date": "2026-10-23",
+   "mag": {
+    "v": 1,
+    "unit": "puesto"
+   },
+   "model": "deepseek/deepseek-v4.1-flash-1017",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-10-24T05:18:44Z"
+   },
+   "what": "DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter en los últimos 7 días (14,9 % de los tokens), por delante de DeepSeek V4.1 Flash.",
+   "data": {
+    "sub": "primero",
+    "slug": "deepseek/deepseek-v4.1-flash-20261017",
+    "rank": 1,
+    "prevRank": 2,
+    "share": 14.9,
+    "tokens": 26731475130751,
+    "prev": "deepseek/deepseek-v4.1-flash-20260910",
+    "window": 7
+   },
+   "titular": "DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter",
+   "importancia": {
+    "tier": 7,
+    "w": 0,
+    "porque": "cambia el modelo más usado en OpenRouter en los últimos 7 días"
+   },
+   "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
+   "consecuencia": "14,9 % de los tokens de OpenRouter del 2026-10-17 al 2026-10-23; antes el primero era deepseek/deepseek-v4.1-flash-20260910. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
+   "kind": "precio",
    "key": "precio|minimax/minimax-m3.1-flash|2026-10-23",
    "published": null,
    "detected": "2026-10-23",

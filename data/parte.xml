@@ -6,7 +6,21 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.xml" rel="self" type="application/rss+xml"/>
   <description>Las noticias de la carrera por la IA que detecta cada día el observatorio, elegidas con una regla fija. Cifras de OpenRouter, Artificial Analysis, Epoch AI, Hugging Face y METR, con su fuente.</description>
   <language>es</language>
-  <lastBuildDate>Fri, 23 Oct 2026 04:25:22 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 24 Oct 2026 05:18:44 GMT</lastBuildDate>
+  <item>
+    <title>Kimi K3.1 Pro (Moonshot AI) llega a OpenRouter: puesto 3 del índice de AA</title>
+    <link>https://moloch-sh.netlify.app/#modelos/moonshotai/kimi-k3.1-pro</link>
+    <guid isPermaLink="false">nuevo|moonshotai/kimi-k3.1-pro</guid>
+    <pubDate>Sat, 24 Oct 2026 05:18:44 GMT</pubDate>
+    <description>Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter. Índice de AA 55,1: a 2,5 puntos del mejor cerrado (Claude Opus 5.5). Puesto 3 de 142. Precio combinado 4 $ por millón de tokens. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 142). Publicado el 2026-10-23; detectado el 2026-10-24. Fuente: OpenRouter (https://openrouter.ai/moonshotai/kimi-k3.1-pro). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+  </item>
+  <item>
+    <title>DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter</title>
+    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4.1-flash-1017</link>
+    <guid isPermaLink="false">uso|primero|deepseek/deepseek-v4.1-flash-20261017|2026-10-24</guid>
+    <pubDate>Sat, 24 Oct 2026 05:18:44 GMT</pubDate>
+    <description>DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter en los últimos 7 días (14,9 % de los tokens), por delante de DeepSeek V4.1 Flash. 14,9 % de los tokens de OpenRouter del 2026-10-17 al 2026-10-23; antes el primero era deepseek/deepseek-v4.1-flash-20260910. Es el uso en OpenRouter, no en todo el mercado. Está en el parte porque cambia el modelo más usado en OpenRouter en los últimos 7 días. Publicado el 2026-10-23; detectado el 2026-10-24. Fuente: OpenRouter · uso (https://openrouter.ai/rankings).</description>
+  </item>
   <item>
     <title>Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter</title>
     <link>https://moloch-sh.netlify.app/#modelos/minimax/minimax-m3.1-flash</link>
@@ -48,13 +62,6 @@
     <guid isPermaLink="false">precio|tencent/hy3|2026-10-22</guid>
     <pubDate>Thu, 22 Oct 2026 08:22:56 GMT</pubDate>
     <description>Tencent sube el precio de Hy3 en OpenRouter: entrada de 0,0825 $ a 0,132 $ y salida de 0,33 $ a 0,528 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,144 $ a 0,231 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 25,3), 2 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $. Está en el parte porque el propio laboratorio sube su precio combinado un 60 % (umbral: +50 % o −33 %). Detectado el 2026-10-22. Fuente: OpenRouter (https://openrouter.ai/tencent/hy3/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>DeepSeek V4.1 Flash 1017 (DeepSeek) llega a OpenRouter: puesto 15 del índice de AA</title>
-    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4.1-flash-1017</link>
-    <guid isPermaLink="false">nuevo|deepseek/deepseek-v4.1-flash-1017</guid>
-    <pubDate>Tue, 20 Oct 2026 05:00:00 GMT</pubDate>
-    <description>DeepSeek V4.1 Flash 1017 (DeepSeek) aparece en el catálogo de OpenRouter. Índice de AA 45,1: a 1,2 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 15 de 141. Precio combinado 0,262 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 15 de 141). Publicado el 2026-10-17; detectado el 2026-10-20. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
 </channel>
 </rss>
