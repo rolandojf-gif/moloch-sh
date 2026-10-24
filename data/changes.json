@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-24T06:13:33Z",
+ "generated": "2026-10-24T06:52:18Z",
  "window": 7,
  "since": "2026-10-18",
  "base": "2026-10-23",
@@ -33,7 +33,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/moonshotai/kimi-k3.1-pro",
-    "got": "2026-10-24T06:13:33Z"
+    "got": "2026-10-24T06:52:18Z"
    },
    "what": "Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -66,7 +66,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash",
-    "got": "2026-10-24T06:13:33Z"
+    "got": "2026-10-24T06:52:18Z"
    },
    "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -98,7 +98,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-5.4/providers",
-    "got": "2026-10-24T06:13:33Z"
+    "got": "2026-10-24T06:52:18Z"
    },
    "what": "OpenAI añade en OpenRouter una tarifa más barata de GPT-5.4: 1,25 $ de entrada y 7,5 $ de salida por millón de tokens. La anterior (2,5 $ de entrada y 15 $ de salida) sigue disponible.",
    "data": {
@@ -161,7 +161,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/kimi-k3-1-pro",
-    "got": "2026-10-24T06:13:33Z"
+    "got": "2026-10-24T06:52:18Z"
    },
    "what": "Kimi K3.1 Pro pasa a ser el mejor modelo abierto del catálogo en el índice de inteligencia de Artificial Analysis v4.3: 55,1 puntos, 8,8 más que MiMo-V2.6-Pro (46,3). Sus pesos están anunciados por el laboratorio, pero aún no se pueden descargar.",
    "data": {
@@ -203,7 +203,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-10-24T06:13:33Z"
+    "got": "2026-10-24T06:52:18Z"
    },
    "what": "DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter en los últimos 7 días (14,9 % de los tokens), por delante de DeepSeek V4.1 Flash.",
    "data": {
