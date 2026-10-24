@@ -43,7 +43,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; border-radius: 0; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: 90px; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--top-h, 104px) + 12px); }
 body {
   margin: 0; min-height: 100vh;
   background-color: var(--paper);
@@ -63,8 +63,9 @@ button { cursor: pointer; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ── Cabecera ─────────────────────────────────────────────────────────── */
+/* La cabecera y la franja de la recogida se quedan arriba juntas; --top-h (js/app.js) es su altura. */
+.topfix { position: sticky; top: 0; z-index: 50; }
 .topnav {
-  position: sticky; top: 0; z-index: 50;
   display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
   padding: 12px 24px;
   background: var(--paper);
@@ -119,6 +120,7 @@ h1 { font: 700 clamp(30px, 4.2vw, 56px)/1 var(--f-head); letter-spacing: -.03em;
 .lede { color: var(--muted); font-size: 17px; max-width: 72ch; margin: 0; }
 h2.sec { font: 700 13px/1.2 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; margin: 40px 0 14px; display: flex; align-items: center; gap: 10px; }
 h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orange); border: 2px solid var(--ink); }
+h3.sub-sec { font: 700 12px/1.2 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; margin: 26px 0 0; }
 .note { color: var(--muted); font-size: 13.5px; margin: 12px 0 0; max-width: 90ch; }
 .panel { background: var(--card); border: 2px solid var(--ink); box-shadow: var(--shadow); padding: 16px; }
 
@@ -305,6 +307,7 @@ table.mx tr.row[aria-expanded="true"] td { background: rgba(204, 255, 0, .2); bo
 .w.cerrados { background: var(--closed); color: #121211; }
 .w.nd { background: var(--card-2); color: var(--muted); }
 .w.cerrados.inf { background: var(--card-2); color: var(--text); border-style: dashed; border-color: var(--closed); }
+.w.abiertos.anun { background: var(--card-2); color: var(--text); border-style: dashed; border-color: var(--open); }
 .big { font: 700 17px var(--f-head); }
 tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 22px; }
@@ -370,7 +373,7 @@ a.m-open { color: inherit; text-underline-offset: 3px; text-decoration-thickness
 .jump a i { font-style: normal; color: var(--orange-ink); font-weight: 700; }
 .jump a:hover { background: rgba(204, 255, 0, .3); }
 .fronts { display: flex; flex-direction: column; gap: 26px; }
-.front, .linea { scroll-margin-top: 96px; }
+.front, .linea { scroll-margin-top: calc(var(--top-h, 104px) + 18px); }
 .front { background: var(--card); border: 2px solid var(--ink); box-shadow: var(--shadow); }
 .front-head { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-bottom: 2px solid var(--ink); }
 .front-n { flex: none; width: 42px; height: 42px; display: grid; place-content: center; background: var(--orange); color: #121211; border: 2px solid var(--ink); font: 700 15px var(--f-mono); }
@@ -576,7 +579,9 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
   .hito-more { padding-left: 142px; }
 }
 @media (max-width: 640px) {
-  .topnav { padding: 10px 16px; gap: 10px; }
+  /* En el móvil la cabecera ya ocupa dos filas: sólo ella queda fija y la franja se va al desplazarse. */
+  .topfix { display: contents; }
+  .topnav { position: sticky; top: 0; z-index: 50; padding: 10px 16px; gap: 10px; }
   /* Las cinco pestañas, siempre visibles: dos filas en vez de desplazamiento oculto. */
   .navtabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; }
   .navtab { justify-content: center; padding: 9px 6px; font-size: 11.5px; border-bottom: 2px solid var(--ink); }

@@ -111,8 +111,20 @@ function initTheme() {
   sync();
 }
 
+/* Altura de lo que queda fijo arriba (cabecera y franja; en el móvil, sólo la cabecera), para que los saltos a una ficha
+   o a un apartado no queden tapados. */
+function trackTop() {
+  const box = document.getElementById('topfix'), nav = box?.querySelector('.topnav');
+  if (!box || !nav) return;
+  const set = () => document.documentElement.style.setProperty('--top-h',
+    `${Math.round((getComputedStyle(box).display === 'contents' ? nav : box).getBoundingClientRect().height)}px`);
+  set();
+  if ('ResizeObserver' in window) { const ro = new ResizeObserver(set); ro.observe(box); ro.observe(nav); }
+}
+
 async function main() {
   initTheme();
+  trackTop();
   let ready = false;
   window.addEventListener('hashchange', () => { const r = route(); if (!(ready && showPath(r))) window.scrollTo(0, 0); });
   route();

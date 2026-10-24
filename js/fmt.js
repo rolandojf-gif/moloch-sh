@@ -104,6 +104,51 @@ export const aaConfigShort = m => {
   return mm && bare(mm[1]) === bare(m.name) ? mm[2] : full;
 };
 
+/* La carrera con el índice de AA (complemento del ECI, que tarda en puntuar los modelos nuevos y no mide algunos laboratorios):
+   modelos del catálogo puntuados por AA, colocados en la fecha del modelo según AA (si falta, la de Epoch o el alta en
+   OpenRouter) con su índice actual. Abiertos y cerrados según el catálogo: los abiertos anunciados cuentan como abiertos y
+   un «cerrados» inferido, como cerrado.
+   Sólo entran los modelos que siguen en OpenRouter: los retirados faltan en los meses antiguos. */
+export function aaRace(catalog) {
+  const ver = catalog?.aaIndexVersion ?? null, today = (catalog?.generated || new Date().toISOString()).slice(0, 10);
+  const list = (catalog?.models || []).filter(m => ii(m) !== null && (!ver || !m.aa.version || m.aa.version === ver))
+    .map(m => ({ d: m.aa.release?.v || m.epochPub?.v || m.orCreated?.v || null, v: ii(m), n: m.name, id: m.id, org: m.lab?.name || null, c: m.lab?.country || null,
+      g: m.weights?.v === 'abiertos' ? 'o' : m.weights?.v === 'cerrados' ? 'c' : null, inf: m.weights?.v === 'cerrados' && !!m.weights.inferred,
+      anun: m.weights?.v === 'abiertos' && !!m.weights.announced }))
+    .filter(m => m.d && m.d <= today).sort((a, b) => a.d.localeCompare(b.d) || b.v - a.v);
+  // Frontera: máximo acumulado de cada grupo, con la misma forma que la de Epoch.
+  const best = { o: null, c: null }, points = [], models = [];
+  for (const m of list.filter(x => x.g)) {
+    const rec = !best[m.g] || m.v > best[m.g].v;
+    if (rec) { best[m.g] = { v: m.v, name: m.n }; points.push({ date: m.d, open: best.o, closed: best.c }); }
+    models.push({ ...m, rec });
+  }
+  // Distancias a cada fin de mes y hoy: mejor índice publicado hasta esa fecha en cada lado.
+  const top = (d, f) => list.filter(m => m.d <= d && f(m)).reduce((a, m) => (!a || m.v > a.v ? m : a), null);
+  const gap = (a, b) => a && b ? Math.round((a.v - b.v) * 10) / 10 : null;
+  const dates = [];
+  for (let t = new Date(`${list[0]?.d || today}T00:00:00Z`); ; ) {
+    const end = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 0)).toISOString().slice(0, 10);
+    if (end >= today) break;
+    dates.push(end); t = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 1));
+  }
+  dates.push(today);
+  const series = dates.map(d => {
+    const us = top(d, m => m.c === 'US'), cn = top(d, m => m.c === 'CN'), cl = top(d, m => m.g === 'c'), op = top(d, m => m.g === 'o');
+    return { d, usCn: gap(us, cn), closedOpen: gap(cl, op), who: { us: us?.n, cn: cn?.n, closed: cl?.n, open: op?.n } };
+  }).filter(p => p.usCn !== null || p.closedOpen !== null);
+  // Situación de hoy: los cuatro lados, los dos primeros laboratorios (mejor modelo de cada uno) y la frontera hace 12 meses.
+  const byLab = new Map();
+  for (const m of list) if (m.org && (!byLab.has(m.org) || m.v > byLab.get(m.org).v)) byLab.set(m.org, m);
+  const labs = [...byLab.values()].sort((a, b) => b.v - a.v);
+  const yearAgo = `${Number(today.slice(0, 4)) - 1}${today.slice(4)}`;
+  const now = list.length ? {
+    us: top(today, m => m.c === 'US'), cn: top(today, m => m.c === 'CN'), closed: top(today, m => m.g === 'c'), open: top(today, m => m.g === 'o'),
+    first: labs[0] || null, second: labs[1] || null, labs, from: top(yearAgo, () => true), to: top(today, () => true), yearAgo
+  } : null;
+  return { ver, today, points, models, series, now, n: list.length, from: list[0]?.d || null };
+}
+
 /* Velocidad: mediana de AA si existe; si no, el proveedor de OpenRouter más rápido, nombrado. */
 export function speed(m) {
   const a = m.aa;
@@ -120,9 +165,11 @@ export function speed(m) {
   return { tps: e.tps, lat: e.ttft, f, fl: { ...f, v: e.ttft }, aa: false, provider: e.provider, short: e.provider };
 }
 
-/* Etiqueta de pesos. «Cerrados» inferido (sin repositorio en Hugging Face ni clasificación de Epoch) se distingue del comprobado. */
+/* Etiqueta de pesos. «Cerrados» inferido (sin repositorio en Hugging Face ni clasificación de Epoch) y «abiertos» anunciados
+   (el laboratorio dice que son abiertos, pero aún no se pueden descargar) se distinguen de los comprobados. */
 export function weightsTag(m) {
   const v = m.weights?.v;
+  if (v === 'abiertos' && m.weights.announced) return '<span class="w abiertos anun" title="El laboratorio lo presenta como de pesos abiertos, pero aún no hay repositorio público en Hugging Face: cuenta como abierto, aunque todavía no se puede descargar">abiertos · anunciados</span>';
   if (v === 'cerrados' && m.weights.inferred) return '<span class="w cerrados inf" title="OpenRouter no enlaza pesos y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; se asume cerrado">cerrados · inferido</span>';
   return `<span class="w ${v || 'nd'}">${esc(v || 'pesos sin datos')}</span>`;
 }

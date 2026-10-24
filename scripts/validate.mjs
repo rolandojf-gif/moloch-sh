@@ -13,7 +13,7 @@ function checkFact(f, where, sources = c.sources) {
   if (!f.src || !sources[f.src]) errors.push(`${where}: fuente desconocida (${f.src})`);
   if (!f.got || !/^\d{4}-\d{2}-\d{2}T/.test(f.got)) errors.push(`${where}: falta fecha de consulta`);
   if (!f.asOf || !/^\d{4}-\d{2}-\d{2}$/.test(f.asOf)) errors.push(`${where}: falta fecha del dato`);
-  if (typeof f.v === 'number' && (!Number.isFinite(f.v) || f.v < 0)) errors.push(`${where}: valor numérico inválido ${f.v}`);
+  if (typeof f.v === 'number' && (!Number.isFinite(f.v) || (f.v < 0 && !f.signed))) errors.push(`${where}: valor numérico inválido ${f.v}`);
 }
 if (!Array.isArray(c.models) || !c.models.length) errors.push('catálogo vacío');
 const ids = new Set();
@@ -61,7 +61,7 @@ if (ind) {
 
 /* Datos curados de «La carrera» y «AI 2027». */
 const DAY = /^\d{4}-\d{2}-\d{2}$/, DAYMONTH = /^\d{4}-\d{2}(-\d{2})?$/, URL_RE = /^https:\/\/\S+$/;
-const IND_KEY = /^(eci|bench|dc|chips|companies|metr)\.[A-Za-z0-9]+$/;
+const IND_KEY = /^(aa|eci|bench|dc|chips|companies|metr)\.[A-Za-z0-9]+$/;
 const ESTADOS = ['abierta', 'confirmada', 'debilitada'];
 const ESCALA = ['adelantado', 'compatible', 'retrasado', 'todavía no evaluable', 'sin evidencia suficiente'];
 const REGLAS = ['swe85', 'openAgent0', 'variosAgent0', 'openaiRev2025', 'rivales39', 'deepcent6', 'mirror80'];

@@ -80,6 +80,26 @@
    "desde": "2026-10-23"
   },
   {
+   "path": "aa.gapUsCn",
+   "label": "Distancia EE. UU. − China en el índice de AA",
+   "desde": "2026-10-24"
+  },
+  {
+   "path": "aa.gapClosedOpen",
+   "label": "Distancia cerrados − abiertos en el índice de AA",
+   "desde": "2026-10-24"
+  },
+  {
+   "path": "aa.gapLabs",
+   "label": "Distancia entre los dos primeros laboratorios en el índice de AA",
+   "desde": "2026-10-24"
+  },
+  {
+   "path": "aa.rate12m",
+   "label": "Avance de la frontera del índice de AA en 12 meses",
+   "desde": "2026-10-24"
+  },
+  {
    "path": "bench.saturated",
    "label": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)",
    "desde": "2026-10-23"
@@ -100,7 +120,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-5.4/providers",
-    "got": "2026-10-24T05:18:44Z"
+    "got": "2026-10-24T06:13:33Z"
    },
    "what": "OpenAI añade en OpenRouter una tarifa más barata de GPT-5.4: 1,25 $ de entrada y 7,5 $ de salida por millón de tokens. La anterior (2,5 $ de entrada y 15 $ de salida) sigue disponible.",
    "data": {
@@ -150,6 +170,48 @@
    "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 5,63 $ a 2,81 $ por millón de tokens. De los 16 modelos con un índice de AA parecido (±2 puntos de su 39), 10 cuestan menos; el más barato es DeepSeek V4.1 Flash, a 0,094 $."
   },
   {
+   "kind": "lider",
+   "key": "lider|open|moonshotai/kimi-k3.1-pro|2026-10-24",
+   "published": null,
+   "detected": "2026-10-24",
+   "date": "2026-10-24",
+   "mag": {
+    "v": 8.8,
+    "unit": "puntos AA"
+   },
+   "model": "moonshotai/kimi-k3.1-pro",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/kimi-k3-1-pro",
+    "got": "2026-10-24T06:13:33Z"
+   },
+   "what": "Kimi K3.1 Pro pasa a ser el mejor modelo abierto del catálogo en el índice de inteligencia de Artificial Analysis v4.3: 55,1 puntos, 8,8 más que MiMo-V2.6-Pro (46,3). Sus pesos están anunciados por el laboratorio, pero aún no se pueden descargar.",
+   "data": {
+    "block": "abiertos",
+    "version": "4.3",
+    "from": {
+     "id": "xiaomi/mimo-v2.6-pro",
+     "n": "MiMo-V2.6-Pro",
+     "ii": 46.3,
+     "iiNow": 46.3
+    },
+    "to": {
+     "id": "moonshotai/kimi-k3.1-pro",
+     "n": "Kimi K3.1 Pro",
+     "ii": 55.1
+    },
+    "margin": 8.8
+   },
+   "titular": "Kimi K3.1 Pro pasa a ser el mejor modelo abierto del índice de AA",
+   "importancia": {
+    "tier": 0,
+    "w": 8.8,
+    "porque": "cambia el mejor modelo abierto con la misma versión del índice de AA y 8,8 puntos de margen (mínimo 1)"
+   },
+   "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
+   "consecuencia": "La distancia entre el mejor cerrado y el mejor abierto en el índice de AA queda en 2,5 puntos (11,3 el día anterior). No equivale a meses de retraso."
+  },
+  {
    "kind": "uso",
    "key": "uso|primero|deepseek/deepseek-v4.1-flash-20261017|2026-10-24",
    "published": "2026-10-23",
@@ -163,7 +225,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-10-24T05:18:44Z"
+    "got": "2026-10-24T06:13:33Z"
    },
    "what": "DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter en los últimos 7 días (14,9 % de los tokens), por delante de DeepSeek V4.1 Flash.",
    "data": {

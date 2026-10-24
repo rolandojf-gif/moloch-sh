@@ -20,6 +20,8 @@
 <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><pattern id="proj-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="ph-bg" width="6" height="6"/><rect class="ph-ln" width="2.4" height="6"/></pattern></defs></svg>
 <a class="skip" href="#main">Saltar al contenido</a>
 
+<!-- Cabecera y franja de la recogida, fijas arriba al desplazarse (en móvil, sólo la cabecera). -->
+<div class="topfix" id="topfix">
 <header class="topnav">
   <a class="brand" href="#hoy">
     <span class="brand-icon" aria-hidden="true">&gt;_</span>
@@ -45,6 +47,7 @@
 </header>
 
 <div class="freshness" id="freshness" role="status" aria-live="polite">Cargando datos…</div>
+</div>
 
 <main id="main">
   <!-- 01 · Hoy -->
@@ -122,7 +125,13 @@
       </table>
     </div>
 
-    <h2 class="sec">Evolución de la frontera abierta y cerrada</h2>
+    <h2 class="sec">Evolución de la frontera abierta y cerrada: índice AA</h2>
+    <div class="panel">
+      <div class="chart" id="mx-frontier-aa"></div>
+      <div class="reading" id="mx-frontier-aa-note"></div>
+    </div>
+
+    <h2 class="sec">Evolución de la frontera abierta y cerrada: ECI de Epoch</h2>
     <div class="panel">
       <div class="chart" id="mx-frontier"></div>
       <div class="reading" id="mx-frontier-note"></div>
@@ -170,6 +179,12 @@
     </div>
 
     <h2 class="sec">Distancias en la frontera</h2>
+    <div class="kpis" id="ca-kpis-aa"></div>
+    <div class="panel gap-panel">
+      <div class="chart" id="ca-gaps-aa"></div>
+      <div class="reading" id="ca-gaps-aa-note"></div>
+    </div>
+    <h3 class="sub-sec">Serie larga: las mismas distancias con el ECI de Epoch</h3>
     <div class="kpis" id="ca-kpis"></div>
     <div class="panel gap-panel">
       <div class="chart" id="ca-gaps"></div>
