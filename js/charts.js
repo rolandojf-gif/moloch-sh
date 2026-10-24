@@ -273,7 +273,9 @@ export function scatter(el, points, { threshold = null, labels = new Set(), yLab
 /* ── Evolución de la frontera abierta y cerrada (Modelos) ───────────────── */
 /* records: [{ date, open: {v, name} | null, closed: {v, name} | null }] con el máximo acumulado de cada grupo.
    models: todos los modelos puntuados [{ d, v, g: 'o'|'c', n, org, lo, hi, rec }]; sin ellos sólo se dibujan los récords. */
-export function frontier(el, records, { models = null, yLabel = '' } = {}) {
+/* metric: rótulo de la cifra en la ficha (ECI por defecto); highlight: nombres que llevan etiqueta fija aunque no sean récord
+   (p. ej. las novedades); fmtV: cómo se escribe la cifra. */
+export function frontier(el, records, { models = null, yLabel = '', metric = 'ECI', highlight = null, fmtV = v => num(v, 1) } = {}) {
   const G = { W: 860, H: 360, L: 52, R: 16, T: 16, B: 40 };
   const { W, H, L, R, T, B } = G;
   const rec = { open: [], closed: [] };
@@ -307,15 +309,16 @@ export function frontier(el, records, { models = null, yLabel = '' } = {}) {
       for (const p of r.slice(1)) d += ` H${X(ms(p.d)).toFixed(1)} V${Y(p.v).toFixed(1)}`;
       s += `<path class="ln-${g}" d="${d} H${X(tmax).toFixed(1)}"/>`;
     }
-    const ordered = shown.map((m, i) => [m, i]).sort((a, b) => (a[0].rec ? 1 : 0) - (b[0].rec ? 1 : 0));
-    for (const [m, i] of ordered) s += `<circle data-k="${i}" class="pt-${grp(m.g)} ${m.rec ? 'key' : 'faint'}" cx="${X(ms(m.d)).toFixed(1)}" cy="${Y(m.v).toFixed(1)}" r="${m.rec ? 5 : 4}"/>`;
+    const strong = m => m.rec || (highlight && highlight.has(m.n));
+    const ordered = shown.map((m, i) => [m, i]).sort((a, b) => (strong(a[0]) ? 1 : 0) - (strong(b[0]) ? 1 : 0));
+    for (const [m, i] of ordered) s += `<circle data-k="${i}" class="pt-${grp(m.g)} ${strong(m) ? 'key' : 'faint'}" cx="${X(ms(m.d)).toFixed(1)}" cy="${Y(m.v).toFixed(1)}" r="${strong(m) ? 5 : 4}"/>`;
     s += '</g>';
     const targets = shown.map(m => ({
       x: X(ms(m.d)), y: Y(m.v),
       html: tip(m.n, [
         ['Fecha de lanzamiento', fmtDate(m.d)],
-        ['ECI', m.lo != null && m.hi != null ? `${num(m.v, 1)} (intervalo ${num(m.lo, 1)}–${num(m.hi, 1)})` : num(m.v, 1)],
-        ['Pesos', m.g === 'o' ? 'abiertos' : 'cerrados'],
+        [metric, m.lo != null && m.hi != null ? `${fmtV(m.v)} (intervalo ${num(m.lo, 1)}–${num(m.hi, 1)})` : fmtV(m.v)],
+        ['Pesos', m.g === 'o' ? 'abiertos' : m.inf ? 'cerrados (inferido: no hay pesos publicados)' : 'cerrados'],
         ['Organización', m.org || null],
         ['Nuevo récord', m.rec ? `sí, mejor ${m.g === 'o' ? 'abierto' : 'cerrado'} hasta esa fecha` : 'no']
       ])
@@ -332,8 +335,9 @@ export function frontier(el, records, { models = null, yLabel = '' } = {}) {
       jumps.push(...big.filter(vis).slice(0, 6).map(lab));
       if (zoomed) rest.push(...big.filter(vis).slice(6).map(lab));
     }
-    if (zoomed) rest.push(...shown.filter(m => !m.rec).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down', faint: true })));
-    s += labelSvg(placeLabels([...leaders, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G));
+    const marked = highlight ? shown.filter(m => !m.rec && highlight.has(m.n)).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down' })) : [];
+    if (zoomed) rest.push(...shown.filter(m => !m.rec && !(highlight && highlight.has(m.n))).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down', faint: true })));
+    s += labelSvg(placeLabels([...leaders, ...marked, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G));
     s += '</svg><div class="legend"><span><i style="background:var(--open)"></i>Mejor con pesos abiertos</span><span><i style="background:var(--closed)"></i>Mejor cerrado</span>';
     s += (models ? '<span><i class="lg-faint"></i>Resto de modelos puntuados</span>' : '') + zoomUi(zoomed) + '</div>';
     el.innerHTML = s;
@@ -344,7 +348,8 @@ export function frontier(el, records, { models = null, yLabel = '' } = {}) {
 }
 
 /* ── Distancias en puntos ECI a lo largo del tiempo (La carrera) ────────── */
-export function gaps(el, points) {
+/* unit: escala de la distancia («puntos ECI» o «puntos del índice AA»); si un punto trae who, la ficha nombra los modelos. */
+export function gaps(el, points, { unit = 'puntos ECI', short = unit } = {}) {
   const pts = (points || []).filter(p => p.usCn !== null || p.closedOpen !== null);
   if (pts.length < 2) { el.innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>'; return false; }
   const G = { W: 860, H: 290, L: 52, R: 185, T: 16, B: 40 };
@@ -354,8 +359,8 @@ export function gaps(el, points) {
   const ymin = Math.min(0, Math.floor(Math.min(...vals) / 5) * 5), ymax = Math.ceil((Math.max(...vals) + 1) / 5) * 5;
   const X = v => L + (v - tmin) / (tmax - tmin || 1) * (W - L - R);
   const Y = v => T + (1 - (v - ymin) / (ymax - ymin || 1)) * (H - T - B);
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Distancia en puntos ECI entre EE. UU. y China y entre modelos cerrados y abiertos">`;
-  s += yAxis(niceTicks(ymin, ymax), Y, G, v => num(v, 0), 'puntos ECI') + timeAxis(X, tmin, tmax, G) + '</g>';
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Distancia en ${esc(unit)} entre EE. UU. y China y entre modelos cerrados y abiertos">`;
+  s += yAxis(niceTicks(ymin, ymax), Y, G, v => num(v, 0), short) + timeAxis(X, tmin, tmax, G) + '</g>';
   if (ymin < 0) s += `<line x1="${L}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}" stroke="currentColor" opacity=".5"/>`;
   const SER = [['usCn', 'ln-uscn', 'EE. UU. − China'], ['closedOpen', 'ln-co', 'Cerrados − abiertos']];
   for (const [key, cls] of SER) {
@@ -372,7 +377,8 @@ export function gaps(el, points) {
   const targets = pts.map((p, i) => {
     const x = X(ms(p.d));
     s += `<g data-k="${i}">${SER.map(([key, cls]) => p[key] === null ? '' : `<circle class="pt-${cls}" cx="${x.toFixed(1)}" cy="${Y(p[key]).toFixed(1)}" r="3"/>`).join('')}</g>`;
-    return { box: [x - step / 2, T, x + step / 2, H - B], html: tip(fmtDate(p.d), SER.map(([key, , name]) => [name, p[key] === null ? 'sin datos' : `${num(p[key], 1)} puntos`]), 'Mejor modelo de cada lado hasta esa fecha. No equivale a meses de retraso.') };
+    const who = { usCn: p.who ? `${p.who.us} frente a ${p.who.cn}` : '', closedOpen: p.who ? `${p.who.closed} frente a ${p.who.open}` : '' };
+    return { box: [x - step / 2, T, x + step / 2, H - B], html: tip(fmtDate(p.d), SER.map(([key, , name]) => [name, p[key] === null ? 'sin datos' : `${num(p[key], 1)} puntos${who[key] ? ` (${who[key]})` : ''}`]), 'Mejor modelo de cada lado hasta esa fecha. No equivale a meses de retraso.') };
   });
   // Valor actual fijo al final de cada línea.
   const last = pts[pts.length - 1];

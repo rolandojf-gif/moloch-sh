@@ -1,6 +1,6 @@
 /* Vista «La carrera»: distancias en la frontera y seis frentes. Cada uno empieza por qué sabemos, qué ha cambiado y qué
    cambiaría la lectura; después, gráficos, indicadores, hechos con fuente y la lectura marcada como interpretación. */
-import { esc, fmtDate, num, ND } from './fmt.js';
+import { esc, fmtDate, num, ND, aaRace, aaIndexName, AA_LINK } from './fmt.js';
 import { indicatorRow, indicatorKpi, indicatorBrief, mw, mh100, usdB, PAIS } from './indicadores.js';
 import { gaps, hbars, columns, dotci, recordChart, tip } from './charts.js';
 
@@ -220,6 +220,11 @@ export function renderCarrera(d) {
     $('#ca-kpis').innerHTML = `<div class="empty">${ND}: todavía no hay indicadores recogidos.</div>`;
     $('#ca-gaps').innerHTML = '';
   }
+  // Las mismas distancias con el índice de AA: llega antes que el ECI y cuenta modelos que Epoch no ha puntuado.
+  const aa = aaRace(d.catalog);
+  if (!gaps($('#ca-gaps-aa'), aa.series, { unit: 'puntos del índice AA', short: 'puntos AA' })) $('#ca-gaps-aa').innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>';
+  const now = aa.series[aa.series.length - 1];
+  $('#ca-gaps-aa-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Para cada fin de mes y para hoy, el mejor ${esc(aaIndexName(aa.ver))} publicado hasta esa fecha por laboratorios de cada país o por modelos con pesos cerrados y abiertos, y su diferencia. País del laboratorio y pesos según el catálogo del observatorio: «abiertos» exige pesos descargables, así que un modelo cuyos pesos aún no se han publicado cuenta como cerrado. Llega antes que el ECI y cuenta modelos que Epoch no ha puntuado, pero sólo los ${aa.n} que siguen en OpenRouter: en los meses antiguos faltan los retirados. Cada modelo va en su fecha según AA, con su índice de hoy. Las escalas AA y ECI no son comparables.${now ? ` Hoy: EE. UU. − China, ${now.usCn !== null ? `${num(now.usCn)} puntos (${esc(now.who.us)} frente a ${esc(now.who.cn)})` : 'sin datos'}; cerrados − abiertos, ${now.closedOpen !== null ? `${num(now.closedOpen)} puntos (${esc(now.who.closed)} frente a ${esc(now.who.open)})` : 'sin datos'}.` : ''} Datos de ${AA_LINK}, publicados con su permiso.`;
   $('#ca-index').innerHTML = cur.frentes.map((f, i) => `<a href="#frente-${esc(f.id)}" data-jump><i>${String(i + 1).padStart(2, '0')}</i>${esc(f.titulo)}</a>`).join('');
   $('#ca-fronts').innerHTML = cur.frentes.map((f, i) => front(f, i, ind, d.evLog)).join('');
   for (const f of cur.frentes) chartsOf(f, ind).forEach((c, k) => c.draw(document.getElementById(`fc-${f.id}-${k}`)));

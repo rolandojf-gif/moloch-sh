@@ -104,6 +104,40 @@ export const aaConfigShort = m => {
   return mm && bare(mm[1]) === bare(m.name) ? mm[2] : full;
 };
 
+/* La carrera con el índice de AA (complemento del ECI, que tarda en puntuar los modelos nuevos y no mide algunos laboratorios):
+   modelos del catálogo puntuados por AA, colocados en la fecha del modelo según AA (si falta, la de Epoch o el alta en
+   OpenRouter) con su índice actual. Abiertos y cerrados según el catálogo; un «cerrados» inferido cuenta como cerrado.
+   Sólo entran los modelos que siguen en OpenRouter: los retirados faltan en los meses antiguos. */
+export function aaRace(catalog) {
+  const ver = catalog?.aaIndexVersion ?? null, today = (catalog?.generated || new Date().toISOString()).slice(0, 10);
+  const list = (catalog?.models || []).filter(m => ii(m) !== null && (!ver || !m.aa.version || m.aa.version === ver))
+    .map(m => ({ d: m.aa.release?.v || m.epochPub?.v || m.orCreated?.v || null, v: ii(m), n: m.name, id: m.id, org: m.lab?.name || null, c: m.lab?.country || null,
+      g: m.weights?.v === 'abiertos' ? 'o' : m.weights?.v === 'cerrados' ? 'c' : null, inf: m.weights?.v === 'cerrados' && !!m.weights.inferred }))
+    .filter(m => m.d && m.d <= today).sort((a, b) => a.d.localeCompare(b.d) || b.v - a.v);
+  // Frontera: máximo acumulado de cada grupo, con la misma forma que la de Epoch.
+  const best = { o: null, c: null }, points = [], models = [];
+  for (const m of list.filter(x => x.g)) {
+    const rec = !best[m.g] || m.v > best[m.g].v;
+    if (rec) { best[m.g] = { v: m.v, name: m.n }; points.push({ date: m.d, open: best.o, closed: best.c }); }
+    models.push({ ...m, rec });
+  }
+  // Distancias a cada fin de mes y hoy: mejor índice publicado hasta esa fecha en cada lado.
+  const top = (d, f) => list.filter(m => m.d <= d && f(m)).reduce((a, m) => (!a || m.v > a.v ? m : a), null);
+  const gap = (a, b) => a && b ? Math.round((a.v - b.v) * 10) / 10 : null;
+  const dates = [];
+  for (let t = new Date(`${list[0]?.d || today}T00:00:00Z`); ; ) {
+    const end = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 0)).toISOString().slice(0, 10);
+    if (end >= today) break;
+    dates.push(end); t = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 1));
+  }
+  dates.push(today);
+  const series = dates.map(d => {
+    const us = top(d, m => m.c === 'US'), cn = top(d, m => m.c === 'CN'), cl = top(d, m => m.g === 'c'), op = top(d, m => m.g === 'o');
+    return { d, usCn: gap(us, cn), closedOpen: gap(cl, op), who: { us: us?.n, cn: cn?.n, closed: cl?.n, open: op?.n } };
+  }).filter(p => p.usCn !== null || p.closedOpen !== null);
+  return { ver, today, points, models, series, n: list.length, from: list[0]?.d || null };
+}
+
 /* Velocidad: mediana de AA si existe; si no, el proveedor de OpenRouter más rápido, nombrado. */
 export function speed(m) {
   const a = m.aa;

@@ -120,6 +120,7 @@ h1 { font: 700 clamp(30px, 4.2vw, 56px)/1 var(--f-head); letter-spacing: -.03em;
 .lede { color: var(--muted); font-size: 17px; max-width: 72ch; margin: 0; }
 h2.sec { font: 700 13px/1.2 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; margin: 40px 0 14px; display: flex; align-items: center; gap: 10px; }
 h2.sec::before { content: ''; width: 14px; height: 14px; background: var(--orange); border: 2px solid var(--ink); }
+h3.sub-sec { font: 700 12px/1.2 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; margin: 26px 0 0; }
 .note { color: var(--muted); font-size: 13.5px; margin: 12px 0 0; max-width: 90ch; }
 .panel { background: var(--card); border: 2px solid var(--ink); box-shadow: var(--shadow); padding: 16px; }
 
