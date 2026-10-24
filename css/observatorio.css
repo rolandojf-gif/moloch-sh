@@ -43,7 +43,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; border-radius: 0; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: 90px; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--top-h, 104px) + 12px); }
 body {
   margin: 0; min-height: 100vh;
   background-color: var(--paper);
@@ -63,8 +63,9 @@ button { cursor: pointer; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ── Cabecera ─────────────────────────────────────────────────────────── */
+/* La cabecera y la franja de la recogida se quedan arriba juntas; --top-h (js/app.js) es su altura. */
+.topfix { position: sticky; top: 0; z-index: 50; }
 .topnav {
-  position: sticky; top: 0; z-index: 50;
   display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
   padding: 12px 24px;
   background: var(--paper);
@@ -370,7 +371,7 @@ a.m-open { color: inherit; text-underline-offset: 3px; text-decoration-thickness
 .jump a i { font-style: normal; color: var(--orange-ink); font-weight: 700; }
 .jump a:hover { background: rgba(204, 255, 0, .3); }
 .fronts { display: flex; flex-direction: column; gap: 26px; }
-.front, .linea { scroll-margin-top: 96px; }
+.front, .linea { scroll-margin-top: calc(var(--top-h, 104px) + 18px); }
 .front { background: var(--card); border: 2px solid var(--ink); box-shadow: var(--shadow); }
 .front-head { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-bottom: 2px solid var(--ink); }
 .front-n { flex: none; width: 42px; height: 42px; display: grid; place-content: center; background: var(--orange); color: #121211; border: 2px solid var(--ink); font: 700 15px var(--f-mono); }
@@ -576,7 +577,9 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
   .hito-more { padding-left: 142px; }
 }
 @media (max-width: 640px) {
-  .topnav { padding: 10px 16px; gap: 10px; }
+  /* En el móvil la cabecera ya ocupa dos filas: sólo ella queda fija y la franja se va al desplazarse. */
+  .topfix { display: contents; }
+  .topnav { position: sticky; top: 0; z-index: 50; padding: 10px 16px; gap: 10px; }
   /* Las cinco pestañas, siempre visibles: dos filas en vez de desplazamiento oculto. */
   .navtabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; }
   .navtab { justify-content: center; padding: 9px 6px; font-size: 11.5px; border-bottom: 2px solid var(--ink); }
