@@ -81,8 +81,8 @@
       "id": "evaluacion",
       "titulo": "Datos y evaluación",
       "pregunta": "¿Mejoran capacidades transferibles o se saturan las pruebas?",
-      "indicadores": ["bench.saturated", "bench.tasks", "eci.rate12m"],
-      "sabemos": ["bench.saturated", "eci.rate12m"],
+      "indicadores": ["bench.saturated", "bench.tasks", "aa.rate12m", "eci.rate12m"],
+      "sabemos": ["bench.saturated", "aa.rate12m"],
       "hechos": [
         { "texto": "Epoch considera que dos modelos tienen la misma capacidad si su ECI difiere en menos de 1 punto.", "fuente": "Epoch AI, «Chinese AI models have lagged the US frontier by 7 months on average since 2023»", "url": "https://epoch.ai/data-insights/us-vs-china-eci", "fecha": "2026-01-06", "consulta": "2026-10-20", "verificacion": "lectura directa" },
         { "texto": "METR considera poco fiables las mediciones de horizonte temporal por encima de 16 horas (nota del 8 de mayo de 2026, a propósito de Claude Mythos Preview): la propia prueba se queda corta.", "fuente": "METR, «Time horizons»", "url": "https://metr.org/time-horizons", "fecha": "2026-05-08", "consulta": "2026-10-20", "verificacion": "lectura directa" },
@@ -130,8 +130,8 @@
       "id": "coordinacion",
       "titulo": "Coordinación",
       "pregunta": "¿Hay compromisos verificables o sólo declaraciones?",
-      "indicadores": ["eci.gapLabs", "eci.gapUsCn", "eci.gapClosedOpen"],
-      "sabemos": ["eci.gapLabs", "eci.gapUsCn"],
+      "indicadores": ["aa.gapLabs", "aa.gapUsCn", "aa.gapClosedOpen", "eci.gapLabs", "eci.gapUsCn", "eci.gapClosedOpen"],
+      "sabemos": ["aa.gapLabs", "aa.gapUsCn"],
       "hechos": [
         { "texto": "Las obligaciones del Reglamento de IA de la UE para proveedores de modelos de uso general se aplican desde el 2 de agosto de 2025; la Comisión puede hacerlas cumplir, con multas, desde el 2 de agosto de 2026, y los modelos comercializados antes del 2 de agosto de 2025 tienen hasta el 2 de agosto de 2027.", "fuente": "Comisión Europea, «Guidelines for providers of general-purpose AI models»", "url": "https://digital-strategy.ec.europa.eu/en/policies/guidelines-gpai-providers", "fecha": "2026-04-28", "consulta": "2026-10-20", "verificacion": "lectura directa" },
         { "texto": "29 países firmaron en Shanghái, el 16 de julio de 2026, el acuerdo fundacional de WAICO, la organización internacional de IA promovida por China. Ninguna economía del G7 ni ningún Estado de la UE se ha unido, y todavía no ha adoptado compromisos vinculantes ni normas.", "fuente": "CSIS, «The State of AI Global Governance and Its Implications for the U.S.-China Summit»", "url": "https://www.csis.org/analysis/state-ai-global-governance-and-its-implications-us-china-summit", "fecha": "2026-09-21", "consulta": "2026-10-20", "verificacion": "lectura directa" },

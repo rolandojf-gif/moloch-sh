@@ -44,6 +44,11 @@ const IND = [
   { k: 'metrRatio', path: 'metr.ratio', fact: 'metr.sota', get: f => f.ratio, label: 'Relación entre los horizontes al 80 % y al 50 % de METR', unit: '', n: v => es(v, 2), u: '', desde: '2026-10-23' },
   { k: 'sweBest', path: 'bench.sweBest', label: 'Mejor SWE-bench Verified en las ejecuciones de Epoch', unit: '%', n: es1, u: '%', ctx: f => f.model, desde: '2026-10-23' },
   { k: 'mirror', path: 'bench.mirror', label: 'Mejor resultado en MirrorCode (ejecuciones de Epoch)', unit: '%', n: es1, u: '%', ctx: f => f.model, desde: '2026-10-23' },
+  // Las mismas distancias con el índice de AA, al día. Con un cambio de versión del índice no se comparan (aa: true).
+  { k: 'aaUsCn', path: 'aa.gapUsCn', aa: true, label: 'Distancia EE. UU. − China en el índice de AA', unit: 'puntos AA', n: es1, u: 'puntos', ctx: f => f.us && f.cn ? `${f.us.model} frente a ${f.cn.model}` : null, desde: '2026-10-24' },
+  { k: 'aaClosedOpen', path: 'aa.gapClosedOpen', aa: true, label: 'Distancia cerrados − abiertos en el índice de AA', unit: 'puntos AA', n: es1, u: 'puntos', ctx: f => f.closed && f.open ? `${f.closed.model} frente a ${f.open.model}` : null, desde: '2026-10-24' },
+  { k: 'aaLabs', path: 'aa.gapLabs', aa: true, label: 'Distancia entre los dos primeros laboratorios en el índice de AA', unit: 'puntos AA', n: es1, u: 'puntos', ctx: f => f.first && f.second ? `${f.first.org} frente a ${f.second.org}` : null, desde: '2026-10-24' },
+  { k: 'aaRate12m', path: 'aa.rate12m', aa: true, label: 'Avance de la frontera del índice de AA en 12 meses', unit: 'puntos AA', n: es1, u: 'puntos', desde: '2026-10-24' },
   { k: 'saturated', path: 'bench.saturated', label: 'Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)', unit: 'evaluaciones', n: es0, u: 'evaluaciones', ctx: f => f.of ? `de ${f.of}` : null, desde: '2026-10-23' }
 ];
 const factOf = (ind, d) => at(ind, d.fact || d.path);
@@ -52,7 +57,7 @@ const valueOf = (ind, d) => { const f = factOf(ind, d); return f ? (d.get ? d.ge
 export const indSnapshot = ind => Object.fromEntries(IND.map(d => [d.k, ind ? valueOf(ind, d) : null]));
 /* Lista para la web: qué se vigila y desde cuándo. Una serie detenida (scripts/indicadores.mjs) deja de compararse. */
 export const vigilados = ind => IND.map(d => ({ path: d.path, label: d.label, desde: d.desde || '2026-10-20', ...(factOf(ind || {}, d)?.detenida ? { detenida: factOf(ind, d).ultimo } : {}) }));
-const SRC_NAME = { epoch: 'Epoch AI', metr: 'METR' };
+const SRC_NAME = { epoch: 'Epoch AI', metr: 'METR', aa: 'Artificial Analysis' };
 
 /* Puesto de cada modelo por índice de AA entre los de identidad confirmada: sirve para «un modelo del top 20». */
 function rankAA(models) {
@@ -112,7 +117,8 @@ export function detectChanges(ctx) {
         }));
       }
     }
-    if (p.w !== 'o' && m.weights.v === 'abiertos') {
+    // Pesos descargables (no los anunciados: «a» en la instantánea pasa a «o» cuando aparece el repositorio).
+    if (p.w !== 'o' && m.weights.v === 'abiertos' && !m.weights.announced) {
       const hf = m.weights.src === 'hf';
       out.push(item('pesos', `pesos|${m.id}`, {
         model: m.id, published: hf ? m.hfCreated?.v || null : null,
@@ -167,9 +173,10 @@ export function detectChanges(ctx) {
       out.push(item('lider', `lider|${blk}|${b.id}|${TODAY}`, {
         model: b.id, mag: { v: margin, unit: 'puntos AA' },
         src: { name: 'Artificial Analysis', url: nb?.aa?.url || 'https://artificialanalysis.ai/leaderboards/models', got: NOW_ISO },
-        what: aNow !== null
+        what: (aNow !== null
           ? `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}: ${es(b.ii, 1)} puntos, ${margin >= 0 ? `${es(margin, 1)} más` : `${es(-margin, 1)} menos`} que ${aName} (${es(aNow, 1)}).`
-          : `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}, con ${es(b.ii, 1)} puntos: ${aName}, que tenía ${es(a.ii, 1)}, ya no figura como ${adj} con puntuación.`,
+          : `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}, con ${es(b.ii, 1)} puntos: ${aName}, que tenía ${es(a.ii, 1)}, ya no figura como ${adj} con puntuación.`)
+          + (nb?.weights?.announced ? ' Sus pesos están anunciados por el laboratorio, pero aún no se pueden descargar.' : ''),
         data: { block: w, version: vNow, from: { id: a.id, n: aName, ii: a.ii, iiNow: aNow }, to: { id: b.id, n: nb?.name || null, ii: b.ii }, margin }
       }));
     }
@@ -179,6 +186,7 @@ export function detectChanges(ctx) {
   if (base.ind && ctx.ind) for (const d of IND) {
     const f = factOf(ctx.ind, d), a = base.ind[d.k], b = valueOf(ctx.ind, d);
     if (a == null || b == null || f.stale || f.detenida || r2(a) === r2(b)) continue;
+    if (d.aa && (base.aaIndexVersion ?? null) !== (f.version ?? null)) continue;
     const c = d.ctx?.(f);
     out.push(item('indicador', `indicador|${d.k}|${TODAY}`, {
       published: f.asOf && f.asOf !== (f.got || '').slice(0, 10) ? f.asOf : null,

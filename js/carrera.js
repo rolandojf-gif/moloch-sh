@@ -176,6 +176,11 @@ const CHARTS = {
     }
   ],
   coordinacion: I => [
+    I.aa?.labs?.length && {
+      title: 'Mejor modelo de cada laboratorio (índice AA)',
+      note: `${AA_LINK}, ${esc(aaIndexName(I.aa.gapLabs?.version))}, consultado el ${esc(fmtDate(I.aa.gapLabs?.got))}; publicado con su permiso. Cada laboratorio con su modelo mejor puntuado del catálogo; AA no publica intervalo de confianza.`,
+      draw: el => hbars(el, I.aa.labs.map(r => ({ label: r.org, v: r.ii, value: num(r.ii, 1), tip: tip(r.org, [['Modelo', r.model], ['Índice AA', num(r.ii, 1)], ['Pesos', r.anun ? 'abiertos (anunciados por el laboratorio; aún no descargables)' : null], ['Publicado', fmtDate(r.date)]]) })), { aria: 'Mejor índice de AA por laboratorio' })
+    },
     I.eci?.labs?.length && {
       title: 'Mejor modelo de cada laboratorio (ECI)',
       note: `${EPOCH('«Epoch Capabilities Index»', I.eci.frontier?.url || 'https://epoch.ai/benchmarks/eci')} La raya es el intervalo de confianza del 90 %: si dos rayas se solapan, no puede afirmarse cuál va primero.`,
@@ -210,21 +215,24 @@ export function renderCarrera(d) {
     $('#ca-fronts').innerHTML = '<div class="empty">No se han podido cargar los frentes (data/curated/carrera.json).</div>';
     return;
   }
+  // Primero el índice de AA, al día: puntúa un modelo a los pocos días de salir y cuenta laboratorios que Epoch no mide.
+  const aa = aaRace(d.catalog);
+  $('#ca-kpis-aa').innerHTML = ind?.aa?.gapUsCn
+    ? ['aa.gapUsCn', 'aa.gapClosedOpen', 'aa.gapLabs', 'aa.rate12m'].map(k => indicatorKpi(ind, k)).join('')
+    : `<div class="empty">${ND}: la recogida todavía no ha calculado las distancias con el índice de AA.</div>`;
+  if (!gaps($('#ca-gaps-aa'), aa.series, { unit: 'puntos del índice AA', short: 'puntos AA' })) $('#ca-gaps-aa').innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>';
+  $('#ca-gaps-aa-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Hoy y a cada fin de mes, el mejor ${esc(aaIndexName(aa.ver))} publicado hasta esa fecha por laboratorios de cada país o por modelos con pesos cerrados y abiertos, y su diferencia; los dos primeros laboratorios, con el mejor modelo de cada uno. País del laboratorio y pesos según el catálogo del observatorio: cuenta como abierto un modelo que el laboratorio presenta como de pesos abiertos, aunque aún no se puedan descargar. Cada modelo va en su fecha según AA, con su índice de hoy, y sólo cuentan los ${aa.n} que siguen en OpenRouter: en los meses antiguos faltan los retirados. Las distancias no se convierten en meses, y las escalas AA y ECI no son comparables. Datos de ${AA_LINK}, publicados con su permiso.`;
+  // Debajo, la serie larga del ECI de Epoch: más modelos históricos e intervalos de confianza, pero llega con semanas de retraso.
   if (ind) {
     $('#ca-kpis').innerHTML = ['eci.gapUsCn', 'eci.gapClosedOpen', 'eci.gapLabs', 'eci.rate12m'].map(k => indicatorKpi(ind, k)).join('');
     const s = ind.eci?.series;
     const ok = s ? gaps($('#ca-gaps'), s.points) : false;
     if (!ok) $('#ca-gaps').innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>';
-    $('#ca-gaps-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Para cada fin de mes, el mejor ECI publicado hasta esa fecha por organizaciones de cada país (o con pesos cerrados y abiertos, según la clasificación de Epoch), y su diferencia. Epoch trata como misma capacidad dos modelos a menos de 1 punto. Las distancias no se convierten en meses. Fuente: <a href="https://epoch.ai/benchmarks/eci" target="_blank" rel="noopener">Epoch AI</a>, CC BY 4.0.`;
+    $('#ca-gaps-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Para cada fin de mes, el mejor ECI publicado hasta esa fecha por organizaciones de cada país (o con pesos cerrados y abiertos, según la clasificación de Epoch), y su diferencia. Epoch trata como misma capacidad dos modelos a menos de 1 punto. Epoch puntúa los modelos semanas después de salir y no mide algunos laboratorios: por eso sus cifras van por detrás de las de arriba. Las distancias no se convierten en meses. Fuente: <a href="https://epoch.ai/benchmarks/eci" target="_blank" rel="noopener">Epoch AI</a>, CC BY 4.0.`;
   } else {
     $('#ca-kpis').innerHTML = `<div class="empty">${ND}: todavía no hay indicadores recogidos.</div>`;
     $('#ca-gaps').innerHTML = '';
   }
-  // Las mismas distancias con el índice de AA: llega antes que el ECI y cuenta modelos que Epoch no ha puntuado.
-  const aa = aaRace(d.catalog);
-  if (!gaps($('#ca-gaps-aa'), aa.series, { unit: 'puntos del índice AA', short: 'puntos AA' })) $('#ca-gaps-aa').innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>';
-  const now = aa.series[aa.series.length - 1];
-  $('#ca-gaps-aa-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Para cada fin de mes y para hoy, el mejor ${esc(aaIndexName(aa.ver))} publicado hasta esa fecha por laboratorios de cada país o por modelos con pesos cerrados y abiertos, y su diferencia. País del laboratorio y pesos según el catálogo del observatorio: «abiertos» exige pesos descargables, así que un modelo cuyos pesos aún no se han publicado cuenta como cerrado. Llega antes que el ECI y cuenta modelos que Epoch no ha puntuado, pero sólo los ${aa.n} que siguen en OpenRouter: en los meses antiguos faltan los retirados. Cada modelo va en su fecha según AA, con su índice de hoy. Las escalas AA y ECI no son comparables.${now ? ` Hoy: EE. UU. − China, ${now.usCn !== null ? `${num(now.usCn)} puntos (${esc(now.who.us)} frente a ${esc(now.who.cn)})` : 'sin datos'}; cerrados − abiertos, ${now.closedOpen !== null ? `${num(now.closedOpen)} puntos (${esc(now.who.closed)} frente a ${esc(now.who.open)})` : 'sin datos'}.` : ''} Datos de ${AA_LINK}, publicados con su permiso.`;
   $('#ca-index').innerHTML = cur.frentes.map((f, i) => `<a href="#frente-${esc(f.id)}" data-jump><i>${String(i + 1).padStart(2, '0')}</i>${esc(f.titulo)}</a>`).join('');
   $('#ca-fronts').innerHTML = cur.frentes.map((f, i) => front(f, i, ind, d.evLog)).join('');
   for (const f of cur.frentes) chartsOf(f, ind).forEach((c, k) => c.draw(document.getElementById(`fc-${f.id}-${k}`)));

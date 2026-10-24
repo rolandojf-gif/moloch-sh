@@ -318,7 +318,7 @@ export function frontier(el, records, { models = null, yLabel = '', metric = 'EC
       html: tip(m.n, [
         ['Fecha de lanzamiento', fmtDate(m.d)],
         [metric, m.lo != null && m.hi != null ? `${fmtV(m.v)} (intervalo ${num(m.lo, 1)}–${num(m.hi, 1)})` : fmtV(m.v)],
-        ['Pesos', m.g === 'o' ? 'abiertos' : m.inf ? 'cerrados (inferido: no hay pesos publicados)' : 'cerrados'],
+        ['Pesos', m.g === 'o' ? (m.anun ? 'abiertos (anunciados por el laboratorio; aún no descargables)' : 'abiertos') : m.inf ? 'cerrados (inferido: no hay pesos publicados)' : 'cerrados'],
         ['Organización', m.org || null],
         ['Nuevo récord', m.rec ? `sí, mejor ${m.g === 'o' ? 'abierto' : 'cerrado'} hasta esa fecha` : 'no']
       ])

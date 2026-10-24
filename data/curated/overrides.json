@@ -19,5 +19,7 @@
     "google/gemini-2.5-pro": "Gemini 2.5 Pro (Jun 2025)",
     "google/gemini-2.5-pro-preview": "Gemini 2.5 Pro (Jun 2025)",
     "google/gemini-2.5-flash": "Gemini 2.5 Flash (Jun 2025)"
-  }
+  },
+  "_doc_pesos": "Pesos anunciados: sin repositorio en Hugging Face ni clasificación de Epoch, un modelo cuenta como «abiertos · anunciados» si su descripción de OpenRouter lo presenta como de pesos abiertos. Clave: id de OpenRouter. Valor null para no aplicar esa lectura a un modelo cuya descripción se lea mal.",
+  "pesos": {}
 }

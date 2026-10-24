@@ -38,25 +38,46 @@ function standing(f, label) {
   };
 }
 
+/* Índice de AA: mismas cuentas que el ECI, con la puntuación actual de cada modelo (scripts/collect.mjs, aaIndicators). */
+const ptsAA = v => `${v < 0 ? '−' : ''}${num(Math.abs(v), 1)} puntos AA`;
+const whoAA = b => b ? `${who(b)}, ${num(b.ii, 1)}${b.anun ? ' (pesos anunciados, aún sin descargar)' : ''}` : 'sin datos';
+const ahead = (f, second) => f?.v < 0 ? ` Va por delante ${second}.` : f?.v === 0 ? ' Empatados.' : '';
+
 /* Cada entrada devuelve { label, value, sub } o { label, list, sub }. value y list ya llevan su marca de fuente. */
 const REG = {
+  'aa.gapUsCn': (I) => {
+    const f = I.aa?.gapUsCn;
+    return { label: 'Distancia EE. UU. − China (índice AA)', value: fact(f, ptsAA), sub: f?.us && f?.cn ? `${whoAA(f.us)} frente a ${whoAA(f.cn)}.${ahead(f, 'China')}` : '' };
+  },
+  'aa.gapClosedOpen': (I) => {
+    const f = I.aa?.gapClosedOpen;
+    return { label: 'Distancia cerrados − abiertos (índice AA)', value: fact(f, ptsAA), sub: f?.closed && f?.open ? `${whoAA(f.closed)} frente a ${whoAA(f.open)}.${ahead(f, 'el mejor abierto')}` : '' };
+  },
+  'aa.gapLabs': (I) => {
+    const f = I.aa?.gapLabs;
+    return { label: 'Distancia entre los dos primeros laboratorios (índice AA)', value: fact(f, ptsAA), sub: f?.first && f?.second ? `${whoAA(f.first)} frente a ${whoAA(f.second)}.` : '' };
+  },
+  'aa.rate12m': (I) => {
+    const f = I.aa?.rate12m;
+    return { label: 'Avance de la frontera en 12 meses (índice AA)', value: fact(f, v => `+${num(v, 1)} puntos AA`), sub: f?.from && f?.to ? `De ${whoAA(f.from)}, publicado el ${esc(fmtDate(f.from.date))}, a ${whoAA(f.to)}. Cada modelo con su puntuación actual.` : '' };
+  },
   'eci.frontier': (I) => ({ label: 'Mejor modelo (ECI)', value: fact(I.eci?.frontier, v => num(v, 1)), sub: I.eci?.frontier?.model ? esc(I.eci.frontier.model) : '' }),
   'eci.rate12m': (I) => {
     const f = I.eci?.rate12m;
-    return { label: 'Avance de la frontera en 12 meses', value: fact(f, v => `+${num(v, 1)} puntos`), sub: f?.from && f?.to ? `De ${who(f.from)}, ${num(f.from.eci, 1)}, a ${who(f.to)}, ${num(f.to.eci, 1)}.` : '' };
+    return { label: 'Avance de la frontera en 12 meses (ECI)', value: fact(f, v => `+${num(v, 1)} puntos ECI`), sub: f?.from && f?.to ? `De ${who(f.from)}, ${num(f.from.eci, 1)}, a ${who(f.to)}, ${num(f.to.eci, 1)}.` : '' };
   },
   'eci.gapUsCn': (I) => {
     const f = I.eci?.gapUsCn;
-    return { label: 'Distancia EE. UU. − China', value: fact(f, pts), sub: f?.us && f?.cn ? `${who(f.us)} frente a ${who(f.cn)}. País de la organización según Epoch.` : '' };
+    return { label: 'Distancia EE. UU. − China (ECI)', value: fact(f, pts), sub: f?.us && f?.cn ? `${who(f.us)} frente a ${who(f.cn)}. País de la organización según Epoch.` : '' };
   },
   'eci.gapClosedOpen': (I) => {
     const f = I.eci?.gapClosedOpen;
-    return { label: 'Distancia cerrados − abiertos', value: fact(f, pts), sub: f?.closed && f?.open ? `${who(f.closed)} frente a ${who(f.open)}.` : '' };
+    return { label: 'Distancia cerrados − abiertos (ECI)', value: fact(f, pts), sub: f?.closed && f?.open ? `${who(f.closed)} frente a ${who(f.open)}.` : '' };
   },
   'eci.gapLabs': (I) => {
     const f = I.eci?.gapLabs;
     return {
-      label: 'Distancia entre los dos primeros laboratorios', value: fact(f, pts),
+      label: 'Distancia entre los dos primeros laboratorios (ECI)', value: fact(f, pts),
       sub: f?.first && f?.second ? `${who(f.first)} frente a ${who(f.second)}.${f.overlap ? ' Sus intervalos de confianza se solapan: no puede afirmarse cuál va primero.' : ''}` : ''
     };
   },
