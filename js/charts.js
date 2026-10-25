@@ -121,10 +121,10 @@ function niceTicks(min, max, n = 5) {
   for (let v = Math.ceil(min / s) * s; v <= max + 1e-9; v += s) out.push(Math.round(v * 1000) / 1000);
   return out;
 }
-/* Marcas de tiempo en inicios de mes (paso de 1, 3, 6 o 12 meses), como mucho 7. */
-function monthTicks(tmin, tmax) {
+/* Marcas de tiempo en inicios de mes (paso de 1, 3, 6 o 12 meses), como mucho n + 1. */
+function monthTicks(tmin, tmax, n = 6) {
   const a = new Date(tmin), months = (tmax - tmin) / (30.44 * 86400e3);
-  const stepM = [1, 3, 6, 12, 24].find(k => months / k <= 6) || 24;
+  const stepM = [1, 3, 6, 12, 24, 48].find(k => months / k <= n) || 48;
   let y = a.getUTCFullYear(), m = Math.ceil(a.getUTCMonth() / stepM) * stepM;
   if (a.getUTCDate() > 1 && m === a.getUTCMonth()) m += stepM;
   const out = [];
@@ -134,22 +134,34 @@ function monthTicks(tmin, tmax) {
 const ms = d => new Date(d + 'T00:00:00Z').getTime();
 const monthLabel = tk => new Date(tk).toLocaleDateString('es-ES', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 
-function timeAxis(X, tmin, tmax, { W, H, B, L, R }) {
+const tickCount = G => G.narrow ? Math.max(2, Math.floor((G.W - G.L - G.R) / 80)) : 6;
+function timeAxis(X, tmin, tmax, G) {
+  const { W, H, B, L, R } = G;
   let s = '';
-  for (const tk of monthTicks(tmin, tmax)) {
+  for (const tk of monthTicks(tmin, tmax, tickCount(G))) {
     const x = X(tk);
     const anchor = x < L + 30 ? 'start' : x > W - R - 30 ? 'end' : 'middle';
     s += `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${x.toFixed(1)}" y="${H - B + 18}" text-anchor="${anchor}">${esc(monthLabel(tk))}</text>`;
   }
   return s;
 }
-function yAxis(ticks, Y, { W, L, R, T, H, B }, fmt = v => num(v, 0), label = '') {
+function yAxis(ticks, Y, G, fmt = v => num(v, 0), label = '') {
+  const { W, L, R, T, H, B } = G;
   let s = '<g class="grid">';
   for (const v of ticks) s += `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/>`;
   s += '</g><g class="axis">';
   for (const v of ticks) s += `<text x="${L - 8}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${esc(fmt(v))}</text>`;
-  if (label) s += `<text class="lbl" x="12" y="${(T + H - B) / 2}" text-anchor="middle" transform="rotate(-90 12 ${(T + H - B) / 2})">${esc(label)}</text>`;
+  // En estrecho, el rótulo va en horizontal encima del eje (sin el paréntesis y recortado si no cabe).
+  if (label && G.narrow) s += `<text class="lbl" x="2" y="${T - 12}">${esc(fitText(G.yShort || label.replace(/\s*\([^)]*\)\s*$/, ''), Math.floor((W - 4) / 6.7)))}</text>`;
+  else if (label) s += `<text class="lbl" x="12" y="${(T + H - B) / 2}" text-anchor="middle" transform="rotate(-90 12 ${(T + H - B) / 2})">${esc(label)}</text>`;
   return s;
+}
+const fitText = (t, n) => t.length > n ? t.slice(0, Math.max(1, n - 1)).trimEnd() + '…' : t;
+/* Parte un texto en líneas de como mucho n caracteres, por los espacios. */
+function wrap(t, n) {
+  const out = [''];
+  for (const w of t.split(' ')) { const c = out[out.length - 1]; if (c && (c + ' ' + w).length > n) out.push(w); else out[out.length - 1] = c ? `${c} ${w}` : w; }
+  return out;
 }
 
 /* ── Zoom con la rueda y arrastre, como en los gráficos de Epoch ────────── */
@@ -221,12 +233,24 @@ const zoomUi = zoomed => (zoomed ? '<button type="button" class="zoom-reset">Ver
   + '<span class="zoom-hint">Rueda del ratón: acercar o alejar · arrastrar: mover · doble clic: ver todo</span>';
 const clip = (id, { W, H, L, R, T, B }) => `<clipPath id="clip-${id}"><rect x="${L}" y="${T - 8}" width="${W - L - R}" height="${H - T - B + 8}"/></clipPath>`;
 
+/* ── Pantallas estrechas ────────────────────────────────────────────────── */
+/* Con menos de 640 px de gráfico (el móvil, o una columna estrecha), el viewBox mide lo mismo que el gráfico en pantalla:
+   el texto se lee a su tamaño real y nada queda fuera por la derecha. Se recortan los márgenes, el rótulo del eje Y pasa
+   arriba y los valores finales de las series van a la leyenda. Los gráficos que ya se dibujan a su ancho real (barras,
+   columnas) sólo cambian de disposición por debajo de 480 px, el teléfono. */
+const isNarrow = (el, max = 640) => el.clientWidth > 0 && el.clientWidth < max;
+function frame(el, wide, narrowH = wide.H, max = 640) {
+  if (!isNarrow(el, max)) return wide;
+  return { ...wide, W: Math.max(280, el.clientWidth), H: narrowH, L: Math.max(34, wide.L - 18), R: 12, T: wide.T + 16, narrow: true };
+}
+
 /* ── Capacidad frente a precio (Hoy) ────────────────────────────────────── */
 /* points: [{ id, x, y, cls, label, tip }]. Etiquetas fijas: las pedidas y los modelos que nadie mejora a la vez en índice y precio;
    al acercarse, también el resto de modelos visibles que quepan. */
 export function scatter(el, points, { threshold = null, labels = new Set(), yLabel = 'Índice' } = {}) {
   if (!points.length) { el.innerHTML = '<div class="chart-empty">No hay modelos con índice y precio a la vez.</div>'; return; }
-  const G = { W: 860, H: 400, L: 52, R: 16, T: 16, B: 44 };
+  watchWidth(el, () => scatter(el, points, { threshold, labels, yLabel }));
+  const G = frame(el, { W: 860, H: 400, L: 52, R: 16, T: 16, B: 44 }, 340);
   const { W, H, L, R, T, B } = G;
   const xs = points.map(p => p.x), ys = points.map(p => p.y);
   const full = {
@@ -244,8 +268,14 @@ export function scatter(el, points, { threshold = null, labels = new Set(), yLab
     const shown = points.filter(p => X(p.x) >= L - 3 && X(p.x) <= W - R + 3 && Y(p.y) >= T - 3 && Y(p.y) <= H - B + 3);
     let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yLabel)} frente a precio combinado por millón de tokens">${clip(el.id, G)}`;
     s += yAxis(niceTicks(v.y0, v.y1), Y, G, val => num(val, 0), yLabel);
-    for (const t of logTicks(10 ** v.x0, 10 ** v.x1)) s += `<line x1="${X(t)}" x2="${X(t)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${X(t)}" y="${H - B + 18}" text-anchor="middle">${esc(usd(t))}</text>`;
-    s += `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">Precio combinado por millón de tokens (escala logarítmica)</text></g>`;
+    // Marcas del precio separadas lo bastante para que no se pisen sus rótulos.
+    let lastX = -Infinity;
+    for (const t of logTicks(10 ** v.x0, 10 ** v.x1)) {
+      if (X(t) - lastX < (G.narrow ? 50 : 0)) continue;
+      lastX = X(t);
+      s += `<line x1="${X(t)}" x2="${X(t)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${X(t)}" y="${H - B + 18}" text-anchor="middle">${esc(usd(t))}</text>`;
+    }
+    s += `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">${G.narrow ? 'Precio por millón (escala log.)' : 'Precio combinado por millón de tokens (escala logarítmica)'}</text></g>`;
     const taken = [];
     if (threshold !== null && threshold > v.y0 && threshold < v.y1) {
       s += `<line x1="${L}" x2="${W - R}" y1="${Y(threshold)}" y2="${Y(threshold)}" stroke="currentColor" stroke-dasharray="5 4" opacity=".55"/>`;
@@ -275,8 +305,9 @@ export function scatter(el, points, { threshold = null, labels = new Set(), yLab
    models: todos los modelos puntuados [{ d, v, g: 'o'|'c', n, org, lo, hi, rec }]; sin ellos sólo se dibujan los récords. */
 /* metric: rótulo de la cifra en la ficha (ECI por defecto); highlight: nombres que llevan etiqueta fija aunque no sean récord
    (p. ej. las novedades); fmtV: cómo se escribe la cifra. */
-export function frontier(el, records, { models = null, yLabel = '', metric = 'ECI', highlight = null, fmtV = v => num(v, 1) } = {}) {
-  const G = { W: 860, H: 360, L: 52, R: 16, T: 16, B: 40 };
+export function frontier(el, records, opts = {}) {
+  const { models = null, yLabel = '', yShort = '', metric = 'ECI', highlight = null, fmtV = v => num(v, 1) } = opts;
+  const G = { ...frame(el, { W: 860, H: 360, L: 52, R: 16, T: 16, B: 40 }, 320), yShort };
   const { W, H, L, R, T, B } = G;
   const rec = { open: [], closed: [] };
   for (const g of ['open', 'closed']) {
@@ -287,6 +318,7 @@ export function frontier(el, records, { models = null, yLabel = '', metric = 'EC
     }
   }
   if (rec.open.length + rec.closed.length < 2) return false;
+  watchWidth(el, () => frontier(el, records, opts));
   const all = (models && models.length ? models : [...rec.open.map(r => ({ ...r, g: 'o', rec: true })), ...rec.closed.map(r => ({ ...r, g: 'c', rec: true }))]);
   const first = Math.min(...[...rec.open, ...rec.closed].map(r => ms(r.d)));
   const pts = all.filter(m => m.d && ms(m.d) >= first);
@@ -352,7 +384,8 @@ export function frontier(el, records, { models = null, yLabel = '', metric = 'EC
 export function gaps(el, points, { unit = 'puntos ECI', short = unit } = {}) {
   const pts = (points || []).filter(p => p.usCn !== null || p.closedOpen !== null);
   if (pts.length < 2) { el.innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>'; return false; }
-  const G = { W: 860, H: 290, L: 52, R: 185, T: 16, B: 40 };
+  watchWidth(el, () => gaps(el, points, { unit, short }));
+  const G = frame(el, { W: 860, H: 290, L: 52, R: 185, T: 16, B: 40 }, 250);
   const { W, H, L, R, T, B } = G;
   const tmin = ms(pts[0].d), tmax = ms(pts[pts.length - 1].d);
   const vals = pts.flatMap(p => [p.usCn, p.closedOpen]).filter(v => v !== null);
@@ -384,8 +417,10 @@ export function gaps(el, points, { unit = 'puntos ECI', short = unit } = {}) {
   const last = pts[pts.length - 1];
   const ends = SER.filter(([key]) => last[key] !== null).map(([key, , name]) => ({ x: X(tmax), y: Y(last[key]), text: `${name}: ${num(last[key], 1)}` }));
   if (ends.length === 2 && Math.abs(ends[0].y - ends[1].y) < 14) ends[ends[0].y < ends[1].y ? 0 : 1].y -= 7, ends[ends[0].y < ends[1].y ? 1 : 0].y += 7;
-  s += ends.map(e => `<text class="ptlabel" x="${(e.x + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
-  s += '</svg><div class="legend"><span><i style="background:var(--orange)"></i>EE. UU. − China</span><span><i style="background:var(--ink)"></i>Cerrados − abiertos</span></div>';
+  if (!G.narrow) s += ends.map(e => `<text class="ptlabel" x="${(e.x + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
+  // En estrecho no hay sitio a la derecha: el último valor de cada serie va en la leyenda.
+  const lg = (key, name) => G.narrow && last[key] !== null ? `${name}: ${num(last[key], 1)}` : name;
+  s += `</svg><div class="legend"><span><i style="background:var(--orange)"></i>${esc(lg('usCn', 'EE. UU. − China'))}</span><span><i style="background:var(--ink)"></i>${esc(lg('closedOpen', 'Cerrados − abiertos'))}</span></div>`;
   el.innerHTML = s;
   interact(el, targets);
   return true;
@@ -398,7 +433,7 @@ export function daily(el, pts, opts = {}) {
   const ok = pts.filter(p => series.some(sr => sr.get(p) !== null));
   if (ok.length < 2) { el.innerHTML = '<div class="chart-empty">La serie necesita al menos dos recogidas diarias.</div>'; return false; }
   watchWidth(el, () => daily(el, pts, opts));
-  const G = { W: fitWidth(el), H: 280, L: 52, R: 170, T: 16, B: 40 };
+  const G = frame(el, { W: fitWidth(el), H: 280, L: 52, R: 170, T: 16, B: 40 }, 250);
   const { W, H, L, R, T, B } = G;
   const tmin = ms(ok[0].d), tmax = ms(ok[ok.length - 1].d);
   const vals = ok.flatMap(p => series.map(sr => sr.get(p))).filter(v => v !== null);
@@ -407,10 +442,11 @@ export function daily(el, pts, opts = {}) {
   const Y = v => T + (1 - (v - lo) / (hi - lo || 1)) * (H - T - B);
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">`;
   s += yAxis(niceTicks(lo, hi), Y, G, v => num(v, 0), yLabel);
-  const days = Math.round((tmax - tmin) / 864e5), every = Math.max(1, Math.ceil(days / 6));
+  const days = Math.round((tmax - tmin) / 864e5), every = Math.max(1, Math.ceil(days / tickCount(G)));
   for (let i = 0; i <= days; i += every) {
     const t = tmin + i * 864e5, x = X(t);
-    s += `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${x.toFixed(1)}" y="${H - B + 18}" text-anchor="middle">${esc(fmtDate(new Date(t).toISOString().slice(0, 10)).replace(/ \d{4}$/, ''))}</text>`;
+    const anchor = x < L + 24 ? 'start' : x > W - R - 24 ? 'end' : 'middle';
+    s += `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${x.toFixed(1)}" y="${H - B + 18}" text-anchor="${anchor}">${esc(fmtDate(new Date(t).toISOString().slice(0, 10)).replace(/ \d{4}$/, ''))}</text>`;
   }
   s += '</g>';
   for (const sr of series) {
@@ -427,15 +463,15 @@ export function daily(el, pts, opts = {}) {
   const last = ok[ok.length - 1];
   const ends = series.filter(sr => sr.get(last) !== null).map(sr => ({ y: Y(sr.get(last)), text: `${sr.name}: ${num(sr.get(last), 1)}` }));
   for (let i = 1; i < ends.length; i++) if (Math.abs(ends[i].y - ends[i - 1].y) < 14) ends[i].y = ends[i - 1].y + 14;
-  s += ends.map(e => `<text class="ptlabel" x="${(X(tmax) + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
-  s += `</svg><div class="legend">${series.map(sr => `<span><i class="sw-${sr.cls}"></i>${esc(sr.name)}</span>`).join('')}</div>`;
+  if (!G.narrow) s += ends.map(e => `<text class="ptlabel" x="${(X(tmax) + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
+  s += `</svg><div class="legend">${series.map(sr => `<span><i class="sw-${sr.cls}"></i>${esc(G.narrow && sr.get(last) !== null ? `${sr.name}: ${num(sr.get(last), 1)}` : sr.name)}</span>`).join('')}</div>`;
   el.innerHTML = s;
   interact(el, targets);
   return true;
 }
 
 /* Ancho del viewBox igual al del contenedor, para que el texto se vea a su tamaño real en columnas estrechas. */
-const fitWidth = el => Math.round(Math.min(1200, Math.max(520, el.clientWidth || 860)));
+const fitWidth = el => Math.round(Math.min(1200, Math.max(isNarrow(el) ? 280 : 520, el.clientWidth || 860)));
 /* Los gráficos de vistas ocultas se dibujan sin ancho y luego se escalan: se redibujan cuando cambia el ancho real. */
 function watchWidth(el, redraw) {
   if (typeof ResizeObserver === 'undefined') return;
@@ -451,25 +487,29 @@ export function hbars(el, rows, opts = {}) {
   const { fmt = v => num(v, 0), max = null, ref = null, aria = '', right = null } = opts;
   if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
   watchWidth(el, () => hbars(el, rows, opts));
-  const W = fitWidth(el), rowH = 30, G = { W, L: Math.min(250, Math.round(W * 0.3)), R: right ?? Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8 };
+  const W = fitWidth(el), nw = isNarrow(el, 480), rowH = nw ? 46 : 30;
+  // En estrecho, cada etiqueta va encima de su barra, a todo lo ancho, y el margen derecho se ajusta al valor más largo.
+  const longest = Math.max(...rows.map(r => String(r.value ?? fmt(r.v)).length));
+  const G = nw ? { W, L: 4, R: Math.min(Math.round(W * 0.4), Math.round(longest * 7.6 + 14)), T: ref ? 22 : 6, B: 8, cw: 7.2 }
+    : { W, L: Math.min(250, Math.round(W * 0.3)), R: right ?? Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8, cw: 8 };
   const H = G.T + rows.length * rowH + G.B;
   const top = max ?? Math.max(...rows.map(r => r.v), ref?.v ?? 0);
   const X = v => G.L + Math.max(0, v) / (top || 1) * (G.W - G.L - G.R);
   let s = `<svg viewBox="0 0 ${G.W} ${H}" role="img" aria-label="${esc(aria)}">`;
-  const targets = rows.map((r, i) => {
-    const y = G.T + i * rowH;
-    const max = Math.floor((G.L - 14) / 8);
-    const label = r.label.length > max ? r.label.slice(0, max - 1) + '…' : r.label;
-    s += `<g data-k="${i}" class="bar ${r.cls || ''}"><rect class="bar-bg" x="0" y="${y}" width="${G.W}" height="${rowH}"/>`;
-    s += `<text class="bar-l" x="${G.L - 10}" y="${y + rowH / 2 + 5}" text-anchor="end">${esc(label)}</text>`;
-    s += `<rect class="bar-v" x="${G.L}" y="${y + 5}" width="${Math.max(1.5, X(r.v) - G.L).toFixed(1)}" height="${rowH - 10}"/>`;
-    s += `<text class="bar-n" x="${(X(r.v) + 8).toFixed(1)}" y="${y + rowH / 2 + 5}">${esc(r.value ?? fmt(r.v))}</text></g>`;
-    return { box: [0, y, G.W, y + rowH], html: r.tip || tip(r.label, [['Valor', r.value ?? fmt(r.v)]]) };
-  });
+  // La línea de referencia va debajo de las barras y de sus cifras, para no tacharlas.
   if (ref) {
     s += `<line class="ref" x1="${X(ref.v)}" x2="${X(ref.v)}" y1="${G.T - 6}" y2="${H - G.B}"/>`;
     s += `<text class="lbl" x="${X(ref.v)}" y="${G.T - 10}" text-anchor="middle">${esc(ref.label)}</text>`;
   }
+  const targets = rows.map((r, i) => {
+    const y = G.T + i * rowH, by = nw ? y + 21 : y + 5, bh = nw ? 18 : rowH - 10;
+    s += `<g data-k="${i}" class="bar ${r.cls || ''}"><rect class="bar-bg" x="0" y="${y}" width="${G.W}" height="${rowH}"/>`;
+    if (nw) s += `<text class="bar-l" x="${G.L}" y="${y + 15}">${esc(fitText(r.label, Math.floor((G.W - G.L) / G.cw)))}</text>`;
+    else s += `<text class="bar-l" x="${G.L - 10}" y="${y + rowH / 2 + 5}" text-anchor="end">${esc(fitText(r.label, Math.floor((G.L - 14) / G.cw)))}</text>`;
+    s += `<rect class="bar-v" x="${G.L}" y="${by}" width="${Math.max(1.5, X(r.v) - G.L).toFixed(1)}" height="${bh}"/>`;
+    s += `<text class="bar-n" x="${(X(r.v) + 8).toFixed(1)}" y="${by + bh / 2 + 5}">${esc(r.value ?? fmt(r.v))}</text></g>`;
+    return { box: [0, y, G.W, y + rowH], html: r.tip || tip(r.label, [['Valor', r.value ?? fmt(r.v)]]) };
+  });
   s += '</svg>';
   el.innerHTML = s;
   interact(el, targets);
@@ -482,7 +522,7 @@ export function columns(el, rows, opts = {}) {
   const { fmt = v => num(v, 0), yLabel = '', every = 1, aria = '', log = false, left = 64 } = opts;
   if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
   watchWidth(el, () => columns(el, rows, opts));
-  const G = { W: fitWidth(el), H: 260, L: left, R: 12, T: 14, B: 40 };
+  const G = frame(el, { W: fitWidth(el), H: 260, L: left, R: 12, T: 14, B: 40 }, 240, 480);
   const { W, H, L, R, T, B } = G;
   const top = Math.max(...rows.map(r => r.hi ?? r.v));
   let tk, Y;
@@ -498,10 +538,15 @@ export function columns(el, rows, opts = {}) {
   }
   const y0 = log ? tk[0] : 0;
   const bw = (W - L - R) / rows.length;
+  // Rótulos del eje X: uno de cada «every» columnas, o más espaciados si no caben.
+  const step = Math.max(every, Math.ceil((Math.max(...rows.map(r => String(r.label).length)) * 6.7 + 10) / bw));
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">`;
   s += yAxis(tk, Y, G, fmt, yLabel);
   rows.forEach((r, i) => {
-    if (i % every === 0) s += `<text x="${(L + (i + 0.5) * bw).toFixed(1)}" y="${H - B + 18}" text-anchor="middle">${esc(r.label)}</text>`;
+    if (i % step) return;
+    // Los rótulos de los extremos se alinean hacia dentro para no salirse del gráfico.
+    const x = L + (i + 0.5) * bw, half = String(r.label).length * 3.4;
+    s += `<text x="${(x - half < 0 ? 0 : x + half > W ? W : x).toFixed(1)}" y="${H - B + 18}" text-anchor="${x - half < 0 ? 'start' : x + half > W ? 'end' : 'middle'}">${esc(r.label)}</text>`;
   });
   s += '</g>';
   const targets = rows.map((r, i) => {
@@ -528,12 +573,13 @@ export function dotci(el, rows, opts = {}) {
   const { aria = '', unit = '' } = opts;
   if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
   watchWidth(el, () => dotci(el, rows, opts));
-  const W = fitWidth(el), rowH = 30, G = { W, L: Math.min(250, Math.round(W * 0.3)), R: 40, T: 8, B: 34 };
+  const W = fitWidth(el), rowH = 30, nw = isNarrow(el, 480);
+  const G = nw ? { W, L: Math.round(W * 0.38), R: 16, T: 8, B: 34, cw: 7.2 } : { W, L: Math.min(250, Math.round(W * 0.3)), R: 40, T: 8, B: 34, cw: 8 };
   const H = G.T + rows.length * rowH + G.B;
   const lo = Math.floor(Math.min(...rows.map(r => r.lo ?? r.v)) - 1), hi = Math.ceil(Math.max(...rows.map(r => r.hi ?? r.v)) + 1);
   const X = v => G.L + (v - lo) / (hi - lo || 1) * (G.W - G.L - G.R);
   let s = `<svg viewBox="0 0 ${G.W} ${H}" role="img" aria-label="${esc(aria)}"><g class="grid">`;
-  const tk = niceTicks(lo, hi, 6);
+  const tk = niceTicks(lo, hi, nw ? 4 : 6);
   for (const v of tk) s += `<line x1="${X(v).toFixed(1)}" x2="${X(v).toFixed(1)}" y1="${G.T}" y2="${H - G.B}"/>`;
   s += '</g><g class="axis">';
   for (const v of tk) s += `<text x="${X(v).toFixed(1)}" y="${H - G.B + 16}" text-anchor="middle">${esc(num(v, 0))}</text>`;
@@ -541,7 +587,7 @@ export function dotci(el, rows, opts = {}) {
   const targets = rows.map((r, i) => {
     const y = G.T + i * rowH + rowH / 2;
     s += `<g data-k="${i}" class="ci-row"><rect class="bar-bg" x="0" y="${y - rowH / 2}" width="${G.W}" height="${rowH}"/>`;
-    const max = Math.floor((G.L - 14) / 8);
+    const max = Math.floor((G.L - 14) / G.cw);
     s += `<text class="bar-l" x="${G.L - 10}" y="${y + 4}" text-anchor="end">${esc(r.label.length > max ? r.label.slice(0, max - 1) + '…' : r.label)}</text>`;
     if (r.lo != null && r.hi != null) s += `<line class="ci" x1="${X(r.lo).toFixed(1)}" x2="${X(r.hi).toFixed(1)}" y1="${y}" y2="${y}"/>`;
     s += `<circle class="ci-dot" cx="${X(r.v).toFixed(1)}" cy="${y}" r="5.5"/></g>`;
@@ -555,15 +601,19 @@ export function dotci(el, rows, opts = {}) {
 
 /* ── Calendario de hitos (AI 2027) ──────────────────────────────────────── */
 /* lanes: [{ id, title }]; items: [{ lane, date, cls, short, tip, go }]; today: 'AAAA-MM-DD'. */
-export function hitoTimeline(el, lanes, items, { today, from, to } = {}) {
-  const laneH = 86, G = { W: 860, L: 165, R: 16, T: 26, B: 34 };
+export function hitoTimeline(el, lanes, items, opts = {}) {
+  const { today, from, to } = opts;
+  watchWidth(el, () => hitoTimeline(el, lanes, items, opts));
+  // En estrecho, el título de cada carril va encima de sus puntos, a todo lo ancho, en vez de en una columna a la izquierda.
+  const nw = isNarrow(el), laneH = nw ? 96 : 86;
+  const G = nw ? { W: Math.max(280, el.clientWidth), L: 10, R: 10, T: 26, B: 34, narrow: true, top: 18 } : { W: 860, L: 165, R: 16, T: 26, B: 34, top: 0 };
   const H = G.T + lanes.length * laneH + G.B;
   const tmin = ms(from), tmax = ms(to);
   const X = v => G.L + (v - tmin) / (tmax - tmin) * (G.W - G.L - G.R);
   let s = `<svg viewBox="0 0 ${G.W} ${H}" role="img" aria-label="Calendario de los hitos de AI 2027 y fecha de hoy">`;
   s += `<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="hatch-bg"/><line x1="0" y1="0" x2="0" y2="6" class="hatch-ln"/></pattern></defs>`;
   s += '<g class="axis">';
-  for (const tk of monthTicks(tmin, tmax)) {
+  for (const tk of monthTicks(tmin, tmax, tickCount(G))) {
     const x = X(tk);
     s += `<line class="tl-grid" x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${G.T}" y2="${H - G.B}"/><text x="${x.toFixed(1)}" y="${H - G.B + 18}" text-anchor="middle">${esc(monthLabel(tk))}</text>`;
   }
@@ -571,20 +621,17 @@ export function hitoTimeline(el, lanes, items, { today, from, to } = {}) {
   lanes.forEach((l, i) => {
     const y = G.T + i * laneH;
     s += `<rect class="lane ${i % 2 ? 'odd' : ''}" x="0" y="${y}" width="${G.W}" height="${laneH}"/>`;
+    if (G.narrow) { s += `<text class="lane-t" x="8" y="${y + 14}">${esc(fitText(l.title, Math.floor((G.W - 16) / 7.2)))}</text>`; return; }
     // Título del carril en dos líneas como mucho.
-    const lines = [''];
-    for (const w of l.title.split(' ')) {
-      const cur = lines[lines.length - 1];
-      if (cur && (cur + ' ' + w).length > 19) lines.push(w); else lines[lines.length - 1] = cur ? `${cur} ${w}` : w;
-    }
-    const shown = lines.slice(0, 2);
+    const lines = wrap(l.title, 19), shown = lines.slice(0, 2);
     if (lines.length > 2) shown[1] += '…';
     s += `<text class="lane-t" x="8" y="${y + laneH / 2 + 4 - (shown.length - 1) * 7}">${shown.map((t, k) => `<tspan x="8" dy="${k ? 14 : 0}">${esc(t)}</tspan>`).join('')}</text>`;
   });
   // Pasado sombreado y línea de hoy.
   const xt = X(ms(today));
   s += `<rect class="past" x="${G.L}" y="${G.T}" width="${(xt - G.L).toFixed(1)}" height="${lanes.length * laneH}"/>`;
-  s += `<line class="today" x1="${xt.toFixed(1)}" x2="${xt.toFixed(1)}" y1="${G.T - 14}" y2="${H - G.B}"/><text class="today-t" x="${xt.toFixed(1)}" y="${G.T - 16}" text-anchor="middle">hoy, ${esc(fmtDate(today))}</text>`;
+  const ta = xt < G.L + 60 ? 'start' : xt > G.W - G.R - 60 ? 'end' : 'middle';
+  s += `<line class="today" x1="${xt.toFixed(1)}" x2="${xt.toFixed(1)}" y1="${G.T - 14}" y2="${H - G.B}"/><text class="today-t" x="${xt.toFixed(1)}" y="${G.T - 16}" text-anchor="${ta}">hoy, ${esc(fmtDate(today))}</text>`;
   // Hitos de una misma línea y fecha se reparten en horizontal alrededor de su fecha.
   const group = new Map(), seen = new Map();
   let dots = '';
@@ -593,12 +640,12 @@ export function hitoTimeline(el, lanes, items, { today, from, to } = {}) {
     const li = lanes.findIndex(l => l.id === it.lane);
     const key = `${it.lane}|${it.date}`, k = seen.get(key) || 0, n = group.get(key);
     seen.set(key, k + 1);
-    const x = X(ms(it.date)) + (k - (n - 1) / 2) * 20, y = G.T + li * laneH + laneH / 2;
+    const x = X(ms(it.date)) + (k - (n - 1) / 2) * (G.narrow ? 14 : 20), y = G.T + li * laneH + (laneH + G.top) / 2;
     dots += `<g data-k="${i}" class="hito-pt ${it.cls}">${it.est ? `<circle class="est-ring ${it.est}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="12.5"/>` : ''}<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8"/></g>`;
     return { x, y, html: it.tip, go: it.go, short: it.short, li };
   });
   // Etiquetas: el nombre corto junto a cada punto, dentro de su carril, con una guía hasta su punto.
-  const cands = targets.map(t => ({ x: t.x, y: t.y + 6, px: t.x, py: t.y, text: t.short, prefer: 'down', far: true, minY: G.T + t.li * laneH + 2, maxY: G.T + (t.li + 1) * laneH - 2 }));
+  const cands = targets.map(t => ({ x: t.x, y: t.y + 6, px: t.x, py: t.y, text: t.short, prefer: 'down', far: true, minY: G.T + t.li * laneH + G.top + 2, maxY: G.T + (t.li + 1) * laneH - 2 }));
   const placed = placeLabels(cands, { W: G.W, T: G.T, H, B: G.B, L: G.L, R: G.R }, targets.map(t => [t.x - 9, t.y - 9, t.x + 9, t.y + 9]));
   for (const l of placed) {
     const w = l.text.length * CH, x0 = l.anchor === 'start' ? l.lx : l.anchor === 'end' ? l.lx - w : l.lx - w / 2;
@@ -616,7 +663,8 @@ export function hitoTimeline(el, lanes, items, { today, from, to } = {}) {
 /* pts: [{ d, v, n, rec }] por fecha; ref: { v, label }. Línea escalonada de récords, resto de puntos en claro. */
 export function recordChart(el, pts, { yLabel = '', fmt = v => num(v, 0), ref = null, unit = '' } = {}) {
   if (!pts || pts.length < 2) { el.innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>'; return false; }
-  const G = { W: 860, H: 320, L: 52, R: 16, T: 18, B: 40 };
+  watchWidth(el, () => recordChart(el, pts, { yLabel, fmt, ref, unit }));
+  const G = frame(el, { W: 860, H: 320, L: 52, R: 16, T: 18, B: 40 }, 280);
   const { W, H, L, R, T, B } = G;
   const tmin = ms(pts[0].d), tmax = Math.max(ms(pts[pts.length - 1].d), Date.now());
   const vals = pts.map(p => p.v).concat(ref ? [ref.v] : []);
@@ -632,8 +680,10 @@ export function recordChart(el, pts, { yLabel = '', fmt = v => num(v, 0), ref = 
     s += `<g clip-path="url(#clip-${el.id})">`;
     if (ref && ref.v >= v.y0 && ref.v <= v.y1) {
       s += `<line class="ref" x1="${L}" x2="${W - R}" y1="${Y(ref.v).toFixed(1)}" y2="${Y(ref.v).toFixed(1)}"/>`;
-      s += `<text class="ref-t" x="${L + 6}" y="${(Y(ref.v) - 6).toFixed(1)}">${esc(ref.label)}</text>`;
-      taken.push([L, Y(ref.v) - 18, L + 6 + ref.label.length * CH, Y(ref.v) - 2]);
+      // Rótulo de la referencia en una o dos líneas, según quepa.
+      const ln = wrap(ref.label, Math.floor((W - L - R - 8) / CH)).slice(0, 2), y0 = Y(ref.v) - 6 - (ln.length - 1) * 13;
+      s += `<text class="ref-t" x="${L + 6}" y="${y0.toFixed(1)}">${ln.map((t, k) => `<tspan x="${L + 6}" dy="${k ? 13 : 0}">${esc(t)}</tspan>`).join('')}</text>`;
+      taken.push([L, y0 - 12, L + 6 + Math.max(...ln.map(t => t.length)) * CH, Y(ref.v) - 2]);
     }
     let d = `M${X(ms(rec[0].d)).toFixed(1)},${Y(rec[0].v).toFixed(1)}`;
     for (const p of rec.slice(1)) d += ` H${X(ms(p.d)).toFixed(1)} V${Y(p.v).toFixed(1)}`;

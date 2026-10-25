@@ -225,7 +225,7 @@ function renderFrontierAA() {
   const since = new Date(Date.parse(`${r.today}T00:00:00Z`) - 14 * 86400e3).toISOString().slice(0, 10);
   const top10 = [...r.models].sort((a, b) => b.v - a.v).slice(0, 10);
   const nuevos = top10.filter(m => m.d >= since);
-  if (!frontier(el, r.points, { models: r.models, yLabel: aaIndexName(r.ver), metric: 'Índice AA', highlight: new Set(nuevos.map(m => m.n)) })) {
+  if (!frontier(el, r.points, { models: r.models, yLabel: aaIndexName(r.ver), yShort: `índice AA${r.ver ? ` v${r.ver}` : ''}`, metric: 'Índice AA', highlight: new Set(nuevos.map(m => m.n)) })) {
     el.innerHTML = `<div class="chart-empty">${ND}: no hay puntuaciones de Artificial Analysis en esta recogida.</div>`;
   }
   const last = r.points[r.points.length - 1];
