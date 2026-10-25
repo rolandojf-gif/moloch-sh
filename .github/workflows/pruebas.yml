@@ -43,3 +43,7 @@ jobs:
         env:
           CHROME: google-chrome
         run: node tests/idioma.mjs
+      - name: Paridad de cifras entre idiomas
+        env:
+          CHROME: google-chrome
+        run: node tests/paridad.mjs

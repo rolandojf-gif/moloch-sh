@@ -40,4 +40,10 @@ test('recogida con respuestas grabadas, validación y parte', { timeout: 300000 
   const ch = read('data/changes.json');
   assert.ok(ch.parte && Array.isArray(ch.parte.noticias) && ch.parte.noticias.length <= 3, 'hay parte, con tres noticias como mucho');
   assert.ok(readFileSync(path.join(dir, 'data/parte.xml'), 'utf8').startsWith('<?xml'), 'se escribe el RSS');
+  // Versión inglesa: segundo RSS con las mismas noticias, inglés en cada cambio y en el parte, y la recogida no depende de las traducciones.
+  const en = readFileSync(path.join(dir, 'data/parte.en.xml'), 'utf8');
+  assert.ok(en.startsWith('<?xml') && /<language>en/.test(en), 'se escribe el RSS inglés');
+  assert.equal(ch.parte.i18n.en.reglas.length, ch.parte.reglas.length, 'las reglas del parte llevan su inglés');
+  for (const e of ch.items) assert.ok(e.i18n?.en?.what, `${e.key}: el cambio lleva su inglés`);
+  assert.ok(Object.values(read('data/indicadores.json').checks || {}).every(k => k.i18n?.en?.texto), 'las comprobaciones de AI 2027 llevan su inglés');
 });
