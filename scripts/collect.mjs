@@ -33,6 +33,7 @@ import { collectIndicators } from './indicadores.mjs';
 import { aaRace, aaCoverage } from '../js/fmt.js';
 import { detectChanges, mergeLog, snapshotExtras, indSnapshot, vigilados } from './cambios.mjs';
 import { enrich, parte, rss } from './parte.mjs';
+import { AVISOS } from './textos.mjs';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DATA = path.join(ROOT, 'data');
@@ -922,6 +923,9 @@ async function main() {
   const brief = parte(hoyItems, TODAY, novedades.concat(evLog.events));
   await writeFile(path.join(DATA, 'changes.json'), JSON.stringify({ generated: NOW_ISO, window: HOY_DAYS, since: hoyFrom, base: baseDate, parte: brief, items: hoyItems }, null, 1) + '\n');
   await writeFile(path.join(DATA, 'parte.xml'), rss(novedades.concat(evLog.events), { NOW_ISO, TODAY }));
+  await writeFile(path.join(DATA, 'parte.en.xml'), rss(novedades.concat(evLog.events), { NOW_ISO, TODAY }, 'en'));
+  // Textos que no han salido en inglés: aviso identificable (::warning:: en GitHub Actions); la recogida sigue.
+  if (AVISOS.size) for (const a of AVISOS) console.log(`::warning title=Traducción pendiente::${a.length > 220 ? a.slice(0, 220) + '…' : a}`);
   log(`parte del ${TODAY}: ${brief.noticias.length ? brief.noticias.join(' | ') : `sin noticias${brief.ultima ? ` (la última, ${brief.ultima.key}, del ${brief.ultima.fecha})` : ''}`}`);
   log(`escrito: ${models.length} modelos (${models.filter(m => m.epoch?.eci?.v).length} con ECI), ${changeItems.length} cambios frente al ${baseDate || '—'} (${Object.entries(changeItems.reduce((a, e) => ({ ...a, [e.kind]: (a[e.kind] || 0) + 1 }), {})).map(([k, n]) => `${k} ${n}`).join(', ') || 'ninguno'}), ${hoyItems.length} en la ventana de Hoy, AA ${status.aa.ok ? 'ok' : status.aa.reason}`);
 }

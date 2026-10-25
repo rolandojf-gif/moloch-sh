@@ -4,177 +4,219 @@
   {
    "path": "eci.frontier",
    "label": "Mejor modelo en el ECI de Epoch",
-   "desde": "2026-10-20"
+   "desde": "2026-10-20",
+   "i18n": {
+    "en": {
+     "label": "Best model on Epoch’s ECI"
+    }
+   }
   },
   {
    "path": "eci.gapUsCn",
    "label": "Distancia EE. UU. − China en el ECI",
-   "desde": "2026-10-20"
+   "desde": "2026-10-20",
+   "i18n": {
+    "en": {
+     "label": "US − China gap on the ECI"
+    }
+   }
   },
   {
    "path": "eci.gapClosedOpen",
    "label": "Distancia cerrados − abiertos en el ECI",
-   "desde": "2026-10-20"
+   "desde": "2026-10-20",
+   "i18n": {
+    "en": {
+     "label": "Closed − open gap on the ECI"
+    }
+   }
   },
   {
    "path": "eci.gapLabs",
    "label": "Distancia entre los dos primeros laboratorios en el ECI",
-   "desde": "2026-10-20"
+   "desde": "2026-10-20",
+   "i18n": {
+    "en": {
+     "label": "Gap between the top two labs on the ECI"
+    }
+   }
   },
   {
    "path": "dc.now",
    "label": "Potencia de TI en servicio en los centros que sigue Epoch",
-   "desde": "2026-10-20"
+   "desde": "2026-10-20",
+   "i18n": {
+    "en": {
+     "label": "IT power in service at the data centres Epoch tracks"
+    }
+   }
   },
   {
    "path": "chips.cum",
    "label": "Chips de IA entregados, acumulado",
-   "desde": "2026-10-20"
+   "desde": "2026-10-20",
+   "i18n": {
+    "en": {
+     "label": "AI chips delivered, cumulative"
+    }
+   }
   },
   {
    "path": "companies.leader",
    "label": "Mayores ingresos anualizados",
-   "desde": "2026-10-20"
+   "desde": "2026-10-20",
+   "i18n": {
+    "en": {
+     "label": "Highest annualised revenue"
+    }
+   }
   },
   {
    "path": "metr.sota",
    "label": "Horizonte al 80 % del modelo puntero (METR)",
    "desde": "2026-10-20",
-   "detenida": "2026-04-07"
+   "detenida": "2026-04-07",
+   "i18n": {
+    "en": {
+     "label": "METR 80% horizon of the leading model"
+    }
+   }
   },
   {
    "path": "eci.rate12m",
    "label": "Avance de la frontera del ECI en 12 meses",
-   "desde": "2026-10-23"
+   "desde": "2026-10-23",
+   "i18n": {
+    "en": {
+     "label": "Frontier gain on the ECI over 12 months"
+    }
+   }
   },
   {
    "path": "dc.plan",
    "label": "Potencia prevista para fin de 2026 en el calendario de Epoch",
-   "desde": "2026-10-23"
+   "desde": "2026-10-23",
+   "i18n": {
+    "en": {
+     "label": "Power planned for the end of 2026 in Epoch’s schedule"
+    }
+   }
   },
   {
    "path": "chips.tdp",
    "label": "Consumo nominal (TDP) de los chips entregados",
-   "desde": "2026-10-23"
+   "desde": "2026-10-23",
+   "i18n": {
+    "en": {
+     "label": "Nominal consumption (TDP) of the chips delivered"
+    }
+   }
   },
   {
    "path": "dc.capex",
    "label": "Coste de capital de los centros que sigue Epoch",
-   "desde": "2026-10-23"
+   "desde": "2026-10-23",
+   "i18n": {
+    "en": {
+     "label": "Capital cost of the data centres Epoch tracks"
+    }
+   }
   },
   {
    "path": "metr.ratio",
    "label": "Relación entre los horizontes al 80 % y al 50 % de METR",
    "desde": "2026-10-23",
-   "detenida": "2026-04-07"
+   "detenida": "2026-04-07",
+   "i18n": {
+    "en": {
+     "label": "Ratio between METR’s 80% and 50% horizons"
+    }
+   }
   },
   {
    "path": "bench.sweBest",
    "label": "Mejor SWE-bench Verified en las ejecuciones de Epoch",
    "desde": "2026-10-23",
-   "detenida": "2026-06-16"
+   "detenida": "2026-06-16",
+   "i18n": {
+    "en": {
+     "label": "Best SWE-bench Verified in Epoch’s runs"
+    }
+   }
   },
   {
    "path": "bench.mirror",
    "label": "Mejor resultado en MirrorCode (ejecuciones de Epoch)",
-   "desde": "2026-10-23"
+   "desde": "2026-10-23",
+   "i18n": {
+    "en": {
+     "label": "Best MirrorCode result (Epoch runs)"
+    }
+   }
   },
   {
    "path": "aa.gapUsCn",
    "label": "Distancia EE. UU. − China en el índice de AA",
-   "desde": "2026-10-24"
+   "desde": "2026-10-24",
+   "i18n": {
+    "en": {
+     "label": "US − China gap on the AA index"
+    }
+   }
   },
   {
    "path": "aa.gapClosedOpen",
    "label": "Distancia cerrados − abiertos en el índice de AA",
-   "desde": "2026-10-24"
+   "desde": "2026-10-24",
+   "i18n": {
+    "en": {
+     "label": "Closed − open gap on the AA index"
+    }
+   }
   },
   {
    "path": "aa.gapLabs",
    "label": "Distancia entre los dos primeros laboratorios en el índice de AA",
-   "desde": "2026-10-24"
+   "desde": "2026-10-24",
+   "i18n": {
+    "en": {
+     "label": "Gap between the top two labs on the AA index"
+    }
+   }
   },
   {
    "path": "aa.rate12m",
    "label": "Avance de la frontera del índice de AA en 12 meses",
    "desde": "2026-10-24",
-   "incompleto": true
+   "incompleto": true,
+   "i18n": {
+    "en": {
+     "label": "Frontier gain on the AA index over 12 months"
+    }
+   }
   },
   {
    "path": "bench.saturated",
    "label": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)",
-   "desde": "2026-10-23"
+   "desde": "2026-10-23",
+   "i18n": {
+    "en": {
+     "label": "Epoch evaluations saturated (best result of at least 90%)"
+    }
+   }
   },
   {
    "path": "edi.open",
    "label": "Evaluaciones del ECI que el mejor modelo aún no resuelve a medias",
-   "desde": "2026-10-25"
+   "desde": "2026-10-25",
+   "i18n": {
+    "en": {
+     "label": "ECI evaluations the best model does not yet half-solve"
+    }
+   }
   }
  ],
  "events": [
-  {
-   "kind": "precio",
-   "key": "precio|openai/gpt-5.6-sol|2026-10-25",
-   "published": null,
-   "detected": "2026-10-25",
-   "date": "2026-10-25",
-   "mag": {
-    "v": 100,
-    "unit": "%"
-   },
-   "model": "openai/gpt-5.6-sol",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/openai/gpt-5.6-sol/providers",
-    "got": "2026-10-25T12:49:09Z"
-   },
-   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-5.6 Sol (2 $ de entrada y 10 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 4 $ de entrada y 20 $ de salida.",
-   "data": {
-    "basis": "laboratorio",
-    "sub": "tarifa-retirada",
-    "provider": "OpenAI",
-    "from": {
-     "in": 2,
-     "out": 10
-    },
-    "to": {
-     "in": 4,
-     "out": 20
-    },
-    "pct": 100,
-    "tiersFrom": [
-     [
-      2,
-      10
-     ],
-     [
-      4,
-      20
-     ],
-     [
-      8,
-      40
-     ]
-    ],
-    "tiersTo": [
-     [
-      4,
-      20
-     ],
-     [
-      8,
-      40
-     ]
-    ],
-    "since": "2026-10-24",
-    "rankAA": 13,
-    "of": 142
-   },
-   "titular": "OpenAI retira la tarifa más barata de GPT-5.6 Sol en OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/openai/gpt-5.6-sol",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 4 $ a 8 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 47), 5 cuestan menos; el más barato es DeepSeek V4.1 Flash 1017, a 0,262 $."
-  },
   {
    "kind": "precio",
    "key": "precio|openai/gpt-5.4|2026-10-24",
@@ -236,7 +278,14 @@
    "titular": "OpenAI añade una tarifa más barata de GPT-5.4 en OpenRouter",
    "importancia": null,
    "ficha": "#modelos/openai/gpt-5.4",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 5,63 $ a 2,81 $ por millón de tokens. De los 16 modelos con un índice de AA parecido (±2 puntos de su 39), 10 cuestan menos; el más barato es DeepSeek V4.1 Flash, a 0,094 $."
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 5,63 $ a 2,81 $ por millón de tokens. De los 16 modelos con un índice de AA parecido (±2 puntos de su 39), 10 cuestan menos; el más barato es DeepSeek V4.1 Flash, a 0,094 $.",
+   "i18n": {
+    "en": {
+     "what": "OpenAI adds a cheaper GPT-5.4 rate on OpenRouter: $1.25 input and $7.5 output per million tokens. The previous one ($2.5 input and $15 output) is still available.",
+     "titular": "OpenAI adds a cheaper GPT-5.4 rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $5.63 to $2.81 per million tokens. Of the 16 models with a similar AA index (±2 points of its 39), 10 cost less; the cheapest is DeepSeek V4.1 Flash, at $0.094."
+    }
+   }
   },
   {
    "kind": "lider",
@@ -278,7 +327,14 @@
     "porque": "cambia el mejor modelo abierto con la misma versión del índice de AA y 8,8 puntos de margen (mínimo 1)"
    },
    "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
-   "consecuencia": "La distancia entre el mejor cerrado y el mejor abierto en el índice de AA queda en 2,5 puntos (11,3 el día anterior). No equivale a meses de retraso."
+   "consecuencia": "La distancia entre el mejor cerrado y el mejor abierto en el índice de AA queda en 2,5 puntos (11,3 el día anterior). No equivale a meses de retraso.",
+   "i18n": {
+    "en": {
+     "what": "Kimi K3.1 Pro becomes the best open-weight model in the catalogue on the Artificial Analysis Intelligence Index v4.3: 55.1 points, 8.8 more than MiMo-V2.6-Pro (46.3). Its weights have been announced by the lab, but cannot be downloaded yet.",
+     "titular": "Kimi K3.1 Pro becomes the best open-weight model on the AA index",
+     "porque": "the best open-weight model changes with the same AA index version and a margin of 8.8 points (minimum 1)"
+    }
+   }
   },
   {
    "kind": "uso",
@@ -314,7 +370,14 @@
     "porque": "cambia el modelo más usado en OpenRouter en los últimos 7 días"
    },
    "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
-   "consecuencia": "14,9 % de los tokens de OpenRouter del 2026-10-17 al 2026-10-23; antes el primero era deepseek/deepseek-v4.1-flash-20260910. Es el uso en OpenRouter, no en todo el mercado."
+   "consecuencia": "14,9 % de los tokens de OpenRouter del 2026-10-17 al 2026-10-23; antes el primero era deepseek/deepseek-v4.1-flash-20260910. Es el uso en OpenRouter, no en todo el mercado.",
+   "i18n": {
+    "en": {
+     "what": "DeepSeek V4.1 Flash 1017 becomes the most used model on OpenRouter over the last 7 days (14.9% of tokens), ahead of DeepSeek V4.1 Flash.",
+     "titular": "DeepSeek V4.1 Flash 1017 becomes the most used model on OpenRouter",
+     "porque": "the most used model on OpenRouter over the last 7 days changes"
+    }
+   }
   },
   {
    "kind": "precio",
@@ -366,7 +429,15 @@
     "porque": "el propio laboratorio empieza a cobrarlo en OpenRouter, donde era gratis"
    },
    "ficha": "#modelos/minimax/minimax-m3.1-flash",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de gratis a 0,262 $ por millón de tokens. De los 10 modelos con un índice de AA parecido (±2 puntos de su 42,7), 3 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $."
+   "consecuencia": "Su precio combinado en OpenRouter pasa de gratis a 0,262 $ por millón de tokens. De los 10 modelos con un índice de AA parecido (±2 puntos de su 42,7), 3 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $.",
+   "i18n": {
+    "en": {
+     "what": "Minimax starts charging for MiniMax M3.1 Flash on OpenRouter: $0.15 input and $0.6 output per million tokens. Until now it was free.",
+     "titular": "Minimax starts charging for MiniMax M3.1 Flash on OpenRouter",
+     "porque": "the lab itself starts charging for it on OpenRouter, where it was free",
+     "consecuencia": "Its blended price on OpenRouter goes from free to $0.262 per million tokens. Of the 10 models with a similar AA index (±2 points of its 42.7), 3 cost less; the cheapest is Ling 3.1 Flash, at $0.112."
+    }
+   }
   },
   {
    "kind": "precio",
@@ -421,7 +492,15 @@
     "porque": "el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %)"
    },
    "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,525 $ a 0,262 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $."
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,525 $ a 0,262 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $.",
+   "i18n": {
+    "en": {
+     "what": "DeepSeek cuts the price of DeepSeek V4.1 Flash 1017 on OpenRouter: input from $0.3 to $0.15 and output from $1.2 to $0.6 per million tokens.",
+     "titular": "DeepSeek halves the price of DeepSeek V4.1 Flash 1017",
+     "porque": "the lab itself cuts its blended price by 50% (threshold: +50% or −33%)",
+     "consecuencia": "Its blended price on OpenRouter goes from $0.525 to $0.262 per million tokens. Of the 8 models with a similar AA index (±2 points of its 45.1), 1 costs less; the cheapest is Claude Haiku 5.5, at $0.2."
+    }
+   }
   },
   {
    "kind": "precio",
@@ -492,7 +571,14 @@
    "titular": "OpenAI añade una tarifa más barata de GPT-6.1 Sol en OpenRouter",
    "importancia": null,
    "ficha": "#modelos/openai/gpt-6.1-sol",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 4 $ a 2 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 51,8), ninguno cuesta menos."
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 4 $ a 2 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 51,8), ninguno cuesta menos.",
+   "i18n": {
+    "en": {
+     "what": "OpenAI adds a cheaper GPT-6.1 Sol rate on OpenRouter: $1 input and $5 output per million tokens. The previous one ($2 input and $10 output) is still available.",
+     "titular": "OpenAI adds a cheaper GPT-6.1 Sol rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $4 to $2 per million tokens. Of the 5 models with a similar AA index (±2 points of its 51.8), none costs less."
+    }
+   }
   },
   {
    "kind": "precio",
@@ -547,7 +633,14 @@
     "porque": "el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %)"
    },
    "ficha": "#modelos/deepseek/deepseek-v4-pro-0813",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 1,98 $ a 0,99 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $."
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 1,98 $ a 0,99 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $.",
+   "i18n": {
+    "en": {
+     "what": "DeepSeek cuts the price of DeepSeek V4 Pro 0813 on OpenRouter: input from $1.32 to $0.66 and output from $3.96 to $1.98 per million tokens.",
+     "titular": "DeepSeek halves the price of DeepSeek V4 Pro 0813",
+     "porque": "the lab itself cuts its blended price by 50% (threshold: +50% or −33%)"
+    }
+   }
   },
   {
    "kind": "precio",
@@ -610,7 +703,13 @@
    "titular": "OpenAI retira la tarifa más barata de GPT-5.4 en OpenRouter",
    "importancia": null,
    "ficha": "#modelos/openai/gpt-5.4",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 2,81 $ a 5,63 $ por millón de tokens. De los 16 modelos con un índice de AA parecido (±2 puntos de su 39), 14 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $."
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 2,81 $ a 5,63 $ por millón de tokens. De los 16 modelos con un índice de AA parecido (±2 puntos de su 39), 14 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $.",
+   "i18n": {
+    "en": {
+     "what": "OpenAI stops offering its cheapest GPT-5.4 rate on OpenRouter ($1.25 input and $7.5 output per million tokens). The cheapest it has left, which already existed, is $2.5 input and $15 output.",
+     "titular": "OpenAI withdraws the cheapest GPT-5.4 rate on OpenRouter"
+    }
+   }
   },
   {
    "kind": "precio",
@@ -650,7 +749,15 @@
     "porque": "el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %)"
    },
    "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,262 $ a 0,525 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $."
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,262 $ a 0,525 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $.",
+   "i18n": {
+    "en": {
+     "what": "DeepSeek raises the price of DeepSeek V4.1 Flash 1017 on OpenRouter: input from $0.15 to $0.3 and output from $0.6 to $1.2 per million tokens.",
+     "titular": "DeepSeek doubles the price of DeepSeek V4.1 Flash 1017",
+     "porque": "the lab itself raises its blended price by 100% (threshold: +50% or −33%)",
+     "consecuencia": "Its blended price on OpenRouter goes from $0.262 to $0.525 per million tokens. Of the 8 models with a similar AA index (±2 points of its 45.1), 1 costs less; the cheapest is Claude Haiku 5.5, at $0.2."
+    }
+   }
   },
   {
    "kind": "precio",
@@ -686,7 +793,14 @@
    "titular": "Tencent sube un 11 % el precio de Hy4 preview",
    "importancia": null,
    "ficha": "#modelos/tencent/hy4-preview",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 1,13 $ a 1,25 $ por millón de tokens."
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 1,13 $ a 1,25 $ por millón de tokens.",
+   "i18n": {
+    "en": {
+     "what": "Tencent raises the price of Hy4 preview on OpenRouter: input from $0.7506 to $0.834 and output from $2.2509 to $2.501 per million tokens.",
+     "titular": "Tencent raises the price of Hy4 preview by 11%",
+     "consecuencia": "Its blended price on OpenRouter goes from $1.13 to $1.25 per million tokens."
+    }
+   }
   },
   {
    "kind": "precio",
@@ -726,7 +840,14 @@
     "porque": "el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %)"
    },
    "ficha": "#modelos/deepseek/deepseek-v4-pro-0813",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,99 $ a 1,98 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $."
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,99 $ a 1,98 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $.",
+   "i18n": {
+    "en": {
+     "what": "DeepSeek raises the price of DeepSeek V4 Pro 0813 on OpenRouter: input from $0.66 to $1.32 and output from $1.98 to $3.96 per million tokens.",
+     "titular": "DeepSeek doubles the price of DeepSeek V4 Pro 0813",
+     "porque": "the lab itself raises its blended price by 100% (threshold: +50% or −33%)"
+    }
+   }
   },
   {
    "kind": "precio",
@@ -766,7 +887,15 @@
     "porque": "el propio laboratorio sube su precio combinado un 60 % (umbral: +50 % o −33 %)"
    },
    "ficha": "#modelos/tencent/hy3",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,144 $ a 0,231 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 25,3), 2 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $."
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,144 $ a 0,231 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 25,3), 2 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $.",
+   "i18n": {
+    "en": {
+     "what": "Tencent raises the price of Hy3 on OpenRouter: input from $0.0825 to $0.132 and output from $0.33 to $0.528 per million tokens.",
+     "titular": "Tencent raises the price of Hy3 by 60%",
+     "porque": "the lab itself raises its blended price by 60% (threshold: +50% or −33%)",
+     "consecuencia": "Its blended price on OpenRouter goes from $0.144 to $0.231 per million tokens. Of the 17 models with a similar AA index (±2 points of its 25.3), 2 cost less; the cheapest is Ling 3.0 Flash VL, at $0.09."
+    }
+   }
   },
   {
    "kind": "pesos",
@@ -791,7 +920,13 @@
    "titular": "Pesos abiertos de MiniMax M3.1 Flash, puesto 21 del índice de AA",
    "importancia": null,
    "ficha": "#modelos/minimax/minimax-m3.1-flash",
-   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: minimax-community. Índice de AA 42,7: a 3,6 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 21 de 141."
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: minimax-community. Índice de AA 42,7: a 3,6 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 21 de 141.",
+   "i18n": {
+    "en": {
+     "what": "MiniMax M3.1 Flash: downloadable weights on Hugging Face (licence minimax-community).",
+     "titular": "Open weights for MiniMax M3.1 Flash, rank 21 on the AA index"
+    }
+   }
   },
   {
    "kind": "pesos",
@@ -813,7 +948,13 @@
    "titular": "Pesos abiertos de Ling 3.1 Flash",
    "importancia": null,
    "ficha": "#modelos/inclusionai/ling-3.1-flash",
-   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: mit. Índice de AA 41,1: a 5,2 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 25 de 141."
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: mit. Índice de AA 41,1: a 5,2 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 25 de 141.",
+   "i18n": {
+    "en": {
+     "what": "Ling 3.1 Flash: downloadable weights on Hugging Face (licence mit).",
+     "titular": "Open weights for Ling 3.1 Flash"
+    }
+   }
   }
  ]
 }

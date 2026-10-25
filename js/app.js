@@ -1,10 +1,12 @@
 /* MOLOCH.SH · observatorio — carga de datos, navegación y tema. */
+import { t, tr, lang, setLang, loadLang, applyStatic, initialLang, i18nEnabled, persistLang, missing, clearMissing } from './i18n.js';
 import { esc, setSources, fmtDate, fmtDateTime, daysAgo } from './fmt.js';
 import { renderHoy } from './hoy.js';
 import { renderModelos, showModelPath } from './modelos.js';
 import { renderLanzamientos } from './lanzamientos.js';
 import { renderCarrera } from './carrera.js';
 import { renderAi2027 } from './ai2027.js';
+import { hideTip } from './charts.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -40,38 +42,38 @@ function renderFreshness(d) {
   const c = d.catalog;
   const age = daysAgo(c.generated);
   const cls = age <= 1.5 ? 'st-ok' : age <= 7 ? 'st-warn' : 'st-bad';
-  const ageTxt = age < 1 ? `hace ${Math.max(1, Math.round(age * 24))} h` : `hace ${Math.floor(age)} d`;
-  const warn = age > 7 ? ' · DATOS DESACTUALIZADOS' : age > 1.5 ? ' · comprobar la recogida' : '';
+  const ageTxt = age < 1 ? t('hace {p1} h', { p1: Math.max(1, Math.round(age * 24)) }) : t('hace {p1} d', { p1: Math.floor(age) });
+  const warn = age > 7 ? t(' · DATOS DESACTUALIZADOS') : age > 1.5 ? t(' · comprobar la recogida') : '';
   const st = Object.entries(c.status || {}).filter(([, s]) => !s.optional).map(([k, s]) => {
     const name = c.sources?.[k]?.name || k;
     const home = HOME[k] || HOME[name];
-    const lbl = home ? `<a href="${home}" target="_blank" rel="noopener">${esc(name)}</a>` : esc(name);
-    return s.ok ? `<span class="st-ok">● ${lbl}</span>` : `<span class="st-bad" title="${esc(s.reason || '')}">○ ${lbl}: ${esc(s.reason || 'sin datos')}</span>`;
+    const lbl = home ? `<a href="${home}" target="_blank" rel="noopener">${esc(tr(name))}</a>` : esc(tr(name));
+    return s.ok ? `<span class="st-ok">● ${lbl}</span>` : `<span class="st-bad" title="${esc(tr(s.reason || ''))}">○ ${lbl}: ${esc(s.reason ? tr(s.reason) : t('sin datos'))}</span>`;
   }).join('');
   // Indicadores de La carrera y AI 2027: una sola marca si todo va bien; cada fuente que falle, por separado.
-  const IND = { epoch_dc: 'Epoch AI · centros de datos', epoch_chips: 'Epoch AI · chips', epoch_companies: 'Epoch AI · empresas', epoch_models: 'Epoch AI · cómputo de entrenamiento', epoch_eci: 'Epoch AI · datos del ECI', metr: 'METR' };
+  const IND = { epoch_dc: t('Epoch AI · centros de datos'), epoch_chips: t('Epoch AI · chips'), epoch_companies: t('Epoch AI · empresas'), epoch_models: t('Epoch AI · cómputo de entrenamiento'), epoch_eci: t('Epoch AI · datos del ECI'), metr: 'METR' };
   const ist = Object.entries(d.ind?.status || {}).filter(([k]) => k in IND);
   const bad = ist.filter(([, s]) => !s.ok);
-  const indSt = !d.ind ? '<span class="st-bad">○ Indicadores: sin datos</span>'
-    : bad.length ? bad.map(([k, s]) => `<span class="st-bad" title="${esc(s.reason || '')}">○ ${esc(IND[k])}: ${esc(s.reason || 'sin datos')}</span>`).join('')
-    : `<span class="st-ok" title="${esc(ist.map(([k]) => IND[k]).join(', '))}">● Indicadores</span>`;
-  el.innerHTML = `<span>Recogida <b>${esc(fmtDateTime(c.generated))}</b> <span class="${cls}">(${ageTxt}${warn})</span></span>${st}${indSt}<a class="refresh" href="https://github.com/rolandojf-gif/moloch-sh/actions/workflows/collect.yml" target="_blank" rel="noopener" title="Abre la recogida en GitHub: pulsa «Run workflow» en la rama main. Tarda un par de minutos en verse publicada.">Actualizar ahora ↗</a>`;
+  const indSt = !d.ind ? `<span class="st-bad">${t('○ Indicadores: sin datos')}</span>`
+    : bad.length ? bad.map(([k, s]) => `<span class="st-bad" title="${esc(tr(s.reason || ''))}">○ ${esc(IND[k])}: ${esc(s.reason ? tr(s.reason) : t('sin datos'))}</span>`).join('')
+    : `<span class="st-ok" title="${esc(ist.map(([k]) => IND[k]).join(', '))}">${t('● Indicadores')}</span>`;
+  el.innerHTML = `<span>${t('Recogida')} <b>${esc(fmtDateTime(c.generated))}</b> <span class="${cls}">(${ageTxt}${warn})</span></span>${st}${indSt}<a class="refresh" href="https://github.com/rolandojf-gif/moloch-sh/actions/workflows/collect.yml" target="_blank" rel="noopener" title="${t('Abre la recogida en GitHub: pulsa «Run workflow» en la rama main. Tarda un par de minutos en verse publicada.')}">${t('Actualizar ahora ↗')}</a>`;
 }
 
 function renderMethod(d) {
   const c = d.catalog;
-  const items = Object.values(c.method || {}).map(t => `<li>${esc(t)}</li>`).join('');
-  const srcs = Object.entries(c.sources || {}).filter(([, s]) => s.url).map(([k, s]) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a> (${esc({ openrouter: 'OR', aa: 'AA', hf: 'HF', epoch: 'EP', metr: 'METR' }[k] || k)})${s.license ? `, licencia ${esc(s.license)}` : ''}${k === 'aa' ? (s.permiso ? `, publicado con su permiso por escrito del ${esc(fmtDate(s.permiso.fecha))}` : ': no se usa; sin permiso no se pueden republicar sus datos') : ''}</li>`).join('');
+  const items = Object.values(c.method || {}).map(m => `<li>${esc(tr(m))}</li>`).join('');
+  const srcs = Object.entries(c.sources || {}).filter(([, s]) => s.url).map(([k, s]) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(tr(s.name))}</a> (${esc({ openrouter: 'OR', aa: 'AA', hf: 'HF', epoch: 'EP', metr: 'METR' }[k] || k)})${s.license ? t(', licencia {p1}', { p1: esc(tr(s.license)) }) : ''}${k === 'aa' ? (s.permiso ? t(', publicado con su permiso por escrito del {fmtDate}', { fmtDate: esc(fmtDate(s.permiso.fecha)) }) : t(': no se usa; sin permiso no se pueden republicar sus datos')) : ''}</li>`).join('');
   $('#method-body').innerHTML = `
-    <p>Cada cifra lleva una marca de fuente (OR, AA, HF, EP, METR). Al pasar el cursor o enfocarla se ven la fecha del dato y la fecha de consulta; al pulsarla se abre la fuente. Una marca en ámbar indica que la última consulta falló y se muestra el último valor válido. Si una fuente no da el dato, aparece «sin datos».</p>
+    <p>${t('Cada cifra lleva una marca de fuente (OR, AA, HF, EP, METR). Al pasar el cursor o enfocarla se ven la fecha del dato y la fecha de consulta; al pulsarla se abre la fuente. Una marca en ámbar indica que la última consulta falló y se muestra el último valor válido. Si una fuente no da el dato, aparece «sin datos».')}</p>
     <ul>${items}</ul>
-    <p>Fuentes:</p><ul>${srcs}</ul>
-    <p>País, licencia y disponibilidad de pesos son campos independientes. El país es la sede del laboratorio; los modelos anónimos figuran como «identidad sin confirmar» y no se atribuyen a ningún laboratorio.</p>
-    <p>Inteligencia, programación, agentes y velocidad de referencia de los modelos: <a href="https://artificialanalysis.ai" target="_blank" rel="noopener">Artificial Analysis</a>, que autorizó por escrito su uso en esta web personal y no comercial. AA no publica la fecha en que evalúa cada modelo; la fecha del dato es la de consulta.</p>
-    <p>ECI y SWE-bench Verified: Epoch AI, ‘Capabilities &amp; benchmarking’. Centros de datos, ventas de chips e ingresos y uso de empresas: conjuntos de datos de Epoch AI. Todo publicado en <a href="https://epoch.ai/" target="_blank" rel="noopener">epoch.ai</a>, licencia CC BY 4.0.</p>
-    <p>Horizonte temporal: METR (<a href="https://metr.org/time-horizons" target="_blank" rel="noopener">metr.org</a>), con todos los derechos reservados; sólo se cita el último punto del modelo puntero. METR dejó de actualizar esa página el 8 sep 2026.</p>
-    <p>La carrera y AI 2027: los hechos curados llevan fuente, fecha del dato y fecha de consulta, y dicen si se leyeron en la propia fuente o sólo a través de un buscador (la web de la IEA no admite lectura automática). Las lecturas son interpretación y se formulan como hipótesis con historial fechado.</p>
-    <p>Los datos se generan con <code>scripts/collect.mjs</code>; el código y el histórico están en el repositorio.</p>`;
+    <p>${t('Fuentes:')}</p><ul>${srcs}</ul>
+    <p>${t('País, licencia y disponibilidad de pesos son campos independientes. El país es la sede del laboratorio; los modelos anónimos figuran como «identidad sin confirmar» y no se atribuyen a ningún laboratorio.')}</p>
+    <p>${t('Inteligencia, programación, agentes y velocidad de referencia de los modelos:')} <a href="https://artificialanalysis.ai" target="_blank" rel="noopener">${t('Artificial Analysis')}</a>${t(', que autorizó por escrito su uso en esta web personal y no comercial. AA no publica la fecha en que evalúa cada modelo; la fecha del dato es la de consulta.')}</p>
+    <p>${t('ECI y SWE-bench Verified: Epoch AI, ‘Capabilities &amp; benchmarking’. Centros de datos, ventas de chips e ingresos y uso de empresas: conjuntos de datos de Epoch AI. Todo publicado en')} <a href="https://epoch.ai/" target="_blank" rel="noopener">${t('epoch.ai')}</a>${t(', licencia CC BY 4.0.')}</p>
+    <p>${t('Horizonte temporal: METR (')}<a href="https://metr.org/time-horizons" target="_blank" rel="noopener">${t('metr.org')}</a>${t('), con todos los derechos reservados; sólo se cita el último punto del modelo puntero. METR dejó de actualizar esa página el 8 sep 2026.')}</p>
+    <p>${t('La carrera y AI 2027: los hechos curados llevan fuente, fecha del dato y fecha de consulta, y dicen si se leyeron en la propia fuente o sólo a través de un buscador (la web de la IEA no admite lectura automática). Las lecturas son interpretación y se formulan como hipótesis con historial fechado.')}</p>
+    <p>${t('Los datos se generan con')} <code>${t('scripts/collect.mjs')}</code>${t('; el código y el histórico están en el repositorio.')}</p>`;
 }
 
 /* Direcciones: #vista o #vista/<parte>: #modelos/<id> abre la ficha de un modelo (o #modelos/comparar/<id>,<id>),
@@ -127,37 +129,107 @@ function trackTop() {
 function safe(view, fn, d) {
   try { fn(d); }
   catch (e) {
-    console.error(`No se ha podido dibujar ${view || fn.name}:`, e);
+    console.error(t('No se ha podido dibujar {p1}:', { p1: view || fn.name }), e);
     const s = view && document.querySelector(`section[data-view="${view}"]`);
-    if (s) s.insertAdjacentHTML('afterbegin', `<div class="empty view-error" role="alert" data-render-error="${view}"><b>Esta sección no se ha podido dibujar</b> con los datos de esta recogida. El resto del observatorio no se ve afectado.</div>`);
+    if (s) s.insertAdjacentHTML('afterbegin', `<div class="empty view-error" role="alert" data-render-error="${view}"><b>${t('Esta sección no se ha podido dibujar')}</b> ${t('con los datos de esta recogida. El resto del observatorio no se ve afectado.')}</div>`);
   }
 }
 
+/* ── Idioma ──
+   Cada vista recuerda en qué idioma está pintada (rendered). Al cambiar de idioma se cargan primero las traducciones (la
+   página sigue en el idioma de antes y operativa), y después, en un solo bloque síncrono, se cambia el idioma, se repinta la
+   vista visible y se restaura el estado. Las demás vistas se repintan en un momento libre o, a más tardar, al abrirlas. El
+   estado de los filtros, la ordenación, las comparaciones y las fichas abiertas vive en los módulos y se conserva solo. */
+const RENDER = { hoy: renderHoy, modelos: renderModelos, lanzamientos: renderLanzamientos, carrera: renderCarrera, ai2027: renderAi2027 };
+let D = null;
+const rendered = {};
+
+function renderView(v) {
+  document.querySelector(`section[data-view="${v}"] > .view-error`)?.remove();
+  safe(v, RENDER[v], D);
+  rendered[v] = lang();
+}
+const ensureView = v => { if (D && rendered[v] !== lang()) renderView(v); };
+const renderChrome = () => { safe(null, renderFreshness, D); safe(null, renderMethod, D); };
+const idle = fn => 'requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 60);
+
+/* Marca de pruebas (?qa=1): deja en la página los textos que no encontraron traducción. */
+function qa() {
+  if (new URLSearchParams(location.search).get('qa') !== '1' || !D) return;
+  for (const v of VIEWS) ensureView(v);
+  document.getElementById('qa')?.remove();
+  const el = document.createElement('script');
+  el.id = 'qa'; el.type = 'application/json';
+  el.textContent = JSON.stringify({ lang: lang(), ...missing() });
+  document.body.appendChild(el);
+}
+
+const detailsState = () => $$('details').map(el => el.open);
+function restoreDetails(open) { const all = $$('details'); if (all.length === open.length) all.forEach((el, i) => { el.open = open[i]; }); }
+
+function syncLangButtons() {
+  $$('[data-lang-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.langSet === lang())));
+}
+
+let switching = false;
+async function switchLang(next) {
+  if (next === lang() || switching) return;
+  switching = true;
+  const bar = $('.seg.lang');
+  bar?.setAttribute('aria-busy', 'true');
+  try { await loadLang(next); }
+  catch (e) { console.error(e); bar?.removeAttribute('aria-busy'); switching = false; return; }   // sin traducciones: se queda como estaba
+  // A partir de aquí todo es síncrono: no hay estado intermedio visible.
+  const y = window.scrollY, open = detailsState(), view = route().view;
+  clearMissing();
+  setLang(next);
+  persistLang(next);
+  applyStatic();
+  hideTip();
+  if (D) { renderChrome(); renderView(view); restoreDetails(open); }
+  syncLangButtons();
+  window.scrollTo(0, y);
+  bar?.removeAttribute('aria-busy');
+  switching = false;
+  if (D) { for (const v of VIEWS) if (v !== view) idle(() => ensureView(v)); }
+  qa();
+}
+
+function initLang() {
+  const bar = $('.seg.lang');
+  if (!bar) return;
+  bar.hidden = !i18nEnabled();   // visible sólo con la bandera ?i18n=1 (o con RELEASED en js/i18n.js)
+  $$('[data-lang-set]').forEach(b => b.addEventListener('click', () => switchLang(b.dataset.langSet)));
+  syncLangButtons();
+}
+
 async function main() {
+  const first = initialLang();
   initTheme();
+  initLang();
   trackTop();
   let ready = false;
-  window.addEventListener('hashchange', () => { const r = route(); if (!(ready && showPath(r))) window.scrollTo(0, 0); });
+  window.addEventListener('hashchange', () => { const r = route(); ensureView(r.view); if (!(ready && showPath(r))) window.scrollTo(0, 0); });
   route();
-  let d;
-  try { d = await loadData(); }
-  catch (e) {
-    $('#freshness').innerHTML = '<span class="st-bad">Todavía no hay datos recogidos. El recolector (scripts/collect.mjs) genera data/catalog.json.</span>';
-    for (const id of ['#hoy-news', '#ln-list']) $(id).innerHTML = '<div class="empty">Sin datos: aún no se ha ejecutado ninguna recogida.</div>';
-    $('#mx-body').innerHTML = '<tr><td colspan="7"><div class="empty">Sin datos: aún no se ha ejecutado ninguna recogida.</div></td></tr>';
-    console.error(e);
+  // Las traducciones y los datos se piden a la vez; el idioma se aplica antes de pintar nada.
+  const [loaded, data] = await Promise.allSettled([loadLang(first), loadData()]);
+  if (first === 'en' && loaded.status === 'fulfilled') setLang('en');
+  applyStatic();
+  syncLangButtons();
+  if (data.status === 'rejected') {
+    $('#freshness').innerHTML = `<span class="st-bad" data-state="empty">${t('Todavía no hay datos recogidos. El recolector (scripts/collect.mjs) genera data/catalog.json.')}</span>`;
+    for (const id of ['#hoy-news', '#ln-list']) $(id).innerHTML = `<div class="empty">${t('Sin datos: aún no se ha ejecutado ninguna recogida.')}</div>`;
+    $('#mx-body').innerHTML = `<tr><td colspan="7"><div class="empty">${t('Sin datos: aún no se ha ejecutado ninguna recogida.')}</div></td></tr>`;
+    console.error(data.reason);
     return;
   }
-  setSources(d.catalog.sources);
-  safe(null, renderFreshness, d);
-  safe(null, renderMethod, d);
-  safe('hoy', renderHoy, d);
-  safe('modelos', renderModelos, d);
-  safe('lanzamientos', renderLanzamientos, d);
-  safe('carrera', renderCarrera, d);
-  safe('ai2027', renderAi2027, d);
+  D = data.value;
+  setSources(D.catalog.sources);
+  renderChrome();
+  for (const v of VIEWS) renderView(v);
   ready = true;
   showPath(route());
+  qa();
 }
 
 main();

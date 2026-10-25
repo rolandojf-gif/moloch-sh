@@ -99,6 +99,9 @@ button { cursor: pointer; }
 .seg-btn { font: 700 11.5px/1.2 var(--f-mono); padding: 8px 11px; border: 0; border-right: 2px solid var(--ink); background: transparent; text-transform: uppercase; }
 .seg-btn:last-child { border-right: 0; }
 .seg-btn[aria-pressed="true"] { background: var(--lime); color: #121211; }
+.seg[hidden] { display: none; }
+/* Selector de idioma y tema, juntos a la derecha de la cabecera. */
+.tools { display: flex; align-items: center; gap: 10px; flex: none; }
 
 .freshness {
   display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center;
@@ -611,7 +614,7 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
   .navtab:nth-child(n+4) { border-bottom: 0; }
   .navtab:last-child { grid-column: span 2; }
   .brand-text strong { font-size: 20px; }
-  .seg.theme { margin-left: auto; }
+  .tools { margin-left: auto; }
   .freshness { padding: 8px 16px; }
   main { padding: 20px 16px 48px; }
   .foot { padding: 0 16px 32px; }

@@ -1,0 +1,111 @@
+{
+ "_doc": "Campos de los datos publicados que contienen texto en español que la web muestra. scripts/i18n.mjs (cobertura) comprueba que todos tienen traducción inglesa: en la memoria de traducción (data/i18n/en) o, si el recolector la escribió, en el «i18n.en» del objeto que lo contiene. «*» = un nivel, «**» = cualquier profundidad. Los textos que se muestran tal cual (nombres propios, siglas) se declaran en «same» de la memoria.",
+ "archivos": {
+  "data/catalog.json": {
+   "campos": [
+    "sources.*.license",
+    "method.*",
+    "models.*.weights.note",
+    "models.*.license.note",
+    "models.*.orCreated.note",
+    "models.*.epochPub.note",
+    "models.*.reasoning.note",
+    "models.*.caching.note",
+    "models.*.hfCreated.note",
+    "models.*.price.*.note",
+    "models.*.aa.*.note",
+    "models.*.aa.how",
+    "models.*.epoch.release.note",
+    "models.*.epoch.swe.note",
+    "excluded.*.motivo",
+    "curatedEvents.*.fuente",
+    "curatedEvents.*.delta",
+    "curatedEvents.*.nota"
+   ]
+  },
+  "data/indicadores.json": {
+   "campos": [
+    "ind.**.note",
+    "ind.**.why",
+    "checks.*.texto",
+    "checks.*.sentido"
+   ]
+  },
+  "data/events-log.json": {
+   "campos": [
+    "vigilados.*.label",
+    "events.*.what",
+    "events.*.titular",
+    "events.*.consecuencia",
+    "events.*.importancia.porque"
+   ]
+  },
+  "data/changes.json": {
+   "campos": [
+    "parte.ultima.titular",
+    "parte.reglas",
+    "items.*.what",
+    "items.*.titular",
+    "items.*.consecuencia",
+    "items.*.importancia.porque"
+   ]
+  },
+  "data/curated/events.json": {
+   "campos": [
+    "events.*.fuente",
+    "events.*.delta",
+    "events.*.nota"
+   ]
+  },
+  "data/curated/carrera.json": {
+   "campos": [
+    "frentes.*.titulo",
+    "frentes.*.pregunta",
+    "frentes.*.hechos.*.texto",
+    "frentes.*.hechos.*.fuente",
+    "frentes.*.faltan",
+    "frentes.*.lectura.hipotesis",
+    "frentes.*.lectura.gana",
+    "frentes.*.lectura.pierde",
+    "frentes.*.lectura.desplaza",
+    "frentes.*.lectura.reforzaria",
+    "frentes.*.lectura.debilitaria",
+    "frentes.*.lectura.historial.*.nota"
+   ]
+  },
+  "data/curated/ai2027.json": {
+   "campos": [
+    "escenario.desenlaces.*.nombre",
+    "escenario.nota",
+    "ritmo.nota",
+    "ritmo.puntos.*.detalle",
+    "revisiones.*.texto",
+    "vigencia.*.texto",
+    "vigencia.*.fuente",
+    "lineas.*.titulo",
+    "lineas.*.comprobar",
+    "lineas.*.hitos.*.titulo",
+    "lineas.*.hitos.*.corto",
+    "lineas.*.hitos.*.seccion",
+    "lineas.*.hitos.*.prediccion",
+    "lineas.*.hitos.*.plazo_texto",
+    "lineas.*.hitos.*.revisiones.*.texto",
+    
+    "lineas.*.hitos.*.evidencia.*.texto",
+    "lineas.*.hitos.*.evidencia.*.fuente",
+    "lineas.*.hitos.*.valoraciones.*.texto",
+    "lineas.*.hitos.*.estimacion.rotulo",
+    "lineas.*.hitos.*.estimacion.muros",
+    "lineas.*.hitos.*.estimacion.texto",
+    "lineas.*.hitos.*.estimacion.sentido",
+    "lineas.*.hitos.*.estimacion.fuentes.*.texto",
+    "lineas.*.hitos.*.partes.*.texto",
+    "lineas.*.hitos.*.partes.*.plazo_texto",
+    "lineas.*.hitos.*.partes.*.valoracion.texto",
+    "lineas.*.hitos.*.partes.*.valoracion.fuentes.*.texto",
+    "lineas.*.hitos.*.comparabilidad",
+    "lineas.*.hitos.*.operacionalizacion"
+   ]
+  }
+ }
+}

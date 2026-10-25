@@ -1,0 +1,36 @@
+{
+ "_doc": "Literales en español que quedan en js/ fuera de t()/tn()/tr()/L() y es correcto que queden: valores de datos que se traducen al mostrarlos (nombres de país, escala de valoración, motivos del recolector) y HTML. tests/i18n.test.mjs falla ante cualquier literal nuevo: se envuelve en t() o, si es un valor de datos, se añade aquí.",
+ "archivos": {
+  "js/ai2027.js": [
+   "sin evidencia suficiente",
+   "todavía no evaluable",
+   "valoración de los autores"
+  ],
+  "js/fmt.js": [
+   "Canadá",
+   "Corea del Sur",
+   "Japón",
+   "fuera del catálogo: OpenRouter ya no lo lista o lo nombra de otro modo",
+   "sin índice AA"
+  ],
+  "js/i18n.js": [
+   "data/i18n/en/ .json"
+  ],
+  "js/indicadores.js": [
+   "Arabia Saudí",
+   "Canadá",
+   "Corea del Sur",
+   "España",
+   "Japón",
+   "Países Bajos",
+   "Taiwán"
+  ],
+  "js/valoracion.js": [
+   "La regla no ha podido calcularse en la última recogida.",
+   "Llegaría a tiempo",
+   "Llegaría más tarde",
+   "sin evidencia suficiente",
+   "todavía no evaluable"
+  ]
+ }
+}

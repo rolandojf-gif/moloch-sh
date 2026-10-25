@@ -1,0 +1,254 @@
+{
+ "items": [
+  {
+   "key": "precio|alfa/duplica|2026-10-25",
+   "what": "Alfa Lab raises the price of Alfa Dup on OpenRouter: input from $1 to $2 and output from $2 to $4 per million tokens.",
+   "titular": "Alfa Lab doubles the price of Alfa Dup",
+   "porque": "the lab itself raises its blended price by 100% (threshold: +50% or −33%)",
+   "consecuencia": "Its blended price on OpenRouter goes from $1.25 to $2.5 per million tokens. Of the 3 models with a similar AA index (±2 points of its 70), 2 cost less; the cheapest is Eta 1, at $0.6."
+  },
+  {
+   "key": "precio|alfa/cobra|2026-10-25",
+   "what": "Alfa Lab starts charging for Alfa Cobra on OpenRouter: $1 input and $3 output per million tokens. Until now it was free.",
+   "titular": "Alfa Lab starts charging for Alfa Cobra on OpenRouter",
+   "porque": "the lab itself starts charging for it on OpenRouter, where it was free",
+   "consecuencia": "Its blended price on OpenRouter goes from free to $1.5 per million tokens."
+  },
+  {
+   "key": "precio|alfa/gratis|2026-10-25",
+   "what": "Alfa Lab now offers Alfa Gratis for free on OpenRouter. It used to cost $1 input and $1 output per million tokens.",
+   "titular": "Alfa Lab makes Alfa Gratis free on OpenRouter",
+   "porque": "the lab itself makes it free on OpenRouter",
+   "consecuencia": "Its blended price on OpenRouter goes from $1 to free."
+  },
+  {
+   "key": "precio|alfa/retira|2026-10-25",
+   "what": "Alfa Lab stops offering its cheapest Alfa Retira rate on OpenRouter ($0.5 input and $0.5 output per million tokens). The cheapest it has left, which already existed, is $1 input and $1 output.",
+   "titular": "Alfa Lab withdraws the cheapest Alfa Retira rate on OpenRouter",
+   "consecuencia": "Its cheapest blended price on OpenRouter goes from $0.5 to $1 per million tokens."
+  },
+  {
+   "key": "precio|alfa/nueva|2026-10-25",
+   "what": "Alfa Lab adds a cheaper Alfa Nueva rate on OpenRouter: $0.5 input and $0.5 output per million tokens. The previous one ($1 input and $1 output) is still available.",
+   "titular": "Alfa Lab adds a cheaper Alfa Nueva rate on OpenRouter",
+   "consecuencia": "Its cheapest blended price on OpenRouter goes from $1 to $0.5 per million tokens."
+  },
+  {
+   "key": "precio|alfa/baja|2026-10-25",
+   "what": "Alfa Lab cuts the price of Alfa Baja on OpenRouter: input from $3 to $1 and output from $3 to $1 per million tokens.",
+   "titular": "Alfa Lab cuts the price of Alfa Baja by 67%",
+   "porque": "the lab itself cuts its blended price by 67% (threshold: +50% or −33%)",
+   "consecuencia": "Its blended price on OpenRouter goes from $3 to $1 per million tokens."
+  },
+  {
+   "key": "pesos|beta/abre",
+   "what": "Beta Abre: downloadable weights on Hugging Face (licence apache-2.0).",
+   "titular": "Open weights for Beta Abre, rank 8 on the AA index",
+   "porque": "a top-20 model on the AA index publishes open weights (rank 8)",
+   "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: apache-2.0. AA index 66: 9.5 points behind the best open-weight model (Delta Líder). Rank 8 of 9."
+  },
+  {
+   "key": "pesos|beta/epoch",
+   "what": "Beta Epoch: Epoch AI classifies it as an open-weight model (Open weights (unrestricted)).",
+   "titular": "Open weights for Beta Epoch",
+   "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: no data. No score yet on Artificial Analysis; ECI 140 on Epoch AI."
+  },
+  {
+   "key": "evaluacion|beta/epoch|eci",
+   "what": "Beta Epoch: first score on Epoch AI’s ECI (140).",
+   "titular": "Epoch AI scores Beta Epoch on the ECI for the first time",
+   "consecuencia": "No score yet on Artificial Analysis; ECI 140 on Epoch AI. Blended price $1.25 per million tokens."
+  },
+  {
+   "key": "evaluacion|gamma/eci|eci",
+   "what": "Gamma ECI: first score on Epoch AI’s ECI (151.2).",
+   "titular": "Epoch AI scores Gamma ECI on the ECI for the first time",
+   "consecuencia": "No score yet on Artificial Analysis; ECI 151.2 on Epoch AI. Blended price $1.25 per million tokens."
+  },
+  {
+   "key": "evaluacion|gamma/aa|ii",
+   "what": "Gamma AA: first score on the Artificial Analysis Intelligence Index (64.2, v4.0).",
+   "titular": "Gamma AA enters the AA index at rank 9",
+   "porque": "it receives its first AA score and enters the top 20 of the AA index (rank 9 of 9)",
+   "consecuencia": "AA index 64.2: 9.9 points behind the best closed model (Eps Cerrado). Rank 9 of 9. Blended price $1.25 per million tokens."
+  },
+  {
+   "key": "retirada|omega/retirado|2026-10-25",
+   "what": "Omega Retirado is no longer listed in the OpenRouter catalogue.",
+   "titular": "Omega Retirado is no longer listed on OpenRouter",
+   "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+  },
+  {
+   "key": "lider|open|delta/lider-abierto|2026-10-25",
+   "what": "Delta Líder becomes the best open-weight model in the catalogue on the Artificial Analysis Intelligence Index v4.0, with 75.5 points: old/open, which had 70, is no longer listed as a scored open-weight model.",
+   "titular": "Delta Líder becomes the best open-weight model on the AA index",
+   "consecuencia": "The gap between the best closed and the best open-weight model on the AA index stands at -1.4 points (3 the day before). It does not equate to months of lag."
+  },
+  {
+   "key": "lider|closed|eps/cerrado|2026-10-25",
+   "what": "Eps Cerrado becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v4.0: 74.1 points, 1.1 more than Old Closed (73).",
+   "titular": "Eps Cerrado becomes the best closed model on the AA index",
+   "porque": "the best closed model changes with the same AA index version and a margin of 1.1 points (minimum 1)",
+   "consecuencia": "The gap between the best closed and the best open-weight model on the AA index stands at -1.4 points (3 the day before). It does not equate to months of lag."
+  },
+  {
+   "key": "indicador|eci|2026-10-25",
+   "what": "Best model on Epoch’s ECI: from 157.1 to 158.4 points (Alfa Uno).",
+   "titular": "Alfa Uno becomes the best model on Epoch’s ECI",
+   "porque": "the best model on Epoch’s ECI changes",
+   "consecuencia": "Alfa Uno, from Alfa Lab, with 158.4 points."
+  },
+  {
+   "key": "indicador|usCn|2026-10-25",
+   "what": "US − China gap on the ECI: from 4.5 to 5.5 points (Alfa Uno versus Sino Dos).",
+   "titular": "The US − China gap on the ECI rises from 4.5 to 5.5 points",
+   "porque": "the US − China gap changes by at least 1 ECI point, the margin within which Epoch stops speaking of the same capability",
+   "consecuencia": "Alfa Uno (Alfa Lab, 158.4) versus Sino Dos (Sino Lab, 152.9). A few ECI points do not equate to months of lag."
+  },
+  {
+   "key": "indicador|dcMW|2026-10-25",
+   "what": "IT power in service at the data centres Epoch tracks: from 1,800 to 2,100 MW.",
+   "titular": "The power in service at the data centres Epoch tracks rises to 2,100 MW",
+   "porque": "the figure changes by 17% (threshold: 10%)",
+   "consecuencia": "31 data centres. Power of the equipment, without cooling; it is not the world total."
+  },
+  {
+   "key": "indicador|chipsH100e|2026-10-25",
+   "what": "AI chips delivered, cumulative: from 12 to 13.5 million H100e.",
+   "titular": "Epoch raises AI chips delivered to 13.5 million H100e",
+   "porque": "the figure changes by 13% (threshold: 10%)",
+   "consecuencia": "Chips delivered according to Epoch, not necessarily installed. In AI 2027 it is evidence for “40 millones de H100e”."
+  },
+  {
+   "key": "indicador|revLeader|2026-10-25",
+   "what": "Highest annualised revenue: from 29 to 31.2 billion dollars (Alfa Lab).",
+   "titular": "Alfa Lab: $31.2 billion in annualised revenue",
+   "consecuencia": "Alfa Lab, annualised revenue, Epoch confidence: Medium."
+  },
+  {
+   "key": "indicador|metrP80h|2026-10-25",
+   "what": "METR 80% horizon of the leading model: from 12.5 to 14.5 h.",
+   "titular": "METR: the leading model rises to 14.5 h of 80% horizon",
+   "porque": "METR publishes a new data point for the leading model",
+   "consecuencia": "Hours of work by a human expert on the tasks it completes, not hours of autonomy."
+  },
+  {
+   "key": "indicador|rate12m|2026-10-25",
+   "what": "Frontier gain on the ECI over 12 months: from 20.4 to 21.4 points.",
+   "titular": "Frontier gain on the ECI over 12 months: from 20.4 to 21.4 points."
+  },
+  {
+   "key": "indicador|dcPlan26|2026-10-25",
+   "what": "Power planned for the end of 2026 in Epoch’s schedule: from 3,000 to 3,200 MW.",
+   "titular": "Power planned for the end of 2026 in Epoch’s schedule: from 3,000 to 3,200 MW."
+  },
+  {
+   "key": "indicador|tdpGW|2026-10-25",
+   "what": "Nominal consumption (TDP) of the chips delivered: from 15.4 to 17.4 GW.",
+   "titular": "Nominal consumption (TDP) of the chips delivered: from 15.4 to 17.4 GW."
+  },
+  {
+   "key": "indicador|capexB|2026-10-25",
+   "what": "Capital cost of the data centres Epoch tracks: from 100 to 120 billion dollars.",
+   "titular": "Capital cost of the data centres Epoch tracks: from 100 to 120 billion dollars."
+  },
+  {
+   "key": "indicador|sweBest|2026-10-25",
+   "what": "Best SWE-bench Verified in Epoch’s runs: from 80.1 to 81.3% (Alfa Uno).",
+   "titular": "Best SWE-bench Verified in Epoch’s runs: from 80.1 to 81.3% (Alfa Uno).",
+   "consecuencia": "In AI 2027 it is evidence for “85% on SWE-bench Verified”."
+  },
+  {
+   "key": "indicador|mirror|2026-10-25",
+   "what": "Best MirrorCode result (Epoch runs): from 44.2 to 46.5% (Alfa Uno).",
+   "titular": "Alfa Uno sets a new MirrorCode record: 46.5%",
+   "porque": "a new MirrorCode record, the measure of tasks lasting weeks with which the observatory replaces METR",
+   "consecuencia": "Before, 44.2%. Reimplementing whole programs from their behaviour, tasks that would take an engineer weeks; Epoch runs."
+  },
+  {
+   "key": "indicador|aaUsCn|2026-10-25",
+   "what": "US − China gap on the AA index: from 4.9 to 4.4 points (Alfa Uno versus Sino Dos).",
+   "titular": "US − China gap on the AA index: from 4.9 to 4.4 points (Alfa Uno versus Sino Dos)."
+  },
+  {
+   "key": "indicador|saturated|2026-10-25",
+   "what": "Epoch evaluations saturated (best result of at least 90%): from 5 to 7 evaluations (of 40).",
+   "titular": "Epoch evaluations saturated (best result of at least 90%): from 5 to 7 evaluations (of 40)."
+  },
+  {
+   "key": "indicador|ediOpen|2026-10-25",
+   "what": "ECI evaluations the best model does not yet half-solve: from 14 to 12 evaluations (of 60).",
+   "titular": "ECI evaluations the best model does not yet half-solve: from 14 to 12 evaluations (of 60)."
+  },
+  {
+   "key": "valoracion|swe85|observatorio|2026-10-25",
+   "what": "“85% on SWE-bench Verified”: the observatory’s assessment goes from “consistent with the scenario” to “behind”.",
+   "titular": "AI 2027: “85% on SWE-bench Verified” is behind the scenario",
+   "porque": "the observatory’s assessment of an AI 2027 milestone changes",
+   "consecuencia": "Ningún modelo llega al 85 %. Before: “consistent with the scenario”. Scenario deadline: mid-2025."
+  },
+  {
+   "key": "valoracion|h40m|estimacion|2026-10-25",
+   "what": "“40 millones de H100e”: the estimate goes from “behind” to “consistent with the scenario”.",
+   "titular": "AI 2027: the estimate for “40 millones de H100e” changes",
+   "consecuencia": "Al ritmo actual, a fin de 2026. Before: “behind”. Scenario deadline: fin de 2026."
+  },
+  {
+   "key": "valoracion|otro|observatorio|2026-10-25",
+   "what": "“Otro hito”: the observatory’s assessment goes from “behind” to “consistent with the scenario”.",
+   "titular": "AI 2027: “Otro hito” is met as it foresaw",
+   "porque": "the observatory’s assessment of an AI 2027 milestone changes",
+   "consecuencia": "Se cumple. Before: “behind”. Scenario deadline: fin de 2026."
+  },
+  {
+   "key": "uso|primero|alfa/uno|2026-10-25",
+   "what": "Alfa Dup becomes the most used model on OpenRouter over the last 7 days (12.3% of tokens), ahead of Beta Dos.",
+   "titular": "Alfa Dup becomes the most used model on OpenRouter",
+   "porque": "the most used model on OpenRouter over the last 7 days changes",
+   "consecuencia": "12.3% of OpenRouter’s tokens from 2026-10-18 to 2026-10-25; before, the first was beta/dos. This is usage on OpenRouter, not across the whole market."
+  },
+  {
+   "key": "uso|entra|nuevo/tres|2026-10-25",
+   "what": "Gamma AA enters the ten most used models on OpenRouter over the last 7 days: rank 3, 6.1% of tokens.",
+   "titular": "Gamma AA enters OpenRouter’s top 10 by usage",
+   "consecuencia": "6.1% of OpenRouter’s tokens from 2026-10-18 to 2026-10-25. This is usage on OpenRouter, not across the whole market."
+  },
+  {
+   "key": "version|4.1",
+   "what": "Artificial Analysis moves its Intelligence Index from version 4.0 to 4.1: scores from the two versions are not comparable.",
+   "titular": "Artificial Analysis launches version 4.1 of its Intelligence Index",
+   "porque": "Artificial Analysis changes the version of its index",
+   "consecuencia": "Scores from one version and the other are not comparable: the daily evolution of the leaders starts over with this version."
+  },
+  {
+   "key": "nuevo|zeta/anon",
+   "what": "Zeta Anónimo (Alfa Lab) appears in the OpenRouter catalogue, for now only as the :free variant.",
+   "titular": "Zeta Anónimo (Alfa Lab) arrives on OpenRouter",
+   "consecuencia": "Anonymous model: the lab is not confirmed. AA index 60: 14.1 points behind the best closed model (Eps Cerrado). Rank 0 of 9. Blended price $1.25 per million tokens."
+  }
+ ],
+ "brief": {
+  "ultima": null,
+  "reglas": [
+   "The best open-weight or closed model on the Artificial Analysis index changes, with the same index version and a margin of at least 1 point.",
+   "Artificial Analysis changes the version of its index.",
+   "The observatory’s assessment of an AI 2027 milestone changes.",
+   "A new model, or one that receives its first AA score, enters the top 20 of the AA index.",
+   "A top-20 model on the AA index publishes open weights.",
+   "The lab itself changes its price on OpenRouter by at least +50% or −33% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count.",
+   "The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least 1 ECI point, or power, chips or revenue that change by at least 10%.",
+   "The most used model on OpenRouter over the last 7 days changes."
+  ]
+ },
+ "rss": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n<channel>\n  <title>MOLOCH.SH · daily briefing</title>\n  <link>https://moloch-sh.netlify.app/?lang=en#hoy</link>\n  <atom:link href=\"https://moloch-sh.netlify.app/data/parte.en.xml\" rel=\"self\" type=\"application/rss+xml\"/>\n  <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>\n  <language>en</language>\n  <lastBuildDate>Sun, 25 Oct 2026 05:00:00 GMT</lastBuildDate>\n  <item>\n    <title>Eps Cerrado becomes the best closed model on the AA index</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#modelos/eps/cerrado</link>\n    <guid isPermaLink=\"false\">lider|closed|eps/cerrado|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Eps Cerrado becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v4.0: 74.1 points, 1.1 more than Old Closed (73). The gap between the best closed and the best open-weight model on the AA index stands at -1.4 points (3 the day before). It does not equate to months of lag. It is in the briefing because the best closed model changes with the same AA index version and a margin of 1.1 points (minimum 1). Detected on 2026-10-25. Source: Artificial Analysis (https://aa.test/e). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>\n  </item>\n  <item>\n    <title>Artificial Analysis launches version 4.1 of its Intelligence Index</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#hoy</link>\n    <guid isPermaLink=\"false\">version|4.1</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Artificial Analysis moves its Intelligence Index from version 4.0 to 4.1: scores from the two versions are not comparable. Scores from one version and the other are not comparable: the daily evolution of the leaders starts over with this version. It is in the briefing because Artificial Analysis changes the version of its index. Detected on 2026-10-25. Source: Artificial Analysis (https://artificialanalysis.ai/leaderboards/models). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>\n  </item>\n  <item>\n    <title>AI 2027: “85% on SWE-bench Verified” is behind the scenario</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#ai2027/swe85</link>\n    <guid isPermaLink=\"false\">valoracion|swe85|observatorio|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>“85% on SWE-bench Verified”: the observatory’s assessment goes from “consistent with the scenario” to “behind”. Ningún modelo llega al 85 %. Before: “consistent with the scenario”. Scenario deadline: mid-2025. It is in the briefing because the observatory’s assessment of an AI 2027 milestone changes. Detected on 2026-10-25. Source: Epoch AI (https://epoch.ai/x).</description>\n  </item>\n  <item>\n    <title>AI 2027: “Otro hito” is met as it foresaw</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#ai2027/otro</link>\n    <guid isPermaLink=\"false\">valoracion|otro|observatorio|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>“Otro hito”: the observatory’s assessment goes from “behind” to “consistent with the scenario”. Se cumple. Before: “behind”. Scenario deadline: fin de 2026. It is in the briefing because the observatory’s assessment of an AI 2027 milestone changes. Detected on 2026-10-25. Source: AI 2027 (undefined).</description>\n  </item>\n  <item>\n    <title>Gamma AA enters the AA index at rank 9</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#modelos/gamma/aa</link>\n    <guid isPermaLink=\"false\">evaluacion|gamma/aa|ii</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Gamma AA: first score on the Artificial Analysis Intelligence Index (64.2, v4.0). AA index 64.2: 9.9 points behind the best closed model (Eps Cerrado). Rank 9 of 9. Blended price $1.25 per million tokens. It is in the briefing because it receives its first AA score and enters the top 20 of the AA index (rank 9 of 9). Detected on 2026-10-25. Source: Artificial Analysis (https://aa.test/g). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>\n  </item>\n  <item>\n    <title>Open weights for Beta Abre, rank 8 on the AA index</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#modelos/beta/abre</link>\n    <guid isPermaLink=\"false\">pesos|beta/abre</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Beta Abre: downloadable weights on Hugging Face (licence apache-2.0). It can be downloaded and served outside the lab’s API. Licence: apache-2.0. AA index 66: 9.5 points behind the best open-weight model (Delta Líder). Rank 8 of 9. It is in the briefing because a top-20 model on the AA index publishes open weights (rank 8). Published on 2026-10-20; detected on 2026-10-25. Source: Hugging Face (https://hf.test/beta). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>\n  </item>\n  <item>\n    <title>Alfa Lab doubles the price of Alfa Dup</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#modelos/alfa/duplica</link>\n    <guid isPermaLink=\"false\">precio|alfa/duplica|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Alfa Lab raises the price of Alfa Dup on OpenRouter: input from $1 to $2 and output from $2 to $4 per million tokens. Its blended price on OpenRouter goes from $1.25 to $2.5 per million tokens. Of the 3 models with a similar AA index (±2 points of its 70), 2 cost less; the cheapest is Eta 1, at $0.6. It is in the briefing because the lab itself raises its blended price by 100% (threshold: +50% or −33%). Detected on 2026-10-25. Source: OpenRouter (https://openrouter.ai/alfa/duplica/providers). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>\n  </item>\n  <item>\n    <title>Alfa Lab starts charging for Alfa Cobra on OpenRouter</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#modelos/alfa/cobra</link>\n    <guid isPermaLink=\"false\">precio|alfa/cobra|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Alfa Lab starts charging for Alfa Cobra on OpenRouter: $1 input and $3 output per million tokens. Until now it was free. Its blended price on OpenRouter goes from free to $1.5 per million tokens. It is in the briefing because the lab itself starts charging for it on OpenRouter, where it was free. Detected on 2026-10-25. Source: OpenRouter (https://openrouter.ai/alfa/cobra/providers).</description>\n  </item>\n  <item>\n    <title>Alfa Lab makes Alfa Gratis free on OpenRouter</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#modelos/alfa/gratis</link>\n    <guid isPermaLink=\"false\">precio|alfa/gratis|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Alfa Lab now offers Alfa Gratis for free on OpenRouter. It used to cost $1 input and $1 output per million tokens. Its blended price on OpenRouter goes from $1 to free. It is in the briefing because the lab itself makes it free on OpenRouter. Detected on 2026-10-25. Source: OpenRouter (https://openrouter.ai/alfa/gratis/providers).</description>\n  </item>\n  <item>\n    <title>Alfa Lab cuts the price of Alfa Baja by 67%</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#modelos/alfa/baja</link>\n    <guid isPermaLink=\"false\">precio|alfa/baja|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Alfa Lab cuts the price of Alfa Baja on OpenRouter: input from $3 to $1 and output from $3 to $1 per million tokens. Its blended price on OpenRouter goes from $3 to $1 per million tokens. It is in the briefing because the lab itself cuts its blended price by 67% (threshold: +50% or −33%). Detected on 2026-10-25. Source: OpenRouter (https://openrouter.ai/alfa/baja/providers).</description>\n  </item>\n  <item>\n    <title>Alfa Uno becomes the best model on Epoch’s ECI</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#carrera/evaluacion</link>\n    <guid isPermaLink=\"false\">indicador|eci|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Best model on Epoch’s ECI: from 157.1 to 158.4 points (Alfa Uno). Alfa Uno, from Alfa Lab, with 158.4 points. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-10-24; detected on 2026-10-25. Source: Epoch AI (https://epoch.ai/eci).</description>\n  </item>\n  <item>\n    <title>METR: the leading model rises to 14.5 h of 80% horizon</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>\n    <guid isPermaLink=\"false\">indicador|metrP80h|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>METR 80% horizon of the leading model: from 12.5 to 14.5 h. Hours of work by a human expert on the tasks it completes, not hours of autonomy. It is in the briefing because METR publishes a new data point for the leading model. Published on 2026-10-24; detected on 2026-10-25. Source: METR (https://metr.org/x).</description>\n  </item>\n  <item>\n    <title>Alfa Uno sets a new MirrorCode record: 46.5%</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>\n    <guid isPermaLink=\"false\">indicador|mirror|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Best MirrorCode result (Epoch runs): from 44.2 to 46.5% (Alfa Uno). Before, 44.2%. Reimplementing whole programs from their behaviour, tasks that would take an engineer weeks; Epoch runs. It is in the briefing because a new MirrorCode record, the measure of tasks lasting weeks with which the observatory replaces METR. Published on 2026-10-24; detected on 2026-10-25. Source: Epoch AI (https://epoch.ai/x).</description>\n  </item>\n  <item>\n    <title>The US − China gap on the ECI rises from 4.5 to 5.5 points</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>\n    <guid isPermaLink=\"false\">indicador|usCn|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>US − China gap on the ECI: from 4.5 to 5.5 points (Alfa Uno versus Sino Dos). Alfa Uno (Alfa Lab, 158.4) versus Sino Dos (Sino Lab, 152.9). A few ECI points do not equate to months of lag. It is in the briefing because the US − China gap changes by at least 1 ECI point, the margin within which Epoch stops speaking of the same capability. Published on 2026-10-24; detected on 2026-10-25. Source: Epoch AI (https://epoch.ai/x).</description>\n  </item>\n  <item>\n    <title>The power in service at the data centres Epoch tracks rises to 2,100 MW</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#carrera/computo</link>\n    <guid isPermaLink=\"false\">indicador|dcMW|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>IT power in service at the data centres Epoch tracks: from 1,800 to 2,100 MW. 31 data centres. Power of the equipment, without cooling; it is not the world total. It is in the briefing because the figure changes by 17% (threshold: 10%). Published on 2026-10-24; detected on 2026-10-25. Source: Epoch AI (https://epoch.ai/x).</description>\n  </item>\n  <item>\n    <title>Epoch raises AI chips delivered to 13.5 million H100e</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#carrera/computo</link>\n    <guid isPermaLink=\"false\">indicador|chipsH100e|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>AI chips delivered, cumulative: from 12 to 13.5 million H100e. Chips delivered according to Epoch, not necessarily installed. In AI 2027 it is evidence for “40 millones de H100e”. It is in the briefing because the figure changes by 13% (threshold: 10%). Published on 2026-10-24; detected on 2026-10-25. Source: Epoch AI (https://epoch.ai/x).</description>\n  </item>\n  <item>\n    <title>Alfa Dup becomes the most used model on OpenRouter</title>\n    <link>https://moloch-sh.netlify.app/?lang=en#modelos/alfa/duplica</link>\n    <guid isPermaLink=\"false\">uso|primero|alfa/uno|2026-10-25</guid>\n    <pubDate>Sun, 25 Oct 2026 05:00:00 GMT</pubDate>\n    <description>Alfa Dup becomes the most used model on OpenRouter over the last 7 days (12.3% of tokens), ahead of Beta Dos. 12.3% of OpenRouter’s tokens from 2026-10-18 to 2026-10-25; before, the first was beta/dos. This is usage on OpenRouter, not across the whole market. It is in the briefing because the most used model on OpenRouter over the last 7 days changes. Detected on 2026-10-25. Source: OpenRouter · uso (https://openrouter.ai/rankings).</description>\n  </item>\n</channel>\n</rss>\n",
+ "reglas": [
+  "The best open-weight or closed model on the Artificial Analysis index changes, with the same index version and a margin of at least 1 point.",
+  "Artificial Analysis changes the version of its index.",
+  "The observatory’s assessment of an AI 2027 milestone changes.",
+  "A new model, or one that receives its first AA score, enters the top 20 of the AA index.",
+  "A top-20 model on the AA index publishes open weights.",
+  "The lab itself changes its price on OpenRouter by at least +50% or −33% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count.",
+  "The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least 1 ECI point, or power, chips or revenue that change by at least 10%.",
+  "The most used model on OpenRouter over the last 7 days changes."
+ ]
+}

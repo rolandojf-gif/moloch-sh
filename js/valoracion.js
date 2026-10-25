@@ -9,7 +9,7 @@ const addDays = (d, k) => new Date(Date.parse(d) + k * 86400e3).toISOString().sl
 export function resolve(val, checks) {
   if (!val?.regla) return val;
   const c = checks?.[val.regla];
-  return c ? { ...val, v: c.v, texto: c.texto, fecha: c.fecha, sentido: c.sentido || null } : { ...val, v: 'sin evidencia suficiente', texto: 'La regla no ha podido calcularse en la última recogida.' };
+  return c ? { ...val, v: c.v, texto: c.texto, fecha: c.fecha, sentido: c.sentido || null, i18n: c.i18n } : { ...val, v: 'sin evidencia suficiente', texto: 'La regla no ha podido calcularse en la última recogida.' };
 }
 export const valOf = (h, quien, checks) => resolve((h.valoraciones || []).find(v => v.quien === quien), checks) || null;
 
@@ -18,7 +18,7 @@ export const valOf = (h, quien, checks) => resolve((h.valoraciones || []).find(v
 export function estimateCore(h, checks, a) {
   const e = h.estimacion;
   if (!e) return null;
-  if (e.metodo === 'regla') { const c = checks?.[e.regla]; return c ? { ...e, v: c.v, sentido: c.sentido, texto: c.texto, fecha: c.fecha } : null; }
+  if (e.metodo === 'regla') { const c = checks?.[e.regla]; return c ? { ...e, v: c.v, sentido: c.sentido, texto: c.texto, fecha: c.fecha, i18n: c.i18n } : null; }
   if (e.metodo === 'autores') {
     const au = valOf(h, 'autores', checks);
     return au && !OPEN.includes(au.v) ? { ...e, v: au.v, sentido: e.sentido || null, fecha: au.fecha } : null;

@@ -2,7 +2,8 @@ name: Pruebas
 
 # Pruebas sin dependencias en cada cambio de código o de datos curados: funciones de comparación, parte y valoración
 # (node --test), una recogida con respuestas grabadas seguida de la validación, y la prueba de humo del navegador con
-# el Chrome que ya trae el ejecutor (las cinco vistas y tres direcciones directas, en escritorio y móvil).
+# el Chrome que ya trae el ejecutor (las cinco vistas y tres direcciones directas, en español e inglés, en escritorio y
+# móvil) y el cambio de idioma con el estado conservado (tests/idioma.mjs).
 # Netlify publica igual aunque fallen: el resultado se ve en el commit y en la PR.
 on:
   push:
@@ -12,6 +13,7 @@ on:
       - 'index.html'
       - 'scripts/**'
       - 'data/curated/**'
+      - 'data/i18n/**'
       - 'tests/**'
       - '.github/workflows/pruebas.yml'
   pull_request:
@@ -37,3 +39,11 @@ jobs:
         env:
           CHROME: google-chrome
         run: node tests/humo.mjs
+      - name: Cambio de idioma en el navegador
+        env:
+          CHROME: google-chrome
+        run: node tests/idioma.mjs
+      - name: Paridad de cifras entre idiomas
+        env:
+          CHROME: google-chrome
+        run: node tests/paridad.mjs
