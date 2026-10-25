@@ -707,3 +707,47 @@ export function recordChart(el, pts, { yLabel = '', fmt = v => num(v, 0), ref = 
   zoomable(el, G, full, draw, { minX: 30 * 86400e3, minY: 4 });
   return true;
 }
+
+/* ── Dificultad de las evaluaciones frente a la frontera (La carrera) ────── */
+/* items: [{ n, d, v, lo, hi, up, tip }]: cada evaluación en su fecha de publicación y a la altura de su dificultad (EDI),
+   en puntos ECI; up = por encima del mejor modelo de hoy. line: [{ d, v, n }], récords del mejor ECI publicado. */
+export function ediMap(el, items, line, opts = {}) {
+  const { yShort = 'puntos ECI', today = new Date().toISOString().slice(0, 10) } = opts;
+  if (!items.length || !line.length) { el.innerHTML = '<div class="chart-empty">Sin datos suficientes.</div>'; return false; }
+  watchWidth(el, () => ediMap(el, items, line, opts));
+  const G = { ...frame(el, { W: 860, H: 400, L: 52, R: 16, T: 16, B: 40 }, 360), yShort };
+  const { W, H, L, R, T, B } = G;
+  const t1 = ms(today), t0 = Math.min(ms(line[0].d), ...items.map(b => ms(b.d)));
+  // La escala sigue a las dificultades y a la frontera; los intervalos más anchos se recortan en el borde.
+  const vals = items.map(b => b.v).concat(line.map(p => p.v));
+  const full = { x0: t0 - 30 * 864e5, x1: t1 + 30 * 864e5, y0: Math.floor((Math.min(...vals) - 4) / 5) * 5, y1: Math.ceil((Math.max(...vals) + 4) / 5) * 5 };
+  const draw = (v, zoomed) => {
+    const X = val => L + (val - v.x0) / (v.x1 - v.x0 || 1) * (W - L - R);
+    const Y = val => T + (1 - (val - v.y0) / (v.y1 - v.y0)) * (H - T - B);
+    const inside = (x, y) => x >= L - 3 && x <= W - R + 3 && y >= T - 3 && y <= H - B + 3;
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Dificultad de cada evaluación frente al mejor ECI publicado">${clip(el.id, G)}`;
+    s += yAxis(niceTicks(v.y0, v.y1), Y, G, val => num(val, 0), 'Puntos ECI (dificultad de la evaluación)') + timeAxis(X, v.x0, v.x1, G) + '</g>';
+    s += `<g clip-path="url(#clip-${el.id})">`;
+    let d = `M${X(ms(line[0].d)).toFixed(1)},${Y(line[0].v).toFixed(1)}`;
+    for (const p of line.slice(1)) d += ` H${X(ms(p.d)).toFixed(1)} V${Y(p.v).toFixed(1)}`;
+    s += `<path class="ln-front" d="${d} H${X(t1).toFixed(1)}"/>`;
+    const pts = items.map(b => ({ ...b, x: X(ms(b.d)), y: Y(b.v) })).filter(b => inside(b.x, b.y));
+    for (const b of pts) if (b.lo != null && b.hi != null) s += `<line class="edi-ci${b.up ? ' up' : ''}" x1="${b.x.toFixed(1)}" x2="${b.x.toFixed(1)}" y1="${Y(b.hi).toFixed(1)}" y2="${Y(b.lo).toFixed(1)}"/>`;
+    const recs = line.map(p => ({ ...p, x: X(ms(p.d)), y: Y(p.v) })).filter(p => inside(p.x, p.y));
+    for (const [i, p] of recs.entries()) s += `<circle data-k="${pts.length + i}" class="pt-front" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3"/>`;
+    for (const [i, b] of pts.entries()) s += `<circle data-k="${i}" class="pt-edi${b.up ? ' up' : ''}" cx="${b.x.toFixed(1)}" cy="${b.y.toFixed(1)}" r="5.5"/>`;
+    s += '</g>';
+    const targets = pts.map(b => ({ x: b.x, y: b.y, html: b.tip }))
+      .concat(recs.map(p => ({ x: p.x, y: p.y, html: tip(p.n, [['Publicado', fmtDate(p.d)], ['ECI', num(p.v, 1)], ['Nuevo récord', 'sí, mejor ECI publicado hasta esa fecha']]) })));
+    // Etiquetas: el mejor modelo de hoy, las evaluaciones que siguen por encima y, al acercar, el resto que quepa.
+    const last = line[line.length - 1];
+    const cands = pts.filter(b => b.up).sort((a, b) => b.v - a.v).map(b => ({ x: b.x, y: b.y, text: b.n, prefer: 'up', far: true }))
+      .concat(zoomed ? pts.filter(b => !b.up).sort((a, b) => b.v - a.v).map(b => ({ x: b.x, y: b.y, text: b.n, faint: true })) : []);
+    s += labelSvg(placeLabels(cands.slice(0, zoomed ? 40 : 12), G, pts.map(b => [b.x - 6, b.y - 6, b.x + 6, b.y + 6])));
+    s += `</svg><div class="legend"><span><i class="sw-front"></i>Mejor ECI publicado hasta cada fecha (hoy, ${esc(last.n)}: ${num(last.v, 1)})</span><span><i class="lg-edi"></i>Evaluación, a la altura de su dificultad</span><span><i class="lg-edi up"></i>Por encima del mejor modelo de hoy</span>` + zoomUi(zoomed) + '</div>';
+    el.innerHTML = s;
+    interact(el, targets, 22);
+  };
+  zoomable(el, G, full, draw, { minX: 60 * 86400e3, minY: 5 });
+  return true;
+}

@@ -81,9 +81,10 @@
       "id": "evaluacion",
       "titulo": "Datos y evaluación",
       "pregunta": "¿Mejoran capacidades transferibles o se saturan las pruebas?",
-      "indicadores": ["bench.saturated", "bench.tasks", "aa.rate12m", "eci.rate12m"],
-      "sabemos": ["bench.saturated", "aa.rate12m"],
+      "indicadores": ["edi.open", "bench.saturated", "aa.rate12m", "eci.rate12m"],
+      "sabemos": ["edi.open", "aa.rate12m"],
       "hechos": [
+        { "texto": "El ECI supone que el resultado en cada evaluación sigue una curva logística de la diferencia entre la capacidad del modelo y la dificultad de la prueba, con una pendiente propia de cada prueba; el ajuste estima a la vez el ECI de cada modelo y la dificultad (EDI) de cada evaluación.", "fuente": "Epoch AI, repositorio público del ajuste del ECI (eci-public)", "url": "https://github.com/epoch-research/eci-public", "fecha": "2026-09-07", "consulta": "2026-10-25", "verificacion": "lectura directa" },
         { "texto": "Epoch considera que dos modelos tienen la misma capacidad si su ECI difiere en menos de 1 punto.", "fuente": "Epoch AI, «Chinese AI models have lagged the US frontier by 7 months on average since 2023»", "url": "https://epoch.ai/data-insights/us-vs-china-eci", "fecha": "2026-01-06", "consulta": "2026-10-20", "verificacion": "lectura directa" },
         { "texto": "METR considera poco fiables las mediciones de horizonte temporal por encima de 16 horas (nota del 8 de mayo de 2026, a propósito de Claude Mythos Preview): la propia prueba se queda corta.", "fuente": "METR, «Time horizons»", "url": "https://metr.org/time-horizons", "fecha": "2026-05-08", "consulta": "2026-10-20", "verificacion": "lectura directa" },
         { "texto": "Los autores de AI 2027 advierten de que sus predicciones de pruebas para 2026 serán más difíciles de medir.", "fuente": "AI Futures Project, «Grading AI 2027's 2025 predictions»", "url": "https://blog.aifutures.org/p/grading-ai-2027s-2025-predictions", "fecha": "2026-02-12", "consulta": "2026-10-20", "verificacion": "lectura directa" },
