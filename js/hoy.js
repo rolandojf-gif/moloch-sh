@@ -58,7 +58,7 @@ function renderNews(d) {
   const items = (d.changes.items || []).slice().sort((a, b) => (b.detected || b.date || '').localeCompare(a.detected || a.date || '') || !!b.importancia - !!a.importancia);
   const byKey = new Map(items.map(it => [it.key, it]));
   $('#hoy-period').innerHTML = p
-    ? `Parte del ${esc(fmtDate(p.fecha))}: hasta tres noticias de la última recogida, elegidas con una regla fija que se explica debajo; si ninguna la cumple, se dice. Más abajo, todo lo detectado en los últimos ${days} días. También como <a href="data/parte.xml">fuente RSS</a>.`
+    ? `Parte del ${esc(fmtDate(p.fecha))}: hasta tres noticias de la última recogida, con una regla fija. <a href="data/parte.xml">RSS</a>`
     : `Últimos ${days} días, desde el ${esc(fmtDate(d.changes.since))}. El parte diario empieza con la próxima recogida.`;
   renderVisit(d, items, p);
   const top = p ? p.noticias.map(k => byKey.get(k)).filter(Boolean) : [];
@@ -77,7 +77,7 @@ function renderNews(d) {
   const rules = $('#hoy-reglas');
   rules.hidden = !p;
   if (p) $('#hoy-reglas-body').innerHTML = `<ol class="reglas">${p.reglas.map(r => `<li>${esc(r)}</li>`).join('')}</ol>
-    <p class="note">Entran hasta tres cambios de la última recogida, uno por modelo o hito, en el orden de la lista; dentro de una misma regla, primero el de mayor magnitud. Nunca se rellena: si ninguno cumple la regla, el parte lo dice. Los titulares salen de plantillas con las cifras («duplica» sólo si el precio es exactamente el doble) y la consecuencia, de los datos de la misma recogida, sin modelo de lenguaje ni opinión.</p>`;
+    <p class="note">Entran hasta tres cambios de la última recogida, uno por modelo o hito, en el orden de la lista; dentro de una misma regla, primero el de mayor magnitud. Nunca se rellena: si ninguno cumple la regla, el parte lo dice. Debajo, en «Ver todo lo detectado», están todos los cambios de los últimos ${days} días, también los que no son noticia. El parte se publica además como <a href="data/parte.xml">fuente RSS</a>. Los titulares salen de plantillas con las cifras («duplica» sólo si el precio es exactamente el doble) y la consecuencia, de los datos de la misma recogida, sin modelo de lenguaje ni opinión.</p>`;
   const more = $('#hoy-all');
   more.hidden = !items.length;
   if (!items.length) return;

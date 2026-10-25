@@ -616,6 +616,12 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
   main { padding: 20px 16px 48px; }
   .foot { padding: 0 16px 32px; }
   .kpis { grid-template-columns: 1fr; }
+  /* Hoy: los dos líderes, uno al lado del otro, para que aparezcan en la primera pantalla; el resto, a todo el ancho. */
+  #hoy-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  #hoy-kpis .kpi:nth-child(n+3) { grid-column: 1 / -1; }
+  #hoy-kpis .kpi.open, #hoy-kpis .kpi.closed { padding: 10px; box-shadow: 4px 4px 0 var(--ink); }
+  #hoy-kpis .kpi.open .v, #hoy-kpis .kpi.closed .v { font-size: 21px; }
+  #hoy-kpis .kpi.open .k, #hoy-kpis .kpi.closed .k { font-size: 14px; }
   /* Los gráficos se dibujan al ancho de la pantalla (js/charts.js, frame): nada que desplazar en horizontal. */
   .chart .bar-l { font-size: 13px; }
   .chart .bar-n { font-size: 12.5px; }
