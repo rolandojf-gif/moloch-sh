@@ -3,6 +3,8 @@
    Calcula, a partir de datos públicos, las cifras que las dos vistas citan como evidencia:
      Epoch AI  eci_scores.csv            brechas de capacidad en puntos ECI (EE. UU.–China, abiertos–cerrados, laboratorios)
                benchmarks.csv            saturación de evaluaciones y SWE-bench Verified
+               benchmark_data.zip        dificultad de cada evaluación en la escala del ECI (EDI) y réplicas bootstrap
+                                         del ajuste: mapa de evaluaciones y probabilidad de que el líder vaya delante
                data_centers.csv          potencia, H100e y capital de los centros seguidos
                data_center_timelines.csv calendario estimado de entrada en servicio
                ai_chip_sales_*.csv       entregas estimadas de chips de IA
@@ -15,6 +17,8 @@
    «checks»: valoraciones del observatorio que se derivan de una regla explícita sobre estos datos.
    Las usa data/curated/ai2027.json (valoraciones con "regla"). */
 
+import { inflateRawSync } from 'node:zlib';
+
 const URLS = {
   dc: 'https://epoch.ai/data/data_centers/data_centers.csv',
   dcTimelines: 'https://epoch.ai/data/data_centers/data_center_timelines.csv',
@@ -23,6 +27,8 @@ const URLS = {
   revenue: 'https://epoch.ai/data/ai_companies_revenue_reports.csv',
   usage: 'https://epoch.ai/data/ai_companies_usage_reports.csv',
   metr: 'https://metr.org/assets/benchmark_results_1_1.yaml',
+  // Datos del ajuste del ECI (el mismo que reproduce github.com/epoch-research/eci-public): EDI, réplicas y resultados.
+  benchZip: 'https://epoch.ai/data/benchmark_data.zip',
   // Base de modelos de Epoch: cómputo de entrenamiento estimado. Se prueba en este orden.
   models: ['https://epoch.ai/data/large_scale_ai_models.csv', 'https://epoch.ai/data/notable_ai_models.csv', 'https://epoch.ai/data/all_ai_models.csv']
 };
@@ -191,6 +197,133 @@ function benchBlock(bench, ctx) {
     mirror: fact(mcBest ? r1(mcBest.v * 100) : null, 'epoch', PAGES.mirror, mcBest?.release || TODAY, { model: mcBest?.model || null, models: new Set(mc.map(r => r.model)).size, ...mcStop, note: mcNote }),
     mirrorSeries: fact(mc.length ? series(mc) : null, 'epoch', PAGES.mirror, TODAY, { ...mcStop, note: `${mcNote}; mejor resultado de cada modelo, por fecha de publicación del modelo` }),
     sweMid2025: fact(byMid2025 ? r1(byMid2025.v * 100) : null, 'epoch', PAGES.swe, '2025-06-30', { model: byMid2025?.model || null, note: 'mejor resultado de un modelo publicado antes del 30 jun 2025' })
+  };
+}
+
+/* ── Dificultad de las evaluaciones y probabilidad de liderazgo (benchmark_data.zip) ───────────── */
+/* Lector mínimo de .zip (sin ZIP64, que el fichero de Epoch no necesita): nombre → función que devuelve su contenido. */
+function unzip(buf) {
+  let e = buf.length - 22;
+  while (e >= 0 && buf.readUInt32LE(e) !== 0x06054b50) e--;
+  if (e < 0) throw new Error('zip sin directorio central');
+  const files = new Map();
+  for (let i = 0, p = buf.readUInt32LE(e + 16), count = buf.readUInt16LE(e + 10); i < count; i++) {
+    if (buf.readUInt32LE(p) !== 0x02014b50) throw new Error('zip: directorio central dañado');
+    const method = buf.readUInt16LE(p + 10), size = buf.readUInt32LE(p + 20), off = buf.readUInt32LE(p + 42);
+    const nl = buf.readUInt16LE(p + 28), name = buf.toString('utf8', p + 46, p + 46 + nl);
+    files.set(name, () => {
+      const start = off + 30 + buf.readUInt16LE(off + 26) + buf.readUInt16LE(off + 28), raw = buf.subarray(start, start + size);
+      if (method === 0) return raw;
+      if (method === 8) return inflateRawSync(raw);
+      throw new Error(`zip: compresión ${method} no admitida (${name})`);
+    });
+    p += 46 + nl + buf.readUInt16LE(p + 30) + buf.readUInt16LE(p + 32);
+  }
+  return files;
+}
+/* Cuantil con interpolación lineal (el de numpy, que usa Epoch). */
+function quant(xs, q) {
+  const a = xs.slice().sort((x, y) => x - y), i = (a.length - 1) * q, lo = Math.floor(i);
+  return a[lo] + (a[Math.ceil(i)] - a[lo]) * (i - lo);
+}
+
+/* Todo sale ya calculado por Epoch en el zip de datos de su ajuste (el código está en github.com/epoch-research/eci-public).
+   Mapa: cada evaluación tiene una dificultad (EDI) en la escala del ECI, el ECI al que se prevé recorrer la mitad del camino
+   entre el azar y el techo de la prueba, y una pendiente; la nota prevista de un modelo es sigmoide(pendiente × (ECI − EDI)).
+   Probabilidad de liderazgo: proporción de las réplicas bootstrap de Epoch (cada una repite el ajuste entero) en las que el
+   primero sigue por delante. Las agrupaciones son las de eciBlock: país de la organización y pesos según Epoch. */
+function ediBlock(buf, ctx) {
+  const { parseCSV, fact, TODAY } = ctx;
+  const z = unzip(buf), D = 'epoch_capabilities_index/';
+  const read = name => { const f = z.get(name); if (!f) throw new Error(`falta ${name} en benchmark_data.zip`); return f().toString('utf8'); };
+  const rows = parseCSV(read(D + 'eci_scores.csv')).map(r => ({
+    model: r.Model, name: r['Display name'] || r.Model, eci: n(r.eci), lo: n(r.eci_ci_low), hi: n(r.eci_ci_high), date: r.date || null,
+    org: r.Organization || null, country: r['Country (of organization)'] || null, group: r['Accessibility group'] || null
+  })).filter(r => r.model && r.eci !== null);
+  const boot = JSON.parse(read(D + 'eci_bootstraps.json'));
+  const S = boot.model?.capability_samples, names = boot.model?.names || [];
+  if (!boot.eci_scaled || !S?.length || S.some(s => s.length !== names.length)) throw new Error('réplicas del ECI con una forma inesperada');
+  const idx = new Map(names.map((m, i) => [m, i]));
+  // Comprobación: los cuantiles de las réplicas tienen que dar los intervalos que publica Epoch.
+  const tail = (1 - (boot.ci_level ?? 0.9)) / 2;
+  let dev = 0;
+  for (const r of rows) {
+    const i = idx.get(r.model);
+    if (i === undefined || r.lo === null || r.hi === null) continue;
+    const xs = S.map(s => s[i]);
+    dev = Math.max(dev, Math.abs(quant(xs, tail) - r.lo), Math.abs(quant(xs, 1 - tail) - r.hi));
+  }
+  ctx.log(`Epoch, réplicas del ECI: ${S.length} × ${names.length} modelos; desviación máxima frente a los intervalos publicados: ${r2(dev)} puntos`);
+  if (dev > 0.5) throw new Error(`las réplicas no reproducen los intervalos publicados (desviación de ${r2(dev)} puntos)`);
+
+  // Líderes de hoy y probabilidad de que sigan por delante en las réplicas.
+  const best = pred => rows.filter(pred).sort((a, b) => b.eci - a.eci)[0] || null;
+  const isUS = r => countryCode(r.country) === 'US', isCN = r => countryCode(r.country) === 'CN';
+  const isClosed = r => r.group === 'Closed weights', isOpen = r => r.group === 'Open weights';
+  const top = best(() => true), us = best(isUS), cn = best(isCN), closed = best(isClosed), open = best(isOpen);
+  const ids = pred => rows.filter(pred).map(r => idx.get(r.model)).filter(i => i !== undefined);
+  const maxOf = (s, xs) => { let m = -Infinity; for (const i of xs) if (s[i] > m) m = s[i]; return m; };
+  const share = k => r1(k / S.length * 100);
+  const ahead = (A, B) => A.length && B.length ? share(S.filter(s => maxOf(s, A) > maxOf(s, B)).length) : null;
+  const orgOf = new Map(rows.map(r => [r.model, firstOrg(r.org)]));
+  const firstIn = new Map();
+  for (const s of S) {
+    let bi = 0;
+    for (let i = 1; i < s.length; i++) if (s[i] > s[bi]) bi = i;
+    const o = orgOf.get(names[bi]);
+    if (o) firstIn.set(o, (firstIn.get(o) || 0) + 1);
+  }
+  const bestOrg = new Map();
+  for (const r of rows) { const o = firstOrg(r.org); if (o && (!bestOrg.has(o) || r.eci > bestOrg.get(o).eci)) bestOrg.set(o, r); }
+  const labs = [...bestOrg.values()].sort((a, b) => b.eci - a.eci);
+  const lead = m => m ? { model: m.name, org: firstOrg(m.org), eci: m.eci } : null;
+  const pf = (v, extra) => fact(v, 'epoch', PAGES.eci, TODAY, { samples: S.length, ...extra });
+  const prob = {
+    usCn: pf(ahead(ids(isUS), ids(isCN)), { lead: lead(us), rival: lead(cn), note: 'porcentaje de las réplicas de Epoch en las que el mejor modelo de EE. UU. supera al mejor chino' }),
+    closedOpen: pf(ahead(ids(isClosed), ids(isOpen)), { lead: lead(closed), rival: lead(open), note: 'porcentaje de las réplicas de Epoch en las que el mejor modelo cerrado supera al mejor abierto' }),
+    labs: pf(labs.length ? share(firstIn.get(firstOrg(labs[0].org)) || 0) : null, { lead: lead(labs[0]), note: 'porcentaje de las réplicas de Epoch en las que el mejor modelo de todos es de este laboratorio' }),
+    labsFirst: labs.slice(0, 8).map(r => ({ org: firstOrg(r.org), p: share(firstIn.get(firstOrg(r.org)) || 0) }))
+  };
+
+  // Mapa de dificultad. Mejor resultado medido de cada evaluación, en la escala normalizada de Epoch (0 = azar, 1 = techo).
+  const obs = new Map();
+  for (const r of parseCSV(read(D + 'processed_data_for_eci.csv'))) {
+    const v = n(r.performance);
+    if (v === null || !r.benchmark) continue;
+    const e = obs.get(r.benchmark) || { v: -1, model: null, models: new Set() };
+    e.models.add(r.Model);
+    if (v > e.v) Object.assign(e, { v, model: r.Model });
+    obs.set(r.benchmark, e);
+  }
+  const bn = boot.benchmark?.names || [], DS = boot.benchmark?.difficulty_samples || [];
+  const bidx = new Map(bn.map((b, i) => [b, i]));
+  const shown = new Map(rows.map(r => [r.model, r.name]));
+  const sig = x => 1 / (1 + Math.exp(-x));
+  const pred = (b, m) => m ? r1(sig(b.slope * (m.eci - b.edi)) * 100) : null;
+  let devEdi = 0;
+  const map = parseCSV(read(D + 'edi_scores.csv'))
+    .map(r => ({ name: r.benchmark_name, d: r.benchmark_release_date || null, edi: n(r.edi), slope: n(r.estimated_slope_scaled) }))
+    .filter(b => b.name && b.edi !== null && b.slope !== null)
+    .map(b => {
+      const i = bidx.get(b.name), xs = i === undefined || !DS.length ? null : DS.map(s => s[i]), o = obs.get(b.name);
+      if (xs) devEdi = Math.max(devEdi, Math.abs(quant(xs, 0.5) - b.edi));
+      return {
+        name: b.name, d: b.d, edi: r2(b.edi), lo: xs ? r2(quant(xs, tail)) : null, hi: xs ? r2(quant(xs, 1 - tail)) : null, slope: Math.round(b.slope * 1e4) / 1e4,
+        pred: { top: pred(b, top), cn: pred(b, cn), open: pred(b, open) },
+        best: o ? { v: r1(o.v * 100), model: shown.get(o.model) || o.model, models: o.models.size } : null
+      };
+    })
+    .sort((a, b) => b.edi - a.edi);
+  ctx.log(`Epoch, dificultad de ${map.length} evaluaciones; mediana de las réplicas frente a la EDI publicada: hasta ${r2(devEdi)} puntos`);
+  // Frontera a lo largo del tiempo: cada vez que un modelo supera el mejor ECI publicado hasta su fecha.
+  const line = [];
+  let top0 = -Infinity;
+  for (const r of rows.filter(r => r.date).sort((a, b) => a.date.localeCompare(b.date) || b.eci - a.eci)) if (r.eci > top0) { top0 = r.eci; line.push({ d: r.date, v: r.eci, n: r.name }); }
+  const above = top ? map.filter(b => b.edi > top.eci) : [];
+  return {
+    map: fact(map.length ? map : null, 'epoch', PAGES.eci, TODAY, { top: lead(top), cn: lead(cn), open: lead(open), line, samples: S.length, note: 'dificultad (EDI) de cada evaluación del ECI con su intervalo del 90 %, nota prevista por el modelo de Epoch para el mejor modelo, el mejor chino y el mejor abierto, y mejor resultado medido; porcentajes entre el azar (0) y el techo de la prueba (100)' }),
+    open: fact(map.length && top ? above.length : null, 'epoch', PAGES.eci, TODAY, { of: map.length, names: above.map(b => b.name), top: lead(top), note: 'evaluaciones cuya dificultad supera el ECI del mejor modelo: el modelo de Epoch le prevé menos de la mitad del camino entre el azar y el techo' }),
+    prob
   };
 }
 
@@ -554,6 +687,20 @@ async function trainingBlock(ctx) {
   };
 }
 
+/* Probabilidades de las réplicas junto a cada distancia del ECI, sólo si las dos recogidas hablan de los mismos modelos
+   (el zip y eci_scores.csv se publican por separado y podrían no estar a la par un día). */
+function attachProb(ind, ctx) {
+  const e = ind.eci, p = ind.edi?.prob;
+  if (!e || !p || e.gapUsCn?.stale || ind.edi.map?.stale) return;
+  const same = (a, b) => a && b && a.model === b.model;
+  const put = (f, pr, pairs) => { if (f && pr?.v != null && pairs.every(([a, b]) => same(a, b))) f.prob = pr; else if (f) ctx.log(`probabilidad sin adjuntar a una distancia del ECI: los modelos no coinciden`); };
+  put(e.gapUsCn, p.usCn, [[e.gapUsCn?.us, p.usCn.lead], [e.gapUsCn?.cn, p.usCn.rival]]);
+  put(e.gapClosedOpen, p.closedOpen, [[e.gapClosedOpen?.closed, p.closedOpen.lead], [e.gapClosedOpen?.open, p.closedOpen.rival]]);
+  put(e.gapLabs, p.labs, [[e.gapLabs?.first, p.labs.lead]]);
+  const pFirst = new Map(p.labsFirst.map(r => [r.org, r.p]));
+  for (const l of e.labs || []) if (pFirst.has(l.org)) l.pFirst = pFirst.get(l.org);
+}
+
 /* Marca como stale todos los hechos de un bloque conservado de la recogida anterior. */
 const staleCopy = o => JSON.parse(JSON.stringify(o), (k, v) => (v && typeof v === 'object' && 'v' in v && 'src' in v) ? { ...v, stale: true } : v);
 
@@ -593,6 +740,8 @@ export async function collectIndicators(ctx, ep, prev) {
   } else {
     for (const k of ['eci', 'bench']) ind[k] = prevInd[k] ? staleCopy(prevInd[k]) : null;
   }
+  await run('edi', 'epoch_eci', async () => ediBlock(await ctx.getBuf(URLS.benchZip), ctx));
+  attachProb(ind, ctx);
   await run('dc', 'epoch_dc', () => dcBlock(ctx));
   await run('chips', 'epoch_chips', () => chipsBlock(ctx));
   await run('companies', 'epoch_companies', () => companiesBlock(ctx));

@@ -49,7 +49,8 @@ const IND = [
   { k: 'aaClosedOpen', path: 'aa.gapClosedOpen', aa: true, label: 'Distancia cerrados − abiertos en el índice de AA', unit: 'puntos AA', n: es1, u: 'puntos', ctx: f => f.closed && f.open ? `${f.closed.model} frente a ${f.open.model}` : null, desde: '2026-10-24' },
   { k: 'aaLabs', path: 'aa.gapLabs', aa: true, label: 'Distancia entre los dos primeros laboratorios en el índice de AA', unit: 'puntos AA', n: es1, u: 'puntos', ctx: f => f.first && f.second ? `${f.first.org} frente a ${f.second.org}` : null, desde: '2026-10-24' },
   { k: 'aaRate12m', path: 'aa.rate12m', aa: true, label: 'Avance de la frontera del índice de AA en 12 meses', unit: 'puntos AA', n: es1, u: 'puntos', desde: '2026-10-24' },
-  { k: 'saturated', path: 'bench.saturated', label: 'Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)', unit: 'evaluaciones', n: es0, u: 'evaluaciones', ctx: f => f.of ? `de ${f.of}` : null, desde: '2026-10-23' }
+  { k: 'saturated', path: 'bench.saturated', label: 'Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)', unit: 'evaluaciones', n: es0, u: 'evaluaciones', ctx: f => f.of ? `de ${f.of}` : null, desde: '2026-10-23' },
+  { k: 'ediOpen', path: 'edi.open', label: 'Evaluaciones del ECI que el mejor modelo aún no resuelve a medias', unit: 'evaluaciones', n: es0, u: 'evaluaciones', ctx: f => f.of ? `de ${f.of}` : null, desde: '2026-10-25' }
 ];
 const factOf = (ind, d) => at(ind, d.fact || d.path);
 const valueOf = (ind, d) => { const f = factOf(ind, d); return f ? (d.get ? d.get(f) : f.v) ?? null : null; };
