@@ -22,7 +22,9 @@ function resumen(f, ind, log) {
   const own = (log?.vigilados || []).filter(v => f.indicadores.includes(v.path));
   const vig = own.filter(v => !v.detenida && !v.incompleto), stopped = own.filter(v => v.detenida), incomp = own.filter(v => v.incompleto && !v.detenida);
   const ev = (log?.events || []).filter(e => e.kind === 'indicador' && f.indicadores.includes(e.data?.path)).map(e => ({ fecha: e.detected, html: `${esc(e.what)}${e.src?.url ? ` <a href="${esc(e.src.url)}" target="_blank" rel="noopener">${esc(e.src.name)}</a>` : ''}` }))
-    .concat((f.lectura.historial || []).slice(1).map(h => ({ fecha: h.fecha, html: `La hipótesis pasa a «${esc((ESTADO[h.estado] || h.estado).toLowerCase())}».${h.nota ? ` ${esc(h.nota)}` : ''}` })))
+    .concat((f.lectura.historial || []).slice(1).map((h, i) => ({ fecha: h.fecha, html: `${h.estado === f.lectura.historial[i].estado
+      ? `Hipótesis revisada: sigue ${esc(h.estado)}.`
+      : `La hipótesis pasa a «${esc(h.estado)}».`}${h.nota ? ` ${esc(h.nota)}` : ''}` })))
     .sort((a, b) => b.fecha.localeCompare(a.fecha));
   const desde = vig.map(v => v.desde).sort()[0];
   const cambios = ev.length
@@ -35,10 +37,26 @@ function resumen(f, ind, log) {
   </div>`;
 }
 
-function lectura(l) {
+/* Vigencia de la lectura: su última revisión es la última entrada del historial (sin historial, la fecha en que se formuló),
+   y se avisa si el recolector ha detectado después cambios en los indicadores del frente. Un cambio detectado el mismo día
+   de la revisión se da por visto. */
+function vigencia(f, log) {
+  const l = f.lectura, last = (l.historial || []).at(-1)?.fecha || l.desde;
+  const later = (log?.events || []).filter(e => e.kind === 'indicador' && f.indicadores.includes(e.data?.path) && (e.detected || '').slice(0, 10) > last).length;
+  const desde = (log?.vigilados || []).filter(v => f.indicadores.includes(v.path) && !v.detenida).map(v => v.desde).sort()[0];
+  return `<p class="rev${later ? ' rev-old' : ''}">Revisada el ${esc(curDate(last))}.${later
+    ? ` Después, el recolector ha detectado ${later === 1 ? 'un cambio' : `${later} cambios`} en los indicadores de este frente (en «Qué ha cambiado»); la lectura no se ha vuelto a revisar.`
+    : !desde ? ''
+    : desde > last ? ` Sus indicadores se vigilan desde el ${esc(curDate(desde))}, sin cambios desde entonces.`
+    : ' Sin cambios en los indicadores vigilados de este frente desde entonces.'}</p>`;
+}
+
+function lectura(f, log) {
+  const l = f.lectura;
   const hist = (l.historial || []).map(h => `<li><b>${esc(curDate(h.fecha))}</b> · ${esc(ESTADO[h.estado] || h.estado)}${h.nota ? `. ${esc(h.nota)}` : ''}</li>`).join('');
   return `<aside class="lectura" aria-label="Lectura Moloch: interpretación">
     <div class="lectura-head"><span class="tag k-lectura">Lectura Moloch · interpretación</span><span class="estado e-${esc(l.estado)}">${esc(ESTADO[l.estado] || l.estado)}</span></div>
+    ${vigencia(f, log)}
     <p class="hip">${esc(l.hipotesis)}</p>
     <dl class="lect">
       <dt>Quién gana acelerando</dt><dd>${esc(l.gana)}</dd>
@@ -240,7 +258,7 @@ function front(f, i, ind, log) {
         <ul class="facts">${f.hechos.map(factItem).join('')}</ul>
         ${f.faltan?.length ? `<h4>Lo que el observatorio no puede medir todavía</h4><ul class="gaps-list">${f.faltan.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
       </div>
-      ${lectura(f.lectura)}
+      ${lectura(f, log)}
     </div>
   </article>`;
 }

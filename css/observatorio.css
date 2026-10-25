@@ -449,6 +449,8 @@ dl.ind { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minma
 dl.lect { margin: 0; }
 dl.lect dt { margin-top: 16px; }
 dl.lect dd { margin: 0; font-size: 15px; }
+.lectura .rev { margin: -2px 0 10px; font: 12px/1.45 var(--f-mono); color: var(--muted); }
+.lectura .rev-old { color: var(--ink); border-left: 3px solid var(--warn); padding-left: 8px; }
 .hist { margin-top: 12px; font-size: 13px; }
 .hist summary { cursor: pointer; font: 700 11px var(--f-mono); text-transform: uppercase; }
 .hist ol { padding-left: 18px; margin: 8px 0 0; }
