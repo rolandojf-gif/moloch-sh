@@ -1,5 +1,5 @@
 /* MOLOCH.SH · observatorio — carga de datos, navegación y tema. */
-import { t, tr, lang, setLang, loadLang, applyStatic, initialLang, i18nEnabled, persistLang, missing, clearMissing } from './i18n.js';
+import { t, tr, L, lang, setLang, loadLang, applyStatic, initialLang, i18nEnabled, persistLang, missing, clearMissing } from './i18n.js';
 import { esc, setSources, fmtDate, fmtDateTime, daysAgo } from './fmt.js';
 import { renderHoy } from './hoy.js';
 import { renderModelos, showModelPath } from './modelos.js';
@@ -48,14 +48,14 @@ function renderFreshness(d) {
     const name = c.sources?.[k]?.name || k;
     const home = HOME[k] || HOME[name];
     const lbl = home ? `<a href="${home}" target="_blank" rel="noopener">${esc(tr(name))}</a>` : esc(tr(name));
-    return s.ok ? `<span class="st-ok">● ${lbl}</span>` : `<span class="st-bad" title="${esc(tr(s.reason || ''))}">○ ${lbl}: ${esc(s.reason ? tr(s.reason) : t('sin datos'))}</span>`;
+    return s.ok ? `<span class="st-ok">● ${lbl}</span>` : `<span class="st-bad" title="${esc(L(s, 'reason', s.reason || ''))}">○ ${lbl}: ${esc(s.reason ? L(s, 'reason') : t('sin datos'))}</span>`;
   }).join('');
   // Indicadores de La carrera y AI 2027: una sola marca si todo va bien; cada fuente que falle, por separado.
   const IND = { epoch_dc: t('Epoch AI · centros de datos'), epoch_chips: t('Epoch AI · chips'), epoch_companies: t('Epoch AI · empresas'), epoch_models: t('Epoch AI · cómputo de entrenamiento'), epoch_eci: t('Epoch AI · datos del ECI'), metr: 'METR' };
   const ist = Object.entries(d.ind?.status || {}).filter(([k]) => k in IND);
   const bad = ist.filter(([, s]) => !s.ok);
   const indSt = !d.ind ? `<span class="st-bad">${t('○ Indicadores: sin datos')}</span>`
-    : bad.length ? bad.map(([k, s]) => `<span class="st-bad" title="${esc(tr(s.reason || ''))}">○ ${esc(IND[k])}: ${esc(s.reason ? tr(s.reason) : t('sin datos'))}</span>`).join('')
+    : bad.length ? bad.map(([k, s]) => `<span class="st-bad" title="${esc(L(s, 'reason', s.reason || ''))}">○ ${esc(IND[k])}: ${esc(s.reason ? L(s, 'reason') : t('sin datos'))}</span>`).join('')
     : `<span class="st-ok" title="${esc(ist.map(([k]) => IND[k]).join(', '))}">${t('● Indicadores')}</span>`;
   el.innerHTML = `<span>${t('Recogida')} <b>${esc(fmtDateTime(c.generated))}</b> <span class="${cls}">(${ageTxt}${warn})</span></span>${st}${indSt}<a class="refresh" href="https://github.com/rolandojf-gif/moloch-sh/actions/workflows/collect.yml" target="_blank" rel="noopener" title="${t('Consulta el historial de recogidas en GitHub. Solo los colaboradores con permisos pueden iniciar una recogida manual.')}">${t('Ver estado de actualización ↗')}</a>`;
 }

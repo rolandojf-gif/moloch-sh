@@ -8,7 +8,8 @@ import path from 'node:path';
 import { ROOT, claves, jsFiles, scan, cargarMemoria, cobertura, textosDeDatos, spanish } from '../scripts/i18n.mjs';
 import { find, t, tn, tr, L, setLang, setDictionary, missing, clearMissing } from '../js/i18n.js';
 import * as loc from '../js/locale.js';
-import { AVISOS } from '../scripts/textos.mjs';
+import { AVISOS, failedStatus } from '../scripts/textos.mjs';
+import { rss } from '../scripts/parte.mjs';
 import { salida, salidaEn } from './fixtures/textos/salida.mjs';
 
 const read = f => JSON.parse(readFileSync(path.join(ROOT, f), 'utf8'));
@@ -16,9 +17,27 @@ const text = f => readFileSync(path.join(ROOT, f), 'utf8');
 const FILES = ['ui', 'hoy', 'carrera', 'ai2027', 'lanzamientos', 'notas'];
 const dic = Object.fromEntries(FILES.map(f => [f, read(`data/i18n/en/${f}.json`)]));
 const marks = s => [...String(s).matchAll(/\{(\w+)\}/g)].map(m => m[1]).sort().join(',');
-/* Las cifras de un texto, sin separadores ni ceros finales (18.000 millones ↔ $18 billion), para compararlas entre idiomas. */
-const nums = s => (String(s).match(/\d+(?:[.,]\d+)*/g) || []).map(x => x.replace(/[.,]/g, '').replace(/0+$/, '')).sort().join(' ');
+/* Compara valores con signo y magnitud; 18.000 millones y $18 billion equivalen a 18e9. */
+const nums = (s, lang) => [...String(s).matchAll(/(?<![\w])[+−-]?\d+(?:[.,]\d+)*|(?<=[\w])\d+(?:[.,]\d+)*/g)].map(m => {
+  const raw = m[0].replace('−', '-');
+  const value = Number(lang === 'es'
+    ? raw.replace(/\.(?=\d{3}(?:\D|$))/g, '').replace(',', '.')
+    : raw.replace(/,(?=\d{3}(?:\D|$))/g, ''));
+  const tail = String(s).slice(m.index + m[0].length);
+  const unit = /^\s*(?:de\s+)?(billones|trillion|mil millones|billion|millones|millón|million|M\$|B\b|K\b)/i.exec(tail)?.[1]?.toLowerCase();
+  const impliedMillions = lang === 'es' && /\.\d{3}(?:\D|$)/.test(raw) && /\bmillones\b/i.test(String(s));
+  const scale = unit === 'billones' || unit === 'trillion' ? 1e12 : unit === 'mil millones' || unit === 'billion' || unit === 'b' ? 1e9 : unit === 'millones' || unit === 'millón' || unit === 'million' || unit === 'm$' || impliedMillions ? 1e6 : unit === 'k' ? 1e3 : 1;
+  return (value * scale).toPrecision(12);
+}).sort().join(' ');
 const strip = o => JSON.parse(JSON.stringify(o, (k, v) => k === 'i18n' ? undefined : v));
+
+test('paridad numérica: distingue signo y potencias de diez, y admite unidades equivalentes', () => {
+  for (const n of [10, 100, 1000]) assert.notEqual(nums('1', 'es'), nums(String(n), 'en'));
+  assert.notEqual(nums('−1', 'es'), nums('1', 'en'));
+  assert.notEqual(nums('-10', 'es'), nums('10', 'en'));
+  assert.equal(nums('18.000 millones', 'es'), nums('$18 billion', 'en'));
+  assert.equal(nums('500.000 M$', 'es'), nums('$500B', 'en'));
+});
 
 /* ── Interfaz ── */
 test('interfaz: toda clave de t()/tn()/data-t tiene traducción y las marcas {x} coinciden', () => {
@@ -68,7 +87,7 @@ test('memoria: marcas {x} y cifras iguales entre español e inglés', () => {
   for (const [f, d] of Object.entries(dic)) {
     for (const [es, en] of [...Object.entries(d.exact || {}), ...(d.patterns || [])]) for (const e of [en].flat()) {
       if (f !== 'ui' || !Array.isArray(en)) { if (marks(es) !== marks(e)) marcas.push(`${f}: ${es.slice(0, 80)}`); }
-      if (nums(es) !== nums(e)) cifras.push(`${f}: ${es.slice(0, 80)} → ${e.slice(0, 80)}`);
+      if (nums(es, 'es') !== nums(e, 'en')) cifras.push(`${f}: ${es.slice(0, 80)} → ${e.slice(0, 80)}`);
     }
   }
   assert.deepEqual(marcas, []); assert.deepEqual(cifras, []);
@@ -98,7 +117,7 @@ test('cobertura: los campos de campos.json existen en los datos', () => {
 
 test('datos publicados: lo que el recolector traduce lleva las mismas cifras que el español', () => {
   const dif = [], faltan = [];
-  const par = (donde, es, en) => { if (typeof es !== 'string') return; if (typeof en !== 'string') faltan.push(donde); else if (nums(es) !== nums(en)) dif.push(`${donde}: ${es.slice(0, 70)} ≠ ${en.slice(0, 70)}`); };
+  const par = (donde, es, en) => { if (typeof es !== 'string') return; if (typeof en !== 'string') faltan.push(donde); else if (nums(es, 'es') !== nums(en, 'en')) dif.push(`${donde}: ${es.slice(0, 70)} ≠ ${en.slice(0, 70)}`); };
   const ev = read('data/events-log.json'), ch = read('data/changes.json'), ind = read('data/indicadores.json');
   for (const [w, list] of [['events-log', ev.events], ['changes', ch.items]]) for (const e of list) {
     const en = e.i18n?.en || {};
@@ -188,7 +207,7 @@ test('recolector: ES y EN llevan las mismas cifras en cada texto', () => {
   es.items.forEach((e, i) => {
     const x = en.items[i];
     for (const [k, v] of [['what', e.what], ['titular', e.titular], ['consecuencia', e.consecuencia], ['porque', e.importancia?.porque]]) {
-      if (typeof v === 'string' && typeof x[k] === 'string' && nums(v) !== nums(x[k])) dif.push(`${e.key}.${k}: ${v.slice(0, 60)} ≠ ${x[k].slice(0, 60)}`);
+      if (typeof v === 'string' && typeof x[k] === 'string' && nums(v, 'es') !== nums(x[k], 'en')) dif.push(`${e.key}.${k}: ${v.slice(0, 60)} ≠ ${x[k].slice(0, 60)}`);
     }
   });
   assert.deepEqual(dif, []);
@@ -220,4 +239,38 @@ test('cargarMemoria() deja el diccionario como lo carga el navegador', () => {
   assert.deepEqual(Object.keys(files), FILES);
   assert.equal(find('Hoy'), 'Today');
   assert.equal(find('cadena que no existe en ningún diccionario'), null);
+});
+
+test('P0/P1: umbral ECI, titular, fuente RSS y notas dinámicas conservan el sentido en inglés', () => {
+  cargarMemoria();
+  const en = salidaEn();
+  const gap = en.items.find(e => e.porque?.includes('ECI point'));
+  assert.match(gap.porque, /threshold at which Epoch no longer treats them as having the same capability/);
+  assert.doesNotMatch(gap.porque, /margin within which/);
+  assert.ok(en.items.some(e => e.titular?.includes('is unfolding as predicted')));
+  const item = { key: 'uso-prueba', detected: '2026-10-25', what: 'Uso', titular: 'Uso', importancia: { porque: 'Uso' }, src: { name: 'OpenRouter · uso', url: 'https://openrouter.ai/rankings' }, i18n: { en: { what: 'Usage', titular: 'Usage', porque: 'Usage' } } };
+  const feed = rss([item], { NOW_ISO: '2026-10-25T12:00:00Z', TODAY: '2026-10-25' }, 'en');
+  assert.match(feed, /Source: OpenRouter · usage/);
+  assert.doesNotMatch(feed, /OpenRouter · uso/);
+  assert.doesNotMatch(text('data/parte.en.xml'), /Source: OpenRouter · uso/);
+  assert.equal(find('usuarios activos (periodo sin datos) · confianza de Epoch: sin datos'), 'active users (period: no data) · Epoch confidence: no data');
+  assert.equal(find('ingresos anualizados · confianza de Epoch: sin datos'), 'annualised revenue · Epoch confidence: no data');
+});
+
+test('P1: licencias, emparejamientos, avisos y referencias editoriales tienen traducción', () => {
+  cargarMemoria(); setLang('en');
+  for (const [es, en] of [
+    ['propietaria', 'proprietary'], ['emparejamiento manual', 'manual match'], ['nombre aproximado', 'approximate name match'],
+    ['la consulta falló; se conservan los valores anteriores', 'the check failed; previous values have been retained'],
+    ['la consulta falló; se conserva el ranking anterior', 'the check failed; the previous ranking has been retained'],
+    ['no conectado', 'not connected'], ['sin permiso de publicación', 'publication permission not granted']
+  ]) assert.equal(tr(es), en);
+  const failed = failedStatus('la consulta falló; se conservan los valores anteriores', 'the check failed; previous values have been retained', { lastOk: '2026-10-24' });
+  assert.equal(failed.reason, 'la consulta falló; se conservan los valores anteriores');
+  assert.equal(failed.lastOk, '2026-10-24');
+  assert.equal(L(failed, 'reason'), 'the check failed; previous values have been retained');
+  assert.match(dic.ai2027.exact['El plazo no ha vencido. La estimación de la ficha es de esta parte.'], /milestone entry/);
+  assert.match(dic.ai2027.exact['Los laboratorios no publican el cómputo de entrenamiento de sus modelos punteros. La estimación de la ficha, con los cálculos de Epoch, es de esta parte.'], /milestone entry/);
+  assert.match(dic.carrera.exact['Los autores de AI 2027 advierten de que sus predicciones de pruebas para 2026 serán más difíciles de medir.'], /predictions for benchmark performance/);
+  setLang('es');
 });

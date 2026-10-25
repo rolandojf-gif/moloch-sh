@@ -68,6 +68,15 @@
   "variante": "variant",
   "genera audio": "generates audio",
   "OpenRouter · uso": "OpenRouter · usage",
+  "propietaria": "proprietary",
+  "emparejamiento manual": "manual match",
+  "nombre aproximado": "approximate name match",
+  "periodo sin datos": "period: no data",
+  "ingresos anualizados": "annualised revenue",
+  "la consulta falló; se conservan los valores anteriores": "the check failed; previous values have been retained",
+  "la consulta falló; se conserva el ranking anterior": "the check failed; the previous ranking has been retained",
+  "no conectado": "not connected",
+  "sin permiso de publicación": "publication permission not granted",
   "Curado manualmente": "Manually curated"
  },
  "patterns": [

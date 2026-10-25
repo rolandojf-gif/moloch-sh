@@ -49,6 +49,9 @@ function juego(l) {
 }
 export const F = { es: juego('es'), en: juego('en') };
 
+/* Estado de una fuente fallida: español canónico y versión inglesa para la web. */
+export const failedStatus = (es, en, extra = {}) => ({ ok: false, reason: F.es.t(es, en), i18n: { en: { reason: F.en.t(es, en) } }, ...extra });
+
 /* Evalúa una plantilla en los dos idiomas: { es, en }. */
 export const both = fn => ({ es: fn(F.es), en: fn(F.en) });
 
