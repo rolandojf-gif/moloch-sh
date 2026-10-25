@@ -1,5 +1,5 @@
 /* Vista «Lanzamientos»: por modelo, qué etapas constan (anuncio, acceso restringido, API pública, pesos) y con qué fuente. */
-import { esc, src, weightsTag, provLine, fmtDate, num, ii, eci, aaConfig } from './fmt.js';
+import { esc, src, weightsTag, provLine, fmtDate, dateFmt, num, ii, eci, aaConfig } from './fmt.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -83,7 +83,7 @@ function render() {
   if (!cards.length && !gone.length) { $('#ln-list').innerHTML = '<div class="empty">Ningún lanzamiento en este periodo.</div>'; return; }
   let html = '', month = '';
   for (const c of cards) {
-    const mo = new Date(c.date + 'T00:00:00Z').toLocaleDateString('es-ES', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+    const mo = dateFmt({ month: 'long', year: 'numeric' }).format(new Date(c.date + 'T00:00:00Z'));
     if (mo !== month) { html += `<div class="month">${esc(mo)}</div>`; month = mo; }
     html += c.html;
   }

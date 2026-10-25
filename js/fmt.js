@@ -11,25 +11,39 @@ export const ND = '<span class="nd">sin datos</span>';
 export const AA_LINK = '<a href="https://artificialanalysis.ai" target="_blank" rel="noopener">Artificial Analysis</a>';
 export const aaIndexName = v => `índice de inteligencia de Artificial Analysis${v ? ` v${v}` : ''}`;
 
+/* Idioma de fechas y números, en un solo sitio. Los formateadores se crean una vez y se reutilizan: crear uno en cada
+   llamada (toLocaleDateString / toLocaleString con opciones) costaba unos 3 s de CPU al cargar en un móvil lento. */
+export const LOCALE = 'es-ES';
+const FMT = new Map();
+const formatter = (Kind, opts) => {
+  const k = `${Kind.name}${JSON.stringify(opts)}`;
+  let f = FMT.get(k);
+  if (!f) FMT.set(k, f = new Kind(LOCALE, opts));
+  return f;
+};
+/* Fecha en UTC con las opciones de Intl.DateTimeFormat; número con las de Intl.NumberFormat. */
+export const dateFmt = opts => formatter(Intl.DateTimeFormat, { ...opts, timeZone: 'UTC' });
+export const numFmt = opts => formatter(Intl.NumberFormat, opts);
+
 export function fmtDate(iso) {
   if (!iso) return '—';
   const d = new Date(iso.length === 10 ? iso + 'T00:00:00Z' : iso);
   if (Number.isNaN(d.getTime())) return esc(iso);
-  return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  return dateFmt({ day: 'numeric', month: 'short', year: 'numeric' }).format(d);
 }
 export function fmtDateTime(iso) {
   if (!iso) return '—';
   const d = new Date(iso);
-  return d.toLocaleString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }) + ' UTC';
+  return dateFmt({ day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(d) + ' UTC';
 }
 export function num(n, dec = 1) {
-  return Number(n).toLocaleString('es-ES', { maximumFractionDigits: dec, minimumFractionDigits: 0 });
+  return numFmt({ maximumFractionDigits: dec, minimumFractionDigits: 0 }).format(Number(n));
 }
 export function usd(n) {
   if (n === null || n === undefined) return null;
   if (n === 0) return '0 $';
   const dec = n < 0.1 ? 3 : n < 10 ? 2 : 1;
-  return `${n.toLocaleString('es-ES', { minimumFractionDigits: dec > 2 ? 2 : dec, maximumFractionDigits: dec })} $`;
+  return `${numFmt({ minimumFractionDigits: dec > 2 ? 2 : dec, maximumFractionDigits: dec }).format(n)} $`;
 }
 export function tokens(n) {
   if (!n) return null;

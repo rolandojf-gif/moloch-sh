@@ -1,6 +1,6 @@
 /* Gráficos SVG sin dependencias. Todos comparten una ventana emergente que aparece al instante
    sobre el elemento más cercano al cursor (o al dedo) y etiquetas fijas para los puntos que importan. */
-import { esc, usd, num, fmtDate } from './fmt.js';
+import { esc, usd, num, fmtDate, dateFmt } from './fmt.js';
 
 /* ── Ventana emergente ──────────────────────────────────────────────────── */
 let tipEl = null, hot = null;
@@ -132,7 +132,7 @@ function monthTicks(tmin, tmax, n = 6) {
   return out;
 }
 const ms = d => new Date(d + 'T00:00:00Z').getTime();
-const monthLabel = tk => new Date(tk).toLocaleDateString('es-ES', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const monthLabel = tk => dateFmt({ month: 'short', year: 'numeric' }).format(new Date(tk));
 
 const tickCount = G => G.narrow ? Math.max(2, Math.floor((G.W - G.L - G.R) / 80)) : 6;
 function timeAxis(X, tmin, tmax, G) {

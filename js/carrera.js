@@ -1,6 +1,6 @@
 /* Vista «La carrera»: distancias en la frontera y seis frentes. Cada uno empieza por qué sabemos, qué ha cambiado y qué
    cambiaría la lectura; después, gráficos, indicadores, hechos con fuente y la lectura marcada como interpretación. */
-import { esc, fmtDate, num, ND, aaRace, aaIndexName, AA_LINK } from './fmt.js';
+import { esc, fmtDate, dateFmt, num, ND, aaRace, aaIndexName, AA_LINK } from './fmt.js';
 import { indicatorRow, indicatorKpi, indicatorBrief, mw, mh100, usdB, PAIS } from './indicadores.js';
 import { gaps, hbars, columns, dotci, recordChart, ediMap, tip } from './charts.js';
 
@@ -9,7 +9,7 @@ export const ESTADO = { abierta: 'Hipótesis abierta', confirmada: 'Hipótesis c
 const VERIF = { 'lectura directa': 'leído en la fuente', buscador: 'comprobado a través de un buscador: la web de la fuente no admite lectura automática' };
 
 /* Fecha de un dato curado: día, mes o «sin datos». */
-export const curDate = s => !s ? 'sin datos' : /^\d{4}-\d{2}$/.test(s) ? new Date(s + '-01T00:00:00Z').toLocaleDateString('es-ES', { month: 'short', year: 'numeric', timeZone: 'UTC' }) : fmtDate(s);
+export const curDate = s => !s ? 'sin datos' : /^\d{4}-\d{2}$/.test(s) ? dateFmt({ month: 'short', year: 'numeric' }).format(new Date(s + '-01T00:00:00Z')) : fmtDate(s);
 
 export function factItem(h) {
   return `<li><p>${esc(h.texto)}</p><div class="prov">Fuente: <a href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.fuente)}</a> · dato: ${esc(curDate(h.fecha))} · consulta: ${esc(curDate(h.consulta))}${h.verificacion ? ` · <span class="verif v-${h.verificacion === 'buscador' ? 'buscador' : 'directa'}">${esc(VERIF[h.verificacion] || h.verificacion)}</span>` : ''}</div></li>`;

@@ -1,6 +1,6 @@
 /* Vista «AI 2027»: qué predice el escenario, en qué punto está cada predicción hoy y quién lo valora.
    Cada hito conserva la predicción original; las revisiones de los autores aparecen fechadas a su lado. */
-import { esc, fmtDate } from './fmt.js';
+import { esc, fmtDate, dateFmt } from './fmt.js';
 import { indicatorRow, indicatorBrief } from './indicadores.js';
 import { curDate } from './carrera.js';
 import { hitoTimeline, tip } from './charts.js';
@@ -21,7 +21,7 @@ const PLAIN = {
 const plain = (v, due) => !v ? 'Sin valoración' : v.v === 'todavía no evaluable' && due ? 'Plazo vencido, todavía sin evaluar' : PLAIN[v.v] || v.v;
 
 /* Valoración y estimación vigentes: js/valoracion.js, compartido con el detector de cambios del recolector. */
-const monthYear = d => new Date(d + 'T00:00:00Z').toLocaleDateString('es-ES', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const monthYear = d => dateFmt({ month: 'long', year: 'numeric' }).format(new Date(d + 'T00:00:00Z'));
 const EST_KIND = { regla: 'proyección con los datos recogidos', autores: 'valoración de los autores', ritmo: 'con el ritmo que estiman los autores', fuente: 'estimación del observatorio con fuentes' };
 function estimate(h, checks, a) {
   const e = estimateCore(h, checks, a);
