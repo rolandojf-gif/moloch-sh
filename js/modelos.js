@@ -1,6 +1,6 @@
 /* Vista «Modelos»: comparador, ficha desplegable (con su posición frente a otros modelos), comparación de hasta tres y
    evolución de la frontera. */
-import { esc, fact, src, weightsTag, usd, num, tokens, fmtDate, country, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, aaRace, speed, priceBasis, ND, AA_LINK } from './fmt.js';
+import { esc, fact, src, weightsTag, usd, num, tokens, fmtDate, country, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, aaRace, aaCoverage, coverageText, speed, priceBasis, ND, AA_LINK } from './fmt.js';
 import { frontier, hbars, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -220,18 +220,18 @@ function renderCompare() {
 
 /* La misma frontera con el índice de AA: recoge los modelos nuevos en cuanto AA los puntúa, también los que Epoch no mide. */
 function renderFrontierAA() {
-  const el = $('#mx-frontier-aa'), r = aaRace(D.catalog);
+  const el = $('#mx-frontier-aa'), r = aaRace(D.catalog), cov = D.catalog.epochFrontier?.points?.length ? aaCoverage(D.catalog, r.from) : null;
   // Con etiqueta fija, además de líderes y saltos: lo publicado en los últimos 14 días que está entre los diez primeros.
   const since = new Date(Date.parse(`${r.today}T00:00:00Z`) - 14 * 86400e3).toISOString().slice(0, 10);
   const top10 = [...r.models].sort((a, b) => b.v - a.v).slice(0, 10);
   const nuevos = top10.filter(m => m.d >= since);
-  if (!frontier(el, r.points, { models: r.models, yLabel: aaIndexName(r.ver), yShort: `índice AA${r.ver ? ` v${r.ver}` : ''}`, metric: 'Índice AA', highlight: new Set(nuevos.map(m => m.n)) })) {
+  if (!frontier(el, r.points, { models: r.models, yLabel: aaIndexName(r.ver), yShort: `índice AA${r.ver ? ` v${r.ver}` : ''}`, metric: 'Índice AA', highlight: new Set(nuevos.map(m => m.n)), bands: cov?.gaps })) {
     el.innerHTML = `<div class="chart-empty">${ND}: no hay puntuaciones de Artificial Analysis en esta recogida.</div>`;
   }
   const last = r.points[r.points.length - 1];
   const gap = last && last.open && last.closed ? Math.round((last.closed.v - last.open.v) * 10) / 10 : null;
   const anun = r.models.filter(m => m.anun && top10.includes(m)).map(m => m.n);
-  $('#mx-frontier-aa-note').innerHTML = `<span class="lbl">Cómo leerlo</span>Cada línea es el mejor ${esc(aaIndexName(r.ver))} de un modelo con pesos abiertos y de uno cerrado publicado hasta esa fecha; los puntos claros son el resto. Con nombre, el líder de cada grupo y los mayores saltos.${nuevos.length ? ` En punto lleno y con nombre si cabe, lo publicado en los últimos 14 días que está entre los diez primeros (${esc(nuevos.map(m => m.n).join(', '))}).` : ''} Cada modelo va en su fecha según AA, con su índice de hoy. Sólo cuentan los ${r.n} modelos puntuados que siguen en OpenRouter: los retirados faltan, así que los meses antiguos pueden quedar por debajo de lo que hubo. «Abiertos» incluye los que el laboratorio presenta como de pesos abiertos aunque aún no se puedan descargar${anun.length ? ` (entre los diez primeros: ${esc(anun.join(', '))})` : ''}.${gap !== null ? ` Distancia actual: ${num(gap)} puntos (${esc(last.closed.name)} frente a ${esc(last.open.name)}).` : ''} Datos de ${AA_LINK}, publicados con su permiso.`;
+  $('#mx-frontier-aa-note').innerHTML = `<span class="lbl">Cómo leerlo</span>Cada línea es el mejor ${esc(aaIndexName(r.ver))} de un modelo con pesos abiertos y de uno cerrado publicado hasta esa fecha; los puntos claros son el resto. Con nombre, el líder de cada grupo y los mayores saltos.${nuevos.length ? ` En punto lleno y con nombre si cabe, lo publicado en los últimos 14 días que está entre los diez primeros (${esc(nuevos.map(m => m.n).join(', '))}).` : ''} Cada modelo va en su fecha según AA, con su índice de hoy. Es una reconstrucción hecha hoy, no una serie medida en cada fecha: sólo cuentan los ${r.n} modelos puntuados que siguen en OpenRouter, así que los retirados faltan y los meses antiguos pueden quedar por debajo de lo que hubo.${esc(coverageText(cov))} «Abiertos» incluye los que su descripción en OpenRouter presenta como de pesos abiertos aunque aún no se puedan descargar${anun.length ? ` (entre los diez primeros: ${esc(anun.join(', '))})` : ''}.${gap !== null ? ` Distancia actual: ${num(gap)} puntos (${esc(last.closed.name)} frente a ${esc(last.open.name)}).` : ''} Datos de ${AA_LINK}, publicados con su permiso.`;
 }
 
 function renderFrontier() {

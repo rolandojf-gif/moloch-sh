@@ -122,6 +122,17 @@ function trackTop() {
   if ('ResizeObserver' in window) { const ro = new ResizeObserver(set); ro.observe(box); ro.observe(nav); }
 }
 
+/* Cada parte se dibuja por separado: si una falla con los datos de una recogida, las demás y las direcciones directas
+   siguen funcionando, y la vista afectada lo dice (data-render-error, que busca la prueba de humo). */
+function safe(view, fn, d) {
+  try { fn(d); }
+  catch (e) {
+    console.error(`No se ha podido dibujar ${view || fn.name}:`, e);
+    const s = view && document.querySelector(`section[data-view="${view}"]`);
+    if (s) s.insertAdjacentHTML('afterbegin', `<div class="empty view-error" role="alert" data-render-error="${view}"><b>Esta sección no se ha podido dibujar</b> con los datos de esta recogida. El resto del observatorio no se ve afectado.</div>`);
+  }
+}
+
 async function main() {
   initTheme();
   trackTop();
@@ -138,13 +149,13 @@ async function main() {
     return;
   }
   setSources(d.catalog.sources);
-  renderFreshness(d);
-  renderMethod(d);
-  renderHoy(d);
-  renderModelos(d);
-  renderLanzamientos(d);
-  renderCarrera(d);
-  renderAi2027(d);
+  safe(null, renderFreshness, d);
+  safe(null, renderMethod, d);
+  safe('hoy', renderHoy, d);
+  safe('modelos', renderModelos, d);
+  safe('lanzamientos', renderLanzamientos, d);
+  safe('carrera', renderCarrera, d);
+  safe('ai2027', renderAi2027, d);
   ready = true;
   showPath(route());
 }

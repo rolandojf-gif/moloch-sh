@@ -11,25 +11,39 @@ export const ND = '<span class="nd">sin datos</span>';
 export const AA_LINK = '<a href="https://artificialanalysis.ai" target="_blank" rel="noopener">Artificial Analysis</a>';
 export const aaIndexName = v => `índice de inteligencia de Artificial Analysis${v ? ` v${v}` : ''}`;
 
+/* Idioma de fechas y números, en un solo sitio. Los formateadores se crean una vez y se reutilizan: crear uno en cada
+   llamada (toLocaleDateString / toLocaleString con opciones) costaba unos 3 s de CPU al cargar en un móvil lento. */
+export const LOCALE = 'es-ES';
+const FMT = new Map();
+const formatter = (Kind, opts) => {
+  const k = `${Kind.name}${JSON.stringify(opts)}`;
+  let f = FMT.get(k);
+  if (!f) FMT.set(k, f = new Kind(LOCALE, opts));
+  return f;
+};
+/* Fecha en UTC con las opciones de Intl.DateTimeFormat; número con las de Intl.NumberFormat. */
+export const dateFmt = opts => formatter(Intl.DateTimeFormat, { ...opts, timeZone: 'UTC' });
+export const numFmt = opts => formatter(Intl.NumberFormat, opts);
+
 export function fmtDate(iso) {
   if (!iso) return '—';
   const d = new Date(iso.length === 10 ? iso + 'T00:00:00Z' : iso);
   if (Number.isNaN(d.getTime())) return esc(iso);
-  return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  return dateFmt({ day: 'numeric', month: 'short', year: 'numeric' }).format(d);
 }
 export function fmtDateTime(iso) {
   if (!iso) return '—';
   const d = new Date(iso);
-  return d.toLocaleString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }) + ' UTC';
+  return dateFmt({ day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(d) + ' UTC';
 }
 export function num(n, dec = 1) {
-  return Number(n).toLocaleString('es-ES', { maximumFractionDigits: dec, minimumFractionDigits: 0 });
+  return numFmt({ maximumFractionDigits: dec, minimumFractionDigits: 0 }).format(Number(n));
 }
 export function usd(n) {
   if (n === null || n === undefined) return null;
   if (n === 0) return '0 $';
   const dec = n < 0.1 ? 3 : n < 10 ? 2 : 1;
-  return `${n.toLocaleString('es-ES', { minimumFractionDigits: dec > 2 ? 2 : dec, maximumFractionDigits: dec })} $`;
+  return `${numFmt({ minimumFractionDigits: dec > 2 ? 2 : dec, maximumFractionDigits: dec }).format(n)} $`;
 }
 export function tokens(n) {
   if (!n) return null;
@@ -144,9 +158,61 @@ export function aaRace(catalog) {
   const yearAgo = `${Number(today.slice(0, 4)) - 1}${today.slice(4)}`;
   const now = list.length ? {
     us: top(today, m => m.c === 'US'), cn: top(today, m => m.c === 'CN'), closed: top(today, m => m.g === 'c'), open: top(today, m => m.g === 'o'),
+    openDl: top(today, m => m.g === 'o' && !m.anun),
     first: labs[0] || null, second: labs[1] || null, labs, from: top(yearAgo, () => true), to: top(today, () => true), yearAgo
   } : null;
   return { ver, today, points, models, series, now, n: list.length, from: list[0]?.d || null };
+}
+
+/* Cobertura de la frontera reconstruida con AA. Para cada récord de la frontera del ECI de Epoch (el mejor modelo abierto
+   y el mejor cerrado según Epoch desde esa fecha), si el catálogo tiene ese modelo con índice AA de la versión vigente.
+   Mientras el mejor según Epoch no lo tenga, la reconstrucción de AA no puede incluirlo y ese tramo queda marcado como
+   incompleto. No se rellena ni se estima nada: sólo se señala. El emparejamiento con Epoch es el del recolector (m.epoch.name).
+   from: fecha desde la que interesa (el primer modelo de la reconstrucción). */
+export function aaCoverage(catalog, from = null) {
+  const ver = catalog?.aaIndexVersion ?? null, today = (catalog?.generated || new Date().toISOString()).slice(0, 10);
+  const models = catalog?.models || [], byEpoch = new Map(), byName = new Map();
+  for (const m of models) { if (m.epoch?.name && !byEpoch.has(m.epoch.name)) byEpoch.set(m.epoch.name, m); if (!byName.has(m.name)) byName.set(m.name, m); }
+  const scoredNow = m => m && ii(m) !== null && (!ver || !m.aa.version || m.aa.version === ver);
+  const recs = [];
+  for (const g of ['open', 'closed']) {
+    let prev = null;
+    const mine = [];
+    for (const p of catalog?.epochFrontier?.points || []) {
+      const x = p[g];
+      if (x && x.name !== prev) { mine.push({ g: g === 'open' ? 'o' : 'c', d: p.date, n: x.name, eci: x.v }); prev = x.name; }
+    }
+    mine.forEach((r, i) => { r.to = mine[i + 1]?.d || today; });
+    recs.push(...mine);
+  }
+  for (const r of recs) {
+    const m = byEpoch.get(r.n) || byName.get(r.n);
+    r.ok = !!scoredNow(m);
+    if (!r.ok) r.why = m ? 'sin índice AA' : 'fuera del catálogo: OpenRouter ya no lo lista o lo nombra de otro modo';
+  }
+  const missing = recs.filter(r => !r.ok && r.to > (from || '') && r.d <= today).sort((a, b) => a.d.localeCompare(b.d));
+  // Tramos incompletos: uniones de [récord sin índice, siguiente récord de su grupo).
+  const gaps = [];
+  for (const r of missing) {
+    const last = gaps[gaps.length - 1], a = from && r.d < from ? from : r.d;
+    if (last && a <= last.to) { last.to = r.to > last.to ? r.to : last.to; last.missing.push(r); }
+    else gaps.push({ from: a, to: r.to, missing: [r] });
+  }
+  const at = d => missing.filter(r => r.d <= d && d < r.to);
+  const end = gaps.length ? gaps[gaps.length - 1].to : null;
+  return { recs, missing, gaps, at, completeFrom: end && end < today ? end : gaps.length ? null : from, today };
+}
+
+/* Frase para las notas de los gráficos reconstruidos con AA: qué tramos están rayados y por qué. */
+export function coverageText(cov) {
+  if (!cov) return '';
+  if (!cov.gaps.length) return ' En todo el periodo, el mejor modelo abierto y el mejor cerrado según el ECI de Epoch tienen índice AA en el catálogo.';
+  const list = ns => ns.length > 1 ? `${ns.slice(0, -1).join(', ')} y ${ns[ns.length - 1]}` : ns[0];
+  const why = g => {
+    const sin = g.missing.filter(r => r.why === 'sin índice AA').map(r => r.n), fuera = g.missing.filter(r => r.why !== 'sin índice AA').map(r => r.n);
+    return [sin.length && `sin índice AA, ${list(sin)}`, fuera.length && `fuera del catálogo, porque OpenRouter ya no ${fuera.length > 1 ? 'los lista o los nombra' : 'lo lista o lo nombra'} de otro modo, ${list(fuera)}`].filter(Boolean).join('; ');
+  };
+  return ` Rayado: tramos con cobertura incompleta, en los que el mejor modelo abierto o cerrado según el ECI de Epoch no tiene índice AA en el catálogo; ahí la reconstrucción no lo cuenta y las líneas y distancias pueden quedar desviadas. ${cov.gaps.map(g => `Del ${fmtDate(g.from)} al ${fmtDate(g.to)}: ${why(g)}`).join('. ')}.${cov.completeFrom ? ` Completa desde el ${fmtDate(cov.completeFrom)}.` : ''} No se rellena ni se estima nada.`;
 }
 
 /* Velocidad: mediana de AA si existe; si no, el proveedor de OpenRouter más rápido, nombrado. */
@@ -166,10 +232,12 @@ export function speed(m) {
 }
 
 /* Etiqueta de pesos. «Cerrados» inferido (sin repositorio en Hugging Face ni clasificación de Epoch) y «abiertos» anunciados
-   (el laboratorio dice que son abiertos, pero aún no se pueden descargar) se distinguen de los comprobados. */
+   (su descripción en OpenRouter dice que son abiertos, pero aún no se pueden descargar) se distinguen de los comprobados.
+   La descripción de OpenRouter no se atribuye al laboratorio: no consta quién la redacta. */
+export const anunText = m => `Su descripción en OpenRouter lo presenta como de pesos abiertos${m.weights?.since ? ` (consta desde el ${fmtDate(m.weights.since)})` : ''}, pero aún no hay repositorio público en Hugging Face: cuenta como abierto, aunque todavía no se puede descargar.`;
 export function weightsTag(m) {
   const v = m.weights?.v;
-  if (v === 'abiertos' && m.weights.announced) return '<span class="w abiertos anun" title="El laboratorio lo presenta como de pesos abiertos, pero aún no hay repositorio público en Hugging Face: cuenta como abierto, aunque todavía no se puede descargar">abiertos · anunciados</span>';
+  if (v === 'abiertos' && m.weights.announced) return `<span class="w abiertos anun" title="${esc(anunText(m))}">abiertos · anunciados</span>`;
   if (v === 'cerrados' && m.weights.inferred) return '<span class="w cerrados inf" title="OpenRouter no enlaza pesos y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; se asume cerrado">cerrados · inferido</span>';
   return `<span class="w ${v || 'nd'}">${esc(v || 'pesos sin datos')}</span>`;
 }

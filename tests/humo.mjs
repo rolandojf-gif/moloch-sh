@@ -1,0 +1,61 @@
+#!/usr/bin/env node
+/* Prueba de humo del navegador, sin dependencias: sirve el sitio con Node y abre cada vista y tres direcciones directas
+   con Chrome sin ventana (--dump-dom), en escritorio y en móvil. Falla si una vista no se dibuja, si alguna lleva el
+   aviso de error (data-render-error) o si una dirección directa no lleva a su sitio.
+   Uso: node tests/humo.mjs   (CHROME=/ruta/al/navegador si no está en el PATH como google-chrome o chromium) */
+import { createServer } from 'node:http';
+import { readFile } from 'node:fs/promises';
+import { readFileSync, existsSync } from 'node:fs';
+import { execFileSync, execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import path from 'node:path';
+
+const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.xml': 'application/xml', '.svg': 'image/svg+xml' };
+const chrome = process.env.CHROME || ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser'].find(b => { try { execFileSync('which', [b], { stdio: 'ignore' }); return true; } catch { return false; } });
+if (!chrome) { console.error('No hay Chrome: indica su ruta en CHROME.'); process.exit(2); }
+
+const server = createServer(async (req, res) => {
+  const rel = decodeURIComponent(new URL(req.url, 'http://x').pathname).replace(/^\/+/, '') || 'index.html';
+  const file = path.join(ROOT, rel);
+  if (!file.startsWith(ROOT) || !existsSync(file)) { res.writeHead(404); return res.end(); }
+  res.writeHead(200, { 'content-type': TYPES[path.extname(file)] || 'application/octet-stream' });
+  res.end(await readFile(file));
+}).listen(0, '127.0.0.1');
+await new Promise(r => server.once('listening', r));
+const base = `http://127.0.0.1:${server.address().port}/`;
+
+const cat = JSON.parse(readFileSync(path.join(ROOT, 'data/catalog.json'), 'utf8'));
+const modelId = (cat.models.find(m => m.aa?.intelligence?.v != null) || cat.models[0]).id;
+const VIEWS = ['hoy', 'modelos', 'lanzamientos', 'carrera', 'ai2027'];
+// Lo mínimo que tiene que haber dibujado cada vista (están todas en el DOM aunque sólo se vea una).
+const DRAWN = { hoy: /id="hoy-kpis"[^>]*>\s*<div class="kpi/, modelos: /<tr class="row/, lanzamientos: /id="ln-list"[^>]*>\s*</, carrera: /id="frente-evaluacion"[\s\S]*?<svg/, ai2027: /id="a7-rev"[^>]*>\s*<li/ };
+const CASES = [
+  ...VIEWS.map(v => ({ hash: v, view: v })),
+  { hash: `modelos/${modelId}`, view: 'modelos', target: new RegExp(`<tr class="row[^"]*flash[^"]*"[^>]*data-id="${modelId.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}"|data-id="${modelId.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}"[^>]*class="row[^"]*flash`) },
+  { hash: 'carrera/evaluacion', view: 'carrera', target: /id="frente-evaluacion"[^>]*class="[^"]*flash|class="[^"]*flash[^"]*"[^>]*id="frente-evaluacion"/ },
+  { hash: 'ai2027/swe85', view: 'ai2027', target: /id="hito-swe85"[^>]*class="[^"]*flash|class="[^"]*flash[^"]*"[^>]*id="hito-swe85"/ }
+];
+
+const fails = [];
+for (const [w, h] of [[1300, 900], [390, 844]]) {
+  for (const c of CASES) {
+    let dom = '';
+    try {
+      // Asíncrono: el servidor de esta misma ejecución tiene que poder responder mientras Chrome carga la página.
+      ({ stdout: dom } = await promisify(execFile)(chrome, ['--headless=new', '--no-sandbox', '--disable-gpu', '--hide-scrollbars', `--window-size=${w},${h}`,
+        '--virtual-time-budget=20000', '--dump-dom', `${base}#${c.hash}`], { encoding: 'utf8', maxBuffer: 64 << 20, timeout: 90000 }));
+    } catch (e) { fails.push(`${w}px #${c.hash}: Chrome no terminó (${e.message.split('\n')[0]})`); continue; }
+    const where = `${w}px #${c.hash}`;
+    const errs = [...dom.matchAll(/data-render-error="([^"]+)"/g)].map(m => m[1]);
+    if (errs.length) fails.push(`${where}: no se han podido dibujar ${errs.join(', ')}`);
+    for (const v of VIEWS) if (!DRAWN[v].test(dom)) fails.push(`${where}: la vista ${v} está vacía`);
+    const shown = [...dom.matchAll(/<section class="view"[^>]*data-view="([^"]+)"[^>]*>/g)].filter(m => !/\bhidden\b/.test(m[0])).map(m => m[1]);
+    if (shown.length !== 1 || shown[0] !== c.view) fails.push(`${where}: se ve ${shown.join(', ') || 'ninguna vista'} en vez de ${c.view}`);
+    if (c.target && !c.target.test(dom)) fails.push(`${where}: la dirección directa no lleva a su sitio`);
+    if (/Todavía no hay datos recogidos/.test(dom)) fails.push(`${where}: no se han cargado los datos`);
+  }
+}
+server.close();
+if (fails.length) { console.error(`Prueba de humo: ${fails.length} fallos\n- ${fails.join('\n- ')}`); process.exit(1); }
+console.log(`Prueba de humo correcta: ${CASES.length} direcciones a 1300 y 390 px, cinco vistas dibujadas en cada una.`);

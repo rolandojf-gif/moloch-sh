@@ -202,7 +202,7 @@ function benchBlock(bench, ctx) {
 
 /* ── Dificultad de las evaluaciones y probabilidad de liderazgo (benchmark_data.zip) ───────────── */
 /* Lector mínimo de .zip (sin ZIP64, que el fichero de Epoch no necesita): nombre → función que devuelve su contenido. */
-function unzip(buf) {
+export function unzip(buf) {
   let e = buf.length - 22;
   while (e >= 0 && buf.readUInt32LE(e) !== 0x06054b50) e--;
   if (e < 0) throw new Error('zip sin directorio central');

@@ -1,6 +1,6 @@
 /* Vista «La carrera»: distancias en la frontera y seis frentes. Cada uno empieza por qué sabemos, qué ha cambiado y qué
    cambiaría la lectura; después, gráficos, indicadores, hechos con fuente y la lectura marcada como interpretación. */
-import { esc, fmtDate, num, ND, aaRace, aaIndexName, AA_LINK } from './fmt.js';
+import { esc, fmtDate, dateFmt, num, ND, aaRace, aaCoverage, coverageText, aaIndexName, AA_LINK } from './fmt.js';
 import { indicatorRow, indicatorKpi, indicatorBrief, mw, mh100, usdB, PAIS } from './indicadores.js';
 import { gaps, hbars, columns, dotci, recordChart, ediMap, tip } from './charts.js';
 
@@ -9,7 +9,7 @@ export const ESTADO = { abierta: 'Hipótesis abierta', confirmada: 'Hipótesis c
 const VERIF = { 'lectura directa': 'leído en la fuente', buscador: 'comprobado a través de un buscador: la web de la fuente no admite lectura automática' };
 
 /* Fecha de un dato curado: día, mes o «sin datos». */
-export const curDate = s => !s ? 'sin datos' : /^\d{4}-\d{2}$/.test(s) ? new Date(s + '-01T00:00:00Z').toLocaleDateString('es-ES', { month: 'short', year: 'numeric', timeZone: 'UTC' }) : fmtDate(s);
+export const curDate = s => !s ? 'sin datos' : /^\d{4}-\d{2}$/.test(s) ? dateFmt({ month: 'short', year: 'numeric' }).format(new Date(s + '-01T00:00:00Z')) : fmtDate(s);
 
 export function factItem(h) {
   return `<li><p>${esc(h.texto)}</p><div class="prov">Fuente: <a href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.fuente)}</a> · dato: ${esc(curDate(h.fecha))} · consulta: ${esc(curDate(h.consulta))}${h.verificacion ? ` · <span class="verif v-${h.verificacion === 'buscador' ? 'buscador' : 'directa'}">${esc(VERIF[h.verificacion] || h.verificacion)}</span>` : ''}</div></li>`;
@@ -20,9 +20,11 @@ export function factItem(h) {
 function resumen(f, ind, log) {
   const sab = ind ? (f.sabemos || []).map(k => { const r = indicatorBrief(ind, k); return `<li><span class="k">${esc(r.label)}</span><b>${r.value}</b></li>`; }).join('') : '';
   const own = (log?.vigilados || []).filter(v => f.indicadores.includes(v.path));
-  const vig = own.filter(v => !v.detenida), stopped = own.filter(v => v.detenida);
+  const vig = own.filter(v => !v.detenida && !v.incompleto), stopped = own.filter(v => v.detenida), incomp = own.filter(v => v.incompleto && !v.detenida);
   const ev = (log?.events || []).filter(e => e.kind === 'indicador' && f.indicadores.includes(e.data?.path)).map(e => ({ fecha: e.detected, html: `${esc(e.what)}${e.src?.url ? ` <a href="${esc(e.src.url)}" target="_blank" rel="noopener">${esc(e.src.name)}</a>` : ''}` }))
-    .concat((f.lectura.historial || []).slice(1).map(h => ({ fecha: h.fecha, html: `La hipótesis pasa a «${esc((ESTADO[h.estado] || h.estado).toLowerCase())}».${h.nota ? ` ${esc(h.nota)}` : ''}` })))
+    .concat((f.lectura.historial || []).slice(1).map((h, i) => ({ fecha: h.fecha, html: `${h.estado === f.lectura.historial[i].estado
+      ? `Hipótesis revisada: sigue ${esc(h.estado)}.`
+      : `La hipótesis pasa a «${esc(h.estado)}».`}${h.nota ? ` ${esc(h.nota)}` : ''}` })))
     .sort((a, b) => b.fecha.localeCompare(a.fecha));
   const desde = vig.map(v => v.desde).sort()[0];
   const cambios = ev.length
@@ -30,15 +32,31 @@ function resumen(f, ind, log) {
     : `<p>${vig.length ? `Ningún cambio en sus indicadores vigilados desde el ${esc(curDate(desde))}.` : 'El recolector no vigila todavía ningún indicador de este frente.'}</p>`;
   return `<div class="front-sum">
     <div><span class="lbl">Qué sabemos</span>${sab ? `<ul class="sum-ind">${sab}</ul>` : `<p>${ND}</p>`}<p class="m-sub">Detalle, fuentes y hechos, más abajo.</p></div>
-    <div><span class="lbl">Qué ha cambiado</span>${cambios}${vig.length ? `<p class="m-sub">Se comparan en cada recogida: ${vig.map(v => esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))).join('; ')}.</p>` : ''}${stopped.length ? `<p class="m-sub">Ya no se comparan, porque la serie se ha detenido: ${stopped.map(v => `${esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))} (último modelo medido, del ${esc(curDate(v.detenida))})`).join('; ')}.</p>` : ''}</div>
+    <div><span class="lbl">Qué ha cambiado</span>${cambios}${vig.length ? `<p class="m-sub">Se comparan en cada recogida: ${vig.map(v => esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))).join('; ')}.</p>` : ''}${stopped.length ? `<p class="m-sub">Ya no se comparan, porque la serie se ha detenido: ${stopped.map(v => `${esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))} (último modelo medido, del ${esc(curDate(v.detenida))})`).join('; ')}.</p>` : ''}${incomp.length ? `<p class="m-sub">No se comparan mientras su cobertura sea incompleta: ${incomp.map(v => esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))).join('; ')}.</p>` : ''}</div>
     <div class="sum-lect"><span class="lbl">Qué cambiaría la lectura · interpretación</span><p><b>La reforzaría:</b> ${esc(f.lectura.reforzaria)}</p><p><b>La debilitaría:</b> ${esc(f.lectura.debilitaria)}</p></div>
   </div>`;
 }
 
-function lectura(l) {
+/* Vigencia de la lectura: su última revisión es la última entrada del historial (sin historial, la fecha en que se formuló),
+   y se avisa si el recolector ha detectado después cambios en los indicadores del frente. Un cambio detectado el mismo día
+   de la revisión se da por visto. */
+function vigencia(f, log) {
+  const l = f.lectura, last = (l.historial || []).at(-1)?.fecha || l.desde;
+  const later = (log?.events || []).filter(e => e.kind === 'indicador' && f.indicadores.includes(e.data?.path) && (e.detected || '').slice(0, 10) > last).length;
+  const desde = (log?.vigilados || []).filter(v => f.indicadores.includes(v.path) && !v.detenida).map(v => v.desde).sort()[0];
+  return `<p class="rev${later ? ' rev-old' : ''}">Revisada el ${esc(curDate(last))}.${later
+    ? ` Después, el recolector ha detectado ${later === 1 ? 'un cambio' : `${later} cambios`} en los indicadores de este frente (en «Qué ha cambiado»); la lectura no se ha vuelto a revisar.`
+    : !desde ? ''
+    : desde > last ? ` Sus indicadores se vigilan desde el ${esc(curDate(desde))}, sin cambios desde entonces.`
+    : ' Sin cambios en los indicadores vigilados de este frente desde entonces.'}</p>`;
+}
+
+function lectura(f, log) {
+  const l = f.lectura;
   const hist = (l.historial || []).map(h => `<li><b>${esc(curDate(h.fecha))}</b> · ${esc(ESTADO[h.estado] || h.estado)}${h.nota ? `. ${esc(h.nota)}` : ''}</li>`).join('');
   return `<aside class="lectura" aria-label="Lectura Moloch: interpretación">
     <div class="lectura-head"><span class="tag k-lectura">Lectura Moloch · interpretación</span><span class="estado e-${esc(l.estado)}">${esc(ESTADO[l.estado] || l.estado)}</span></div>
+    ${vigencia(f, log)}
     <p class="hip">${esc(l.hipotesis)}</p>
     <dl class="lect">
       <dt>Quién gana acelerando</dt><dd>${esc(l.gana)}</dd>
@@ -207,7 +225,7 @@ const CHARTS = {
     I.aa?.labs?.length && {
       title: 'Mejor modelo de cada laboratorio (índice AA)',
       note: `${AA_LINK}, ${esc(aaIndexName(I.aa.gapLabs?.version))}, consultado el ${esc(fmtDate(I.aa.gapLabs?.got))}; publicado con su permiso. Cada laboratorio con su modelo mejor puntuado del catálogo; AA no publica intervalo de confianza.`,
-      draw: el => hbars(el, I.aa.labs.map(r => ({ label: r.org, v: r.ii, value: num(r.ii, 1), tip: tip(r.org, [['Modelo', r.model], ['Índice AA', num(r.ii, 1)], ['Pesos', r.anun ? 'abiertos (anunciados por el laboratorio; aún no descargables)' : null], ['Publicado', fmtDate(r.date)]]) })), { aria: 'Mejor índice de AA por laboratorio' })
+      draw: el => hbars(el, I.aa.labs.map(r => ({ label: r.org, v: r.ii, value: num(r.ii, 1), tip: tip(r.org, [['Modelo', r.model], ['Índice AA', num(r.ii, 1)], ['Pesos', r.anun ? 'abiertos (anunciados en su descripción de OpenRouter; aún no descargables)' : null], ['Publicado', fmtDate(r.date)]]) })), { aria: 'Mejor índice de AA por laboratorio' })
     },
     I.eci?.labs?.length && {
       title: 'Mejor modelo de cada laboratorio (ECI)',
@@ -240,7 +258,7 @@ function front(f, i, ind, log) {
         <ul class="facts">${f.hechos.map(factItem).join('')}</ul>
         ${f.faltan?.length ? `<h4>Lo que el observatorio no puede medir todavía</h4><ul class="gaps-list">${f.faltan.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
       </div>
-      ${lectura(f.lectura)}
+      ${lectura(f, log)}
     </div>
   </article>`;
 }
@@ -252,12 +270,12 @@ export function renderCarrera(d) {
     return;
   }
   // Primero el índice de AA, al día: puntúa un modelo a los pocos días de salir y cuenta laboratorios que Epoch no mide.
-  const aa = aaRace(d.catalog);
+  const aa = aaRace(d.catalog), cov = d.catalog.epochFrontier?.points?.length ? aaCoverage(d.catalog, aa.from) : null;
   $('#ca-kpis-aa').innerHTML = ind?.aa?.gapUsCn
     ? ['aa.gapUsCn', 'aa.gapClosedOpen', 'aa.gapLabs', 'aa.rate12m'].map(k => indicatorKpi(ind, k)).join('')
     : `<div class="empty">${ND}: la recogida todavía no ha calculado las distancias con el índice de AA.</div>`;
-  if (!gaps($('#ca-gaps-aa'), aa.series, { unit: 'puntos del índice AA', short: 'puntos AA' })) $('#ca-gaps-aa').innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>';
-  $('#ca-gaps-aa-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Hoy y a cada fin de mes, el mejor ${esc(aaIndexName(aa.ver))} publicado hasta esa fecha por laboratorios de cada país o por modelos con pesos cerrados y abiertos, y su diferencia; los dos primeros laboratorios, con el mejor modelo de cada uno. País del laboratorio y pesos según el catálogo del observatorio: cuenta como abierto un modelo que el laboratorio presenta como de pesos abiertos, aunque aún no se puedan descargar. Cada modelo va en su fecha según AA, con su índice de hoy, y sólo cuentan los ${aa.n} que siguen en OpenRouter: en los meses antiguos faltan los retirados. Las distancias no se convierten en meses, y las escalas AA y ECI no son comparables. Datos de ${AA_LINK}, publicados con su permiso.`;
+  if (!gaps($('#ca-gaps-aa'), aa.series, { unit: 'puntos del índice AA', short: 'puntos AA', bands: cov?.gaps })) $('#ca-gaps-aa').innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>';
+  $('#ca-gaps-aa-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Hoy y a cada fin de mes, el mejor ${esc(aaIndexName(aa.ver))} publicado hasta esa fecha por laboratorios de cada país o por modelos con pesos cerrados y abiertos, y su diferencia; los dos primeros laboratorios, con el mejor modelo de cada uno. País del laboratorio y pesos según el catálogo del observatorio: cuenta como abierto un modelo que su descripción en OpenRouter presenta como de pesos abiertos, aunque aún no se puedan descargar. Es una reconstrucción hecha hoy, no una serie medida en cada fecha: cada modelo va en su fecha según AA, con su índice de hoy, y sólo cuentan los ${aa.n} que siguen en OpenRouter, así que en los meses antiguos faltan los retirados.${esc(coverageText(cov))} Las distancias no se convierten en meses, y las escalas AA y ECI no son comparables. Datos de ${AA_LINK}, publicados con su permiso.`;
   // Debajo, la serie larga del ECI de Epoch: más modelos históricos e intervalos de confianza, pero llega con semanas de retraso.
   if (ind) {
     $('#ca-kpis').innerHTML = ['eci.gapUsCn', 'eci.gapClosedOpen', 'eci.gapLabs', 'eci.rate12m'].map(k => indicatorKpi(ind, k)).join('');

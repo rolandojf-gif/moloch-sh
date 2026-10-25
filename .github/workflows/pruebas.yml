@@ -1,0 +1,39 @@
+name: Pruebas
+
+# Pruebas sin dependencias en cada cambio de código o de datos curados: funciones de comparación, parte y valoración
+# (node --test), una recogida con respuestas grabadas seguida de la validación, y la prueba de humo del navegador con
+# el Chrome que ya trae el ejecutor (las cinco vistas y tres direcciones directas, en escritorio y móvil).
+# Netlify publica igual aunque fallen: el resultado se ve en el commit y en la PR.
+on:
+  push:
+    paths:
+      - 'js/**'
+      - 'css/**'
+      - 'index.html'
+      - 'scripts/**'
+      - 'data/curated/**'
+      - 'tests/**'
+      - '.github/workflows/pruebas.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Funciones y recogida con respuestas grabadas
+        run: node --test tests/*.test.mjs
+      - name: Validar los datos publicados
+        run: node scripts/validate.mjs
+      - name: Prueba de humo del navegador
+        env:
+          CHROME: google-chrome
+        run: node tests/humo.mjs

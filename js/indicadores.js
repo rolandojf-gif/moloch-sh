@@ -16,6 +16,16 @@ export const PAIS = { 'United States': 'EE. UU.', 'United States of America': 'E
 const stopTag = f => f?.detenida ? ' <span class="stop">serie detenida</span>' : '';
 const stopNote = f => f?.detenida ? ` Serie detenida: el último modelo medido se publicó el ${esc(fmtDate(f.ultimo))}; ya no se compara ni se extrapola.` : '';
 
+/* Cobertura incompleta (scripts/collect.mjs, aaIndicators): en una fecha que usa el indicador, el mejor modelo abierto o
+   cerrado según la frontera del ECI de Epoch no tiene índice AA en el catálogo. Se dice cuál falta; no se corrige nada. */
+const incTag = f => f?.incompleto ? ' <span class="stop">incompleto</span>' : '';
+const incNote = (f, start = null) => {
+  if (!f?.incompleto) return '';
+  const one = x => `${esc(x.model)} (mejor ${x.g === 'o' ? 'abierto' : 'cerrado'} según el ECI de Epoch desde el ${esc(fmtDate(x.since))}; ${esc(x.why)})`;
+  const a = start ? f.incompleto.filter(x => x.since <= start) : [], b = f.incompleto.filter(x => !a.includes(x));
+  return ` <b>Incompleto.</b>${a.length ? ` En el punto de partida falta ${a.map(one).join(' y ')}: la frontera de entonces puede quedar por debajo de lo que hubo y el avance, por encima.` : ''}${b.length ? ` Hoy falta ${b.map(one).join(' y ')}.` : ''} No se compara entre recogidas mientras siga así.`;
+};
+
 /* Hecho «hermano» para listas y valores derivados que no son un hecho propio: misma fuente y fechas. */
 const like = (f, v, extra = {}) => f ? { src: f.src, url: f.url, asOf: f.asOf, got: f.got, stale: f.stale, ...extra, v } : null;
 
@@ -56,19 +66,19 @@ function labsOdds(I, f) {
 const REG = {
   'aa.gapUsCn': (I) => {
     const f = I.aa?.gapUsCn;
-    return { label: 'Distancia EE. UU. − China (índice AA)', value: fact(f, ptsAA), sub: f?.us && f?.cn ? `${whoAA(f.us)} frente a ${whoAA(f.cn)}.${ahead(f, 'China')}` : '' };
+    return { label: 'Distancia EE. UU. − China (índice AA)', value: fact(f, ptsAA) + incTag(f), sub: f?.us && f?.cn ? `${whoAA(f.us)} frente a ${whoAA(f.cn)}.${ahead(f, 'China')}${incNote(f)}` : '' };
   },
   'aa.gapClosedOpen': (I) => {
     const f = I.aa?.gapClosedOpen;
-    return { label: 'Distancia cerrados − abiertos (índice AA)', value: fact(f, ptsAA), sub: f?.closed && f?.open ? `${whoAA(f.closed)} frente a ${whoAA(f.open)}.${ahead(f, 'el mejor abierto')}` : '' };
+    return { label: 'Distancia cerrados − abiertos (índice AA)', value: fact(f, ptsAA) + incTag(f), sub: f?.closed && f?.open ? `${whoAA(f.closed)} frente a ${whoAA(f.open)}.${ahead(f, 'el mejor abierto')}${f.openDl && f.vDl != null ? ` Con pesos ya descargables, el mejor es ${whoAA(f.openDl)}: ${num(f.vDl, 1)} puntos AA.` : ''}${incNote(f)}` : '' };
   },
   'aa.gapLabs': (I) => {
     const f = I.aa?.gapLabs;
-    return { label: 'Distancia entre los dos primeros laboratorios (índice AA)', value: fact(f, ptsAA), sub: f?.first && f?.second ? `${whoAA(f.first)} frente a ${whoAA(f.second)}.` : '' };
+    return { label: 'Distancia entre los dos primeros laboratorios (índice AA)', value: fact(f, ptsAA) + incTag(f), sub: f?.first && f?.second ? `${whoAA(f.first)} frente a ${whoAA(f.second)}.${incNote(f)}` : '' };
   },
   'aa.rate12m': (I) => {
     const f = I.aa?.rate12m;
-    return { label: 'Avance de la frontera en 12 meses (índice AA)', value: fact(f, v => `+${num(v, 1)} puntos AA`), sub: f?.from && f?.to ? `De ${whoAA(f.from)}, publicado el ${esc(fmtDate(f.from.date))}, a ${whoAA(f.to)}. Cada modelo con su puntuación actual.` : '' };
+    return { label: 'Avance de la frontera en 12 meses (índice AA)', value: fact(f, v => `+${num(v, 1)} puntos AA`) + incTag(f), sub: f?.from && f?.to ? `De ${whoAA(f.from)}, publicado el ${esc(fmtDate(f.from.date))}, a ${whoAA(f.to)}. Cada modelo con su puntuación actual.${incNote(f, f.since)}` : '' };
   },
   'eci.frontier': (I) => ({ label: 'Mejor modelo (ECI)', value: fact(I.eci?.frontier, v => num(v, 1)), sub: I.eci?.frontier?.model ? esc(I.eci.frontier.model) : '' }),
   'eci.rate12m': (I) => {

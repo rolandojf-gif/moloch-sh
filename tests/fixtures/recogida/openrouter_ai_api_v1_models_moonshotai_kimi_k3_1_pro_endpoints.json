@@ -1,0 +1,43 @@
+{
+ "data": {
+  "id": "moonshotai/kimi-k3.1-pro",
+  "endpoints": [
+   {
+    "provider_name": "Moonshot AI",
+    "name": "Moonshot AI",
+    "quantization": null,
+    "context_length": 131072,
+    "pricing": {
+     "prompt": "0.000001",
+     "completion": "0.000004"
+    },
+    "status": 0,
+    "throughput_last_30m": {
+     "p50": 60
+    },
+    "latency_last_30m": {
+     "p50": 900
+    },
+    "uptime_last_30m": 99.5
+   },
+   {
+    "provider_name": "Together",
+    "name": "Together",
+    "quantization": "fp8",
+    "context_length": 131072,
+    "pricing": {
+     "prompt": "0.0000012",
+     "completion": "0.0000045"
+    },
+    "status": 0,
+    "throughput_last_30m": {
+     "p50": 60
+    },
+    "latency_last_30m": {
+     "p50": 900
+    },
+    "uptime_last_30m": 99.5
+   }
+  ]
+ }
+}
