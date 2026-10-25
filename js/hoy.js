@@ -1,11 +1,12 @@
 /* Vista «Hoy»: el parte del día, lo detectado en la semana, cuatro indicadores y capacidad frente a precio. */
-import { esc, fact, src, usd, num, fmtDate, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, ND, AA_LINK } from './fmt.js';
+import { t, tn, tr, L } from './i18n.js';
+import { esc, fact, src, usd, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK } from './fmt.js';
 import { scatter, daily, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
-const KIND = { nuevo: 'Nuevo modelo', pesos: 'Pesos abiertos', precio: 'Precio del laboratorio', evaluacion: 'Evaluación independiente', retirada: 'Retirada',
-  lider: 'Cambio de líder', version: 'Versión del índice AA', indicador: 'La carrera', valoracion: 'Seguimiento de AI 2027', uso: 'Uso en OpenRouter' };
-const modelLink = (d, id, name) => d.byId.has(id) ? `<a class="m-open" href="#modelos/${esc(id)}" title="Abrir su ficha en Modelos">${esc(name)}</a>` : esc(name);
+const kind = k => ({ nuevo: t('Nuevo modelo'), pesos: t('Pesos abiertos'), precio: t('Precio del laboratorio'), evaluacion: t('Evaluación independiente'), retirada: t('Retirada'),
+  lider: t('Cambio de líder'), version: t('Versión del índice AA'), indicador: t('La carrera'), valoracion: t('Seguimiento de AI 2027'), uso: t('Uso en OpenRouter') }[k] || k);
+const modelLink = (d, id, name) => d.byId.has(id) ? `<a class="m-open" href="#modelos/${esc(id)}" title="${t('Abrir su ficha en Modelos')}">${esc(name)}</a>` : esc(name);
 const GAPS = [5, 10, 15];
 const blendSnap = s => (s && s.in !== null && s.out !== null && s.in !== undefined && s.out !== undefined) ? (3 * s.in + s.out) / 4 : null;
 
@@ -23,10 +24,10 @@ function downloadable(models, lo) {
 /* Titular, consecuencia y motivo vienen ya redactados por el recolector (scripts/parte.mjs), con plantillas y cifras de la misma recogida. */
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : '';
 const toFicha = (href, text) => href ? `<a href="${esc(href)}">${esc(text)}</a>` : esc(text);
-const srcLink = s => s?.url ? `<a href="${esc(s.url)}"${/^#/.test(s.url) ? '' : ' target="_blank" rel="noopener"'}>${esc(s.name || 'fuente')}</a>` : esc(s?.name || 'sin fuente');
+const srcLink = s => s?.url ? `<a href="${esc(s.url)}"${/^#/.test(s.url) ? '' : ' target="_blank" rel="noopener"'}>${esc(s.name || t('fuente'))}</a>` : esc(s?.name || t('sin fuente'));
 /* Pie de cada cambio: fuente, fecha de publicación si la fuente la da y fecha en que lo detectó el observatorio.
    Si el texto mostrado cita el índice de AA y la fuente es otra, se añade el crédito a AA. */
-const foot = (it, shown) => `<div class="prov">Fuente: ${srcLink(it.src)}${it.published ? ` · publicado: ${esc(fmtDate(it.published))}` : ''} · detectado: ${esc(fmtDate(it.detected || it.date))}${/\bAA\b|Artificial Analysis/.test(shown.join(' ')) && !/artificialanalysis\.ai/.test(it.src?.url || '') ? ` · índice de ${AA_LINK}, publicado con su permiso` : ''}</div>`;
+const foot = (it, shown) => `<div class="prov">${t('Fuente: {src}', { src: srcLink(it.src) })}${it.published ? ` · ${t('publicado: {fecha}', { fecha: esc(fmtDate(it.published)) })}` : ''} · ${t('detectado: {fecha}', { fecha: esc(fmtDate(it.detected || it.date)) })}${/\bAA\b|Artificial Analysis/.test(shown.join(' ')) && !/artificialanalysis\.ai/.test(it.src?.url || '') ? ` ${t('· índice de {AA_LINK}, publicado con su permiso', { AA_LINK })}` : ''}</div>`;
 
 /* Fecha del último parte visto en este navegador. La de la visita anterior se guarda en la sesión, para que recargar no la pierda. */
 function lastVisit(fecha) {
@@ -46,9 +47,10 @@ function renderVisit(d, items, p) {
   const nuevos = items.filter(it => (it.detected || it.date) > ref);
   const sig = nuevos.filter(it => it.importancia && !p.noticias.includes(it.key));
   const since = d.changes.since;
-  if (!nuevos.length) { el.innerHTML = `<b>Desde tu última visita</b> (parte del ${esc(fmtDate(ref))}): nada nuevo.`; return; }
+  if (!nuevos.length) { el.innerHTML = `<b>${t('Desde tu última visita')}</b> ${t('(parte del {fmtDate}): nada nuevo.', { fmtDate: esc(fmtDate(ref)) })}`; return; }
   const n = nuevos.filter(it => it.importancia).length;
-  el.innerHTML = `<b>Desde tu última visita</b> (parte del ${esc(fmtDate(ref))}): ${nuevos.length} cambio${nuevos.length > 1 ? 's' : ''} detectado${nuevos.length > 1 ? 's' : ''}, ${n ? `${n} de ellos noticia` : 'ninguno noticia'}.${since && ref < since ? ` Sólo cuentan los de los últimos ${d.changes.window || 7} días, desde el ${esc(fmtDate(since))}.` : ''}${sig.length ? ` ${p.noticias.length ? 'Además de las de arriba' : 'Las noticias'}:<ul>${sig.slice(0, 5).map(it => `<li><span>${esc(fmtDate(it.detected))}</span> ${toFicha(it.ficha, it.titular || it.what)}</li>`).join('')}</ul>${sig.length > 5 ? `Y ${sig.length - 5} más en la lista de abajo.` : ''}` : ''}`;
+  const head = tn(nuevos.length, ['(parte del {fecha}): {n} cambio detectado, {noticias}.', '(parte del {fecha}): {n} cambios detectados, {noticias}.'], { fecha: esc(fmtDate(ref)), noticias: n ? t('{n} de ellos noticia', { n }) : t('ninguno noticia') });
+  el.innerHTML = `<b>${t('Desde tu última visita')}</b> ${head}${since && ref < since ? ` ${t('Sólo cuentan los de los últimos {p1} días, desde el {fmtDate}.', { p1: d.changes.window || 7, fmtDate: esc(fmtDate(since)) })}` : ''}${sig.length ? ` ${p.noticias.length ? t('Además de las de arriba') : t('Las noticias')}:<ul>${sig.slice(0, 5).map(it => `<li><span>${esc(fmtDate(it.detected))}</span> ${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</li>`).join('')}</ul>${sig.length > 5 ? t('Y {p1} más en la lista de abajo.', { p1: sig.length - 5 }) : ''}` : ''}`;
 }
 
 function renderNews(d) {
@@ -58,33 +60,33 @@ function renderNews(d) {
   const items = (d.changes.items || []).slice().sort((a, b) => (b.detected || b.date || '').localeCompare(a.detected || a.date || '') || !!b.importancia - !!a.importancia);
   const byKey = new Map(items.map(it => [it.key, it]));
   $('#hoy-period').innerHTML = p
-    ? `Parte del ${esc(fmtDate(p.fecha))}: hasta tres noticias de la última recogida, con una regla fija. <a href="data/parte.xml">RSS</a>`
-    : `Últimos ${days} días, desde el ${esc(fmtDate(d.changes.since))}. El parte diario empieza con la próxima recogida.`;
+    ? `${t('Parte del {fmtDate}: hasta tres noticias de la última recogida, con una regla fija.', { fmtDate: esc(fmtDate(p.fecha)) })} <a href="${rssUrl()}">RSS</a>`
+    : t('Últimos {days} días, desde el {fmtDate}. El parte diario empieza con la próxima recogida.', { days, fmtDate: esc(fmtDate(d.changes.since)) });
   renderVisit(d, items, p);
   const top = p ? p.noticias.map(k => byKey.get(k)).filter(Boolean) : [];
   const today = p ? items.filter(it => it.detected === p.fecha).length : 0;
   $('#hoy-news').innerHTML = top.length ? top.map(it => `
     <article class="news-card">
-      <span class="tag k-${esc(it.kind)}">${esc(KIND[it.kind] || it.kind)}</span>
-      <h3>${toFicha(it.ficha, it.titular || it.what)}</h3>
-      <p><span class="lbl">Qué ocurrió</span>${esc(it.what)}</p>
-      ${it.consecuencia ? `<p><span class="lbl">Qué cambia</span>${esc(it.consecuencia)}</p>` : ''}
-      <p><span class="lbl">Por qué es noticia</span>${esc(cap(it.importancia?.porque))}.</p>
-      ${foot(it, [it.titular, it.what, it.consecuencia, it.importancia?.porque])}
+      <span class="tag k-${esc(it.kind)}">${esc(kind(it.kind))}</span>
+      <h3>${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</h3>
+      <p><span class="lbl">${t('Qué ocurrió')}</span>${esc(L(it, 'what'))}</p>
+      ${it.consecuencia ? `<p><span class="lbl">${t('Qué cambia')}</span>${esc(L(it, 'consecuencia'))}</p>` : ''}
+      <p><span class="lbl">${t('Por qué es noticia')}</span>${esc(cap(L(it, 'porque', it.importancia?.porque)))}.</p>
+      ${foot(it, [L(it, 'titular'), L(it, 'what'), L(it, 'consecuencia'), L(it, 'porque', it.importancia?.porque)])}
     </article>`).join('')
-    : p ? `<div class="empty"><b>Sin cambios significativos en la recogida del ${esc(fmtDate(p.fecha))}.</b> ${today ? `${today} cambio${today > 1 ? 's' : ''} menor${today > 1 ? 'es' : ''}, en la lista de abajo.` : 'Ningún cambio detectado.'}${p.ultima ? ` La última noticia fue del ${esc(fmtDate(p.ultima.fecha))}: ${toFicha(p.ultima.ficha, p.ultima.titular)}.` : ''}</div>`
+    : p ? `<div class="empty"><b>${t('Sin cambios significativos en la recogida del {fmtDate}.', { fmtDate: esc(fmtDate(p.fecha)) })}</b> ${today ? tn(today, ['{n} cambio menor, en la lista de abajo.', '{n} cambios menores, en la lista de abajo.']) : t('Ningún cambio detectado.')}${p.ultima ? ` ${t('La última noticia fue del {fmtDate}: {toFicha}.', { fmtDate: esc(fmtDate(p.ultima.fecha)), toFicha: toFicha(p.ultima.ficha, L(p.ultima, 'titular')) })}` : ''}</div>`
     : '';
   const rules = $('#hoy-reglas');
   rules.hidden = !p;
-  if (p) $('#hoy-reglas-body').innerHTML = `<ol class="reglas">${p.reglas.map(r => `<li>${esc(r)}</li>`).join('')}</ol>
-    <p class="note">Entran hasta tres cambios de la última recogida, uno por modelo o hito, en el orden de la lista; dentro de una misma regla, primero el de mayor magnitud. Nunca se rellena: si ninguno cumple la regla, el parte lo dice. Debajo, en «Ver todo lo detectado», están todos los cambios de los últimos ${days} días, también los que no son noticia. El parte se publica además como <a href="data/parte.xml">fuente RSS</a>. Los titulares salen de plantillas con las cifras («duplica» sólo si el precio es exactamente el doble) y la consecuencia, de los datos de la misma recogida, sin modelo de lenguaje ni opinión.</p>`;
+  if (p) $('#hoy-reglas-body').innerHTML = `<ol class="reglas">${L(p, 'reglas').map(r => `<li>${esc(r)}</li>`).join('')}</ol>
+    <p class="note">${t('Entran hasta tres cambios de la última recogida, uno por modelo o hito, en el orden de la lista; dentro de una misma regla, primero el de mayor magnitud. Nunca se rellena: si ninguno cumple la regla, el parte lo dice. Debajo, en «Ver todo lo detectado», están todos los cambios de los últimos {days} días, también los que no son noticia. El parte se publica además como', { days })} <a href="${rssUrl()}">${t('fuente RSS')}</a>${t('. Los titulares salen de plantillas con las cifras («duplica» sólo si el precio es exactamente el doble) y la consecuencia, de los datos de la misma recogida, sin modelo de lenguaje ni opinión.')}</p>`;
   const more = $('#hoy-all');
   more.hidden = !items.length;
   if (!items.length) return;
   const sig = items.filter(it => it.importancia).length;
-  more.querySelector('summary').textContent = `Ver todo lo detectado en ${days} días (${items.length}${sig ? `, ${sig} noticia${sig > 1 ? 's' : ''}` : ''})`;
-  const link = it => it.ficha ? ` <a href="${esc(it.ficha)}">${/^#modelos/.test(it.ficha) ? 'Abrir el modelo' : 'Ver la ficha'}</a>` : '';
-  $('#hoy-all-list').innerHTML = items.map(it => `<li><span>${esc(fmtDate(it.detected || it.date))}</span><span>${it.importancia ? '<span class="tag k-noticia">Noticia</span> ' : ''}<b>${esc(KIND[it.kind] || it.kind)}.</b> ${esc(it.what)}${link(it)}</span>${foot(it, [it.what])}</li>`).join('');
+  more.querySelector('summary').textContent = t('Ver todo lo detectado en {days} días ({n}{noticias})', { days, n: items.length, noticias: sig ? ', ' + tn(sig, ['{n} noticia', '{n} noticias']) : '' });
+  const link = it => it.ficha ? ` <a href="${esc(it.ficha)}">${/^#modelos/.test(it.ficha) ? t('Abrir el modelo') : t('Ver la ficha')}</a>` : '';
+  $('#hoy-all-list').innerHTML = items.map(it => `<li><span>${esc(fmtDate(it.detected || it.date))}</span><span>${it.importancia ? `<span class="tag k-noticia">${t('Noticia')}</span> ` : ''}<b>${esc(kind(it.kind))}.</b> ${esc(L(it, 'what'))}${link(it)}</span>${foot(it, [L(it, 'what')])}</li>`).join('');
 }
 
 const priceBy = m => priceBasis(m) ? `, ${esc(priceBasis(m))}` : '';
@@ -98,19 +100,19 @@ function renderKPIs(d, gapPts) {
   const models = d.catalog.models;
   const lo = leader(models, 'abiertos'), lc = leader(models, 'cerrados'), dl = downloadable(models, lo);
   const aaSt = d.catalog.status?.aa;
-  const reason = aaSt && !aaSt.ok && !scored(models).length ? `Artificial Analysis no disponible: ${esc(aaSt.reason || 'sin datos')}.` : '';
+  const reason = aaSt && !aaSt.ok && !scored(models).length ? t('Artificial Analysis no disponible: {p1}.', { p1: esc(aaSt.reason || 'sin datos') }) : '';
   const ver = d.catalog.aaIndexVersion;
   // Las comparaciones con la recogida anterior sólo valen con la misma versión del índice de AA.
   const prev = d.prevSnap && d.prevSnap.leaders?.aa && (d.prevSnap.leaders.aa.v ?? null) === (ver ?? null) ? d.prevSnap : null;
   const prevAA = prev?.leaders?.aa;
 
   const leadCard = (m, cls, label, prevLead) => {
-    if (!m) return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v">${ND}</span><span class="s">${reason || 'Ningún modelo de este bloque tiene índice.'}</span></div>`;
+    if (!m) return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v">${nd()}</span><span class="s">${reason || t('Ningún modelo de este bloque tiene índice.')}</span></div>`;
     let delta = '';
-    if (prevLead && prevLead.id !== m.id && prevLead.ii !== undefined) delta = ` Antes: ${esc(prev.models[prevLead.id]?.n || prevLead.id)} (${num(prevLead.ii)}).`;
-    const ep = eci(m) !== null ? ` ECI en Epoch AI: ${fact(m.epoch.eci, v => num(v))}.` : '';
+    if (prevLead && prevLead.id !== m.id && prevLead.ii !== undefined) delta = ` ${t('Antes: {name} ({num}).', { name: esc(prev.models[prevLead.id]?.n || prevLead.id), num: num(prevLead.ii) })}`;
+    const ep = eci(m) !== null ? ` ${t('ECI en Epoch AI: {fact}.', { fact: fact(m.epoch.eci, v => num(v)) })}` : '';
     return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small">${modelLink(d, m.id, m.name)}</span>
-      <span class="s">${esc(m.lab.name)} · índice AA ${fact(capFact(m), v => num(v))}${aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : ''}.${m.weights.announced ? ` Pesos anunciados en su descripción de OpenRouter${m.weights.since ? ` desde el ${esc(fmtDate(m.weights.since))}` : ''}; aún no se pueden descargar.` : ''}${ep}${delta}${dl && m === lo ? ` Con pesos ya descargables, el mejor es ${modelLink(d, dl.id, dl.name)} (${esc(dl.lab.name)}), índice AA ${fact(capFact(dl), v => num(v))}.` : ''}</span></div>`;
+      <span class="s">${t('{lab} · índice AA {fact}{cfg}.', { lab: esc(m.lab.name), fact: fact(capFact(m), v => num(v)), cfg: aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : '' })}${m.weights.announced ? ` ${t('Pesos anunciados en su descripción de OpenRouter{since}; aún no se pueden descargar.', { since: m.weights.since ? ` ${t('desde el {fmtDate}', { fmtDate: esc(fmtDate(m.weights.since)) })}` : '' })}` : ''}${ep}${delta}${dl && m === lo ? ` ${t('Con pesos ya descargables, el mejor es {modelLink} ({name}), índice AA {fact}.', { modelLink: modelLink(d, dl.id, dl.name), name: esc(dl.lab.name), fact: fact(capFact(dl), v => num(v)) })}` : ''}</span></div>`;
   };
 
   let gapCard;
@@ -119,13 +121,13 @@ function renderKPIs(d, gapPts) {
     let delta = '';
     if (prevAA?.open?.ii !== undefined && prevAA?.closed?.ii !== undefined) {
       const pg = Math.round((prevAA.closed.ii - prevAA.open.ii) * 10) / 10;
-      if (pg !== gap) delta = ` ${gap < pg ? 'Se reduce' : 'Se amplía'} desde ${num(pg)} el ${fmtDate(prev.date)}.`;
-      else delta = ` Igual que el ${fmtDate(prev.date)}.`;
+      if (pg !== gap) delta = ` ${t('{p1} desde {num} el {fmtDate}.', { p1: gap < pg ? t('Se reduce') : t('Se amplía'), num: num(pg), fmtDate: fmtDate(prev.date) })}`;
+      else delta = ` ${t('Igual que el {fmtDate}.', { fmtDate: fmtDate(prev.date) })}`;
     }
-    gapCard = `<div class="kpi"><span class="k">Diferencia cerrado − abierto</span><span class="v">${gap > 0 ? '' : gap < 0 ? '−' : ''}${num(Math.abs(gap))} pts${src(capFact(lc))}</span>
-      <span class="s">Puntos del ${esc(aaIndexName(ver))} entre ${esc(lc.name)} y ${esc(lo.name)}.${dl ? ` Con el mejor de pesos ya descargables, ${esc(dl.name)}, ${num(Math.round((ii(lc) - ii(dl)) * 10) / 10)} pts.` : ''} No equivalen a meses de retraso. AA no publica intervalo de confianza para este índice.${delta}</span></div>`;
+    gapCard = `<div class="kpi"><span class="k">${t('Diferencia cerrado − abierto')}</span><span class="v">${gap > 0 ? '' : gap < 0 ? '−' : ''}${num(Math.abs(gap))} pts${src(capFact(lc))}</span>
+      <span class="s">${t('Puntos del {idx} entre {a} y {b}.', { idx: esc(aaIndexName(ver)), a: esc(lc.name), b: esc(lo.name) })}${dl ? ` ${t('Con el mejor de pesos ya descargables, {name}, {num} pts.', { name: esc(dl.name), num: num(Math.round((ii(lc) - ii(dl)) * 10) / 10) })}` : ''} ${t('No equivalen a meses de retraso. AA no publica intervalo de confianza para este índice.')}${delta}</span></div>`;
   } else {
-    gapCard = `<div class="kpi"><span class="k">Diferencia cerrado − abierto</span><span class="v">${ND}</span><span class="s">${reason || 'Falta un líder con índice en algún bloque.'}</span></div>`;
+    gapCard = `<div class="kpi"><span class="k">${t('Diferencia cerrado − abierto')}</span><span class="v">${nd()}</span><span class="s">${reason || t('Falta un líder con índice en algún bloque.')}</span></div>`;
   }
 
   let costCard;
@@ -142,27 +144,27 @@ function renderKPIs(d, gapPts) {
       const pb = cheapestAbove(rows, T, r => r.ii ?? null, blendSnap);
       if (pb && best) {
         const ch = (blended(best) - blendSnap(pb)) / blendSnap(pb) * 100;
-        delta = Math.abs(ch) < 0.5 ? ` Sin cambio desde el ${fmtDate(prev.date)}.` : ` ${ch < 0 ? 'Baja' : 'Sube'} un ${num(Math.abs(ch))} % desde el ${fmtDate(prev.date)} (${usd(blendSnap(pb))}).`;
+        delta = Math.abs(ch) < 0.5 ? ` ${t('Sin cambio desde el {fmtDate}.', { fmtDate: fmtDate(prev.date) })}` : ` ${t('{p1} un {num} % desde el {fmtDate} ({usd}).', { p1: ch < 0 ? t('Baja') : t('Sube'), num: num(Math.abs(ch)), fmtDate: fmtDate(prev.date), usd: usd(blendSnap(pb)) })}`;
       }
     }
-    const sel = `<label>umbral <select id="kpi-pct">${GAPS.map(g => `<option value="${g}"${g === gapPts ? ' selected' : ''}>líder − ${g} pts</option>`).join('')}</select></label>`;
-    costCard = `<div class="kpi"><span class="k">Coste con capacidad comparable</span>
-      <span class="v">${best ? usd(blended(best)) + src(best.price.in) : ND}</span>
-      <span class="s">${best ? `${esc(best.name)}: el más barato con índice AA ≥ ${num(T)}, precio combinado por millón${priceBy(best)}.` : `Ningún modelo con índice AA ≥ ${num(T)} tiene precio.`}${bestOpen && bestOpen !== best ? ` Abierto más barato: ${esc(bestOpen.name)}, ${usd(blended(bestOpen))}.` : ''}${delta}</span>${sel}</div>`;
+    const sel = `<label>${t('umbral')} <select id="kpi-pct">${GAPS.map(g => `<option value="${g}"${g === gapPts ? ' selected' : ''}>${t('líder − {g} pts', { g })}</option>`).join('')}</select></label>`;
+    costCard = `<div class="kpi"><span class="k">${t('Coste con capacidad comparable')}</span>
+      <span class="v">${best ? usd(blended(best)) + src(best.price.in) : nd()}</span>
+      <span class="s">${best ? t('{name}: el más barato con índice AA ≥ {num}, precio combinado por millón{priceBy}.', { name: esc(best.name), num: num(T), priceBy: priceBy(best) }) : t('Ningún modelo con índice AA ≥ {num} tiene precio.', { num: num(T) })}${bestOpen && bestOpen !== best ? ` ${t('Abierto más barato: {name}, {usd}.', { name: esc(bestOpen.name), usd: usd(blended(bestOpen)) })}` : ''}${delta}</span>${sel}</div>`;
   } else {
-    costCard = `<div class="kpi"><span class="k">Coste con capacidad comparable</span><span class="v">${ND}</span><span class="s">${reason || 'Sin modelos con índice.'}</span></div>`;
+    costCard = `<div class="kpi"><span class="k">${t('Coste con capacidad comparable')}</span><span class="v">${nd()}</span><span class="s">${reason || t('Sin modelos con índice.')}</span></div>`;
   }
 
-  $('#hoy-kpis').innerHTML = leadCard(lo, 'open', 'Líder abierto', prevAA?.open) + leadCard(lc, 'closed', 'Líder cerrado', prevAA?.closed) + gapCard + costCard;
-  $('#hoy-kpi-note').innerHTML = `Líderes calculados entre los modelos que se pueden usar por API en OpenRouter y tienen puntuación en el ${esc(aaIndexName(ver))}. Datos de ${AA_LINK}, publicados con su permiso. De cada modelo se toma la configuración de razonamiento de mayor índice. Umbral de capacidad comparable: índice del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con el precio que cobra el propio laboratorio en OpenRouter o, si no lo sirve él, el del proveedor más barato, que se indica.`;
-  $('#kpi-pct')?.addEventListener('change', e => { renderKPIs(d, Number(e.target.value)); renderScatter(d, Number(e.target.value)); });
+  $('#hoy-kpis').innerHTML = leadCard(lo, 'open', t('Líder abierto'), prevAA?.open) + leadCard(lc, 'closed', t('Líder cerrado'), prevAA?.closed) + gapCard + costCard;
+  $('#hoy-kpi-note').innerHTML = t('Líderes calculados entre los modelos que se pueden usar por API en OpenRouter y tienen puntuación en el {aaIndexName}. Datos de {AA_LINK}, publicados con su permiso. De cada modelo se toma la configuración de razonamiento de mayor índice. Umbral de capacidad comparable: índice del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con el precio que cobra el propio laboratorio en OpenRouter o, si no lo sirve él, el del proveedor más barato, que se indica.', { aaIndexName: esc(aaIndexName(ver)), AA_LINK });
+  $('#kpi-pct')?.addEventListener('change', e => { GAP_PTS = Number(e.target.value); renderKPIs(d, GAP_PTS); renderScatter(d, GAP_PTS); });
 }
 
 function renderScatter(d, gapPts) {
   const models = scored(d.catalog.models);
   const el = $('#hoy-scatter');
   if (!models.length) {
-    el.innerHTML = '<div class="chart-empty">Sin datos de capacidad: ningún modelo del catálogo tiene puntuación de Artificial Analysis.</div>';
+    el.innerHTML = `<div class="chart-empty">${t('Sin datos de capacidad: ningún modelo del catálogo tiene puntuación de Artificial Analysis.')}</div>`;
     $('#hoy-reading').innerHTML = '';
     return;
   }
@@ -170,13 +172,13 @@ function renderScatter(d, gapPts) {
     id: m.id, x: blended(m), y: ii(m), cls: m.weights.v === 'abiertos' ? 'open' : m.weights.v === 'cerrados' ? 'closed' : 'unknown',
     label: m.name,
     tip: tip(m.name, [
-      ['Laboratorio', m.lab.name],
-      ['Índice AA', `${num(ii(m))}${aaConfigShort(m) ? ` (${aaConfigShort(m)})` : ''}`],
-      ['ECI (Epoch)', eci(m) !== null ? num(eci(m)) : null],
-      ['Precio combinado', `${usd(blended(m))} por millón`],
-      ['Entrada / salida', `${usd(m.price.in.v)} / ${usd(m.price.out.v)}`],
-      ['Precio de', priceBasis(m)],
-      ['Pesos', m.weights.v || 'sin datos']
+      [t('Laboratorio'), m.lab.name],
+      [t('Índice AA'), `${num(ii(m))}${aaConfigShort(m) ? ` (${aaConfigShort(m)})` : ''}`],
+      [t('ECI (Epoch)'), eci(m) !== null ? num(eci(m)) : null],
+      [t('Precio combinado'), t('{usd} por millón', { usd: usd(blended(m)) })],
+      [t('Entrada / salida'), `${usd(m.price.in.v)} / ${usd(m.price.out.v)}`],
+      [t('Precio de'), priceBasis(m)],
+      [t('Pesos'), m.weights.v ? weightsWord(m.weights.v) : t('sin datos')]
     ])
   }));
   const excluded = models.length - pts.length;
@@ -185,19 +187,23 @@ function renderScatter(d, gapPts) {
   const T = Math.round((top - gapPts) * 10) / 10;
   const best = cheapestAbove(models, T, ii, blended);
   const labels = new Set([lo?.id, lc?.id, best?.id].filter(Boolean));
-  scatter(el, pts, { threshold: T, labels, yLabel: 'Índice de inteligencia (Artificial Analysis)' });
+  scatter(el, pts, { threshold: T, labels, yLabel: t('Índice de inteligencia (Artificial Analysis)') });
 
   const bits = [];
   if (lo && lc) {
     const gap = ii(lc) - ii(lo);
     const ratio = blended(lc) > 0 && blended(lo) > 0 ? blended(lc) / blended(lo) : null;
-    bits.push(`El mejor modelo con pesos abiertos (${esc(lo.name)}, ${num(ii(lo))}) queda ${gap >= 0 ? `${num(gap)} puntos por debajo` : `${num(-gap)} puntos por encima`} del mejor cerrado (${esc(lc.name)}, ${num(ii(lc))})${ratio ? ` y su precio combinado es ${ratio >= 1 ? `${num(ratio)} veces menor` : `${num(1 / ratio)} veces mayor`}` : ''}.`);
+    bits.push(t('El mejor modelo con pesos abiertos ({open}, {oi}) queda {dist} del mejor cerrado ({closed}, {ci}){ratio}.', {
+      open: esc(lo.name), oi: num(ii(lo)), closed: esc(lc.name), ci: num(ii(lc)),
+      dist: gap >= 0 ? t('{num} puntos por debajo', { num: num(gap) }) : t('{num} puntos por encima', { num: num(-gap) }),
+      ratio: ratio ? ` ${t('y su precio combinado es {x}', { x: ratio >= 1 ? t('{num} veces menor', { num: num(ratio) }) : t('{num} veces mayor', { num: num(1 / ratio) }) })}` : ''
+    }));
     const dl = downloadable(models, lo);
-    if (dl) bits.push(`Sus pesos sólo están anunciados; con pesos ya descargables, el mejor es ${esc(dl.name)} (${num(ii(dl))}), ${num(Math.round((ii(lc) - ii(dl)) * 10) / 10)} puntos por debajo del mejor cerrado.`);
+    if (dl) bits.push(t('Sus pesos sólo están anunciados; con pesos ya descargables, el mejor es {name} ({num}), {p3} puntos por debajo del mejor cerrado.', { name: esc(dl.name), num: num(ii(dl)), p3: num(Math.round((ii(lc) - ii(dl)) * 10) / 10) }));
   }
-  if (best) bits.push(`Por encima del umbral de ${num(T)} puntos del índice AA, la opción más barata es ${esc(best.name)} (${best.weights.v === 'abiertos' ? 'abierto' : 'cerrado'}), a ${usd(blended(best))} por millón.`);
-  if (excluded) bits.push(`${excluded} modelo${excluded > 1 ? 's' : ''} con índice pero sin precio positivo no aparece${excluded > 1 ? 'n' : ''} en el gráfico.`);
-  $('#hoy-reading').innerHTML = `<span class="lbl">Lectura automática a partir de las cifras</span>${bits.join(' ')}<span class="m-sub">Capacidad: ${esc(aaIndexName(d.catalog.aaIndexVersion))}, datos de ${AA_LINK}. Precio: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>, el del propio laboratorio o, si no lo sirve, el del proveedor más barato.</span>`;
+  if (best) bits.push(t('Por encima del umbral de {T} puntos del índice AA, la opción más barata es {name} ({tipo}), a {usd} por millón.', { T: num(T), name: esc(best.name), tipo: best.weights.v === 'abiertos' ? t('abierto') : t('cerrado'), usd: usd(blended(best)) }));
+  if (excluded) bits.push(tn(excluded, ['{n} modelo con índice pero sin precio positivo no aparece en el gráfico.', '{n} modelos con índice pero sin precio positivo no aparecen en el gráfico.']));
+  $('#hoy-reading').innerHTML = `<span class="lbl">${t('Lectura automática a partir de las cifras')}</span>${bits.join(' ')}<span class="m-sub">${t('Capacidad: {aaIndexName}, datos de {AA_LINK}. Precio:', { aaIndexName: esc(aaIndexName(d.catalog.aaIndexVersion)), AA_LINK })} <a href="https://openrouter.ai/models" target="_blank" rel="noopener">${t('OpenRouter')}</a>${t(', el del propio laboratorio o, si no lo sirve, el del proveedor más barato.')}</span>`;
 }
 
 /* Líderes por índice de AA, un punto por recogida diaria. Sólo la versión vigente del índice: entre versiones no son comparables. */
@@ -207,19 +213,20 @@ function renderDaily(d) {
   const pts = serie.filter(p => p.aaV === ver && (p.open || p.closed));
   const first = pts[0]?.d;
   daily($('#hoy-daily'), pts, {
-    aria: 'Índice de Artificial Analysis del mejor modelo cerrado y del mejor abierto, por día',
-    yLabel: 'Índice AA', foot: 'Mejor modelo de cada bloque ese día, entre los del catálogo con índice.',
+    aria: t('Índice de Artificial Analysis del mejor modelo cerrado y del mejor abierto, por día'),
+    yLabel: t('Índice AA'), foot: t('Mejor modelo de cada bloque ese día, entre los del catálogo con índice.'),
     series: [
-      { cls: 'ln-closed', name: 'Mejor cerrado', get: p => p.closed?.ii ?? null, who: p => p.closed?.n },
-      { cls: 'ln-open', name: 'Mejor abierto', get: p => p.open?.ii ?? null, who: p => p.open?.n }
+      { cls: 'ln-closed', name: t('Mejor cerrado'), get: p => p.closed?.ii ?? null, who: p => p.closed?.n },
+      { cls: 'ln-open', name: t('Mejor abierto'), get: p => p.open?.ii ?? null, who: p => p.open?.n }
     ]
   });
-  $('#hoy-daily-note').innerHTML = `Un punto por recogida diaria${first ? `, desde el ${esc(fmtDate(first))}` : ''}: el mejor modelo cerrado y el mejor abierto del catálogo según el ${esc(aaIndexName(ver))} de ${AA_LINK}. Cada día queda guardado en el repositorio (data/history), así que la serie crece con cada recogida; los días con otra versión del índice no se mezclan. Es la única serie del observatorio medida día a día con el índice de AA; las de Modelos y La carrera se reconstruyen hoy hacia atrás con las puntuaciones actuales.`;
+  $('#hoy-daily-note').innerHTML = t('Un punto por recogida diaria{p1}: el mejor modelo cerrado y el mejor abierto del catálogo según el {aaIndexName} de {AA_LINK}. Cada día queda guardado en el repositorio (data/history), así que la serie crece con cada recogida; los días con otra versión del índice no se mezclan. Es la única serie del observatorio medida día a día con el índice de AA; las de Modelos y La carrera se reconstruyen hoy hacia atrás con las puntuaciones actuales.', { p1: first ? t(', desde el {fmtDate}', { fmtDate: esc(fmtDate(first)) }) : '', aaIndexName: esc(aaIndexName(ver)), AA_LINK });
 }
 
+let GAP_PTS = 10;   // umbral elegido en «Coste con capacidad comparable»: se conserva al cambiar de idioma
 export function renderHoy(d) {
   renderNews(d);
-  renderKPIs(d, 10);
-  renderScatter(d, 10);
+  renderKPIs(d, GAP_PTS);
+  renderScatter(d, GAP_PTS);
   renderDaily(d);
 }

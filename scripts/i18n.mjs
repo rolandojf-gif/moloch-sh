@@ -1,0 +1,146 @@
+#!/usr/bin/env node
+/* MOLOCH.SH · herramientas de internacionalización, sin dependencias.
+
+   Como biblioteca (las usan tests/i18n.test.mjs y scripts/validate.mjs):
+     scan(src)            claves de t()/tn() de un fuente de js/ y literales en español que quedan FUERA de t()/tn()/tr()
+     claves()             todas las claves de la interfaz usadas en js/*.js
+     cargarMemoria()      la memoria de traducción (data/i18n/en/*.json) ya cargada en js/i18n.js
+     cobertura()          textos de los datos publicados sin traducción inglesa (y entradas huérfanas de la memoria)
+   Como orden:
+     node scripts/i18n.mjs --faltan     lista lo que falta traducir (interfaz y datos)
+     node scripts/i18n.mjs --literales  lista los literales en español que quedan en js/ fuera de t()
+     node scripts/i18n.mjs --claves     lista las claves de la interfaz */
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import path from 'node:path';
+import { setDictionary, find, FILES } from '../js/i18n.js';
+
+export const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const read = f => JSON.parse(readFileSync(path.join(ROOT, f), 'utf8'));
+
+/* ── Fuentes de js/: claves y literales ── */
+const ES_WORDS = /\b(de|la|el|en|con|por|para|que|los|las|un|una|del|al|se|es|no|sin|más|su|sus|hoy|hace|desde|hasta|entre|sobre|frente|como|según)\b/i;
+export const spanish = s => /[áéíóúüñ¿¡]/i.test(s) || (s.trim().split(/\s+/).length >= 2 && ES_WORDS.test(s));
+const wordy = s => /[a-záéíóúüñ]{3,}/.test(s.replace(/&\w+;/g, ' '));
+const unesc = s => s.replace(/\\(.)/g, '$1');
+
+function skipString(s, i) { const q = s[i]; i++; while (i < s.length && s[i] !== q) { if (s[i] === '\\') i++; i++; } return i + 1; }
+function skipTemplate(s, i, onText) {
+  i++; let buf = '';
+  while (i < s.length && s[i] !== '`') {
+    if (s[i] === '\\') { buf += s.slice(i, i + 2); i += 2; continue; }
+    if (s[i] === '$' && s[i + 1] === '{') { buf += '\uE000'; i = skipExpr(s, i + 2, onText) + 1; continue; }
+    buf += s[i]; i++;
+  }
+  onText?.(buf);
+  return i + 1;
+}
+function regexOk(s, i) { let j = i - 1; while (j >= 0 && /\s/.test(s[j])) j--; if (j < 0) return true; if ('(,=:[!&|?{};+-*%<>~^'.includes(s[j])) return true; const w = /[A-Za-z]+$/.exec(s.slice(Math.max(0, j - 10), j + 1))?.[0]; return ['return', 'typeof', 'case', 'in', 'of'].includes(w); }
+function skipRegex(s, i) { i++; let cls = false; while (i < s.length) { const c = s[i]; if (c === '\\') { i += 2; continue; } if (c === '[') cls = true; else if (c === ']') cls = false; else if (c === '/' && !cls) { i++; break; } i++; } while (/[a-z]/.test(s[i] || '')) i++; return i; }
+/* Recorre el fuente (y las expresiones de las plantillas) llamando a on(tipo, texto, inicio). */
+function walk(s, i, end, on) {
+  while (i < end) {
+    const c = s[i], n = s[i + 1];
+    if (c === '/' && n === '/') { while (i < end && s[i] !== '\n') i++; }
+    else if (c === '/' && n === '*') i = s.indexOf('*/', i) + 2;
+    else if (c === "'" || c === '"') { const e = skipString(s, i); on('str', s.slice(i + 1, e - 1), i); i = e; }
+    else if (c === '`') { const st = i; i = skipTemplate(s, i, txt => on('tpl', txt, st)); }
+    else if (c === '/' && regexOk(s, i)) i = skipRegex(s, i);
+    else i++;
+  }
+}
+function skipExpr(s, i, onText) { // devuelve el «}» de cierre; recorre los literales anidados
+  let depth = 1; const st = i;
+  while (i < s.length) {
+    const c = s[i];
+    if (c === "'" || c === '"') { i = skipString(s, i); continue; }
+    if (c === '`') { i = skipTemplate(s, i, onText); continue; }
+    if (c === '/' && s[i + 1] === '/') { while (i < s.length && s[i] !== '\n') i++; continue; }
+    if (c === '/' && s[i + 1] === '*') { i = s.indexOf('*/', i) + 2; continue; }
+    if (c === '/' && regexOk(s, i)) { i = skipRegex(s, i); continue; }
+    if (c === '{') depth++;
+    if (c === '}') { depth--; if (!depth) return i; }
+    i++;
+  }
+  throw new Error('expresión sin cerrar');
+}
+const lineOf = (s, i) => s.slice(0, i).split('\n').length;
+
+export function scan(src) {
+  const keys = [], starts = new Set();
+  for (const m of src.matchAll(/(?<![\w$.])t\(\s*'((?:[^'\\]|\\.)*)'/g)) { keys.push({ key: unesc(m[1]), line: lineOf(src, m.index) }); starts.add(m.index + m[0].indexOf("'")); }
+  for (const m of src.matchAll(/(?<![\w$.])tn\([^\n]*?,\s*\[\s*'((?:[^'\\]|\\.)*)'\s*,\s*'((?:[^'\\]|\\.)*)'\s*\]/g)) {
+    keys.push({ key: unesc(m[1]), other: unesc(m[2]), line: lineOf(src, m.index) });
+    const a = src.indexOf("'", m.index + m[0].indexOf('[')); starts.add(a); starts.add(src.indexOf("'", a + m[1].length + 2 + 1));
+  }
+  for (const m of src.matchAll(/(?<![\w$.])(?:tr|L)\(\s*'((?:[^'\\]|\\.)*)'/g)) starts.add(m.index + m[0].indexOf("'"));
+  const lits = [];
+  const strip = s => s.replace(/\uE000/g, ' ');
+  walk(src, 0, src.length, (kind, text, at) => {
+    if (starts.has(at) || kind === 'str' && /^[\w./#:?&=%${}()[\]*+\-,^|~@!\s]*$/.test(text) && !spanish(text)) return;
+    const plain = strip(text);
+    if (!wordy(plain) || !spanish(plain)) return;
+    if (/^\s*<\//.test(plain) || /^[\s<>/\w=" .:;#-]+$/.test(plain) && !/[áéíóúñ]/.test(plain) && !ES_WORDS.test(plain)) return;
+    lits.push({ line: lineOf(src, at), text: plain.replace(/\s+/g, ' ').trim() });
+  });
+  return { keys, lits };
+}
+export const jsFiles = () => readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js') && f !== 'theme-init.js').map(f => `js/${f}`);
+export function claves() {
+  const out = new Map();
+  for (const f of jsFiles()) for (const k of scan(readFileSync(path.join(ROOT, f), 'utf8')).keys) if (!out.has(k.key)) out.set(k.key, { ...k, file: f });
+  return out;
+}
+
+/* ── Memoria de traducción ── */
+export function cargarMemoria() {
+  const files = {};
+  for (const f of FILES) files[f] = read(`data/i18n/en/${f}.json`);
+  setDictionary(files);
+  return files;
+}
+
+/* ── Datos publicados: qué textos hay que traducir ──
+   data/i18n/campos.json dice, por archivo, qué campos son texto en español que se muestra (y cuáles no). */
+const get = (o, p) => p.split('.').reduce((x, k) => x?.[k], o);
+function* recorre(o, partes, pref = '') {
+  if (o === null || o === undefined) return;
+  const [k, ...resto] = partes;
+  if (k === undefined) { if (typeof o === 'string' || Array.isArray(o)) yield o; return; }
+  if (k === '*') { for (const x of Array.isArray(o) ? o : Object.values(o)) yield* recorre(x, resto); return; }
+  yield* recorre(o[k], resto);
+}
+export function textosDeDatos() {
+  const campos = read('data/i18n/campos.json');
+  const out = [];   // { origen, texto }
+  const add = (origen, v) => { for (const s of [v].flat()) if (typeof s === 'string' && s.trim()) out.push({ origen, texto: s }); };
+  for (const [file, spec] of Object.entries(campos.archivos)) {
+    const p = path.join(ROOT, file);
+    if (!existsSync(p)) continue;
+    const data = JSON.parse(readFileSync(p, 'utf8'));
+    for (const campo of spec.campos) for (const v of recorre(data, campo.split('.'))) add(`${file}:${campo}`, v);
+  }
+  return out;
+}
+export function cobertura() {
+  cargarMemoria();
+  const faltan = new Map();
+  for (const { origen, texto } of textosDeDatos()) if (find(texto) === null && !faltan.has(texto)) faltan.set(texto, origen);
+  return { faltan: [...faltan].map(([texto, origen]) => ({ texto, origen })) };
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const a = process.argv[2];
+  if (a === '--claves') { for (const [k, v] of claves()) console.log(`${v.file}:${v.line}\t${k}`); }
+  else if (a === '--literales') {
+    let n = 0;
+    for (const f of jsFiles()) for (const l of scan(readFileSync(path.join(ROOT, f), 'utf8')).lits) { console.log(`${f}:${l.line}\t${l.text.slice(0, 110)}`); n++; }
+    console.log(`${n} literales en español fuera de t()`);
+  } else if (a === '--faltan') {
+    const ui = (() => { cargarMemoria(); return [...claves()].filter(([k]) => find(k) === null && !(k in (read('data/i18n/en/ui.json').exact || {}))); })();
+    const ex = read('data/i18n/en/ui.json').exact || {};
+    const uiFalta = [...claves()].filter(([k]) => !(k in ex));
+    console.log(`Interfaz sin traducir: ${uiFalta.length}`); for (const [k, v] of uiFalta.slice(0, 400)) console.log(`  ${v.file}:${v.line}\t${k}`);
+    const { faltan } = cobertura();
+    console.log(`Datos sin traducir: ${faltan.length}`); for (const f of faltan.slice(0, 400)) console.log(`  ${f.origen}\t${f.texto.slice(0, 160)}`);
+  } else console.log('Uso: node scripts/i18n.mjs --faltan | --literales | --claves');
+}

@@ -1,5 +1,6 @@
 /* Gráficos SVG sin dependencias. Todos comparten una ventana emergente que aparece al instante
    sobre el elemento más cercano al cursor (o al dedo) y etiquetas fijas para los puntos que importan. */
+import { t, tn, tr } from './i18n.js';
 import { esc, usd, num, fmtDate, dateFmt } from './fmt.js';
 
 /* ── Ventana emergente ──────────────────────────────────────────────────── */
@@ -17,7 +18,7 @@ function tipBox() {
   }
   return tipEl;
 }
-function hideTip() { if (tipEl) tipEl.hidden = true; hot?.classList.remove('hot'); hot = null; }
+export function hideTip() { if (tipEl) tipEl.hidden = true; hot?.classList.remove('hot'); hot = null; }
 
 /* Contenido al estilo de Epoch: título y filas «etiqueta · valor» en texto; las filas sin valor se omiten. */
 export function tip(title, rows, foot = '') {
@@ -229,8 +230,8 @@ function zoomable(el, G, full, draw, { minX, minY }) {
   el.addEventListener('click', e => { if (e.target.closest('.zoom-reset')) reset(); }, on);
   render();
 }
-const zoomUi = zoomed => (zoomed ? '<button type="button" class="zoom-reset">Ver todo</button>' : '')
-  + '<span class="zoom-hint">Rueda del ratón: acercar o alejar · arrastrar: mover · doble clic: ver todo</span>';
+const zoomUi = zoomed => (zoomed ? `<button type="button" class="zoom-reset">${t('Ver todo')}</button>` : '')
+  + `<span class="zoom-hint">${t('Rueda del ratón: acercar o alejar · arrastrar: mover · doble clic: ver todo')}</span>`;
 const clip = (id, { W, H, L, R, T, B }) => `<clipPath id="clip-${id}"><rect x="${L}" y="${T - 8}" width="${W - L - R}" height="${H - T - B + 8}"/></clipPath>`;
 
 /* ── Pantallas estrechas ────────────────────────────────────────────────── */
@@ -247,8 +248,8 @@ function frame(el, wide, narrowH = wide.H, max = 640) {
 /* ── Capacidad frente a precio (Hoy) ────────────────────────────────────── */
 /* points: [{ id, x, y, cls, label, tip }]. Etiquetas fijas: las pedidas y los modelos que nadie mejora a la vez en índice y precio;
    al acercarse, también el resto de modelos visibles que quepan. */
-export function scatter(el, points, { threshold = null, labels = new Set(), yLabel = 'Índice' } = {}) {
-  if (!points.length) { el.innerHTML = '<div class="chart-empty">No hay modelos con índice y precio a la vez.</div>'; return; }
+export function scatter(el, points, { threshold = null, labels = new Set(), yLabel = t('Índice') } = {}) {
+  if (!points.length) { el.innerHTML = `<div class="chart-empty">${t('No hay modelos con índice y precio a la vez.')}</div>`; return; }
   watchWidth(el, () => scatter(el, points, { threshold, labels, yLabel }));
   const G = frame(el, { W: 860, H: 400, L: 52, R: 16, T: 16, B: 44 }, 340);
   const { W, H, L, R, T, B } = G;
@@ -266,7 +267,7 @@ export function scatter(el, points, { threshold = null, labels = new Set(), yLab
     const X = val => L + (Math.log10(val) - v.x0) / (v.x1 - v.x0) * (W - L - R);
     const Y = val => T + (1 - (val - v.y0) / (v.y1 - v.y0)) * (H - T - B);
     const shown = points.filter(p => X(p.x) >= L - 3 && X(p.x) <= W - R + 3 && Y(p.y) >= T - 3 && Y(p.y) <= H - B + 3);
-    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yLabel)} frente a precio combinado por millón de tokens">${clip(el.id, G)}`;
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t('{yLabel} frente a precio combinado por millón de tokens', { yLabel: esc(yLabel) })}">${clip(el.id, G)}`;
     s += yAxis(niceTicks(v.y0, v.y1), Y, G, val => num(val, 0), yLabel);
     // Marcas del precio separadas lo bastante para que no se pisen sus rótulos.
     let lastX = -Infinity;
@@ -275,11 +276,11 @@ export function scatter(el, points, { threshold = null, labels = new Set(), yLab
       lastX = X(t);
       s += `<line x1="${X(t)}" x2="${X(t)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${X(t)}" y="${H - B + 18}" text-anchor="middle">${esc(usd(t))}</text>`;
     }
-    s += `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">${G.narrow ? 'Precio por millón (escala log.)' : 'Precio combinado por millón de tokens (escala logarítmica)'}</text></g>`;
+    s += `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">${G.narrow ? t('Precio por millón (escala log.)') : t('Precio combinado por millón de tokens (escala logarítmica)')}</text></g>`;
     const taken = [];
     if (threshold !== null && threshold > v.y0 && threshold < v.y1) {
       s += `<line x1="${L}" x2="${W - R}" y1="${Y(threshold)}" y2="${Y(threshold)}" stroke="currentColor" stroke-dasharray="5 4" opacity=".55"/>`;
-      s += `<text class="lbl" x="${W - R}" y="${Y(threshold) - 6}" text-anchor="end">umbral ${num(threshold, 0)}</text>`;
+      s += `<text class="lbl" x="${W - R}" y="${Y(threshold) - 6}" text-anchor="end">${t('umbral {num}', { num: num(threshold, 0) })}</text>`;
       taken.push([W - R - 70, Y(threshold) - 18, W - R, Y(threshold) - 2]);
     }
     s += `<g clip-path="url(#clip-${el.id})">`;
@@ -293,7 +294,7 @@ export function scatter(el, points, { threshold = null, labels = new Set(), yLab
       .map(p => ({ x: X(p.x), y: Y(p.y), text: p.label, faint: !key(p) }));
     s += labelSvg(placeLabels(cands.slice(0, zoomed ? 30 : 12), G, taken));
     s += '</svg>';
-    s += `<div class="legend"><span><i style="background:var(--open)"></i>Pesos abiertos</span><span><i style="background:var(--closed)"></i>Cerrado</span><span><i class="lg-key"></i>Con nombre: líderes y modelos que ninguno supera a la vez en índice y precio${zoomed ? '; al acercar, también los demás que caben' : ''}</span>${zoomUi(zoomed)}</div>`;
+    s += `<div class="legend"><span><i style="background:var(--open)"></i>${t('Pesos abiertos')}</span><span><i style="background:var(--closed)"></i>${t('Cerrado')}</span><span><i class="lg-key"></i>${t('Con nombre: líderes y modelos que ninguno supera a la vez en índice y precio{p1}', { p1: zoomed ? t('; al acercar, también los demás que caben') : '' })}</span>${zoomUi(zoomed)}</div>`;
     el.innerHTML = s;
     interact(el, targets);
   };
@@ -312,7 +313,7 @@ function covBands(id, bands, X, G, t0, t1) {
   }
   return s;
 }
-const COV_LEGEND = '<span><i class="lg-cov"></i>Cobertura incompleta: falta el mejor modelo según Epoch</span>';
+const covLegend = () => `<span><i class="lg-cov"></i>${t('Cobertura incompleta: falta el mejor modelo según Epoch')}</span>`;
 /* records: [{ date, open: {v, name} | null, closed: {v, name} | null }] con el máximo acumulado de cada grupo.
    models: todos los modelos puntuados [{ d, v, g: 'o'|'c', n, org, lo, hi, rec }]; sin ellos sólo se dibujan los récords. */
 /* metric: rótulo de la cifra en la ficha (ECI por defecto); highlight: nombres que llevan etiqueta fija aunque no sean récord
@@ -343,7 +344,7 @@ export function frontier(el, records, opts = {}) {
     const Y = val => T + (1 - (val - v.y0) / (v.y1 - v.y0)) * (H - T - B);
     const inside = (x, y) => x >= L - 3 && x <= W - R + 3 && y >= T - 3 && y <= H - B + 3;
     const shown = pts.filter(m => inside(X(ms(m.d)), Y(m.v)));
-    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución del mejor modelo abierto y del mejor cerrado">${clip(el.id, G)}`;
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t('Evolución del mejor modelo abierto y del mejor cerrado')}">${clip(el.id, G)}`;
     s += yAxis(niceTicks(v.y0, v.y1), Y, G, val => num(val, 0), yLabel) + timeAxis(X, v.x0, v.x1, G) + '</g>';
     s += `<g clip-path="url(#clip-${el.id})">`;
     const cov = covBands(el.id, bands, X, G, v.x0, v.x1);
@@ -362,11 +363,11 @@ export function frontier(el, records, opts = {}) {
     const targets = shown.map(m => ({
       x: X(ms(m.d)), y: Y(m.v),
       html: tip(m.n, [
-        ['Fecha de lanzamiento', fmtDate(m.d)],
-        [metric, m.lo != null && m.hi != null ? `${fmtV(m.v)} (intervalo ${num(m.lo, 1)}–${num(m.hi, 1)})` : fmtV(m.v)],
-        ['Pesos', m.g === 'o' ? (m.anun ? 'abiertos (anunciados en su descripción de OpenRouter; aún no descargables)' : 'abiertos') : m.inf ? 'cerrados (inferido: no hay pesos publicados)' : 'cerrados'],
-        ['Organización', m.org || null],
-        ['Nuevo récord', m.rec ? `sí, mejor ${m.g === 'o' ? 'abierto' : 'cerrado'} hasta esa fecha` : 'no']
+        [t('Fecha de lanzamiento'), fmtDate(m.d)],
+        [metric, m.lo != null && m.hi != null ? `${fmtV(m.v)} ${t('(intervalo {lo}–{hi})', { lo: num(m.lo, 1), hi: num(m.hi, 1) })}` : fmtV(m.v)],
+        [t('Pesos'), m.g === 'o' ? (m.anun ? t('abiertos (anunciados en su descripción de OpenRouter; aún no descargables)') : t('abiertos')) : m.inf ? t('cerrados (inferido: no hay pesos publicados)') : t('cerrados')],
+        [t('Organización'), m.org || null],
+        [t('Nuevo récord'), m.rec ? t('sí, mejor {g} hasta esa fecha', { g: m.g === 'o' ? t('abierto') : t('cerrado') }) : t('no')]
       ])
     }));
     // Etiquetas fijas: el líder actual de cada grupo y los saltos más grandes, sin pisarse; al acercar, también el resto visible.
@@ -384,9 +385,9 @@ export function frontier(el, records, opts = {}) {
     const marked = highlight ? shown.filter(m => !m.rec && highlight.has(m.n)).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down' })) : [];
     if (zoomed) rest.push(...shown.filter(m => !m.rec && !(highlight && highlight.has(m.n))).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down', faint: true })));
     s += labelSvg(placeLabels([...leaders, ...marked, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G));
-    s += '</svg><div class="legend"><span><i style="background:var(--open)"></i>Mejor con pesos abiertos</span><span><i style="background:var(--closed)"></i>Mejor cerrado</span>';
-    s += (shown.some(m => m.anun) ? '<span><i class="lg-anun"></i>Pesos anunciados, aún sin descargar</span>' : '')
-      + (models ? '<span><i class="lg-faint"></i>Resto de modelos puntuados</span>' : '') + (cov ? COV_LEGEND : '') + zoomUi(zoomed) + '</div>';
+    s += `</svg><div class="legend"><span><i style="background:var(--open)"></i>${t('Mejor con pesos abiertos')}</span><span><i style="background:var(--closed)"></i>${t('Mejor cerrado')}</span>`;
+    s += (shown.some(m => m.anun) ? `<span><i class="lg-anun"></i>${t('Pesos anunciados, aún sin descargar')}</span>` : '')
+      + (models ? `<span><i class="lg-faint"></i>${t('Resto de modelos puntuados')}</span>` : '') + (cov ? covLegend() : '') + zoomUi(zoomed) + '</div>';
     el.innerHTML = s;
     interact(el, targets, 22);
   };
@@ -397,9 +398,9 @@ export function frontier(el, records, opts = {}) {
 /* ── Distancias en puntos ECI a lo largo del tiempo (La carrera) ────────── */
 /* unit: escala de la distancia («puntos ECI» o «puntos del índice AA»); si un punto trae who, la ficha nombra los modelos.
    bands: tramos con cobertura incompleta [{ from, to }]. */
-export function gaps(el, points, { unit = 'puntos ECI', short = unit, bands = null } = {}) {
+export function gaps(el, points, { unit = t('puntos ECI'), short = unit, bands = null } = {}) {
   const pts = (points || []).filter(p => p.usCn !== null || p.closedOpen !== null);
-  if (pts.length < 2) { el.innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>'; return false; }
+  if (pts.length < 2) { el.innerHTML = `<div class="chart-empty">${t('Sin datos suficientes para la serie.')}</div>`; return false; }
   watchWidth(el, () => gaps(el, points, { unit, short, bands }));
   const G = frame(el, { W: 860, H: 290, L: 52, R: 185, T: 16, B: 40 }, 250);
   const { W, H, L, R, T, B } = G;
@@ -408,12 +409,12 @@ export function gaps(el, points, { unit = 'puntos ECI', short = unit, bands = nu
   const ymin = Math.min(0, Math.floor(Math.min(...vals) / 5) * 5), ymax = Math.ceil((Math.max(...vals) + 1) / 5) * 5;
   const X = v => L + (v - tmin) / (tmax - tmin || 1) * (W - L - R);
   const Y = v => T + (1 - (v - ymin) / (ymax - ymin || 1)) * (H - T - B);
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Distancia en ${esc(unit)} entre EE. UU. y China y entre modelos cerrados y abiertos">`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t('Distancia en {unit} entre EE. UU. y China y entre modelos cerrados y abiertos', { unit: esc(unit) })}">`;
   s += yAxis(niceTicks(ymin, ymax), Y, G, v => num(v, 0), short) + timeAxis(X, tmin, tmax, G) + '</g>';
   const cov = covBands(el.id, bands, X, G, tmin, tmax);
   if (cov) s += covPattern(el.id) + cov;
   if (ymin < 0) s += `<line x1="${L}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}" stroke="currentColor" opacity=".5"/>`;
-  const SER = [['usCn', 'ln-uscn', 'EE. UU. − China'], ['closedOpen', 'ln-co', 'Cerrados − abiertos']];
+  const SER = [['usCn', 'ln-uscn', t('EE. UU. − China')], ['closedOpen', 'ln-co', t('Cerrados − abiertos')]];
   for (const [key, cls] of SER) {
     let d = '', pen = false;
     for (const p of pts) {
@@ -428,8 +429,8 @@ export function gaps(el, points, { unit = 'puntos ECI', short = unit, bands = nu
   const targets = pts.map((p, i) => {
     const x = X(ms(p.d));
     s += `<g data-k="${i}">${SER.map(([key, cls]) => p[key] === null ? '' : `<circle class="pt-${cls}" cx="${x.toFixed(1)}" cy="${Y(p[key]).toFixed(1)}" r="3"/>`).join('')}</g>`;
-    const who = { usCn: p.who ? `${p.who.us} frente a ${p.who.cn}` : '', closedOpen: p.who ? `${p.who.closed} frente a ${p.who.open}` : '' };
-    return { box: [x - step / 2, T, x + step / 2, H - B], html: tip(fmtDate(p.d), SER.map(([key, , name]) => [name, p[key] === null ? 'sin datos' : `${num(p[key], 1)} puntos${who[key] ? ` (${who[key]})` : ''}`]), 'Mejor modelo de cada lado hasta esa fecha. No equivale a meses de retraso.') };
+    const who = { usCn: p.who ? t('{us} frente a {cn}', { us: p.who.us, cn: p.who.cn }) : '', closedOpen: p.who ? t('{closed} frente a {open}', { closed: p.who.closed, open: p.who.open }) : '' };
+    return { box: [x - step / 2, T, x + step / 2, H - B], html: tip(fmtDate(p.d), SER.map(([key, , name]) => [name, p[key] === null ? t('sin datos') : `${t('{n} puntos', { n: num(p[key], 1) })}${who[key] ? ` (${who[key]})` : ''}`]), t('Mejor modelo de cada lado hasta esa fecha. No equivale a meses de retraso.')) };
   });
   // Valor actual fijo al final de cada línea.
   const last = pts[pts.length - 1];
@@ -438,7 +439,7 @@ export function gaps(el, points, { unit = 'puntos ECI', short = unit, bands = nu
   if (!G.narrow) s += ends.map(e => `<text class="ptlabel" x="${(e.x + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
   // En estrecho no hay sitio a la derecha: el último valor de cada serie va en la leyenda.
   const lg = (key, name) => G.narrow && last[key] !== null ? `${name}: ${num(last[key], 1)}` : name;
-  s += `</svg><div class="legend"><span><i style="background:var(--orange)"></i>${esc(lg('usCn', 'EE. UU. − China'))}</span><span><i style="background:var(--ink)"></i>${esc(lg('closedOpen', 'Cerrados − abiertos'))}</span>${cov ? COV_LEGEND : ''}</div>`;
+  s += `</svg><div class="legend"><span><i style="background:var(--orange)"></i>${esc(lg('usCn', t('EE. UU. − China')))}</span><span><i style="background:var(--ink)"></i>${esc(lg('closedOpen', t('Cerrados − abiertos')))}</span>${cov ? covLegend() : ''}</div>`;
   el.innerHTML = s;
   interact(el, targets);
   return true;
@@ -449,7 +450,7 @@ export function gaps(el, points, { unit = 'puntos ECI', short = unit, bands = nu
 export function daily(el, pts, opts = {}) {
   const { series = [], yLabel = '', unit = '', foot = '', aria = '' } = opts;
   const ok = pts.filter(p => series.some(sr => sr.get(p) !== null));
-  if (ok.length < 2) { el.innerHTML = '<div class="chart-empty">La serie necesita al menos dos recogidas diarias.</div>'; return false; }
+  if (ok.length < 2) { el.innerHTML = `<div class="chart-empty">${t('La serie necesita al menos dos recogidas diarias.')}</div>`; return false; }
   watchWidth(el, () => daily(el, pts, opts));
   const G = frame(el, { W: fitWidth(el), H: 280, L: 52, R: 170, T: 16, B: 40 }, 250);
   const { W, H, L, R, T, B } = G;
@@ -476,7 +477,7 @@ export function daily(el, pts, opts = {}) {
   const targets = ok.map((p, i) => {
     const x = X(ms(p.d));
     s += `<g data-k="${i}">${series.map(sr => sr.get(p) === null ? '' : `<circle class="pt-${sr.cls}" cx="${x.toFixed(1)}" cy="${Y(sr.get(p)).toFixed(1)}" r="3.5"/>`).join('')}</g>`;
-    return { box: [x - step / 2, T, x + step / 2, H - B], html: tip(fmtDate(p.d), series.map(sr => [sr.name, sr.get(p) === null ? 'sin datos' : `${num(sr.get(p), 1)}${unit}${sr.who?.(p) ? ` · ${sr.who(p)}` : ''}`]), foot) };
+    return { box: [x - step / 2, T, x + step / 2, H - B], html: tip(fmtDate(p.d), series.map(sr => [sr.name, sr.get(p) === null ? t('sin datos') : `${num(sr.get(p), 1)}${unit}${sr.who?.(p) ? ` · ${sr.who(p)}` : ''}`]), foot) };
   });
   const last = ok[ok.length - 1];
   const ends = series.filter(sr => sr.get(last) !== null).map(sr => ({ y: Y(sr.get(last)), text: `${sr.name}: ${num(sr.get(last), 1)}` }));
@@ -503,7 +504,7 @@ function watchWidth(el, redraw) {
 /* rows: [{ label, v, cls?, tip, value? }]; ref: { v, label } dibuja una línea de referencia (p. ej. saturación al 90 %). */
 export function hbars(el, rows, opts = {}) {
   const { fmt = v => num(v, 0), max = null, ref = null, aria = '', right = null } = opts;
-  if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
+  if (!rows.length) { el.innerHTML = `<div class="chart-empty">${t('Sin datos.')}</div>`; return false; }
   watchWidth(el, () => hbars(el, rows, opts));
   const W = fitWidth(el), nw = isNarrow(el, 480), rowH = nw ? 46 : 30;
   // En estrecho, cada etiqueta va encima de su barra, a todo lo ancho, y el margen derecho se ajusta al valor más largo.
@@ -526,7 +527,7 @@ export function hbars(el, rows, opts = {}) {
     else s += `<text class="bar-l" x="${G.L - 10}" y="${y + rowH / 2 + 5}" text-anchor="end">${esc(fitText(r.label, Math.floor((G.L - 14) / G.cw)))}</text>`;
     s += `<rect class="bar-v" x="${G.L}" y="${by}" width="${Math.max(1.5, X(r.v) - G.L).toFixed(1)}" height="${bh}"/>`;
     s += `<text class="bar-n" x="${(X(r.v) + 8).toFixed(1)}" y="${by + bh / 2 + 5}">${esc(r.value ?? fmt(r.v))}</text></g>`;
-    return { box: [0, y, G.W, y + rowH], html: r.tip || tip(r.label, [['Valor', r.value ?? fmt(r.v)]]) };
+    return { box: [0, y, G.W, y + rowH], html: r.tip || tip(r.label, [[t('Valor'), r.value ?? fmt(r.v)]]) };
   });
   s += '</svg>';
   el.innerHTML = s;
@@ -538,7 +539,7 @@ export function hbars(el, rows, opts = {}) {
 /* rows: [{ label, v, tip, cls? }] en orden temporal; se rotula una de cada «every» columnas. */
 export function columns(el, rows, opts = {}) {
   const { fmt = v => num(v, 0), yLabel = '', every = 1, aria = '', log = false, left = 64 } = opts;
-  if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
+  if (!rows.length) { el.innerHTML = `<div class="chart-empty">${t('Sin datos.')}</div>`; return false; }
   watchWidth(el, () => columns(el, rows, opts));
   const G = frame(el, { W: fitWidth(el), H: 260, L: left, R: 12, T: 14, B: 40 }, 240, 480);
   const { W, H, L, R, T, B } = G;
@@ -577,7 +578,7 @@ export function columns(el, rows, opts = {}) {
       const cx = (x + bw / 2).toFixed(1), w = Math.min(10, bw * 0.25);
       s += `<g class="whisk"><line x1="${cx}" x2="${cx}" y1="${Y(r.hi).toFixed(1)}" y2="${Y(r.lo).toFixed(1)}"/><line x1="${(x + bw / 2 - w).toFixed(1)}" x2="${(x + bw / 2 + w).toFixed(1)}" y1="${Y(r.hi).toFixed(1)}" y2="${Y(r.hi).toFixed(1)}"/><line x1="${(x + bw / 2 - w).toFixed(1)}" x2="${(x + bw / 2 + w).toFixed(1)}" y1="${Y(r.lo).toFixed(1)}" y2="${Y(r.lo).toFixed(1)}"/></g>`;
     }
-    return { box: [x, T, x + bw, H - B], html: r.tip || tip(r.label, [['Valor', fmt(r.v)]]) };
+    return { box: [x, T, x + bw, H - B], html: r.tip || tip(r.label, [[t('Valor'), fmt(r.v)]]) };
   });
   s += '</svg>';
   el.innerHTML = s;
@@ -589,7 +590,7 @@ export function columns(el, rows, opts = {}) {
 /* rows: [{ label, v, lo, hi, tip }]. Muestra si los intervalos se solapan. */
 export function dotci(el, rows, opts = {}) {
   const { aria = '', unit = '' } = opts;
-  if (!rows.length) { el.innerHTML = '<div class="chart-empty">Sin datos.</div>'; return false; }
+  if (!rows.length) { el.innerHTML = `<div class="chart-empty">${t('Sin datos.')}</div>`; return false; }
   watchWidth(el, () => dotci(el, rows, opts));
   const W = fitWidth(el), rowH = 30, nw = isNarrow(el, 480);
   const G = nw ? { W, L: Math.round(W * 0.38), R: 16, T: 8, B: 34, cw: 7.2 } : { W, L: Math.min(250, Math.round(W * 0.3)), R: 40, T: 8, B: 34, cw: 8 };
@@ -628,7 +629,7 @@ export function hitoTimeline(el, lanes, items, opts = {}) {
   const H = G.T + lanes.length * laneH + G.B;
   const tmin = ms(from), tmax = ms(to);
   const X = v => G.L + (v - tmin) / (tmax - tmin) * (G.W - G.L - G.R);
-  let s = `<svg viewBox="0 0 ${G.W} ${H}" role="img" aria-label="Calendario de los hitos de AI 2027 y fecha de hoy">`;
+  let s = `<svg viewBox="0 0 ${G.W} ${H}" role="img" aria-label="${t('Calendario de los hitos de AI 2027 y fecha de hoy')}">`;
   s += `<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="hatch-bg"/><line x1="0" y1="0" x2="0" y2="6" class="hatch-ln"/></pattern></defs>`;
   s += '<g class="axis">';
   for (const tk of monthTicks(tmin, tmax, tickCount(G))) {
@@ -649,7 +650,7 @@ export function hitoTimeline(el, lanes, items, opts = {}) {
   const xt = X(ms(today));
   s += `<rect class="past" x="${G.L}" y="${G.T}" width="${(xt - G.L).toFixed(1)}" height="${lanes.length * laneH}"/>`;
   const ta = xt < G.L + 60 ? 'start' : xt > G.W - G.R - 60 ? 'end' : 'middle';
-  s += `<line class="today" x1="${xt.toFixed(1)}" x2="${xt.toFixed(1)}" y1="${G.T - 14}" y2="${H - G.B}"/><text class="today-t" x="${xt.toFixed(1)}" y="${G.T - 16}" text-anchor="${ta}">hoy, ${esc(fmtDate(today))}</text>`;
+  s += `<line class="today" x1="${xt.toFixed(1)}" x2="${xt.toFixed(1)}" y1="${G.T - 14}" y2="${H - G.B}"/><text class="today-t" x="${xt.toFixed(1)}" y="${G.T - 16}" text-anchor="${ta}">${t('hoy, {fmtDate}', { fmtDate: esc(fmtDate(today)) })}</text>`;
   // Hitos de una misma línea y fecha se reparten en horizontal alrededor de su fecha.
   const group = new Map(), seen = new Map();
   let dots = '';
@@ -680,7 +681,7 @@ export function hitoTimeline(el, lanes, items, opts = {}) {
 /* ── Récords a lo largo del tiempo (p. ej. SWE-bench Verified) ──────────── */
 /* pts: [{ d, v, n, rec }] por fecha; ref: { v, label }. Línea escalonada de récords, resto de puntos en claro. */
 export function recordChart(el, pts, { yLabel = '', fmt = v => num(v, 0), ref = null, unit = '' } = {}) {
-  if (!pts || pts.length < 2) { el.innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>'; return false; }
+  if (!pts || pts.length < 2) { el.innerHTML = `<div class="chart-empty">${t('Sin datos suficientes para la serie.')}</div>`; return false; }
   watchWidth(el, () => recordChart(el, pts, { yLabel, fmt, ref, unit }));
   const G = frame(el, { W: 860, H: 320, L: 52, R: 16, T: 18, B: 40 }, 280);
   const { W, H, L, R, T, B } = G;
@@ -692,7 +693,7 @@ export function recordChart(el, pts, { yLabel = '', fmt = v => num(v, 0), ref = 
     const X = val => L + (val - v.x0) / (v.x1 - v.x0 || 1) * (W - L - R);
     const Y = val => T + (1 - (val - v.y0) / (v.y1 - v.y0 || 1)) * (H - T - B);
     const inside = (x, y) => x >= L - 3 && x <= W - R + 3 && y >= T - 3 && y <= H - B + 3;
-    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yLabel)} a lo largo del tiempo">${clip(el.id, G)}`;
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t('{yLabel} a lo largo del tiempo', { yLabel: esc(yLabel) })}">${clip(el.id, G)}`;
     s += yAxis(niceTicks(v.y0, v.y1), Y, G, fmt, yLabel) + timeAxis(X, v.x0, v.x1, G) + '</g>';
     const taken = [];
     s += `<g clip-path="url(#clip-${el.id})">`;
@@ -710,7 +711,7 @@ export function recordChart(el, pts, { yLabel = '', fmt = v => num(v, 0), ref = 
     const ord = shown.map((p, i) => [p, i]).sort((a, b) => (a[0].rec ? 1 : 0) - (b[0].rec ? 1 : 0));
     for (const [p, i] of ord) s += `<circle data-k="${i}" class="pt-closed ${p.rec ? 'key' : 'faint'}" cx="${X(ms(p.d)).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${p.rec ? 5 : 4}"/>`;
     s += '</g>';
-    const targets = shown.map(p => ({ x: X(ms(p.d)), y: Y(p.v), html: tip(p.n, [['Fecha de publicación', fmtDate(p.d)], ['Resultado', `${fmt(p.v)}${unit}`], ['Nuevo récord', p.rec ? 'sí' : 'no']]) }));
+    const targets = shown.map(p => ({ x: X(ms(p.d)), y: Y(p.v), html: tip(p.n, [[t('Fecha de publicación'), fmtDate(p.d)], [t('Resultado'), `${fmt(p.v)}${unit}`], [t('Nuevo récord'), p.rec ? t('sí') : t('no')]]) }));
     // Etiquetas: el último récord y los mayores saltos; al acercar, también el resto de puntos visibles que quepan.
     const vis = p => inside(X(ms(p.d)), Y(p.v));
     const lab = (p, faint) => ({ x: X(ms(p.d)), y: Y(p.v), text: `${p.n} · ${fmt(p.v)}${unit}`, prefer: 'up', faint });
@@ -718,7 +719,7 @@ export function recordChart(el, pts, { yLabel = '', fmt = v => num(v, 0), ref = 
     const cands = [jumps[jumps.length - 1], ...jumps.slice(0, -1).sort((a, b) => b.jump - a.jump).slice(0, zoomed ? 40 : 5)].filter(j => vis(j.p)).map(({ p }) => lab(p));
     if (zoomed) cands.push(...shown.filter(p => !p.rec).sort((a, b) => b.v - a.v).map(p => lab(p, true)));
     s += labelSvg(placeLabels(cands.slice(0, zoomed ? 40 : 6), G, taken));
-    s += '</svg><div class="legend"><span><i style="background:var(--closed)"></i>Mejor resultado hasta esa fecha</span><span><i class="lg-faint"></i>Resto de modelos</span>' + zoomUi(zoomed) + '</div>';
+    s += `</svg><div class="legend"><span><i style="background:var(--closed)"></i>${t('Mejor resultado hasta esa fecha')}</span><span><i class="lg-faint"></i>${t('Resto de modelos')}</span>` + zoomUi(zoomed) + '</div>';
     el.innerHTML = s;
     interact(el, targets, 22);
   };
@@ -730,8 +731,8 @@ export function recordChart(el, pts, { yLabel = '', fmt = v => num(v, 0), ref = 
 /* items: [{ n, d, v, lo, hi, up, tip }]: cada evaluación en su fecha de publicación y a la altura de su dificultad (EDI),
    en puntos ECI; up = por encima del mejor modelo de hoy. line: [{ d, v, n }], récords del mejor ECI publicado. */
 export function ediMap(el, items, line, opts = {}) {
-  const { yShort = 'puntos ECI', today = new Date().toISOString().slice(0, 10) } = opts;
-  if (!items.length || !line.length) { el.innerHTML = '<div class="chart-empty">Sin datos suficientes.</div>'; return false; }
+  const { yShort = t('puntos ECI'), today = new Date().toISOString().slice(0, 10) } = opts;
+  if (!items.length || !line.length) { el.innerHTML = `<div class="chart-empty">${t('Sin datos suficientes.')}</div>`; return false; }
   watchWidth(el, () => ediMap(el, items, line, opts));
   const G = { ...frame(el, { W: 860, H: 400, L: 52, R: 16, T: 16, B: 40 }, 360), yShort };
   const { W, H, L, R, T, B } = G;
@@ -743,8 +744,8 @@ export function ediMap(el, items, line, opts = {}) {
     const X = val => L + (val - v.x0) / (v.x1 - v.x0 || 1) * (W - L - R);
     const Y = val => T + (1 - (val - v.y0) / (v.y1 - v.y0)) * (H - T - B);
     const inside = (x, y) => x >= L - 3 && x <= W - R + 3 && y >= T - 3 && y <= H - B + 3;
-    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Dificultad de cada evaluación frente al mejor ECI publicado">${clip(el.id, G)}`;
-    s += yAxis(niceTicks(v.y0, v.y1), Y, G, val => num(val, 0), 'Puntos ECI (dificultad de la evaluación)') + timeAxis(X, v.x0, v.x1, G) + '</g>';
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t('Dificultad de cada evaluación frente al mejor ECI publicado')}">${clip(el.id, G)}`;
+    s += yAxis(niceTicks(v.y0, v.y1), Y, G, val => num(val, 0), t('Puntos ECI (dificultad de la evaluación)')) + timeAxis(X, v.x0, v.x1, G) + '</g>';
     s += `<g clip-path="url(#clip-${el.id})">`;
     let d = `M${X(ms(line[0].d)).toFixed(1)},${Y(line[0].v).toFixed(1)}`;
     for (const p of line.slice(1)) d += ` H${X(ms(p.d)).toFixed(1)} V${Y(p.v).toFixed(1)}`;
@@ -756,13 +757,13 @@ export function ediMap(el, items, line, opts = {}) {
     for (const [i, b] of pts.entries()) s += `<circle data-k="${i}" class="pt-edi${b.up ? ' up' : ''}" cx="${b.x.toFixed(1)}" cy="${b.y.toFixed(1)}" r="5.5"/>`;
     s += '</g>';
     const targets = pts.map(b => ({ x: b.x, y: b.y, html: b.tip }))
-      .concat(recs.map(p => ({ x: p.x, y: p.y, html: tip(p.n, [['Publicado', fmtDate(p.d)], ['ECI', num(p.v, 1)], ['Nuevo récord', 'sí, mejor ECI publicado hasta esa fecha']]) })));
+      .concat(recs.map(p => ({ x: p.x, y: p.y, html: tip(p.n, [[t('Publicado'), fmtDate(p.d)], ['ECI', num(p.v, 1)], [t('Nuevo récord'), t('sí, mejor ECI publicado hasta esa fecha')]]) })));
     // Etiquetas: el mejor modelo de hoy, las evaluaciones que siguen por encima y, al acercar, el resto que quepa.
     const last = line[line.length - 1];
     const cands = pts.filter(b => b.up).sort((a, b) => b.v - a.v).map(b => ({ x: b.x, y: b.y, text: b.n, prefer: 'up', far: true }))
       .concat(zoomed ? pts.filter(b => !b.up).sort((a, b) => b.v - a.v).map(b => ({ x: b.x, y: b.y, text: b.n, faint: true })) : []);
     s += labelSvg(placeLabels(cands.slice(0, zoomed ? 40 : 12), G, pts.map(b => [b.x - 6, b.y - 6, b.x + 6, b.y + 6])));
-    s += `</svg><div class="legend"><span><i class="sw-front"></i>Mejor ECI publicado hasta cada fecha (hoy, ${esc(last.n)}: ${num(last.v, 1)})</span><span><i class="lg-edi"></i>Evaluación, a la altura de su dificultad</span><span><i class="lg-edi up"></i>Por encima del mejor modelo de hoy</span>` + zoomUi(zoomed) + '</div>';
+    s += `</svg><div class="legend"><span><i class="sw-front"></i>${t('Mejor ECI publicado hasta cada fecha (hoy, {n}: {num})', { n: esc(last.n), num: num(last.v, 1) })}</span><span><i class="lg-edi"></i>${t('Evaluación, a la altura de su dificultad')}</span><span><i class="lg-edi up"></i>${t('Por encima del mejor modelo de hoy')}</span>` + zoomUi(zoomed) + '</div>';
     el.innerHTML = s;
     interact(el, targets, 22);
   };
