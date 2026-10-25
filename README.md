@@ -71,10 +71,37 @@ Sin dependencias ni `package.json`. El flujo `.github/workflows/pruebas.yml` las
 
 ```bash
 node --test tests/*.test.mjs   # comparaciones (aaRace), parte, valoración, formato, lector de zip y una recogida con respuestas grabadas
-node tests/humo.mjs            # las cinco vistas y tres direcciones directas en Chrome sin ventana, a 1300 y 390 px (CHROME=/ruta si hace falta)
+node tests/humo.mjs            # las cinco vistas y tres direcciones directas en Chrome sin ventana, en español e inglés, a 1300 y 390 px (CHROME=/ruta si hace falta)
+node tests/idioma.mjs          # el cambio ES⇄EN en el navegador: conserva vista, filtros, comparaciones, fichas y desplazamiento
 ```
 
 La recogida de prueba usa `FIXTURES=tests/fixtures/recogida` en una copia temporal del repositorio: sólo responde OpenRouter y Hugging Face, así que también comprueba que el recolector conserva los valores anteriores de las fuentes que fallan. Cada vista se dibuja por separado (`safe()` en `js/app.js`): si una falla, muestra un aviso con `data-render-error` y las demás siguen funcionando; la prueba de humo busca ese aviso.
+
+## Idiomas (ES · EN)
+
+El sitio está en español y tiene versión inglesa (británica, `en-GB`). **El selector ES | EN sigue oculto**: se ve con `?i18n=1` (queda recordado en `localStorage`; `?i18n=0` lo quita) y se publicará poniendo `RELEASED = true` en `js/i18n.js`. Sin la bandera el sitio es el de siempre, en español, aunque haya un idioma recordado. Sin frameworks, sin build y sin traducción automática en producción.
+
+| Qué | Cómo se traduce | Dónde vive |
+|---|---|---|
+| Interfaz (`js/*.js`, `index.html`) | `t('texto en español', { marcas })`, `tn(n, [uno, otros])`, `data-t` / `data-t-html` / `data-t-attr` en el HTML. El español es la clave | `data/i18n/en/ui.json` |
+| Texto de los datos (notas, editorial de La carrera y AI 2027, lanzamientos) | `tr(es)`: memoria de traducción con frases exactas y patrones con `{marcas}`; lo que se muestra igual en los dos idiomas va en `same` | `data/i18n/en/{hoy,carrera,ai2027,lanzamientos,notas}.json` |
+| Texto que genera el recolector (cambios, titulares, consecuencias, parte, comprobaciones de AI 2027, vigilados) | Cada plantilla se escribe una vez y se evalúa para los dos idiomas (`scripts/textos.mjs`); el inglés queda en `i18n.en.<campo>` del propio objeto (`L(obj, campo)` en la web) | `data/*.json` |
+| RSS | Dos fuentes independientes con las mismas noticias | `data/parte.xml`, `data/parte.en.xml` |
+
+El español se escribe una sola vez y no se duplica el catálogo. Cifras, enlaces, fuentes y valores de datos (`abiertos`, `cerrados`, estados…) no cambian con el idioma: sólo cambia su presentación. Fechas y números salen de `js/locale.js` (`es-ES` / `en-GB`).
+
+**Cambiar de idioma** carga primero las traducciones y luego repinta de una vez (nada de pantallas en blanco ni textos a medias); se conservan la vista y la dirección directa, filtros, orden, comparaciones, fichas y desplegables abiertos, y el desplazamiento. Las demás vistas se repintan en reposo.
+
+**Añadir o cambiar un texto**
+
+1. En la web: escribirlo en español dentro de `t()` y añadir su inglés a `data/i18n/en/ui.json`. `node scripts/i18n.mjs --faltan` lista lo que falta; `--literales`, el español que queda fuera de `t()`.
+2. En los datos curados: el texto nuevo en `data/curated/*.json` necesita su entrada en la memoria (`node scripts/i18n.mjs --faltan` la pide).
+3. En el recolector: la plantilla nueva se escribe con `F.t('español', 'inglés')` en `scripts/cambios.mjs`, `parte.mjs` o `indicadores.mjs`. Si una plantilla no tiene inglés o un texto nuevo no está en la memoria, la recogida **no se detiene**: queda un `::warning title=Traducción pendiente::` en el log (y en `scripts/validate.mjs`), y la web muestra ese texto en español hasta que se traduzca.
+4. `scripts/i18n-backfill.mjs` rellena el inglés de los datos ya publicados sin red y sin tocar el español (aborta si el español recalculado no coincide con el guardado). Úsalo tras fusionar `main` si los datos de la rama quedaron atrás; la recogida diaria lo hace sola para lo que genera.
+
+**Pruebas** (`tests/i18n.test.mjs`, `tests/humo.mjs`, `tests/idioma.mjs`): todas las claves de la interfaz y todo texto español de los datos publicados (`data/i18n/campos.json` dice qué campos) tienen traducción; las marcas `{x}` y las cifras coinciden entre idiomas; el glosario aprobado se respeta; ningún literal español nuevo sale de `t()` (`tests/i18n-permitidos.json`); el español del recolector es idéntico al de antes y su inglés está fijado en `tests/fixtures/textos/`; los dos RSS tienen las mismas noticias; y en el navegador las cinco vistas, en los dos idiomas y a 1300 y 390 px, no dejan ni un texto sin traducir (`?qa=1`) y el cambio de idioma conserva el estado.
+
+**SEO: limitación conocida.** Se actualizan `lang`, `<title>` y la descripción según el idioma, pero la versión inglesa se construye con JavaScript sobre la misma URL: sin JavaScript (o para un rastreador que no lo ejecute) sólo existe el español. Por eso **no hay `hreflang`** ni páginas inglesas indexables; añadirlas exigiría HTML estático por idioma o funciones Edge, y queda fuera de esta fase. Además, con `?lang=en` en la carga inicial el HTML llega en español y se cambia antes del primer pintado de datos, de modo que puede verse un instante el texto fijo en español.
 
 ## Despliegue
 
