@@ -85,8 +85,27 @@ export function scan(src) {
   return { keys, lits };
 }
 export const jsFiles = () => readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js') && f !== 'theme-init.js').map(f => `js/${f}`);
+/* Textos fijos de index.html: data-t (texto), data-t-html (HTML) y data-t-attr (atributos). La clave es lo que lee la web:
+   textContent / innerHTML / valor del atributo, en español. */
+const decode = x => x.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+export function estaticas() {
+  const html = readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const out = [];
+  for (const m of html.matchAll(/<([a-z0-9]+)\b([^>]*)>/g)) {
+    const [open, tag, attrs] = m, line = lineOf(html, m.index);
+    const attr = n => new RegExp(`\\s${n}="([^"]*)"`).exec(attrs)?.[1];
+    for (const n of (/\sdata-t-attr="([^"]*)"/.exec(attrs)?.[1] || '').split(',').map(x => x.trim()).filter(Boolean)) out.push({ key: decode(attr(n) ?? ''), line, tipo: n });
+    const hasText = /\sdata-t(\s|>|$)/.test(open), hasHtml = /\sdata-t-html(\s|>|$)/.test(open);
+    if (hasText || hasHtml) {
+      const from = m.index + open.length, to = html.indexOf(`</${tag}>`, from), inner = html.slice(from, to);
+      out.push({ key: hasHtml ? inner : decode(inner), line, tipo: hasHtml ? 'html' : 'texto' });
+    }
+  }
+  return out;
+}
 export function claves() {
   const out = new Map();
+  for (const k of estaticas()) if (k.key && !out.has(k.key)) out.set(k.key, { ...k, file: 'index.html' });
   for (const f of jsFiles()) for (const k of scan(readFileSync(path.join(ROOT, f), 'utf8')).keys) if (!out.has(k.key)) out.set(k.key, { ...k, file: f });
   return out;
 }

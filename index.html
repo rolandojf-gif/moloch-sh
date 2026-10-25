@@ -3,22 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MOLOCH.SH · Observatorio de la carrera por la IA</title>
-<meta name="description" content="Qué ha salido, qué mejora, cuánto cuesta y dónde comprobarlo: modelos abiertos y cerrados con fuente y fecha en cada cifra.">
+<title data-t>MOLOCH.SH · Observatorio de la carrera por la IA</title>
+<meta name="description" data-t-attr="content" content="Qué ha salido, qué mejora, cuánto cuesta y dónde comprobarlo: modelos abiertos y cerrados con fuente y fecha en cada cifra.">
 <meta name="theme-color" content="#F4F3EF">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FF5722'/%3E%3Crect x='1' y='1' width='30' height='30' fill='none' stroke='%23121211' stroke-width='2'/%3E%3Ctext x='5' y='22' font-family='monospace' font-weight='700' font-size='15' fill='%23121211'%3E%3E_%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap">
 <link rel="stylesheet" href="css/observatorio.css">
+<!-- Los dos RSS, el español y el inglés, siempre declarados: no son hreflang (la página inglesa no se indexa sin JavaScript). -->
 <link rel="alternate" type="application/rss+xml" title="MOLOCH.SH · parte diario" href="data/parte.xml">
+<link rel="alternate" type="application/rss+xml" title="MOLOCH.SH · Daily Briefing" href="data/parte.en.xml">
 <script src="js/theme-init.js"></script>
 <script type="module" src="js/app.js"></script>
 </head>
 <body>
 <!-- Rayado común de lo extrapolado o previsto (no medido), para todos los gráficos. -->
 <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><pattern id="proj-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="ph-bg" width="6" height="6"/><rect class="ph-ln" width="2.4" height="6"/></pattern></defs></svg>
-<a class="skip" href="#main">Saltar al contenido</a>
+<a class="skip" href="#main" data-t>Saltar al contenido</a>
 
 <!-- Cabecera y franja de la recogida, fijas arriba al desplazarse (en móvil, sólo la cabecera). -->
 <div class="topfix" id="topfix">
@@ -27,51 +29,58 @@
     <span class="brand-icon" aria-hidden="true">&gt;_</span>
     <span class="brand-text">
       <strong>MOLOCH<em>.SH</em></strong>
-      <small>Observatorio de la carrera por la IA</small>
+      <small data-t>Observatorio de la carrera por la IA</small>
     </span>
   </a>
 
-  <nav class="navtabs" aria-label="Secciones">
-    <a class="navtab" href="#hoy" data-view="hoy"><i>01</i><span>Hoy</span></a>
-    <a class="navtab" href="#modelos" data-view="modelos"><i>02</i><span>Modelos</span></a>
-    <a class="navtab" href="#lanzamientos" data-view="lanzamientos"><i>03</i><span>Lanzamientos</span></a>
-    <a class="navtab" href="#carrera" data-view="carrera"><i>04</i><span>La carrera</span></a>
+  <nav class="navtabs" aria-label="Secciones" data-t-attr="aria-label">
+    <a class="navtab" href="#hoy" data-view="hoy"><i>01</i><span data-t>Hoy</span></a>
+    <a class="navtab" href="#modelos" data-view="modelos"><i>02</i><span data-t>Modelos</span></a>
+    <a class="navtab" href="#lanzamientos" data-view="lanzamientos"><i>03</i><span data-t>Lanzamientos</span></a>
+    <a class="navtab" href="#carrera" data-view="carrera"><i>04</i><span data-t>La carrera</span></a>
     <a class="navtab" href="#ai2027" data-view="ai2027"><i>05</i><span>AI 2027</span></a>
   </nav>
 
-  <div class="seg theme" role="group" aria-label="Tema">
-    <button class="seg-btn" data-theme-set="auto" aria-pressed="false">Auto</button>
-    <button class="seg-btn" data-theme-set="light" aria-pressed="true">Claro</button>
-    <button class="seg-btn" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+  <div class="tools">
+    <!-- Selector de idioma: oculto hasta que se autorice publicar la versión inglesa (?i18n=1 lo muestra para probarla). -->
+    <div class="seg lang" role="group" aria-label="Idioma" data-t-attr="aria-label" hidden>
+      <button class="seg-btn" type="button" data-lang-set="es" lang="es" aria-pressed="true" title="Español">ES</button>
+      <button class="seg-btn" type="button" data-lang-set="en" lang="en" aria-pressed="false" title="English">EN</button>
+    </div>
+    <div class="seg theme" role="group" aria-label="Tema" data-t-attr="aria-label">
+      <button class="seg-btn" data-theme-set="auto" aria-pressed="false" data-t>Auto</button>
+      <button class="seg-btn" data-theme-set="light" aria-pressed="true" data-t>Claro</button>
+      <button class="seg-btn" data-theme-set="dark" aria-pressed="false" data-t>Oscuro</button>
+    </div>
   </div>
 </header>
 
-<div class="freshness" id="freshness" role="status" aria-live="polite">Cargando datos…</div>
+<div class="freshness" id="freshness" role="status" aria-live="polite" data-t>Cargando datos…</div>
 </div>
 
 <main id="main">
   <!-- 01 · Hoy -->
   <section class="view" id="view-hoy" data-view="hoy" aria-labelledby="h-hoy">
     <div class="view-head">
-      <h1 id="h-hoy">Qué ha cambiado</h1>
+      <h1 id="h-hoy" data-t>Qué ha cambiado</h1>
       <p class="lede" id="hoy-period"></p>
     </div>
     <div class="news" id="hoy-news"></div>
     <div class="visit" id="hoy-visit" hidden></div>
-    <details class="more" id="hoy-reglas" hidden><summary>Cómo se eligen las noticias</summary><div id="hoy-reglas-body"></div></details>
+    <details class="more" id="hoy-reglas" hidden><summary data-t>Cómo se eligen las noticias</summary><div id="hoy-reglas-body"></div></details>
     <details class="more" id="hoy-all"><summary></summary><ul class="changes" id="hoy-all-list"></ul></details>
 
-    <h2 class="sec">Indicadores</h2>
+    <h2 class="sec" data-t>Indicadores</h2>
     <div class="kpis" id="hoy-kpis"></div>
     <p class="note" id="hoy-kpi-note"></p>
 
-    <h2 class="sec">Capacidad frente a precio</h2>
+    <h2 class="sec" data-t>Capacidad frente a precio</h2>
     <div class="panel">
       <div class="chart" id="hoy-scatter"></div>
       <div class="reading" id="hoy-reading"></div>
     </div>
 
-    <h2 class="sec">Evolución diaria de los líderes</h2>
+    <h2 class="sec" data-t>Evolución diaria de los líderes</h2>
     <div class="panel">
       <div class="chart" id="hoy-daily"></div>
       <p class="note" id="hoy-daily-note"></p>
@@ -81,27 +90,27 @@
   <!-- 02 · Modelos -->
   <section class="view" id="view-modelos" data-view="modelos" aria-labelledby="h-modelos" hidden>
     <div class="view-head">
-      <h1 id="h-modelos">Modelos abiertos y cerrados</h1>
-      <p class="lede">Comparación por API, identificando quién sirve cada modelo. El coste de ejecutarlo en hardware propio queda fuera.</p>
+      <h1 id="h-modelos" data-t>Modelos abiertos y cerrados</h1>
+      <p class="lede" data-t>Comparación por API, identificando quién sirve cada modelo. El coste de ejecutarlo en hardware propio queda fuera.</p>
     </div>
 
     <div class="controls">
-      <div class="seg" role="group" aria-label="Apertura" id="mx-weights">
-        <button class="seg-btn" data-w="all" aria-pressed="true">Todos</button>
-        <button class="seg-btn" data-w="abiertos" aria-pressed="false">Abiertos</button>
-        <button class="seg-btn" data-w="cerrados" aria-pressed="false">Cerrados</button>
+      <div class="seg" role="group" aria-label="Apertura" data-t-attr="aria-label" id="mx-weights">
+        <button class="seg-btn" data-w="all" aria-pressed="true" data-t>Todos</button>
+        <button class="seg-btn" data-w="abiertos" aria-pressed="false" data-t>Abiertos</button>
+        <button class="seg-btn" data-w="cerrados" aria-pressed="false" data-t>Cerrados</button>
       </div>
-      <label class="ctl">Ordenar por
+      <label class="ctl"><span data-t>Ordenar por</span>
         <select id="mx-sort">
-          <option value="ii">Inteligencia (AA)</option>
-          <option value="eci">Capacidad (ECI de Epoch)</option>
-          <option value="price">Precio</option>
-          <option value="tps">Velocidad</option>
-          <option value="date">Más reciente</option>
+          <option value="ii" data-t>Inteligencia (AA)</option>
+          <option value="eci" data-t>Capacidad (ECI de Epoch)</option>
+          <option value="price" data-t>Precio</option>
+          <option value="tps" data-t>Velocidad</option>
+          <option value="date" data-t>Más reciente</option>
         </select>
       </label>
-      <label class="ctl grow">Buscar
-        <input id="mx-q" type="search" placeholder="Modelo o laboratorio" autocomplete="off">
+      <label class="ctl grow"><span data-t>Buscar</span>
+        <input id="mx-q" type="search" placeholder="Modelo o laboratorio" data-t-attr="placeholder" autocomplete="off">
       </label>
     </div>
 
@@ -112,38 +121,38 @@
         <caption id="mx-caption"></caption>
         <thead>
           <tr>
-            <th scope="col" class="c-sel"><span class="sr-only">Comparar</span></th>
-            <th scope="col">Modelo</th>
-            <th scope="col">Pesos</th>
-            <th scope="col" class="num" id="mx-ii-h"><button type="button" class="th-sort" data-sort="ii"><span class="th-l">Inteligencia (AA)</span><span class="arr" aria-hidden="true">↕</span></button></th>
-            <th scope="col" class="num"><button type="button" class="th-sort" data-sort="eci"><span class="th-l">ECI (Epoch)</span><span class="arr" aria-hidden="true">↕</span></button></th>
-            <th scope="col" class="num"><button type="button" class="th-sort" data-sort="tps"><span class="th-l">Velocidad</span><span class="arr" aria-hidden="true">↕</span></button></th>
-            <th scope="col" class="num"><button type="button" class="th-sort" data-sort="price"><span class="th-l">Precio entrada / salida</span><span class="arr" aria-hidden="true">↕</span></button></th>
+            <th scope="col" class="c-sel"><span class="sr-only" data-t>Comparar</span></th>
+            <th scope="col" data-t>Modelo</th>
+            <th scope="col" data-t>Pesos</th>
+            <th scope="col" class="num" id="mx-ii-h"><button type="button" class="th-sort" data-sort="ii"><span class="th-l" data-t>Inteligencia (AA)</span><span class="arr" aria-hidden="true">↕</span></button></th>
+            <th scope="col" class="num"><button type="button" class="th-sort" data-sort="eci"><span class="th-l" data-t>ECI (Epoch)</span><span class="arr" aria-hidden="true">↕</span></button></th>
+            <th scope="col" class="num"><button type="button" class="th-sort" data-sort="tps"><span class="th-l" data-t>Velocidad</span><span class="arr" aria-hidden="true">↕</span></button></th>
+            <th scope="col" class="num"><button type="button" class="th-sort" data-sort="price"><span class="th-l" data-t>Precio entrada / salida</span><span class="arr" aria-hidden="true">↕</span></button></th>
           </tr>
         </thead>
         <tbody id="mx-body"></tbody>
       </table>
     </div>
 
-    <h2 class="sec">Evolución de la frontera abierta y cerrada, reconstruida con el índice AA actual</h2>
+    <h2 class="sec" data-t>Evolución de la frontera abierta y cerrada, reconstruida con el índice AA actual</h2>
     <div class="panel">
       <div class="chart" id="mx-frontier-aa"></div>
       <div class="reading" id="mx-frontier-aa-note"></div>
     </div>
 
-    <h2 class="sec">Evolución de la frontera abierta y cerrada: ECI de Epoch</h2>
+    <h2 class="sec" data-t>Evolución de la frontera abierta y cerrada: ECI de Epoch</h2>
     <div class="panel">
       <div class="chart" id="mx-frontier"></div>
       <div class="reading" id="mx-frontier-note"></div>
     </div>
 
-    <h2 class="sec" id="mx-uso-h">Los más usados en OpenRouter: últimos 7 días</h2>
+    <h2 class="sec" id="mx-uso-h" data-t>Los más usados en OpenRouter: últimos 7 días</h2>
     <div class="panel">
       <div class="chart" id="mx-uso"></div>
       <div class="reading" id="mx-uso-note"></div>
     </div>
 
-    <h2 class="sec">Los más usados en OpenRouter: últimos 30 días</h2>
+    <h2 class="sec" data-t>Los más usados en OpenRouter: últimos 30 días</h2>
     <div class="panel">
       <div class="chart" id="mx-uso-mes"></div>
       <div class="reading" id="mx-uso-mes-note"></div>
@@ -153,19 +162,19 @@
   <!-- 03 · Lanzamientos -->
   <section class="view" id="view-lanzamientos" data-view="lanzamientos" aria-labelledby="h-lanz" hidden>
     <div class="view-head">
-      <h1 id="h-lanz">Qué ha salido realmente</h1>
-      <p class="lede">Anuncio, acceso restringido, API pública y pesos descargables son acontecimientos distintos. Cada modelo muestra cuáles constan, cuándo y según quién.</p>
+      <h1 id="h-lanz" data-t>Qué ha salido realmente</h1>
+      <p class="lede" data-t>Anuncio, acceso restringido, API pública y pesos descargables son acontecimientos distintos. Cada modelo muestra cuáles constan, cuándo y según quién.</p>
     </div>
     <div class="controls">
-      <div class="seg" role="group" aria-label="Apertura" id="ln-weights">
-        <button class="seg-btn" data-w="all" aria-pressed="true">Todos</button>
-        <button class="seg-btn" data-w="abiertos" aria-pressed="false">Abiertos</button>
-        <button class="seg-btn" data-w="cerrados" aria-pressed="false">Cerrados</button>
+      <div class="seg" role="group" aria-label="Apertura" data-t-attr="aria-label" id="ln-weights">
+        <button class="seg-btn" data-w="all" aria-pressed="true" data-t>Todos</button>
+        <button class="seg-btn" data-w="abiertos" aria-pressed="false" data-t>Abiertos</button>
+        <button class="seg-btn" data-w="cerrados" aria-pressed="false" data-t>Cerrados</button>
       </div>
-      <div class="seg" role="group" aria-label="Periodo" id="ln-range">
-        <button class="seg-btn" data-d="30" aria-pressed="false">30 días</button>
-        <button class="seg-btn" data-d="90" aria-pressed="true">90 días</button>
-        <button class="seg-btn" data-d="0" aria-pressed="false">Todo</button>
+      <div class="seg" role="group" aria-label="Periodo" data-t-attr="aria-label" id="ln-range">
+        <button class="seg-btn" data-d="30" aria-pressed="false" data-t>30 días</button>
+        <button class="seg-btn" data-d="90" aria-pressed="true" data-t>90 días</button>
+        <button class="seg-btn" data-d="0" aria-pressed="false" data-t>Todo</button>
       </div>
     </div>
     <div id="ln-list" class="timeline"></div>
@@ -174,67 +183,67 @@
   <!-- 04 · La carrera -->
   <section class="view" id="view-carrera" data-view="carrera" aria-labelledby="h-carrera" hidden>
     <div class="view-head">
-      <h1 id="h-carrera">Qué acelera o frena el avance</h1>
-      <p class="lede">Seis frentes. En cada uno, primero los datos y los hechos con su fuente; después, una «Lectura Moloch» marcada como interpretación y formulada como hipótesis que puede confirmarse, debilitarse o quedar abierta.</p>
+      <h1 id="h-carrera" data-t>Qué acelera o frena el avance</h1>
+      <p class="lede" data-t>Seis frentes. En cada uno, primero los datos y los hechos con su fuente; después, una «Lectura Moloch» marcada como interpretación y formulada como hipótesis que puede confirmarse, debilitarse o quedar abierta.</p>
     </div>
 
-    <h2 class="sec">Distancias en la frontera</h2>
+    <h2 class="sec" data-t>Distancias en la frontera</h2>
     <div class="kpis" id="ca-kpis-aa"></div>
     <div class="panel gap-panel">
       <div class="chart" id="ca-gaps-aa"></div>
       <div class="reading" id="ca-gaps-aa-note"></div>
     </div>
-    <h3 class="sub-sec">Serie larga: las mismas distancias con el ECI de Epoch</h3>
+    <h3 class="sub-sec" data-t>Serie larga: las mismas distancias con el ECI de Epoch</h3>
     <div class="kpis" id="ca-kpis"></div>
     <div class="panel gap-panel">
       <div class="chart" id="ca-gaps"></div>
       <div class="reading" id="ca-gaps-note"></div>
     </div>
 
-    <h2 class="sec">Frentes</h2>
-    <nav class="jump" id="ca-index" aria-label="Frentes"></nav>
+    <h2 class="sec" data-t>Frentes</h2>
+    <nav class="jump" id="ca-index" aria-label="Frentes" data-t-attr="aria-label"></nav>
     <div class="fronts" id="ca-fronts"></div>
   </section>
 
   <!-- 05 · AI 2027 -->
   <section class="view" id="view-ai2027" data-view="ai2027" aria-labelledby="h-ai2027" hidden>
     <div class="view-head">
-      <h1 id="h-ai2027">Cómo encaja la realidad con AI 2027</h1>
-      <p class="lede">Qué predijo el escenario AI 2027, para cuándo, y en qué punto está cada predicción hoy. Cada una conserva su texto original; las revisiones posteriores de los autores aparecen fechadas a su lado, sin sustituirlo.</p>
+      <h1 id="h-ai2027" data-t>Cómo encaja la realidad con AI 2027</h1>
+      <p class="lede" data-t>Qué predijo el escenario AI 2027, para cuándo, y en qué punto está cada predicción hoy. Cada una conserva su texto original; las revisiones posteriores de los autores aparecen fechadas a su lado, sin sustituirlo.</p>
     </div>
     <div class="a7-top">
       <div class="panel" id="a7-scn"></div>
       <div class="panel a7-status" id="a7-status"></div>
     </div>
 
-    <h2 class="sec">Calendario de predicciones</h2>
+    <h2 class="sec" data-t>Calendario de predicciones</h2>
     <div class="panel">
       <div class="chart" id="a7-timeline"></div>
       <div class="legend" id="a7-tl-legend"></div>
-      <p class="note">Cada punto es una predicción, en su fecha; el color es la valoración del observatorio. La zona sombreada es el pasado. Pasa el cursor por un punto para leerla y púlsalo para ir a su ficha.</p>
+      <p class="note" data-t>Cada punto es una predicción, en su fecha; el color es la valoración del observatorio. La zona sombreada es el pasado. Pasa el cursor por un punto para leerla y púlsalo para ir a su ficha.</p>
     </div>
 
-    <h2 class="sec">Las predicciones, una a una</h2>
-    <nav class="jump" id="a7-index" aria-label="Líneas"></nav>
+    <h2 class="sec" data-t>Las predicciones, una a una</h2>
+    <nav class="jump" id="a7-index" aria-label="Líneas" data-t-attr="aria-label"></nav>
     <div id="a7-lines"></div>
 
-    <h2 class="sec">Autores frente al observatorio</h2>
+    <h2 class="sec" data-t>Autores frente al observatorio</h2>
     <div class="panel tally" id="a7-tally"></div>
-    <p class="note">Escala común: adelantado, compatible, retrasado, todavía no evaluable o sin evidencia suficiente. Las valoraciones de los autores son sus palabras, situadas por el observatorio en esta escala. Las del observatorio son fijas o se calculan en cada recogida con una regla explícita. «Adelantado» o «retrasado» describen el ritmo frente al escenario, no si eso es bueno o malo.</p>
+    <p class="note" data-t>Escala común: adelantado, compatible, retrasado, todavía no evaluable o sin evidencia suficiente. Las valoraciones de los autores son sus palabras, situadas por el observatorio en esta escala. Las del observatorio son fijas o se calculan en cada recogida con una regla explícita. «Adelantado» o «retrasado» describen el ritmo frente al escenario, no si eso es bueno o malo.</p>
     <div class="panel" id="a7-pace"></div>
     <details class="vig" id="a7-vig"></details>
 
-    <h2 class="sec">Registro de revisiones del escenario</h2>
+    <h2 class="sec" data-t>Registro de revisiones del escenario</h2>
     <ol class="revlog" id="a7-rev"></ol>
   </section>
 </main>
 
 <footer class="foot">
   <details id="method">
-    <summary>Método y fuentes</summary>
+    <summary data-t>Método y fuentes</summary>
     <div id="method-body"></div>
   </details>
-  <p class="foot-line">MOLOCH.SH · las cifras proceden de las fuentes enlazadas; los textos marcados como lectura son interpretación. Inteligencia, programación, agentes y velocidad de los modelos: <a href="https://artificialanalysis.ai" target="_blank" rel="noopener">Artificial Analysis</a>, con su permiso. ECI, chips, centros e ingresos: <a href="https://epoch.ai/" target="_blank" rel="noopener">Epoch AI</a> (CC BY 4.0). Precios: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>. Horizonte temporal: <a href="https://metr.org/time-horizons" target="_blank" rel="noopener">METR</a>.</p>
+  <p class="foot-line" data-t-html>MOLOCH.SH · las cifras proceden de las fuentes enlazadas; los textos marcados como lectura son interpretación. Inteligencia, programación, agentes y velocidad de los modelos: <a href="https://artificialanalysis.ai" target="_blank" rel="noopener">Artificial Analysis</a>, con su permiso. ECI, chips, centros e ingresos: <a href="https://epoch.ai/" target="_blank" rel="noopener">Epoch AI</a> (CC BY 4.0). Precios: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>. Horizonte temporal: <a href="https://metr.org/time-horizons" target="_blank" rel="noopener">METR</a>.</p>
 </footer>
 </body>
 </html>

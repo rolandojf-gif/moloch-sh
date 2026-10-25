@@ -1,0 +1,72 @@
+{
+ "exact": {
+  "fecha de alta en OpenRouter": "date listed on OpenRouter",
+  "mediana de AA para el proveedor de referencia del laboratorio": "AA median for the lab’s reference provider",
+  "fecha del modelo según AA": "model date according to AA",
+  "fecha del modelo según Epoch": "model date according to Epoch",
+  "creación del repositorio": "repository creation",
+  "descarga con solicitud de acceso": "download with an access request",
+  "el repositorio enlazado no responde": "the linked repository does not respond",
+  "encontrado en la organización del laboratorio en Hugging Face; OpenRouter no lo enlaza": "found in the lab’s Hugging Face organisation; OpenRouter does not link it",
+  "inferido: OpenRouter no enlaza pesos públicos y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; puede corregirse en data/curated/overrides.json": "inferred: OpenRouter links no public weights and there is no repository with its name in the lab’s Hugging Face organisation; it can be corrected in data/curated/overrides.json",
+  "precio de referencia de OpenRouter; no se pudieron leer sus proveedores": "OpenRouter reference price; its providers could not be read",
+  "intervalo null–null": "interval null–null",
+  "En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index v4.3, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.": "In the model views, capability is measured with the Artificial Analysis Intelligence Index v4.3, which AA computes with its own tests and which usually scores a model a few days after release. AA publishes one figure per reasoning configuration; the one with the highest index is shown and named. Alongside it is Epoch AI’s Epoch Capabilities Index (ECI) (CC BY 4.0), which combines many benchmarks with a confidence interval and is the basis of the historical series in “The AI Race”. The two scales are not comparable with each other. Matching with OpenRouter is by lab and normalised name.",
+  "Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.": "Blended price = (3 × input + output) / 4, in USD per million tokens, as Artificial Analysis does.",
+  "Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado y con su cuantización cuando OpenRouter la publica (puede no ser la versión que evalúan AA o Epoch). El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio.": "Price: what the lab itself charges when it serves the model on OpenRouter; if it does not serve it, that of the cheapest provider, named and with its quantisation when OpenRouter publishes it (it may not be the version that AA or Epoch evaluate). The per-model price that OpenRouter publishes is not used because it corresponds to a reference provider that changes from one day to the next. Only the lab’s own prices are recorded as price changes.",
+  "«Abiertos» con un repositorio público en Hugging Face, enlazado por OpenRouter o con el mismo nombre en la organización del laboratorio. Sin repositorio, la clasificación de Epoch si la hay; si no, «abiertos · anunciados» cuando su descripción de OpenRouter lo presenta como de pesos abiertos (no consta quién la redacta, así que no se atribuye al laboratorio; cuenta como abierto, aunque aún no se pueda descargar), y si no, «cerrados», marcado como inferido. La licencia procede de la ficha de Hugging Face.": "“Open” means a public repository on Hugging Face, linked by OpenRouter or with the same name in the lab’s organisation. Without a repository, Epoch’s classification if there is one; if not, “open · announced” when its OpenRouter description presents it as open-weight (it is not stated who writes it, so it is not attributed to the lab; it counts as open even though it cannot yet be downloaded), and otherwise “closed”, marked as inferred. The licence comes from the Hugging Face model card.",
+  "La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la latencia (tiempo hasta el primer token) incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.": "Speed depends on who serves the model. The median measured by Artificial Analysis at the reference provider is shown, with the same configuration that gives its score; with reasoning at maximum, latency (time to first token) includes thinking time and can reach minutes. If AA does not have it, that of the fastest OpenRouter provider is used when its API publishes it.",
+  "Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos 540 días.": "Models from the tracked labs listed on OpenRouter in the last 540 days are included."
+ },
+ "patterns": [
+  [
+   "Artificial Analysis Intelligence Index {v}, configuración «{cfg}»; valor vigente en Artificial Analysis en la fecha de consulta; AA no publica la fecha de evaluación",
+   "Artificial Analysis Intelligence Index {v}, configuration “{cfg}”; value current on Artificial Analysis at the date checked; AA does not publish the evaluation date"
+  ],
+  [
+   "clasificación de Epoch: {x}",
+   "Epoch classification: {x}"
+  ],
+  [
+   "el laboratorio no lo sirve en OpenRouter: proveedor más barato, {p}, con cuantización {q}",
+   "the lab does not serve it on OpenRouter: cheapest provider, {p}, with {q} quantisation"
+  ],
+  [
+   "el laboratorio no lo sirve en OpenRouter: proveedor más barato, {p}",
+   "the lab does not serve it on OpenRouter: cheapest provider, {p}"
+  ],
+  [
+   "intervalo {a}–{b}",
+   "interval {a}–{b}"
+  ],
+  [
+   "pesos anunciados: la descripción del modelo en OpenRouter lo presenta como de pesos abiertos («{d}»), pero aún no hay repositorio público en Hugging Face, así que todavía no se pueden descargar",
+   "announced weights: the model’s OpenRouter description presents it as open-weight (“{d}”), but there is still no public repository on Hugging Face, so it cannot be downloaded yet"
+  ],
+  [
+   "precio del propio laboratorio ({lab}) en OpenRouter",
+   "the lab’s own price ({lab}) on OpenRouter"
+  ],
+  [
+   "fecha de publicación en la base de modelos de Epoch AI («{m}»)",
+   "release date in Epoch AI’s model database (“{m}”)"
+  ]
+ ],
+ "same": [
+  "2026",
+  "apache-2.0",
+  "glm-5.3",
+  "kimi-k3",
+  "minimax-community",
+  "mit",
+  "modified-mit",
+  "muse-model-license",
+  "nvidia-nemotron-open-model-license",
+  "nvidia-open-model-agreement",
+  "openmdw-1.1",
+  "other",
+  "qwen-community-1.0",
+  "qwen3.8-max",
+  "tencent-hunyuan-a13b"
+ ]
+}

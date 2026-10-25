@@ -47,7 +47,7 @@ export function src(f) {
   const parts = [t('Fuente: {name}', { name })];
   if (f.asOf) parts.push(t('dato: {asOf}', { asOf: f.asOf }));
   if (f.got) parts.push(t('consulta: {got} UTC', { got: f.got.slice(0, 16).replace('T', ' ') }));
-  if (f.note) parts.push(tr(f.note));
+  if (f.note) parts.push(f.noteTr ? f.note : tr(f.note));   // noteTr: la nota ya viene traducida
   if (f.stale) parts.push(t('ÚLTIMO VALOR VÁLIDO: la consulta más reciente falló'));
   const title = esc(parts.join(' · '));
   const cls = `src${f.stale ? ' stale' : ''}`;

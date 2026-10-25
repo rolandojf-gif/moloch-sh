@@ -1,0 +1,28 @@
+{
+ "exact": {
+  "EE. UU.": "US",
+  "Francia": "France",
+  "Canadá": "Canada",
+  "Reino Unido": "UK",
+  "Alemania": "Germany",
+  "Japón": "Japan",
+  "Corea del Sur": "South Korea",
+  "EAU": "UAE",
+  "Arabia Saudí": "Saudi Arabia",
+  "Noruega": "Norway",
+  "España": "Spain",
+  "Singapur": "Singapore",
+  "Taiwán": "Taiwan",
+  "Catar": "Qatar",
+  "Suecia": "Sweden",
+  "Finlandia": "Finland",
+  "Países Bajos": "Netherlands",
+  "Malasia": "Malaysia",
+  "Llegaría más tarde": "Would arrive later"
+ },
+ "same": [
+  "China",
+  "Epoch AI’s ECI",
+  "Israel"
+ ]
+}

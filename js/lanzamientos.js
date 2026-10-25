@@ -21,7 +21,7 @@ const evt = k => ({ pesos: t('Pesos abiertos'), evaluacion: t('Primera evaluaci�
 function stagesOf(m, curated) {
   const st = {};
   for (const e of curated.filter(e => e.model === m.id)) {
-    if (!st[e.type] || e.date < st[e.type].date) st[e.type] = { date: e.date, html: src({ src: 'curated', url: e.url, asOf: e.date, got: e.consulta, note: [tr(e.fuente), e.verificacion === 'buscador' ? t('fecha comprobada con buscador') : null].filter(Boolean).join(' · ') }), note: e.nota ? tr(e.nota) : null, delta: e.delta };
+    if (!st[e.type] || e.date < st[e.type].date) st[e.type] = { date: e.date, html: src({ src: 'curated', url: e.url, asOf: e.date, got: e.consulta, noteTr: true, note: [tr(e.fuente), e.verificacion === 'buscador' ? t('fecha comprobada con buscador') : null].filter(Boolean).join(' · ') }), note: e.nota ? tr(e.nota) : null, delta: e.delta };
   }
   if (!st.anuncio && m.epochPub?.v) st.anuncio = { date: m.epochPub.v, html: src(m.epochPub), note: t('publicación según Epoch AI') };
   if (m.orCreated.v) st.api = st.api || { date: m.orCreated.v, html: src(m.orCreated), note: t('alta en OpenRouter') };
