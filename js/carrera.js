@@ -1,6 +1,6 @@
 /* Vista «La carrera»: distancias en la frontera y seis frentes. Cada uno empieza por qué sabemos, qué ha cambiado y qué
    cambiaría la lectura; después, gráficos, indicadores, hechos con fuente y la lectura marcada como interpretación. */
-import { esc, fmtDate, dateFmt, num, ND, aaRace, aaIndexName, AA_LINK } from './fmt.js';
+import { esc, fmtDate, dateFmt, num, ND, aaRace, aaCoverage, coverageText, aaIndexName, AA_LINK } from './fmt.js';
 import { indicatorRow, indicatorKpi, indicatorBrief, mw, mh100, usdB, PAIS } from './indicadores.js';
 import { gaps, hbars, columns, dotci, recordChart, ediMap, tip } from './charts.js';
 
@@ -20,7 +20,7 @@ export function factItem(h) {
 function resumen(f, ind, log) {
   const sab = ind ? (f.sabemos || []).map(k => { const r = indicatorBrief(ind, k); return `<li><span class="k">${esc(r.label)}</span><b>${r.value}</b></li>`; }).join('') : '';
   const own = (log?.vigilados || []).filter(v => f.indicadores.includes(v.path));
-  const vig = own.filter(v => !v.detenida), stopped = own.filter(v => v.detenida);
+  const vig = own.filter(v => !v.detenida && !v.incompleto), stopped = own.filter(v => v.detenida), incomp = own.filter(v => v.incompleto && !v.detenida);
   const ev = (log?.events || []).filter(e => e.kind === 'indicador' && f.indicadores.includes(e.data?.path)).map(e => ({ fecha: e.detected, html: `${esc(e.what)}${e.src?.url ? ` <a href="${esc(e.src.url)}" target="_blank" rel="noopener">${esc(e.src.name)}</a>` : ''}` }))
     .concat((f.lectura.historial || []).slice(1).map(h => ({ fecha: h.fecha, html: `La hipótesis pasa a «${esc((ESTADO[h.estado] || h.estado).toLowerCase())}».${h.nota ? ` ${esc(h.nota)}` : ''}` })))
     .sort((a, b) => b.fecha.localeCompare(a.fecha));
@@ -30,7 +30,7 @@ function resumen(f, ind, log) {
     : `<p>${vig.length ? `Ningún cambio en sus indicadores vigilados desde el ${esc(curDate(desde))}.` : 'El recolector no vigila todavía ningún indicador de este frente.'}</p>`;
   return `<div class="front-sum">
     <div><span class="lbl">Qué sabemos</span>${sab ? `<ul class="sum-ind">${sab}</ul>` : `<p>${ND}</p>`}<p class="m-sub">Detalle, fuentes y hechos, más abajo.</p></div>
-    <div><span class="lbl">Qué ha cambiado</span>${cambios}${vig.length ? `<p class="m-sub">Se comparan en cada recogida: ${vig.map(v => esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))).join('; ')}.</p>` : ''}${stopped.length ? `<p class="m-sub">Ya no se comparan, porque la serie se ha detenido: ${stopped.map(v => `${esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))} (último modelo medido, del ${esc(curDate(v.detenida))})`).join('; ')}.</p>` : ''}</div>
+    <div><span class="lbl">Qué ha cambiado</span>${cambios}${vig.length ? `<p class="m-sub">Se comparan en cada recogida: ${vig.map(v => esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))).join('; ')}.</p>` : ''}${stopped.length ? `<p class="m-sub">Ya no se comparan, porque la serie se ha detenido: ${stopped.map(v => `${esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))} (último modelo medido, del ${esc(curDate(v.detenida))})`).join('; ')}.</p>` : ''}${incomp.length ? `<p class="m-sub">No se comparan mientras su cobertura sea incompleta: ${incomp.map(v => esc(v.label.charAt(0).toLowerCase() + v.label.slice(1))).join('; ')}.</p>` : ''}</div>
     <div class="sum-lect"><span class="lbl">Qué cambiaría la lectura · interpretación</span><p><b>La reforzaría:</b> ${esc(f.lectura.reforzaria)}</p><p><b>La debilitaría:</b> ${esc(f.lectura.debilitaria)}</p></div>
   </div>`;
 }
@@ -252,12 +252,12 @@ export function renderCarrera(d) {
     return;
   }
   // Primero el índice de AA, al día: puntúa un modelo a los pocos días de salir y cuenta laboratorios que Epoch no mide.
-  const aa = aaRace(d.catalog);
+  const aa = aaRace(d.catalog), cov = d.catalog.epochFrontier?.points?.length ? aaCoverage(d.catalog, aa.from) : null;
   $('#ca-kpis-aa').innerHTML = ind?.aa?.gapUsCn
     ? ['aa.gapUsCn', 'aa.gapClosedOpen', 'aa.gapLabs', 'aa.rate12m'].map(k => indicatorKpi(ind, k)).join('')
     : `<div class="empty">${ND}: la recogida todavía no ha calculado las distancias con el índice de AA.</div>`;
-  if (!gaps($('#ca-gaps-aa'), aa.series, { unit: 'puntos del índice AA', short: 'puntos AA' })) $('#ca-gaps-aa').innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>';
-  $('#ca-gaps-aa-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Hoy y a cada fin de mes, el mejor ${esc(aaIndexName(aa.ver))} publicado hasta esa fecha por laboratorios de cada país o por modelos con pesos cerrados y abiertos, y su diferencia; los dos primeros laboratorios, con el mejor modelo de cada uno. País del laboratorio y pesos según el catálogo del observatorio: cuenta como abierto un modelo que su descripción en OpenRouter presenta como de pesos abiertos, aunque aún no se puedan descargar. Cada modelo va en su fecha según AA, con su índice de hoy, y sólo cuentan los ${aa.n} que siguen en OpenRouter: en los meses antiguos faltan los retirados. Las distancias no se convierten en meses, y las escalas AA y ECI no son comparables. Datos de ${AA_LINK}, publicados con su permiso.`;
+  if (!gaps($('#ca-gaps-aa'), aa.series, { unit: 'puntos del índice AA', short: 'puntos AA', bands: cov?.gaps })) $('#ca-gaps-aa').innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>';
+  $('#ca-gaps-aa-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Hoy y a cada fin de mes, el mejor ${esc(aaIndexName(aa.ver))} publicado hasta esa fecha por laboratorios de cada país o por modelos con pesos cerrados y abiertos, y su diferencia; los dos primeros laboratorios, con el mejor modelo de cada uno. País del laboratorio y pesos según el catálogo del observatorio: cuenta como abierto un modelo que su descripción en OpenRouter presenta como de pesos abiertos, aunque aún no se puedan descargar. Es una reconstrucción hecha hoy, no una serie medida en cada fecha: cada modelo va en su fecha según AA, con su índice de hoy, y sólo cuentan los ${aa.n} que siguen en OpenRouter, así que en los meses antiguos faltan los retirados.${esc(coverageText(cov))} Las distancias no se convierten en meses, y las escalas AA y ECI no son comparables. Datos de ${AA_LINK}, publicados con su permiso.`;
   // Debajo, la serie larga del ECI de Epoch: más modelos históricos e intervalos de confianza, pero llega con semanas de retraso.
   if (ind) {
     $('#ca-kpis').innerHTML = ['eci.gapUsCn', 'eci.gapClosedOpen', 'eci.gapLabs', 'eci.rate12m'].map(k => indicatorKpi(ind, k)).join('');

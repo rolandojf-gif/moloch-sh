@@ -301,12 +301,24 @@ export function scatter(el, points, { threshold = null, labels = new Set(), yLab
 }
 
 /* ── Evolución de la frontera abierta y cerrada (Modelos) ───────────────── */
+/* Tramos de cobertura incompleta (aaCoverage): rayado tenue detrás de las líneas, entre dos fechas, dentro del área del gráfico. */
+const covPattern = id => `<defs><pattern id="cov-${id}" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" class="cov-ln"/></pattern></defs>`;
+function covBands(id, bands, X, G, t0, t1) {
+  let s = '';
+  for (const b of bands || []) {
+    const a = Math.max(ms(b.from), t0), z = Math.min(ms(b.to), t1);
+    if (z <= a) continue;
+    s += `<rect class="cov-band" fill="url(#cov-${id})" x="${X(a).toFixed(1)}" y="${G.T}" width="${(X(z) - X(a)).toFixed(1)}" height="${G.H - G.T - G.B}"/>`;
+  }
+  return s;
+}
+const COV_LEGEND = '<span><i class="lg-cov"></i>Cobertura incompleta: falta el mejor modelo según Epoch</span>';
 /* records: [{ date, open: {v, name} | null, closed: {v, name} | null }] con el máximo acumulado de cada grupo.
    models: todos los modelos puntuados [{ d, v, g: 'o'|'c', n, org, lo, hi, rec }]; sin ellos sólo se dibujan los récords. */
 /* metric: rótulo de la cifra en la ficha (ECI por defecto); highlight: nombres que llevan etiqueta fija aunque no sean récord
-   (p. ej. las novedades); fmtV: cómo se escribe la cifra. */
+   (p. ej. las novedades); fmtV: cómo se escribe la cifra; bands: tramos con cobertura incompleta [{ from, to }]. */
 export function frontier(el, records, opts = {}) {
-  const { models = null, yLabel = '', yShort = '', metric = 'ECI', highlight = null, fmtV = v => num(v, 1) } = opts;
+  const { models = null, yLabel = '', yShort = '', metric = 'ECI', highlight = null, fmtV = v => num(v, 1), bands = null } = opts;
   const G = { ...frame(el, { W: 860, H: 360, L: 52, R: 16, T: 16, B: 40 }, 320), yShort };
   const { W, H, L, R, T, B } = G;
   const rec = { open: [], closed: [] };
@@ -334,6 +346,8 @@ export function frontier(el, records, opts = {}) {
     let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución del mejor modelo abierto y del mejor cerrado">${clip(el.id, G)}`;
     s += yAxis(niceTicks(v.y0, v.y1), Y, G, val => num(val, 0), yLabel) + timeAxis(X, v.x0, v.x1, G) + '</g>';
     s += `<g clip-path="url(#clip-${el.id})">`;
+    const cov = covBands(el.id, bands, X, G, v.x0, v.x1);
+    if (cov) s += covPattern(el.id) + cov;
     for (const g of ['open', 'closed']) {
       const r = rec[g];
       if (!r.length) continue;
@@ -372,7 +386,7 @@ export function frontier(el, records, opts = {}) {
     s += labelSvg(placeLabels([...leaders, ...marked, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G));
     s += '</svg><div class="legend"><span><i style="background:var(--open)"></i>Mejor con pesos abiertos</span><span><i style="background:var(--closed)"></i>Mejor cerrado</span>';
     s += (shown.some(m => m.anun) ? '<span><i class="lg-anun"></i>Pesos anunciados, aún sin descargar</span>' : '')
-      + (models ? '<span><i class="lg-faint"></i>Resto de modelos puntuados</span>' : '') + zoomUi(zoomed) + '</div>';
+      + (models ? '<span><i class="lg-faint"></i>Resto de modelos puntuados</span>' : '') + (cov ? COV_LEGEND : '') + zoomUi(zoomed) + '</div>';
     el.innerHTML = s;
     interact(el, targets, 22);
   };
@@ -381,11 +395,12 @@ export function frontier(el, records, opts = {}) {
 }
 
 /* ── Distancias en puntos ECI a lo largo del tiempo (La carrera) ────────── */
-/* unit: escala de la distancia («puntos ECI» o «puntos del índice AA»); si un punto trae who, la ficha nombra los modelos. */
-export function gaps(el, points, { unit = 'puntos ECI', short = unit } = {}) {
+/* unit: escala de la distancia («puntos ECI» o «puntos del índice AA»); si un punto trae who, la ficha nombra los modelos.
+   bands: tramos con cobertura incompleta [{ from, to }]. */
+export function gaps(el, points, { unit = 'puntos ECI', short = unit, bands = null } = {}) {
   const pts = (points || []).filter(p => p.usCn !== null || p.closedOpen !== null);
   if (pts.length < 2) { el.innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>'; return false; }
-  watchWidth(el, () => gaps(el, points, { unit, short }));
+  watchWidth(el, () => gaps(el, points, { unit, short, bands }));
   const G = frame(el, { W: 860, H: 290, L: 52, R: 185, T: 16, B: 40 }, 250);
   const { W, H, L, R, T, B } = G;
   const tmin = ms(pts[0].d), tmax = ms(pts[pts.length - 1].d);
@@ -395,6 +410,8 @@ export function gaps(el, points, { unit = 'puntos ECI', short = unit } = {}) {
   const Y = v => T + (1 - (v - ymin) / (ymax - ymin || 1)) * (H - T - B);
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Distancia en ${esc(unit)} entre EE. UU. y China y entre modelos cerrados y abiertos">`;
   s += yAxis(niceTicks(ymin, ymax), Y, G, v => num(v, 0), short) + timeAxis(X, tmin, tmax, G) + '</g>';
+  const cov = covBands(el.id, bands, X, G, tmin, tmax);
+  if (cov) s += covPattern(el.id) + cov;
   if (ymin < 0) s += `<line x1="${L}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}" stroke="currentColor" opacity=".5"/>`;
   const SER = [['usCn', 'ln-uscn', 'EE. UU. − China'], ['closedOpen', 'ln-co', 'Cerrados − abiertos']];
   for (const [key, cls] of SER) {
@@ -421,7 +438,7 @@ export function gaps(el, points, { unit = 'puntos ECI', short = unit } = {}) {
   if (!G.narrow) s += ends.map(e => `<text class="ptlabel" x="${(e.x + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
   // En estrecho no hay sitio a la derecha: el último valor de cada serie va en la leyenda.
   const lg = (key, name) => G.narrow && last[key] !== null ? `${name}: ${num(last[key], 1)}` : name;
-  s += `</svg><div class="legend"><span><i style="background:var(--orange)"></i>${esc(lg('usCn', 'EE. UU. − China'))}</span><span><i style="background:var(--ink)"></i>${esc(lg('closedOpen', 'Cerrados − abiertos'))}</span></div>`;
+  s += `</svg><div class="legend"><span><i style="background:var(--orange)"></i>${esc(lg('usCn', 'EE. UU. − China'))}</span><span><i style="background:var(--ink)"></i>${esc(lg('closedOpen', 'Cerrados − abiertos'))}</span>${cov ? COV_LEGEND : ''}</div>`;
   el.innerHTML = s;
   interact(el, targets);
   return true;

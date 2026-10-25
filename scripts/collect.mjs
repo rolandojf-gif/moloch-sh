@@ -30,7 +30,7 @@ import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { collectIndicators } from './indicadores.mjs';
-import { aaRace } from '../js/fmt.js';
+import { aaRace, aaCoverage } from '../js/fmt.js';
 import { detectChanges, mergeLog, snapshotExtras, indSnapshot, vigilados } from './cambios.mjs';
 import { enrich, parte, rss } from './parte.mjs';
 
@@ -652,24 +652,33 @@ function leaders(models, version) {
 
 /* Distancias de «La carrera» con el índice de AA, al día: el mismo cálculo que hace la web con aaRace (js/fmt.js), sobre
    los modelos del catálogo con su índice actual y su fecha de publicación. Las distancias llevan signo: negativa si va
-   por delante el segundo lado. */
-function aaIndicators(models, version, st) {
-  const r = aaRace({ models, aaIndexVersion: version, generated: NOW_ISO }), n = r.now;
+   por delante el segundo lado.
+   Cobertura (aaCoverage, js/fmt.js): si en una fecha que usa el indicador el mejor modelo abierto o cerrado según la frontera
+   del ECI de Epoch no tiene índice AA en el catálogo, el indicador se marca «incompleto» con los que faltan; no se corrige
+   ni se estima nada, y el detector de cambios no lo compara. */
+function aaIndicators(models, version, st, epFront) {
+  const cat = { models, aaIndexVersion: version, generated: NOW_ISO, epochFrontier: epFront };
+  const r = aaRace(cat), n = r.now;
   if (!n) return {};
+  const cov = epFront?.points?.length ? aaCoverage(cat, r.from) : null;
+  const inc = (...dates) => {
+    const miss = cov ? [...new Map(dates.flatMap(d => cov.at(d)).map(x => [x.n, x])).values()] : [];
+    return miss.length ? { incompleto: miss.map(x => ({ model: x.n, g: x.g, since: x.d, why: x.why })) } : {};
+  };
   const who = x => x ? { model: x.n, org: x.org, ii: x.v, date: x.d, id: x.id, ...(x.anun ? { anun: true } : {}) } : null;
   const gap = (a, b) => a && b ? Math.round((a.v - b.v) * 10) / 10 : null;
   const got = st?.ok ? st.got : st?.lastOk || NOW_ISO;
   const f = (v, extra) => ({ v, src: 'aa', url: SOURCES.aa.url, asOf: got.slice(0, 10), got, version, ...(st?.ok ? {} : { stale: true }), ...extra });
   const base = 'índice de inteligencia de Artificial Analysis' + (version ? ` v${version}` : '') + ', con la puntuación actual de cada modelo del catálogo';
   return {
-    gapUsCn: f(gap(n.us, n.cn), { signed: true, us: who(n.us), cn: who(n.cn), note: `mejor modelo de un laboratorio estadounidense menos el mejor de uno chino; ${base}` }),
-    gapClosedOpen: f(gap(n.closed, n.open), { signed: true, closed: who(n.closed), open: who(n.open),
+    gapUsCn: f(gap(n.us, n.cn), { signed: true, us: who(n.us), cn: who(n.cn), ...inc(r.today), note: `mejor modelo de un laboratorio estadounidense menos el mejor de uno chino; ${base}` }),
+    gapClosedOpen: f(gap(n.closed, n.open), { signed: true, closed: who(n.closed), open: who(n.open), ...inc(r.today),
       // Si el abierto en cabeza sólo tiene pesos anunciados, también la distancia al mejor que ya se puede descargar.
       ...(n.open?.anun && n.openDl ? { openDl: who(n.openDl), vDl: gap(n.closed, n.openDl) } : {}),
       note: `mejor modelo de pesos cerrados menos el mejor de pesos abiertos (incluidos los anunciados en su descripción de OpenRouter, aún sin repositorio público); ${base}` }),
-    gapLabs: f(gap(n.first, n.second), { first: who(n.first), second: who(n.second), note: `mejor modelo del primer laboratorio menos el del segundo; ${base}` }),
+    gapLabs: f(gap(n.first, n.second), { first: who(n.first), second: who(n.second), ...inc(r.today), note: `mejor modelo del primer laboratorio menos el del segundo; ${base}` }),
     labs: n.labs.slice(0, 10).map(who),
-    rate12m: f(gap(n.to, n.from), { from: who(n.from), to: who(n.to), since: n.yearAgo, note: `puntos ganados por la frontera desde el ${n.yearAgo}: mejor modelo publicado hasta hoy menos el mejor publicado hasta esa fecha, los dos con su puntuación actual; sólo modelos que siguen en OpenRouter` })
+    rate12m: f(gap(n.to, n.from), { from: who(n.from), to: who(n.to), since: n.yearAgo, ...inc(n.yearAgo, r.today), note: `puntos ganados por la frontera desde el ${n.yearAgo}: mejor modelo publicado hasta hoy menos el mejor publicado hasta esa fecha, los dos con su puntuación actual; sólo modelos que siguen en OpenRouter` })
   };
 }
 
@@ -814,7 +823,8 @@ async function main() {
   // Indicadores de «La carrera» y «AI 2027»
   const prevInd = await readJSON(path.join(DATA, 'indicadores.json'));
   const indicators = await collectIndicators({ getText, getBuf, parseCSV, fact, log, NOW_ISO, TODAY }, ep, prevInd);
-  indicators.ind.aa = aaIndicators(models, aaVersion, status.aa);
+  const epFront = ep === 'keep' ? (prevCatalog?.epochFrontier || null) : { ...epochFrontier(ep.rows), got: NOW_ISO, src: 'epoch', url: SOURCES.epoch.url, n: ep.rows.length };
+  indicators.ind.aa = aaIndicators(models, aaVersion, status.aa, epFront);
   const ai2027 = await readJSON(path.join(DATA, 'curated/ai2027.json'));
   const usoNow = usoRes ? usoRes.semana : null;
 
@@ -860,7 +870,7 @@ async function main() {
     sources: SOURCES,
     status,
     aaIndexVersion: aaVersion ?? curated.aaIndexVersion ?? null,
-    epochFrontier: ep === 'keep' ? (prevCatalog?.epochFrontier || null) : { ...epochFrontier(ep.rows), got: NOW_ISO, src: 'epoch', url: SOURCES.epoch.url, n: ep.rows.length },
+    epochFrontier: epFront,
     method: {
       capability: `En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index${aaVersion ? ` v${aaVersion}` : ''}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.`,
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',

@@ -164,6 +164,57 @@ export function aaRace(catalog) {
   return { ver, today, points, models, series, now, n: list.length, from: list[0]?.d || null };
 }
 
+/* Cobertura de la frontera reconstruida con AA. Para cada récord de la frontera del ECI de Epoch (el mejor modelo abierto
+   y el mejor cerrado según Epoch desde esa fecha), si el catálogo tiene ese modelo con índice AA de la versión vigente.
+   Mientras el mejor según Epoch no lo tenga, la reconstrucción de AA no puede incluirlo y ese tramo queda marcado como
+   incompleto. No se rellena ni se estima nada: sólo se señala. El emparejamiento con Epoch es el del recolector (m.epoch.name).
+   from: fecha desde la que interesa (el primer modelo de la reconstrucción). */
+export function aaCoverage(catalog, from = null) {
+  const ver = catalog?.aaIndexVersion ?? null, today = (catalog?.generated || new Date().toISOString()).slice(0, 10);
+  const models = catalog?.models || [], byEpoch = new Map(), byName = new Map();
+  for (const m of models) { if (m.epoch?.name && !byEpoch.has(m.epoch.name)) byEpoch.set(m.epoch.name, m); if (!byName.has(m.name)) byName.set(m.name, m); }
+  const scoredNow = m => m && ii(m) !== null && (!ver || !m.aa.version || m.aa.version === ver);
+  const recs = [];
+  for (const g of ['open', 'closed']) {
+    let prev = null;
+    const mine = [];
+    for (const p of catalog?.epochFrontier?.points || []) {
+      const x = p[g];
+      if (x && x.name !== prev) { mine.push({ g: g === 'open' ? 'o' : 'c', d: p.date, n: x.name, eci: x.v }); prev = x.name; }
+    }
+    mine.forEach((r, i) => { r.to = mine[i + 1]?.d || today; });
+    recs.push(...mine);
+  }
+  for (const r of recs) {
+    const m = byEpoch.get(r.n) || byName.get(r.n);
+    r.ok = !!scoredNow(m);
+    if (!r.ok) r.why = m ? 'sin índice AA' : 'fuera del catálogo: OpenRouter ya no lo lista o lo nombra de otro modo';
+  }
+  const missing = recs.filter(r => !r.ok && r.to > (from || '') && r.d <= today).sort((a, b) => a.d.localeCompare(b.d));
+  // Tramos incompletos: uniones de [récord sin índice, siguiente récord de su grupo).
+  const gaps = [];
+  for (const r of missing) {
+    const last = gaps[gaps.length - 1], a = from && r.d < from ? from : r.d;
+    if (last && a <= last.to) { last.to = r.to > last.to ? r.to : last.to; last.missing.push(r); }
+    else gaps.push({ from: a, to: r.to, missing: [r] });
+  }
+  const at = d => missing.filter(r => r.d <= d && d < r.to);
+  const end = gaps.length ? gaps[gaps.length - 1].to : null;
+  return { recs, missing, gaps, at, completeFrom: end && end < today ? end : gaps.length ? null : from, today };
+}
+
+/* Frase para las notas de los gráficos reconstruidos con AA: qué tramos están rayados y por qué. */
+export function coverageText(cov) {
+  if (!cov) return '';
+  if (!cov.gaps.length) return ' En todo el periodo, el mejor modelo abierto y el mejor cerrado según el ECI de Epoch tienen índice AA en el catálogo.';
+  const list = ns => ns.length > 1 ? `${ns.slice(0, -1).join(', ')} y ${ns[ns.length - 1]}` : ns[0];
+  const why = g => {
+    const sin = g.missing.filter(r => r.why === 'sin índice AA').map(r => r.n), fuera = g.missing.filter(r => r.why !== 'sin índice AA').map(r => r.n);
+    return [sin.length && `sin índice AA, ${list(sin)}`, fuera.length && `fuera del catálogo, porque OpenRouter ya no ${fuera.length > 1 ? 'los lista o los nombra' : 'lo lista o lo nombra'} de otro modo, ${list(fuera)}`].filter(Boolean).join('; ');
+  };
+  return ` Rayado: tramos con cobertura incompleta, en los que el mejor modelo abierto o cerrado según el ECI de Epoch no tiene índice AA en el catálogo; ahí la reconstrucción no lo cuenta y las líneas y distancias pueden quedar desviadas. ${cov.gaps.map(g => `Del ${fmtDate(g.from)} al ${fmtDate(g.to)}: ${why(g)}`).join('. ')}.${cov.completeFrom ? ` Completa desde el ${fmtDate(cov.completeFrom)}.` : ''} No se rellena ni se estima nada.`;
+}
+
 /* Velocidad: mediana de AA si existe; si no, el proveedor de OpenRouter más rápido, nombrado. */
 export function speed(m) {
   const a = m.aa;

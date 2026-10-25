@@ -214,7 +214,7 @@ function renderDaily(d) {
       { cls: 'ln-open', name: 'Mejor abierto', get: p => p.open?.ii ?? null, who: p => p.open?.n }
     ]
   });
-  $('#hoy-daily-note').innerHTML = `Un punto por recogida diaria${first ? `, desde el ${esc(fmtDate(first))}` : ''}: el mejor modelo cerrado y el mejor abierto del catálogo según el ${esc(aaIndexName(ver))} de ${AA_LINK}. Cada día queda guardado en el repositorio (data/history), así que la serie crece con cada recogida; los días con otra versión del índice no se mezclan.`;
+  $('#hoy-daily-note').innerHTML = `Un punto por recogida diaria${first ? `, desde el ${esc(fmtDate(first))}` : ''}: el mejor modelo cerrado y el mejor abierto del catálogo según el ${esc(aaIndexName(ver))} de ${AA_LINK}. Cada día queda guardado en el repositorio (data/history), así que la serie crece con cada recogida; los días con otra versión del índice no se mezclan. Es la única serie del observatorio medida día a día con el índice de AA; las de Modelos y La carrera se reconstruyen hoy hacia atrás con las puntuaciones actuales.`;
 }
 
 export function renderHoy(d) {

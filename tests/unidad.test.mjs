@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { fmtDate, fmtDateTime, num, usd, aaRace } from '../js/fmt.js';
+import { fmtDate, fmtDateTime, num, usd, aaRace, aaCoverage } from '../js/fmt.js';
 import { resolve } from '../js/valoracion.js';
 import { importancia } from '../scripts/parte.mjs';
 import { unzip } from '../scripts/indicadores.mjs';
@@ -79,4 +79,29 @@ test('lector de zip: entradas guardadas y comprimidas', () => {
   assert.ok(csv.startsWith('a,b\n1,2\n'));
   assert.equal(csv.split('\n').length, 202);
   assert.throws(() => unzip(Buffer.from('esto no es un zip, aunque tenga más de veintidós bytes')), /directorio central/);
+});
+
+test('aaCoverage: tramos sin el mejor modelo según Epoch, sin rellenar nada', () => {
+  const cat = {
+    ...catalog([
+      { ...model('a/g5', 'GPT-5', 'OpenAI', 'US', 44, '2025-08-07'), epoch: { name: 'GPT-5' } },
+      { ...model('a/g5p', 'GPT-5 Pro', 'OpenAI', 'US', null, '2025-10-06'), epoch: { name: 'GPT-5 Pro' } },
+      { ...model('b/o1', 'Abierto', 'LabB', 'CN', 30, '2025-07-01', { v: 'abiertos' }), epoch: { name: 'Abierto' } }
+    ]),
+    epochFrontier: { points: [
+      { date: '2025-07-01', open: { v: 140, name: 'Abierto' }, closed: null },
+      { date: '2025-08-07', open: { v: 140, name: 'Abierto' }, closed: { v: 150, name: 'GPT-5' } },
+      { date: '2025-10-06', open: { v: 140, name: 'Abierto' }, closed: { v: 152, name: 'GPT-5 Pro' } },
+      { date: '2026-02-01', open: { v: 140, name: 'Abierto' }, closed: { v: 155, name: 'Retirado' } },
+      { date: '2026-06-01', open: { v: 140, name: 'Abierto' }, closed: { v: 158, name: 'GPT-5' } }
+    ] }
+  };
+  cat.models[1].aa.intelligence.v = null;
+  const c = aaCoverage(cat, '2025-07-01');
+  assert.deepEqual(c.gaps.map(g => [g.from, g.to, g.missing.map(r => r.n)]), [['2025-10-06', '2026-06-01', ['GPT-5 Pro', 'Retirado']]]);
+  assert.equal(c.missing[0].why, 'sin índice AA');
+  assert.match(c.missing[1].why, /fuera del catálogo/);
+  assert.deepEqual(c.at('2025-12-01').map(r => r.n), ['GPT-5 Pro']);
+  assert.deepEqual(c.at('2026-07-01'), []);
+  assert.equal(c.completeFrom, '2026-06-01');
 });

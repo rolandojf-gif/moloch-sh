@@ -54,10 +54,12 @@ const IND = [
 ];
 const factOf = (ind, d) => at(ind, d.fact || d.path);
 const valueOf = (ind, d) => { const f = factOf(ind, d); return f ? (d.get ? d.get(f) : f.v) ?? null : null; };
-/* Valores de la instantánea diaria (clave k de cada indicador vigilado). */
-export const indSnapshot = ind => Object.fromEntries(IND.map(d => [d.k, ind ? valueOf(ind, d) : null]));
-/* Lista para la web: qué se vigila y desde cuándo. Una serie detenida (scripts/indicadores.mjs) deja de compararse. */
-export const vigilados = ind => IND.map(d => ({ path: d.path, label: d.label, desde: d.desde || '2026-10-20', ...(factOf(ind || {}, d)?.detenida ? { detenida: factOf(ind, d).ultimo } : {}) }));
+/* Valores de la instantánea diaria (clave k de cada indicador vigilado).
+   Un indicador con cobertura incompleta (incompleto) se guarda vacío: el día que se complete no cuenta como cambio. */
+export const indSnapshot = ind => Object.fromEntries(IND.map(d => [d.k, ind && !factOf(ind, d)?.incompleto ? valueOf(ind, d) : null]));
+/* Lista para la web: qué se vigila y desde cuándo. Una serie detenida (scripts/indicadores.mjs) o con cobertura incompleta
+   deja de compararse. */
+export const vigilados = ind => IND.map(d => ({ path: d.path, label: d.label, desde: d.desde || '2026-10-20', ...(factOf(ind || {}, d)?.detenida ? { detenida: factOf(ind, d).ultimo } : {}), ...(factOf(ind || {}, d)?.incompleto ? { incompleto: true } : {}) }));
 const SRC_NAME = { epoch: 'Epoch AI', metr: 'METR', aa: 'Artificial Analysis' };
 
 /* Puesto de cada modelo por índice de AA entre los de identidad confirmada: sirve para «un modelo del top 20». */
@@ -186,7 +188,7 @@ export function detectChanges(ctx) {
   /* ── Indicadores de La carrera ── */
   if (base.ind && ctx.ind) for (const d of IND) {
     const f = factOf(ctx.ind, d), a = base.ind[d.k], b = valueOf(ctx.ind, d);
-    if (a == null || b == null || f.stale || f.detenida || r2(a) === r2(b)) continue;
+    if (a == null || b == null || f.stale || f.detenida || f.incompleto || r2(a) === r2(b)) continue;
     if (d.aa && (base.aaIndexVersion ?? null) !== (f.version ?? null)) continue;
     const c = d.ctx?.(f);
     out.push(item('indicador', `indicador|${d.k}|${TODAY}`, {
