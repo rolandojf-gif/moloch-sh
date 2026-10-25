@@ -29,7 +29,7 @@ function resumen(f, ind, log) {
       ? t('Hipótesis revisada: sigue {estado}.', { estado: esc(estadoWord(h.estado)) })
       : t('La hipótesis pasa a «{estado}».', { estado: esc(estadoWord(h.estado)) })}${h.nota ? ` ${esc(tr(h.nota))}` : ''}` })))
     .sort((a, b) => b.fecha.localeCompare(a.fecha));
-  const lab = v => { const x = tr(v.label); return esc(x.charAt(0).toLowerCase() + x.slice(1)); };
+  const lab = v => { const x = L(v, 'label'); return esc(/^(?!Epoch\b)[A-Z][a-z]/.test(x) ? x.charAt(0).toLowerCase() + x.slice(1) : x); };   // minúscula inicial salvo siglas y nombres propios
   const desde = vig.map(v => v.desde).sort()[0];
   const cambios = ev.length
     ? `<ul class="sum-ev">${ev.slice(0, 4).map(x => `<li><span>${esc(curDate(x.fecha))}</span>${x.html}</li>`).join('')}</ul>${ev.length > 4 ? `<p class="m-sub">${t('Y {p1} cambios anteriores.', { p1: ev.length - 4 })}</p>` : ''}`

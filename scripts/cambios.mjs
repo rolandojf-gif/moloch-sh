@@ -15,10 +15,10 @@
    La importancia de cada cambio (qué llega a portada) no se decide aquí: aquí sólo se mide. */
 
 import { valoraciones } from '../js/valoracion.js';
+import { F, both } from './textos.mjs';
 
 const PRICE_CHANGE_MIN = 0.05;   // cambios de precio por debajo del 5 % no se registran
 const es = (v, d = 2) => Number(v).toLocaleString('es-ES', { maximumFractionDigits: d });
-const money = n => `${n.toLocaleString('es-ES', { maximumFractionDigits: 4 })} $`;
 const r1 = v => Math.round(v * 10) / 10;
 const r2 = v => Math.round(v * 100) / 100;
 const delta = (a, b) => a > 0 ? (b - a) / a : (b > 0 ? 1 : 0);
@@ -27,30 +27,52 @@ const at = (o, path) => path.split('.').reduce((x, k) => x?.[k], o);
 /* Indicadores de La carrera que se vigilan: clave de la instantánea diaria, indicador de la web (path, el de
    js/indicadores.js), hecho de data/indicadores.json que lo contiene (fact, si no es el mismo), cómo se lee su valor
    (get) y cómo se cuenta. «desde»: primera instantánea que lo guarda. */
-const es0 = v => es(v, 0), es1 = v => es(v, 1);
+const vs = (A, B, F) => `${A} ${F.t('frente a', 'versus')} ${B}`;
+const de = (f, F) => f.of ? `${F.t('de', 'of')} ${f.of}` : null;
 const IND = [
-  { k: 'eci', path: 'eci.frontier', label: 'Mejor modelo en el ECI de Epoch', unit: 'puntos ECI', n: v => es(v), u: 'puntos', ctx: f => f.model },
-  { k: 'usCn', path: 'eci.gapUsCn', label: 'Distancia EE. UU. − China en el ECI', unit: 'puntos ECI', n: v => es(v), u: 'puntos', ctx: f => f.us && f.cn ? `${f.us.model} frente a ${f.cn.model}` : null },
-  { k: 'closedOpen', path: 'eci.gapClosedOpen', label: 'Distancia cerrados − abiertos en el ECI', unit: 'puntos ECI', n: v => es(v), u: 'puntos', ctx: f => f.closed && f.open ? `${f.closed.model} frente a ${f.open.model}` : null },
-  { k: 'labs', path: 'eci.gapLabs', label: 'Distancia entre los dos primeros laboratorios en el ECI', unit: 'puntos ECI', n: v => es(v), u: 'puntos', ctx: f => f.first && f.second ? `${f.first.org} frente a ${f.second.org}` : null },
-  { k: 'dcMW', path: 'dc.now', label: 'Potencia de TI en servicio en los centros que sigue Epoch', unit: 'MW', n: es0, u: 'MW' },
-  { k: 'chipsH100e', path: 'chips.cum', label: 'Chips de IA entregados, acumulado', unit: 'H100e', n: v => es(v / 1e6, 1), u: 'millones de H100e' },
-  { k: 'revLeader', path: 'companies.leader', label: 'Mayores ingresos anualizados', unit: '$', n: v => es(v / 1e9, 1), u: 'mil millones de $', ctx: f => f.company },
-  { k: 'metrP80h', path: 'metr.sota', label: 'Horizonte al 80 % del modelo puntero (METR)', unit: 'h', n: es1, u: 'h' },
-  { k: 'rate12m', path: 'eci.rate12m', label: 'Avance de la frontera del ECI en 12 meses', unit: 'puntos ECI', n: es1, u: 'puntos', desde: '2026-10-23' },
-  { k: 'dcPlan26', path: 'dc.plan', get: f => f.end2026?.mw, label: 'Potencia prevista para fin de 2026 en el calendario de Epoch', unit: 'MW', n: es0, u: 'MW', desde: '2026-10-23' },
-  { k: 'tdpGW', path: 'chips.tdp', fact: 'chips.cum', get: f => f.tdpGW, label: 'Consumo nominal (TDP) de los chips entregados', unit: 'GW', n: es1, u: 'GW', desde: '2026-10-23' },
-  { k: 'capexB', path: 'dc.capex', fact: 'dc.now', get: f => f.capexB, label: 'Coste de capital de los centros que sigue Epoch', unit: 'mil millones de $', n: es0, u: 'mil millones de $', desde: '2026-10-23' },
-  { k: 'metrRatio', path: 'metr.ratio', fact: 'metr.sota', get: f => f.ratio, label: 'Relación entre los horizontes al 80 % y al 50 % de METR', unit: '', n: v => es(v, 2), u: '', desde: '2026-10-23' },
-  { k: 'sweBest', path: 'bench.sweBest', label: 'Mejor SWE-bench Verified en las ejecuciones de Epoch', unit: '%', n: es1, u: '%', ctx: f => f.model, desde: '2026-10-23' },
-  { k: 'mirror', path: 'bench.mirror', label: 'Mejor resultado en MirrorCode (ejecuciones de Epoch)', unit: '%', n: es1, u: '%', ctx: f => f.model, desde: '2026-10-23' },
+  { k: 'eci', path: 'eci.frontier', label: 'Mejor modelo en el ECI de Epoch', unit: 'puntos ECI', n: (v, F) => F.n(v), u: 'puntos', ctx: f => f.model,
+    en: { label: 'Best model on Epoch’s ECI', u: 'points' } },
+  { k: 'usCn', path: 'eci.gapUsCn', label: 'Distancia EE. UU. − China en el ECI', unit: 'puntos ECI', n: (v, F) => F.n(v), u: 'puntos', ctx: (f, F) => f.us && f.cn ? vs(f.us.model, f.cn.model, F) : null,
+    en: { label: 'US − China gap on the ECI', u: 'points' } },
+  { k: 'closedOpen', path: 'eci.gapClosedOpen', label: 'Distancia cerrados − abiertos en el ECI', unit: 'puntos ECI', n: (v, F) => F.n(v), u: 'puntos', ctx: (f, F) => f.closed && f.open ? vs(f.closed.model, f.open.model, F) : null,
+    en: { label: 'Closed − open gap on the ECI', u: 'points' } },
+  { k: 'labs', path: 'eci.gapLabs', label: 'Distancia entre los dos primeros laboratorios en el ECI', unit: 'puntos ECI', n: (v, F) => F.n(v), u: 'puntos', ctx: (f, F) => f.first && f.second ? vs(f.first.org, f.second.org, F) : null,
+    en: { label: 'Gap between the top two labs on the ECI', u: 'points' } },
+  { k: 'dcMW', path: 'dc.now', label: 'Potencia de TI en servicio en los centros que sigue Epoch', unit: 'MW', n: (v, F) => F.n(v, 0), u: 'MW',
+    en: { label: 'IT power in service at the data centres Epoch tracks', u: 'MW' } },
+  { k: 'chipsH100e', path: 'chips.cum', label: 'Chips de IA entregados, acumulado', unit: 'H100e', n: (v, F) => F.n(v / 1e6, 1), u: 'millones de H100e',
+    en: { label: 'AI chips delivered, cumulative', u: 'million H100e' } },
+  { k: 'revLeader', path: 'companies.leader', label: 'Mayores ingresos anualizados', unit: '$', n: (v, F) => F.n(v / 1e9, 1), u: 'mil millones de $', ctx: f => f.company,
+    en: { label: 'Highest annualised revenue', u: 'billion dollars' } },
+  { k: 'metrP80h', path: 'metr.sota', label: 'Horizonte al 80 % del modelo puntero (METR)', unit: 'h', n: (v, F) => F.n(v, 1), u: 'h',
+    en: { label: 'METR 80% horizon of the leading model', u: 'h' } },
+  { k: 'rate12m', path: 'eci.rate12m', label: 'Avance de la frontera del ECI en 12 meses', unit: 'puntos ECI', n: (v, F) => F.n(v, 1), u: 'puntos', desde: '2026-10-23',
+    en: { label: 'Frontier gain on the ECI over 12 months', u: 'points' } },
+  { k: 'dcPlan26', path: 'dc.plan', get: f => f.end2026?.mw, label: 'Potencia prevista para fin de 2026 en el calendario de Epoch', unit: 'MW', n: (v, F) => F.n(v, 0), u: 'MW', desde: '2026-10-23',
+    en: { label: 'Power planned for the end of 2026 in Epoch’s schedule', u: 'MW' } },
+  { k: 'tdpGW', path: 'chips.tdp', fact: 'chips.cum', get: f => f.tdpGW, label: 'Consumo nominal (TDP) de los chips entregados', unit: 'GW', n: (v, F) => F.n(v, 1), u: 'GW', desde: '2026-10-23',
+    en: { label: 'Nominal consumption (TDP) of the chips delivered', u: 'GW' } },
+  { k: 'capexB', path: 'dc.capex', fact: 'dc.now', get: f => f.capexB, label: 'Coste de capital de los centros que sigue Epoch', unit: 'mil millones de $', n: (v, F) => F.n(v, 0), u: 'mil millones de $', desde: '2026-10-23',
+    en: { label: 'Capital cost of the data centres Epoch tracks', u: 'billion dollars' } },
+  { k: 'metrRatio', path: 'metr.ratio', fact: 'metr.sota', get: f => f.ratio, label: 'Relación entre los horizontes al 80 % y al 50 % de METR', unit: '', n: (v, F) => F.n(v, 2), u: '', desde: '2026-10-23',
+    en: { label: 'Ratio between METR’s 80% and 50% horizons', u: '' } },
+  { k: 'sweBest', path: 'bench.sweBest', label: 'Mejor SWE-bench Verified en las ejecuciones de Epoch', unit: '%', n: (v, F) => F.n(v, 1), u: '%', ctx: f => f.model, desde: '2026-10-23',
+    en: { label: 'Best SWE-bench Verified in Epoch’s runs', u: '%' } },
+  { k: 'mirror', path: 'bench.mirror', label: 'Mejor resultado en MirrorCode (ejecuciones de Epoch)', unit: '%', n: (v, F) => F.n(v, 1), u: '%', ctx: f => f.model, desde: '2026-10-23',
+    en: { label: 'Best MirrorCode result (Epoch runs)', u: '%' } },
   // Las mismas distancias con el índice de AA, al día. Con un cambio de versión del índice no se comparan (aa: true).
-  { k: 'aaUsCn', path: 'aa.gapUsCn', aa: true, label: 'Distancia EE. UU. − China en el índice de AA', unit: 'puntos AA', n: es1, u: 'puntos', ctx: f => f.us && f.cn ? `${f.us.model} frente a ${f.cn.model}` : null, desde: '2026-10-24' },
-  { k: 'aaClosedOpen', path: 'aa.gapClosedOpen', aa: true, label: 'Distancia cerrados − abiertos en el índice de AA', unit: 'puntos AA', n: es1, u: 'puntos', ctx: f => f.closed && f.open ? `${f.closed.model} frente a ${f.open.model}` : null, desde: '2026-10-24' },
-  { k: 'aaLabs', path: 'aa.gapLabs', aa: true, label: 'Distancia entre los dos primeros laboratorios en el índice de AA', unit: 'puntos AA', n: es1, u: 'puntos', ctx: f => f.first && f.second ? `${f.first.org} frente a ${f.second.org}` : null, desde: '2026-10-24' },
-  { k: 'aaRate12m', path: 'aa.rate12m', aa: true, label: 'Avance de la frontera del índice de AA en 12 meses', unit: 'puntos AA', n: es1, u: 'puntos', desde: '2026-10-24' },
-  { k: 'saturated', path: 'bench.saturated', label: 'Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)', unit: 'evaluaciones', n: es0, u: 'evaluaciones', ctx: f => f.of ? `de ${f.of}` : null, desde: '2026-10-23' },
-  { k: 'ediOpen', path: 'edi.open', label: 'Evaluaciones del ECI que el mejor modelo aún no resuelve a medias', unit: 'evaluaciones', n: es0, u: 'evaluaciones', ctx: f => f.of ? `de ${f.of}` : null, desde: '2026-10-25' }
+  { k: 'aaUsCn', path: 'aa.gapUsCn', aa: true, label: 'Distancia EE. UU. − China en el índice de AA', unit: 'puntos AA', n: (v, F) => F.n(v, 1), u: 'puntos', ctx: (f, F) => f.us && f.cn ? vs(f.us.model, f.cn.model, F) : null, desde: '2026-10-24',
+    en: { label: 'US − China gap on the AA index', u: 'points' } },
+  { k: 'aaClosedOpen', path: 'aa.gapClosedOpen', aa: true, label: 'Distancia cerrados − abiertos en el índice de AA', unit: 'puntos AA', n: (v, F) => F.n(v, 1), u: 'puntos', ctx: (f, F) => f.closed && f.open ? vs(f.closed.model, f.open.model, F) : null, desde: '2026-10-24',
+    en: { label: 'Closed − open gap on the AA index', u: 'points' } },
+  { k: 'aaLabs', path: 'aa.gapLabs', aa: true, label: 'Distancia entre los dos primeros laboratorios en el índice de AA', unit: 'puntos AA', n: (v, F) => F.n(v, 1), u: 'puntos', ctx: (f, F) => f.first && f.second ? vs(f.first.org, f.second.org, F) : null, desde: '2026-10-24',
+    en: { label: 'Gap between the top two labs on the AA index', u: 'points' } },
+  { k: 'aaRate12m', path: 'aa.rate12m', aa: true, label: 'Avance de la frontera del índice de AA en 12 meses', unit: 'puntos AA', n: (v, F) => F.n(v, 1), u: 'puntos', desde: '2026-10-24',
+    en: { label: 'Frontier gain on the AA index over 12 months', u: 'points' } },
+  { k: 'saturated', path: 'bench.saturated', label: 'Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)', unit: 'evaluaciones', n: (v, F) => F.n(v, 0), u: 'evaluaciones', ctx: de, desde: '2026-10-23',
+    en: { label: 'Epoch evaluations saturated (best result of at least 90%)', u: 'evaluations' } },
+  { k: 'ediOpen', path: 'edi.open', label: 'Evaluaciones del ECI que el mejor modelo aún no resuelve a medias', unit: 'evaluaciones', n: (v, F) => F.n(v, 0), u: 'evaluaciones', ctx: de, desde: '2026-10-25',
+    en: { label: 'ECI evaluations the best model does not yet half-solve', u: 'evaluations' } }
 ];
 const factOf = (ind, d) => at(ind, d.fact || d.path);
 const valueOf = (ind, d) => { const f = factOf(ind, d); return f ? (d.get ? d.get(f) : f.v) ?? null : null; };
@@ -59,7 +81,7 @@ const valueOf = (ind, d) => { const f = factOf(ind, d); return f ? (d.get ? d.ge
 export const indSnapshot = ind => Object.fromEntries(IND.map(d => [d.k, ind && !factOf(ind, d)?.incompleto ? valueOf(ind, d) : null]));
 /* Lista para la web: qué se vigila y desde cuándo. Una serie detenida (scripts/indicadores.mjs) o con cobertura incompleta
    deja de compararse. */
-export const vigilados = ind => IND.map(d => ({ path: d.path, label: d.label, desde: d.desde || '2026-10-20', ...(factOf(ind || {}, d)?.detenida ? { detenida: factOf(ind, d).ultimo } : {}), ...(factOf(ind || {}, d)?.incompleto ? { incompleto: true } : {}) }));
+export const vigilados = ind => IND.map(d => ({ path: d.path, label: d.label, desde: d.desde || '2026-10-20', ...(factOf(ind || {}, d)?.detenida ? { detenida: factOf(ind, d).ultimo } : {}), ...(factOf(ind || {}, d)?.incompleto ? { incompleto: true } : {}), i18n: { en: { label: d.en.label } } }));
 const SRC_NAME = { epoch: 'Epoch AI', metr: 'METR', aa: 'Artificial Analysis' };
 
 /* Puesto de cada modelo por índice de AA entre los de identidad confirmada: sirve para «un modelo del top 20». */
@@ -80,7 +102,13 @@ export function snapshotExtras({ ai2027, checks, uso }) {
 
 export function detectChanges(ctx) {
   const { models, base, TODAY, NOW_ISO } = ctx;
-  const item = (kind, key, { published = null, mag = null, ...o }) => ({ kind, key, published, detected: TODAY, date: published || TODAY, mag, ...o });
+  // `what` llega como { es, en }: el español queda en el campo y el inglés en i18n.en.what.
+  const item = (kind, key, { published = null, mag = null, ...o }) => {
+    const e = { kind, key, published, detected: TODAY, date: published || TODAY, mag }, en = {};
+    for (const [k, v] of Object.entries(o)) { if (k === 'what') { e.what = v.es; en.what = v.en; } else e[k] = v; }
+    e.i18n = { en };
+    return e;
+  };
   const rank = rankAA(models);
   const rk = id => rank.has(id) ? { rankAA: rank.get(id), of: rank.of } : {};
   const out = [];
@@ -103,16 +131,20 @@ export function detectChanges(ctx) {
         const inT = (t, x) => !!t && t.some(([i, o]) => i === x.in && o === x.out);
         const sub = ba === 0 ? 'cobra' : bb === 0 ? 'gratis' : had && has && inT(had, b) && !inT(has, a) ? 'tarifa-retirada' : had && has && inT(has, a) && !inT(had, b) ? 'tarifa-nueva' : 'precio';
         const pct = ba === 0 ? null : Math.round(delta(ba, bb) * 1000) / 10;
-        const pair = x => `${money(x.in)} de entrada y ${money(x.out)} de salida`;
-        const part = (k, x, y) => x === y ? `${k} sin cambio (${money(x)})` : `${k} de ${money(x)} a ${money(y)}`;
-        const who = m.price.provider, verb = bb > ba ? 'sube' : bb < ba ? 'baja' : 'cambia';
-        const what = {
-          cobra: `${who} empieza a cobrar ${m.name} en OpenRouter: ${pair(b)} por millón de tokens. Hasta ahora era gratis.`,
-          gratis: `${who} ofrece ${m.name} gratis en OpenRouter. Antes costaba ${pair(a)} por millón de tokens.`,
-          'tarifa-retirada': `${who} deja de ofrecer en OpenRouter su tarifa más barata de ${m.name} (${pair(a)} por millón de tokens). La más barata que le queda, que ya existía, es de ${pair(b)}.`,
-          'tarifa-nueva': `${who} añade en OpenRouter una tarifa más barata de ${m.name}: ${pair(b)} por millón de tokens. La anterior (${pair(a)}) sigue disponible.`,
-          precio: `${who} ${verb} el precio de ${m.name} en OpenRouter: ${part('entrada', a.in, b.in)} y ${part('salida', a.out, b.out)} por millón de tokens.`
-        }[sub];
+        const who = m.price.provider;
+        const what = both(F => {
+          const money = F.money;
+          const pair = x => F.t(`${money(x.in)} de entrada y ${money(x.out)} de salida`, `${money(x.in)} input and ${money(x.out)} output`);
+          const part = (kEs, kEn, x, y) => x === y ? F.t(`${kEs} sin cambio (${money(x)})`, `${kEn} unchanged (${money(x)})`) : F.t(`${kEs} de ${money(x)} a ${money(y)}`, `${kEn} from ${money(x)} to ${money(y)}`);
+          const verb = bb > ba ? F.t('sube', 'raises') : bb < ba ? F.t('baja', 'cuts') : F.t('cambia', 'changes');
+          return {
+            cobra: F.t(`${who} empieza a cobrar ${m.name} en OpenRouter: ${pair(b)} por millón de tokens. Hasta ahora era gratis.`, `${who} starts charging for ${m.name} on OpenRouter: ${pair(b)} per million tokens. Until now it was free.`),
+            gratis: F.t(`${who} ofrece ${m.name} gratis en OpenRouter. Antes costaba ${pair(a)} por millón de tokens.`, `${who} now offers ${m.name} for free on OpenRouter. It used to cost ${pair(a)} per million tokens.`),
+            'tarifa-retirada': F.t(`${who} deja de ofrecer en OpenRouter su tarifa más barata de ${m.name} (${pair(a)} por millón de tokens). La más barata que le queda, que ya existía, es de ${pair(b)}.`, `${who} stops offering its cheapest ${m.name} rate on OpenRouter (${pair(a)} per million tokens). The cheapest it has left, which already existed, is ${pair(b)}.`),
+            'tarifa-nueva': F.t(`${who} añade en OpenRouter una tarifa más barata de ${m.name}: ${pair(b)} por millón de tokens. La anterior (${pair(a)}) sigue disponible.`, `${who} adds a cheaper ${m.name} rate on OpenRouter: ${pair(b)} per million tokens. The previous one (${pair(a)}) is still available.`),
+            precio: F.t(`${who} ${verb} el precio de ${m.name} en OpenRouter: ${part('entrada', 'input', a.in, b.in)} y ${part('salida', 'output', a.out, b.out)} por millón de tokens.`, `${who} ${verb} the price of ${m.name} on OpenRouter: ${part('entrada', 'input', a.in, b.in)} and ${part('salida', 'output', a.out, b.out)} per million tokens.`)
+          }[sub];
+        });
         out.push(item('precio', `precio|${m.id}|${TODAY}`, {
           model: m.id, mag: pct === null ? null : { v: pct, unit: '%' },
           src: { name: 'OpenRouter', url: `https://openrouter.ai/${m.orVariant || m.id}/providers`, got: NOW_ISO },
@@ -126,7 +158,9 @@ export function detectChanges(ctx) {
       out.push(item('pesos', `pesos|${m.id}`, {
         model: m.id, published: hf ? m.hfCreated?.v || null : null,
         src: { name: hf ? 'Hugging Face' : 'Epoch AI', url: m.weights.url, got: NOW_ISO },
-        what: hf ? `${m.name}: pesos descargables en Hugging Face (licencia ${m.license.v || 'sin datos'}).` : `${m.name}: Epoch AI lo clasifica como modelo de pesos abiertos (${m.epoch?.access?.v || 'sin datos'}).`,
+        what: both(F => hf
+          ? F.t(`${m.name}: pesos descargables en Hugging Face (licencia ${m.license.v || 'sin datos'}).`, `${m.name}: downloadable weights on Hugging Face (licence ${m.license.v || 'no data'}).`)
+          : F.t(`${m.name}: Epoch AI lo clasifica como modelo de pesos abiertos (${m.epoch?.access?.v || 'sin datos'}).`, `${m.name}: Epoch AI classifies it as an open-weight model (${m.epoch?.access?.v || 'no data'}).`)),
         data: { license: m.license.v, weightsSrc: m.weights.src, ...rk(m.id) }
       }));
     }
@@ -135,7 +169,7 @@ export function detectChanges(ctx) {
       out.push(item('evaluacion', `evaluacion|${m.id}|eci`, {
         model: m.id, mag: { v: pb, unit: 'puntos ECI' },
         src: { name: 'Epoch AI', url: 'https://epoch.ai/benchmarks/eci', got: NOW_ISO },
-        what: `${m.name}: primera puntuación en el índice ECI de Epoch AI (${pb}).`, data: { field: 'eci', eci: pb, ...rk(m.id) }
+        what: both(F => F.t(`${m.name}: primera puntuación en el índice ECI de Epoch AI (${pb}).`, `${m.name}: first score on Epoch AI’s ECI (${pb}).`)), data: { field: 'eci', eci: pb, ...rk(m.id) }
       }));
     }
     // Primera puntuación de AA, sólo si la recogida anterior ya traía datos de AA (si no, todos los modelos serían «nuevos» en AA).
@@ -144,7 +178,7 @@ export function detectChanges(ctx) {
       out.push(item('evaluacion', `evaluacion|${m.id}|ii`, {
         model: m.id, mag: { v: qa, unit: 'puntos AA' },
         src: { name: 'Artificial Analysis', url: m.aa.url, got: NOW_ISO },
-        what: `${m.name}: primera puntuación en el índice de inteligencia de Artificial Analysis (${qa}${m.aa.version ? `, v${m.aa.version}` : ''}).`, data: { field: 'ii', ii: qa, ...rk(m.id) }
+        what: both(F => F.t(`${m.name}: primera puntuación en el índice de inteligencia de Artificial Analysis (${qa}${m.aa.version ? `, v${m.aa.version}` : ''}).`, `${m.name}: first score on the Artificial Analysis Intelligence Index (${qa}${m.aa.version ? `, v${m.aa.version}` : ''}).`)), data: { field: 'ii', ii: qa, ...rk(m.id) }
       }));
     }
   }
@@ -152,7 +186,7 @@ export function detectChanges(ctx) {
   for (const [id, p] of Object.entries(prev)) {
     if (!now.has(id) && !ctx.listed.has(id)) out.push(item('retirada', `retirada|${id}|${TODAY}`, {
       model: id, src: { name: 'OpenRouter', url: 'https://openrouter.ai/models', got: NOW_ISO },
-      what: `${p.n || id} deja de figurar en el catálogo de OpenRouter.`, data: { name: p.n || null }
+      what: both(F => F.t(`${p.n || id} deja de figurar en el catálogo de OpenRouter.`, `${p.n || id} is no longer listed in the OpenRouter catalogue.`)), data: { name: p.n || null }
     }));
   }
 
@@ -161,12 +195,12 @@ export function detectChanges(ctx) {
   if (vPrev && vNow && vPrev !== vNow) {
     out.push(item('version', `version|${vNow}`, {
       src: { name: 'Artificial Analysis', url: 'https://artificialanalysis.ai/leaderboards/models', got: NOW_ISO },
-      what: `Artificial Analysis pasa su índice de inteligencia de la versión ${vPrev} a la ${vNow}: las puntuaciones de una y otra versión no se comparan.`,
+      what: both(F => F.t(`Artificial Analysis pasa su índice de inteligencia de la versión ${vPrev} a la ${vNow}: las puntuaciones de una y otra versión no se comparan.`, `Artificial Analysis moves its Intelligence Index from version ${vPrev} to ${vNow}: scores from the two versions are not comparable.`)),
       data: { from: vPrev, to: vNow }
     }));
   } else if (vPrev && vPrev === vNow) {
     const byId = new Map(models.map(m => [m.id, m]));
-    for (const [blk, w, adj] of [['open', 'abiertos', 'abierto'], ['closed', 'cerrados', 'cerrado']]) {
+    for (const [blk, w, adj, adjEn] of [['open', 'abiertos', 'abierto', 'open-weight'], ['closed', 'cerrados', 'cerrado', 'closed']]) {
       const a = base.leaders.aa[blk], b = ctx.leaders.aa[blk];
       if (!a || !b || a.id === b.id) continue;
       const nb = byId.get(b.id), na = byId.get(a.id);
@@ -176,10 +210,15 @@ export function detectChanges(ctx) {
       out.push(item('lider', `lider|${blk}|${b.id}|${TODAY}`, {
         model: b.id, mag: { v: margin, unit: 'puntos AA' },
         src: { name: 'Artificial Analysis', url: nb?.aa?.url || 'https://artificialanalysis.ai/leaderboards/models', got: NOW_ISO },
-        what: (aNow !== null
-          ? `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}: ${es(b.ii, 1)} puntos, ${margin >= 0 ? `${es(margin, 1)} más` : `${es(-margin, 1)} menos`} que ${aName} (${es(aNow, 1)}).`
-          : `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}, con ${es(b.ii, 1)} puntos: ${aName}, que tenía ${es(a.ii, 1)}, ya no figura como ${adj} con puntuación.`)
-          + (nb?.weights?.announced ? ' Su descripción en OpenRouter lo presenta como de pesos abiertos, pero aún no se pueden descargar.' : ''),
+        what: both(F => F.t(
+          (aNow !== null
+            ? `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}: ${es(b.ii, 1)} puntos, ${margin >= 0 ? `${es(margin, 1)} más` : `${es(-margin, 1)} menos`} que ${aName} (${es(aNow, 1)}).`
+            : `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}, con ${es(b.ii, 1)} puntos: ${aName}, que tenía ${es(a.ii, 1)}, ya no figura como ${adj} con puntuación.`)
+            + (nb?.weights?.announced ? ' Su descripción en OpenRouter lo presenta como de pesos abiertos, pero aún no se pueden descargar.' : ''),
+          (aNow !== null
+            ? `${nb?.name || b.id} becomes the best ${adjEn} model in the catalogue on the Artificial Analysis Intelligence Index v${vNow}: ${F.n(b.ii, 1)} points, ${margin >= 0 ? `${F.n(margin, 1)} more` : `${F.n(-margin, 1)} fewer`} than ${aName} (${F.n(aNow, 1)}).`
+            : `${nb?.name || b.id} becomes the best ${adjEn} model in the catalogue on the Artificial Analysis Intelligence Index v${vNow}, with ${F.n(b.ii, 1)} points: ${aName}, which had ${F.n(a.ii, 1)}, is no longer listed as a scored ${adjEn} model.`)
+            + (nb?.weights?.announced ? ' Its OpenRouter description presents it as open-weight, but it cannot be downloaded yet.' : ''))),
         data: { block: w, version: vNow, from: { id: a.id, n: aName, ii: a.ii, iiNow: aNow }, to: { id: b.id, n: nb?.name || null, ii: b.ii }, margin }
       }));
     }
@@ -190,12 +229,15 @@ export function detectChanges(ctx) {
     const f = factOf(ctx.ind, d), a = base.ind[d.k], b = valueOf(ctx.ind, d);
     if (a == null || b == null || f.stale || f.detenida || f.incompleto || r2(a) === r2(b)) continue;
     if (d.aa && (base.aaIndexVersion ?? null) !== (f.version ?? null)) continue;
-    const c = d.ctx?.(f);
     out.push(item('indicador', `indicador|${d.k}|${TODAY}`, {
       published: f.asOf && f.asOf !== (f.got || '').slice(0, 10) ? f.asOf : null,
       mag: { v: r2(b - a), pct: a ? r1((b - a) / a * 100) : null, unit: d.unit },
       src: { name: SRC_NAME[f.src] || f.src, url: f.url, got: f.got || NOW_ISO },
-      what: `${d.label}: de ${d.n(a)} a ${d.n(b)}${d.u ? ` ${d.u}` : ''}${c ? ` (${c})` : ''}.`,
+      what: both(F => {
+        const u = F.t(d.u, d.en.u), cx = d.ctx?.(f, F);
+        return F.t(`${d.label}: de ${d.n(a, F)} a ${d.n(b, F)}${u ? ` ${u}` : ''}${cx ? ` (${cx})` : ''}.`,
+          `${d.en.label}: from ${d.n(a, F)} to ${d.n(b, F)}${u ? (u === '%' ? u : ` ${u}`) : ''}${cx ? ` (${cx})` : ''}.`);
+      }),
       data: { ind: d.k, path: d.path, from: a, to: b }
     }));
   }
@@ -212,7 +254,8 @@ export function detectChanges(ctx) {
       const f = ev ? at(ctx.ind, ev.indicador) : null;
       const src = f ? { name: SRC_NAME[f.src] || f.src, url: f.url, got: f.got || NOW_ISO } : { name: 'AI 2027', url: h.url, got: NOW_ISO };
       const push = (which, from, to) => out.push(item('valoracion', `valoracion|${id}|${which}|${TODAY}`, {
-        src, what: `«${h.titulo}»: ${which === 'observatorio' ? 'la valoración del observatorio' : 'la estimación'} pasa de «${from ?? 'sin valoración'}» a «${to ?? 'sin estimación'}».`,
+        src, what: both(F => F.t(`«${h.titulo}»: ${which === 'observatorio' ? 'la valoración del observatorio' : 'la estimación'} pasa de «${from ?? 'sin valoración'}» a «${to ?? 'sin estimación'}».`,
+          `“${F.tm(h.titulo)}”: ${which === 'observatorio' ? 'the observatory’s assessment' : 'the estimate'} goes from “${from ? F.tm(from) : 'no assessment'}” to “${to ? F.tm(to) : 'no estimate'}”.`)),
         data: { hito: id, which, from, to, plazo: h.plazo, ficha: `#ai2027/${id}` }
       }));
       if (old[0] !== o) push('observatorio', old[0], o);
@@ -231,7 +274,8 @@ export function detectChanges(ctx) {
       const before = u.top.find(r => r.slug === up[0]);
       out.push(item('uso', `uso|primero|${first.slug}|${TODAY}`, {
         model: first.id || undefined, published, mag: { v: 1, unit: 'puesto' }, src,
-        what: `${name(first)} pasa a ser el modelo más usado en OpenRouter en los últimos ${u.days} días (${es(first.share, 1)} % de los tokens), por delante de ${before ? name(before) : up[0]}.`,
+        what: both(F => F.t(`${name(first)} pasa a ser el modelo más usado en OpenRouter en los últimos ${u.days} días (${es(first.share, 1)} % de los tokens), por delante de ${before ? name(before) : up[0]}.`,
+          `${name(first)} becomes the most used model on OpenRouter over the last ${u.days} days (${F.n(first.share, 1)}% of tokens), ahead of ${before ? name(before) : up[0]}.`)),
         data: { sub: 'primero', slug: first.slug, rank: 1, prevRank: up.indexOf(first.slug) + 1 || null, share: first.share, tokens: first.tokens, prev: up[0], window: u.days }
       }));
     }
@@ -239,7 +283,8 @@ export function detectChanges(ctx) {
       if (r.rank === 1 || up.includes(r.slug)) continue;
       out.push(item('uso', `uso|entra|${r.slug}|${TODAY}`, {
         model: r.id || undefined, published, mag: { v: r.rank, unit: 'puesto' }, src,
-        what: `${name(r)} entra en los diez modelos más usados en OpenRouter en los últimos ${u.days} días: puesto ${r.rank}, ${es(r.share, 1)} % de los tokens.`,
+        what: both(F => F.t(`${name(r)} entra en los diez modelos más usados en OpenRouter en los últimos ${u.days} días: puesto ${r.rank}, ${es(r.share, 1)} % de los tokens.`,
+          `${name(r)} enters the ten most used models on OpenRouter over the last ${u.days} days: rank ${r.rank}, ${F.n(r.share, 1)}% of tokens.`)),
         data: { sub: 'entra', slug: r.slug, rank: r.rank, share: r.share, tokens: r.tokens, window: u.days }
       }));
     }
@@ -248,14 +293,20 @@ export function detectChanges(ctx) {
 }
 
 /* Modelos dados de alta en OpenRouter en la ventana de «Hoy»: publicados el día del alta, detectados en la primera recogida que los vio. */
-function novedades(models, ctx, rk) {
-  return models.filter(m => m.orCreated.v && m.orCreated.v >= ctx.hoyFrom).map(m => ({
-    kind: 'nuevo', key: `nuevo|${m.id}`, model: m.id,
-    published: m.orCreated.v, detected: ctx.firstSeen?.get(m.id) || ctx.TODAY, date: m.orCreated.v, mag: null,
-    src: { name: 'OpenRouter', url: `https://openrouter.ai/${m.orVariant || m.id}`, got: ctx.NOW_ISO },
-    what: `${m.name} (${m.lab.name}) aparece en el catálogo de OpenRouter${m.orVariant ? `, de momento sólo como variante ${m.orVariant.slice(m.orVariant.lastIndexOf(':'))}` : ''}.`,
-    data: { weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, ii: m.aa?.intelligence?.v ?? null, eci: m.epoch?.eci?.v ?? null, identity: m.identity, ...rk(m.id) }
-  }));
+export function novedades(models, ctx, rk) {
+  return models.filter(m => m.orCreated.v && m.orCreated.v >= ctx.hoyFrom).map(m => {
+    const v = m.orVariant ? m.orVariant.slice(m.orVariant.lastIndexOf(':')) : null;
+    const what = both(F => F.t(`${m.name} (${m.lab.name}) aparece en el catálogo de OpenRouter${v ? `, de momento sólo como variante ${v}` : ''}.`,
+      `${m.name} (${m.lab.name}) appears in the OpenRouter catalogue${v ? `, for now only as the ${v} variant` : ''}.`));
+    return {
+      kind: 'nuevo', key: `nuevo|${m.id}`, model: m.id,
+      published: m.orCreated.v, detected: ctx.firstSeen?.get(m.id) || ctx.TODAY, date: m.orCreated.v, mag: null,
+      src: { name: 'OpenRouter', url: `https://openrouter.ai/${m.orVariant || m.id}`, got: ctx.NOW_ISO },
+      what: what.es,
+      data: { weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, ii: m.aa?.intelligence?.v ?? null, eci: m.epoch?.eci?.v ?? null, identity: m.identity, ...rk(m.id) },
+      i18n: { en: { what: what.en } }
+    };
+  });
 }
 
 /* Clave y fechas de los acontecimientos registrados antes de que existiera este módulo. */
