@@ -57,7 +57,7 @@ function renderFreshness(d) {
   const indSt = !d.ind ? `<span class="st-bad">${t('○ Indicadores: sin datos')}</span>`
     : bad.length ? bad.map(([k, s]) => `<span class="st-bad" title="${esc(tr(s.reason || ''))}">○ ${esc(IND[k])}: ${esc(s.reason ? tr(s.reason) : t('sin datos'))}</span>`).join('')
     : `<span class="st-ok" title="${esc(ist.map(([k]) => IND[k]).join(', '))}">${t('● Indicadores')}</span>`;
-  el.innerHTML = `<span>${t('Recogida')} <b>${esc(fmtDateTime(c.generated))}</b> <span class="${cls}">(${ageTxt}${warn})</span></span>${st}${indSt}<a class="refresh" href="https://github.com/rolandojf-gif/moloch-sh/actions/workflows/collect.yml" target="_blank" rel="noopener" title="${t('Abre la recogida en GitHub: pulsa «Run workflow» en la rama main. Tarda un par de minutos en verse publicada.')}">${t('Actualizar ahora ↗')}</a>`;
+  el.innerHTML = `<span>${t('Recogida')} <b>${esc(fmtDateTime(c.generated))}</b> <span class="${cls}">(${ageTxt}${warn})</span></span>${st}${indSt}<a class="refresh" href="https://github.com/rolandojf-gif/moloch-sh/actions/workflows/collect.yml" target="_blank" rel="noopener" title="${t('Consulta el historial de recogidas en GitHub. Solo los colaboradores con permisos pueden iniciar una recogida manual.')}">${t('Ver estado de actualización ↗')}</a>`;
 }
 
 function renderMethod(d) {
