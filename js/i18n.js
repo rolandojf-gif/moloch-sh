@@ -17,7 +17,7 @@ export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;'
 
 /* El selector ES | EN sólo se ve con ?i18n=1 (queda recordado) mientras la versión inglesa se prueba. Cuando se autorice
    publicarla, basta poner RELEASED a true. Sin el selector, el sitio es el de siempre, en español. */
-export const RELEASED = false;
+export const RELEASED = true;
 const K_LANG = 'moloch.lang', K_FLAG = 'moloch.i18n';
 export const FILES = ['ui', 'hoy', 'carrera', 'ai2027', 'lanzamientos', 'notas'];
 
