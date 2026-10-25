@@ -274,3 +274,20 @@ test('P1: licencias, emparejamientos, avisos y referencias editoriales tienen tr
   assert.match(dic.carrera.exact['Los autores de AI 2027 advierten de que sus predicciones de pruebas para 2026 serán más difíciles de medir.'], /predictions for benchmark performance/);
   setLang('es');
 });
+
+test('P2 Astra: inglés editorial y terminología estadística consistentes', () => {
+  const ui = dic.ui.exact;
+  for (const [es, en] of Object.entries(ui)) {
+    if (/réplicas/.test(es)) assert.doesNotMatch(en, /\breplicas\b/i, es);
+  }
+  assert.match(ui['Primero en las réplicas'], /bootstrap replicates/);
+  assert.match(ui['Con el mejor de pesos ya descargables, {name}, {num} pts.'], /weights are already available to download/);
+  assert.equal(dic.carrera.exact['Economía y adopción'], 'Economics and adoption');
+  assert.match(dic.carrera.exact['Entradas en servicio puntuales conectadas a la red, o retrasos explicados por los chips y no por la energía.'], /Data centres coming online on schedule/);
+  const pending = Object.entries(dic.ai2027.exact).filter(([es]) => es.startsWith('El plazo no ha vencido.'));
+  assert.equal(pending.length, 12);
+  for (const [es, en] of pending) assert.match(en, /^The deadline has not yet passed\./, es);
+  const launches = dic.lanzamientos.exact;
+  assert.match(launches['Mejora notable sobre Grok 4.6 al mismo precio y velocidad, con un modelo base nuevo y más grande y un entrenamiento por refuerzo más largo.'], /reinforcement-learning phase/);
+  assert.match(launches['Mismo modelo que Muse Spark 1.2 a precio muy inferior (0,10\/0,20 $ por millón de tokens) a cambio de que el uso pueda emplearse para mejorar los productos de Meta; límite por tokens en ventana de 5 horas y solo en países seleccionados.'], /usage data may be used to improve Meta/);
+});
