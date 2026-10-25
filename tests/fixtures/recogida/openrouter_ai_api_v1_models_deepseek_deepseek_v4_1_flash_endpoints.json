@@ -1,0 +1,25 @@
+{
+ "data": {
+  "id": "deepseek/deepseek-v4.1-flash",
+  "endpoints": [
+   {
+    "provider_name": "DeepSeek",
+    "name": "DeepSeek",
+    "quantization": null,
+    "context_length": 131072,
+    "pricing": {
+     "prompt": "0.0000002",
+     "completion": "0.0000008"
+    },
+    "status": 0,
+    "throughput_last_30m": {
+     "p50": 60
+    },
+    "latency_last_30m": {
+     "p50": 900
+    },
+    "uptime_last_30m": 99.5
+   }
+  ]
+ }
+}

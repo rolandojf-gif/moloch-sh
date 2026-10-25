@@ -1,0 +1,98 @@
+{
+ "data": [
+  {
+   "id": "anthropic/claude-opus-5.5",
+   "canonical_slug": "anthropic/claude-opus-5.5",
+   "name": "Anthropic: Claude Opus 5.5",
+   "created": 1790000000,
+   "description": "Claude Opus 5.5 is Anthropic's most capable model.",
+   "context_length": 1000000,
+   "architecture": {
+    "input_modalities": [
+     "text",
+     "image"
+    ],
+    "output_modalities": [
+     "text"
+    ]
+   },
+   "pricing": {
+    "prompt": "0.000005",
+    "completion": "0.000025",
+    "input_cache_read": "0.0000005"
+   },
+   "supported_parameters": [
+    "reasoning",
+    "tools"
+   ],
+   "hugging_face_id": null
+  },
+  {
+   "id": "moonshotai/kimi-k3.1-pro",
+   "canonical_slug": "moonshotai/kimi-k3.1-pro",
+   "name": "MoonshotAI: Kimi K3.1 Pro",
+   "created": 1792000000,
+   "description": "Kimi K3.1 Pro is Moonshot AI's flagship open-weight multimodal reasoning model and a post-trained successor of Kimi K3.",
+   "context_length": 262144,
+   "architecture": {
+    "input_modalities": [
+     "text"
+    ],
+    "output_modalities": [
+     "text"
+    ]
+   },
+   "pricing": {
+    "prompt": "0.000001",
+    "completion": "0.000004"
+   },
+   "supported_parameters": [
+    "reasoning"
+   ],
+   "hugging_face_id": ""
+  },
+  {
+   "id": "deepseek/deepseek-v4.1-flash",
+   "canonical_slug": "deepseek/deepseek-v4.1-flash",
+   "name": "DeepSeek: DeepSeek V4.1 Flash",
+   "created": 1791500000,
+   "description": "DeepSeek V4.1 Flash.",
+   "context_length": 163840,
+   "architecture": {
+    "input_modalities": [
+     "text"
+    ],
+    "output_modalities": [
+     "text"
+    ]
+   },
+   "pricing": {
+    "prompt": "0.0000002",
+    "completion": "0.0000008"
+   },
+   "supported_parameters": [
+    "reasoning"
+   ],
+   "hugging_face_id": "deepseek-ai/DeepSeek-V4.1-Flash"
+  },
+  {
+   "id": "openai/gpt-image-3",
+   "name": "OpenAI: GPT Image 3",
+   "created": 1791000000,
+   "description": "Image model",
+   "context_length": 32000,
+   "architecture": {
+    "input_modalities": [
+     "text"
+    ],
+    "output_modalities": [
+     "image"
+    ]
+   },
+   "pricing": {
+    "prompt": "0.00001",
+    "completion": "0.00004"
+   }
+  }
+ ]
+}

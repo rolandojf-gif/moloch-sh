@@ -65,6 +65,17 @@ node scripts/collect.mjs && node scripts/validate.mjs
 python3 -m http.server 8765   # los módulos ES no funcionan con file://
 ```
 
+## Pruebas
+
+Sin dependencias ni `package.json`. El flujo `.github/workflows/pruebas.yml` las ejecuta en cada cambio de código, de datos curados o de las propias pruebas, y en cada PR; Netlify publica igual, así que un fallo se ve en el commit o en la PR.
+
+```bash
+node --test tests/*.test.mjs   # comparaciones (aaRace), parte, valoración, formato, lector de zip y una recogida con respuestas grabadas
+node tests/humo.mjs            # las cinco vistas y tres direcciones directas en Chrome sin ventana, a 1300 y 390 px (CHROME=/ruta si hace falta)
+```
+
+La recogida de prueba usa `FIXTURES=tests/fixtures/recogida` en una copia temporal del repositorio: sólo responde OpenRouter y Hugging Face, así que también comprueba que el recolector conserva los valores anteriores de las fuentes que fallan. Cada vista se dibuja por separado (`safe()` en `js/app.js`): si una falla, muestra un aviso con `data-render-error` y las demás siguen funcionando; la prueba de humo busca ese aviso.
+
 ## Despliegue
 
 `netlify.toml` publica la raíz y fija la CSP (sólo conexiones al propio dominio).
