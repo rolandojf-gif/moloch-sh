@@ -157,6 +157,7 @@ ol.reglas { margin: 10px 0 8px; padding-left: 22px; font-size: 14.5px; max-width
 ol.reglas li { margin-bottom: 4px; }
 .empty { background: var(--card); border: 2px dashed var(--ink); padding: 18px; font-size: 15px; }
 .news > .empty { grid-column: 1 / -1; }
+.view-error { border-color: var(--bad); margin: 18px 0; }
 .more { margin-top: 14px; }
 .more summary { cursor: pointer; font: 700 12px var(--f-mono); text-transform: uppercase; }
 .changes { list-style: none; padding: 0; margin: 10px 0 0; border-top: 2px solid var(--ink); }
