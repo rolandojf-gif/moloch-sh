@@ -189,12 +189,12 @@ function renderCompare() {
   const sp = ms.map(speed);
   const rowsDef = [
     [t('Pesos'), m => weightsBadge(m)],
-    [t('Licencia'), m => fact(m.license)],
+    [t('Licencia'), m => fact(m.license, v => esc(tr(v)))],
     [t('País del laboratorio'), m => esc(country(m.lab.country))],
     [t('Inteligencia (AA)'), m => m.aa ? fact(m.aa.intelligence, v => num(v)) : nd(), m => ii(m), 'max'],
     [t('Programación (AA)'), m => m.aa ? fact(m.aa.coding, v => num(v)) : nd(), m => coding(m), 'max'],
     [t('Agentes (AA)'), m => m.aa ? fact(m.aa.agentic, v => num(v)) : nd(), m => agentic(m), 'max'],
-    [t('Capacidad (ECI)'), m => m.epoch ? fact(m.epoch.eci, v => num(v)) : nd(), m => eci(m), 'max'],
+    [t('Capacidad (ECI)'), m => m.epoch ? `${fact(m.epoch.eci, v => num(v))}${m.epoch.how && m.epoch.how !== 'nombre' ? `<span class="m-sub">${esc(tr(m.epoch.how))}</span>` : ''}` : nd(), m => eci(m), 'max'],
     [t('SWE-bench Verified'), m => m.epoch ? fact(m.epoch.swe, v => num(v) + ' %') : nd(), m => swe(m), 'max'],
     [t('Velocidad (tok/s)'), (m, i) => sp[i] ? `${num(sp[i].tps, 0)}${src(sp[i].f)} <span class="m-sub">${esc(sp[i].provider)}</span>` : nd(), (m, i) => sp[i]?.tps ?? null, 'max'],
     // Sólo compiten las latencias de AA (hasta la respuesta); la del proveedor mide otra cosa.

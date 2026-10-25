@@ -160,13 +160,13 @@ for (const [w, h] of [[1300, 900], [390, 844]]) {
   await run(HELP);
   const re = await run(`await waitFor(() => $$('.chart svg').length > 0 || $('#a7-rev li')); return estado();`);
   check(re.lang === 'en' && re.shown.join() === 'ai2027' && /Observatory/.test(re.title), `${where}: la recarga en inglés no dejó la página en inglés (${JSON.stringify(re)})`);
-  // Sin ?i18n=1 el selector no existe y el sitio es el de siempre, en español, aunque haya un idioma recordado
-  await send('Page.navigate', { url: `${base}?i18n=0` });
+  // RELEASED=true: el selector sigue visible incluso con ?i18n=0 y respeta el idioma explícito.
+  await send('Page.navigate', { url: `${base}?i18n=0&lang=en#modelos` });
   await sleep(300);
   await run(`await new Promise(r => { const t = setInterval(() => { if (document.readyState === 'complete') { clearInterval(t); r(); } }, 50); });`);
   await run(HELP);
   const off = await run(`await waitFor(() => $$('#mx-body tr.row').length > 0); return { lang: document.documentElement.lang, hidden: $('.seg.lang').hidden, vis: getComputedStyle($('.seg.lang')).display };`);
-  check(off.lang === 'es' && off.hidden && off.vis === 'none', `${where}: sin la bandera el selector debe estar oculto y el idioma ser español (${JSON.stringify(off)})`);
+  check(off.lang === 'en' && !off.hidden && off.vis !== 'none', `${where}: con RELEASED=true el selector debe seguir visible en inglés (${JSON.stringify(off)})`);
 }
 
 if (fails.length) { console.error(`Prueba de idioma: ${fails.length} fallos\n- ${fails.join('\n- ')}`); done(1); }

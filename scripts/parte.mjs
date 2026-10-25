@@ -41,7 +41,7 @@ const ii = m => m?.aa?.intelligence?.v ?? null;
 const blend = p => p && p.in != null && p.out != null ? (3 * p.in + p.out) / 4 : null;
 const blendM = m => blend({ in: m.price.in.v, out: m.price.out.v });
 const PLAIN = { adelantado: 'va por delante del escenario', compatible: 'se cumple como preveía', retrasado: 'va por detrás del escenario', 'todavía no evaluable': 'aún no se puede evaluar', 'sin evidencia suficiente': 'se queda sin datos públicos para comprobarlo' };
-const PLAIN_EN = { adelantado: 'is ahead of the scenario', compatible: 'is met as it foresaw', retrasado: 'is behind the scenario', 'todavía no evaluable': 'cannot be assessed yet', 'sin evidencia suficiente': 'is left without public data to check it' };
+const PLAIN_EN = { adelantado: 'is ahead of the scenario', compatible: 'is unfolding as predicted', retrasado: 'is behind the scenario', 'todavía no evaluable': 'cannot be assessed yet', 'sin evidencia suficiente': 'is left without public data to check it' };
 const GAP = { usCn: 'EE. UU. − China', closedOpen: 'cerrados − abiertos', labs: 'entre los dos primeros laboratorios' };
 const GAP_EN = { usCn: 'US − China gap', closedOpen: 'closed − open gap', labs: 'gap between the top two labs' };
 const CIFRAS = new Set(['dcMW', 'chipsH100e', 'revLeader']);   // potencia, chips e ingresos; el resto de indicadores vigilados sólo va a su frente
@@ -78,7 +78,7 @@ export function importancia(e, F = globalF.es) {
       if (d.ind === 'metrP80h') return { tier: 6, w: 90, porque: F.t('METR publica un nuevo punto del modelo puntero', 'METR publishes a new data point for the leading model') };
       if (d.ind === 'mirror') return d.to > d.from ? { tier: 6, w: 90, porque: F.t('nuevo récord en MirrorCode, la medida de tareas de semanas con la que el observatorio sustituye a METR', 'a new MirrorCode record, the measure of tasks lasting weeks with which the observatory replaces METR') } : null;
       if (GAP[d.ind]) return Math.abs(d.to - d.from) >= DIST ? { tier: 6, w: 50 + Math.abs(d.to - d.from), porque: F.t(`la distancia ${GAP[d.ind]} cambia al menos ${DIST} punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad`,
-        `the ${GAP_EN[d.ind]} changes by at least ${DIST} ECI point, the margin within which Epoch stops speaking of the same capability`) } : null;
+        `the ${GAP_EN[d.ind]} changes by at least ${DIST} ECI point, the threshold at which Epoch no longer treats them as having the same capability`) } : null;
       return CIFRAS.has(d.ind) && rel >= CIFRA ? { tier: 6, w: rel, porque: F.t(`la cifra cambia un ${pct(rel)} (umbral: ${CIFRA} %)`, `the figure changes by ${pct(rel)} (threshold: ${CIFRA}%)`) } : null;
     }
     case 'uso':
@@ -284,7 +284,7 @@ export function rss(items, { NOW_ISO, TODAY }, lang = 'es') {
     <pubDate>${when(e)}</pubDate>
     <description>${x([t.what, t.consecuencia, F.t(`Está en el parte porque ${t.porque}.`, `It is in the briefing because ${t.porque}.`),
       e.published ? F.t(`Publicado el ${e.published}; detectado el ${e.detected}.`, `Published on ${e.published}; detected on ${e.detected}.`) : F.t(`Detectado el ${e.detected}.`, `Detected on ${e.detected}.`),
-      F.t(`Fuente: ${e.src?.name} (${/^#/.test(e.src?.url || '') ? SITE + e.src.url : e.src?.url}).`, `Source: ${e.src?.name} (${/^#/.test(e.src?.url || '') ? SITE + e.src.url : e.src?.url}).`), aa(e, t)].filter(Boolean).join(' '))}</description>
+      F.t(`Fuente: ${e.src?.name} (${/^#/.test(e.src?.url || '') ? SITE + e.src.url : e.src?.url}).`, `Source: ${F.tm(e.src?.name)} (${/^#/.test(e.src?.url || '') ? SITE + e.src.url : e.src?.url}).`), aa(e, t)].filter(Boolean).join(' '))}</description>
   </item>`; }).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">

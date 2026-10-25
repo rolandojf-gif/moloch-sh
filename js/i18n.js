@@ -124,7 +124,7 @@ export function find(s) {
       r = null;
       for (const p of PAT) {
         const m = p.re.exec(s);
-        if (m) { r = fill(p.en, Object.fromEntries(p.names.map((n, i) => [n, m[i + 1]]))); break; }
+        if (m) { r = fill(p.en, Object.fromEntries(p.names.map((n, i) => [n, typeof EX.get(m[i + 1]) === 'string' ? EX.get(m[i + 1]) : m[i + 1]]))); break; }
       }
     }
     MEMO.set(s, r);

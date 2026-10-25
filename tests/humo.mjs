@@ -30,6 +30,8 @@ const base = `http://127.0.0.1:${server.address().port}/`;
 
 const cat = JSON.parse(readFileSync(path.join(ROOT, 'data/catalog.json'), 'utf8'));
 const modelId = (cat.models.find(m => m.aa?.intelligence?.v != null) || cat.models[0]).id;
+const manual = cat.models.find(m => m.license?.v === 'propietaria' && m.epoch?.how === 'emparejamiento manual')?.id;
+const approximate = cat.models.find(m => m.license?.v === 'propietaria' && m.epoch?.how === 'nombre aproximado')?.id;
 const VIEWS = ['hoy', 'modelos', 'lanzamientos', 'carrera', 'ai2027'];
 // Lo mínimo que tiene que haber dibujado cada vista (están todas en el DOM aunque sólo se vea una).
 const DRAWN = { hoy: /id="hoy-kpis"[^>]*>\s*<div class="kpi/, modelos: /<tr class="row/, lanzamientos: /id="ln-list"[^>]*>\s*</, carrera: /id="frente-evaluacion"[\s\S]*?<svg/, ai2027: /id="a7-rev"[^>]*>\s*<li/ };
@@ -37,10 +39,16 @@ const CASES = [
   ...VIEWS.map(v => ({ hash: v, view: v })),
   { hash: `modelos/${modelId}`, view: 'modelos', target: new RegExp(`<tr class="row[^"]*flash[^"]*"[^>]*data-id="${modelId.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}"|data-id="${modelId.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}"[^>]*class="row[^"]*flash`) },
   { hash: 'carrera/evaluacion', view: 'carrera', target: /id="frente-evaluacion"[^>]*class="[^"]*flash|class="[^"]*flash[^"]*"[^>]*id="frente-evaluacion"/ },
-  { hash: 'ai2027/swe85', view: 'ai2027', target: /id="hito-swe85"[^>]*class="[^"]*flash|class="[^"]*flash[^"]*"[^>]*id="hito-swe85"/ }
+  { hash: 'ai2027/swe85', view: 'ai2027', target: /id="hito-swe85"[^>]*class="[^"]*flash|class="[^"]*flash[^"]*"[^>]*id="hito-swe85"/ },
+  ...(manual && approximate ? [
+    { hash: `modelos/${manual}`, view: 'modelos', translations: ['proprietary', 'manual match'] },
+    { hash: `modelos/${approximate}`, view: 'modelos', translations: ['proprietary', 'approximate name match'] },
+    { hash: `modelos/comparar/${manual},${approximate}`, view: 'modelos', translations: ['proprietary', 'manual match', 'approximate name match'], compare: true }
+  ] : [])
 ];
 
 const fails = [];
+if (!manual || !approximate) fails.push('faltan modelos de muestra con licencia propietaria y emparejamientos Epoch manual/aproximado');
 const unesc = x => x.replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 for (const lang of ['es', 'en']) for (const [w, h] of [[1300, 900], [390, 844]]) {
   for (const c of CASES) {
@@ -58,6 +66,16 @@ for (const lang of ['es', 'en']) for (const [w, h] of [[1300, 900], [390, 844]])
     const shown = [...dom.matchAll(/<section class="view"[^>]*data-view="([^"]+)"[^>]*>/g)].filter(m => !/\bhidden\b/.test(m[0])).map(m => m[1]);
     if (shown.length !== 1 || shown[0] !== c.view) fails.push(`${where}: se ve ${shown.join(', ') || 'ninguna vista'} en vez de ${c.view}`);
     if (c.target && !c.target.test(dom)) fails.push(`${where}: la dirección directa no lleva a su sitio`);
+    if (c.translations && lang === 'en') {
+      const id = c.hash.slice('modelos/'.length);
+      const at = dom.indexOf(`data-id="${id}"`);
+      const start = at < 0 ? -1 : dom.lastIndexOf('<tr', at);
+      const part = c.compare
+        ? /<div class="compare" id="mx-compare"([^>]*)>([\s\S]*?)<div class="table-wrap">/.exec(dom)?.[2] || ''
+        : start < 0 ? '' : dom.slice(start, dom.indexOf('<tr class="row"', start + 1) < 0 ? undefined : dom.indexOf('<tr class="row"', start + 1));
+      for (const term of c.translations) if (!part.includes(term)) fails.push(`${where}: falta «${term}» en ${c.compare ? 'la comparación' : 'la ficha'}`);
+      if (/\bpropietaria\b|emparejamiento manual|nombre aproximado/.test(part)) fails.push(`${where}: quedan valores españoles en ${c.compare ? 'la comparación' : 'la ficha'}`);
+    }
     if (/data-state="empty"/.test(dom)) fails.push(`${where}: no se han cargado los datos`);
     if (!new RegExp(`<html[^>]*\\blang="${lang === 'en' ? 'en-GB|en' : 'es'}"`).test(dom)) fails.push(`${where}: el atributo lang del documento no es ${lang}`);
     if (lang === 'en') {

@@ -18,7 +18,7 @@
    Las usa data/curated/ai2027.json (valoraciones con "regla"). */
 
 import { inflateRawSync } from 'node:zlib';
-import { F } from './textos.mjs';
+import { F, failedStatus } from './textos.mjs';
 
 const URLS = {
   dc: 'https://epoch.ai/data/data_centers/data_centers.csv',
@@ -738,7 +738,7 @@ export async function collectIndicators(ctx, ep, prev) {
     catch (e) {
       ctx.log(`indicadores ${key} falló: ${e.message}`);
       ind[key] = prevInd[key] ? staleCopy(prevInd[key]) : null;
-      status[srcKey] = { ok: false, reason: 'la consulta falló; se conservan los valores anteriores' };
+      status[srcKey] = failedStatus('la consulta falló; se conservan los valores anteriores', 'the check failed; previous values have been retained');
     }
   };
   if (ep && ep !== 'keep') {

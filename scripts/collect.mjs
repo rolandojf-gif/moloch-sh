@@ -33,7 +33,7 @@ import { collectIndicators } from './indicadores.mjs';
 import { aaRace, aaCoverage } from '../js/fmt.js';
 import { detectChanges, mergeLog, snapshotExtras, indSnapshot, vigilados } from './cambios.mjs';
 import { enrich, parte, rss } from './parte.mjs';
-import { AVISOS } from './textos.mjs';
+import { AVISOS, failedStatus } from './textos.mjs';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DATA = path.join(ROOT, 'data');
@@ -731,10 +731,10 @@ async function main() {
   const status = {
     openrouter: { ok: true, got: NOW_ISO },
     hf: { ok: true, got: NOW_ISO, failed: 0 },
-    epoch: ep === 'keep' ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores' } : { ok: true, got: NOW_ISO, ...(ep.sweFailed ? { note: 'SWE-bench no disponible en esta recogida' } : {}) },
-    aa: aaReuse ? { ok: true, got: aaPrevGot, reused: true } : aaRows === null ? { ok: false, optional: true, reason: !AA_KEY ? 'no conectado' : 'sin permiso de publicación' } : aaRows === undefined ? { ok: false, reason: 'la consulta falló; se conservan los valores anteriores', lastOk: prevCatalog?.status?.aa?.got || prevCatalog?.status?.aa?.lastOk || null } : { ok: true, got: NOW_ISO }
+    epoch: ep === 'keep' ? failedStatus('la consulta falló; se conservan los valores anteriores', 'the check failed; previous values have been retained') : { ok: true, got: NOW_ISO, ...(ep.sweFailed ? { note: 'SWE-bench no disponible en esta recogida' } : {}) },
+    aa: aaReuse ? { ok: true, got: aaPrevGot, reused: true } : aaRows === null ? !AA_KEY ? failedStatus('no conectado', 'not connected', { optional: true }) : failedStatus('sin permiso de publicación', 'publication permission not granted', { optional: true }) : aaRows === undefined ? failedStatus('la consulta falló; se conservan los valores anteriores', 'the check failed; previous values have been retained', { lastOk: prevCatalog?.status?.aa?.got || prevCatalog?.status?.aa?.lastOk || null }) : { ok: true, got: NOW_ISO }
   };
-  status.uso = usoRes === null ? { ok: false, optional: true, reason: 'no conectado' } : usoRes === undefined ? { ok: false, reason: 'la consulta falló; se conserva el ranking anterior', lastOk: prevCatalog?.uso?.got || null } : { ok: true, got: NOW_ISO };
+  status.uso = usoRes === null ? failedStatus('no conectado', 'not connected', { optional: true }) : usoRes === undefined ? failedStatus('la consulta falló; se conserva el ranking anterior', 'the check failed; the previous ranking has been retained', { lastOk: prevCatalog?.uso?.got || null }) : { ok: true, got: NOW_ISO };
 
   // Organizaciones de Hugging Face de cada laboratorio: las que ya usan sus modelos enlazados (OpenRouter u overrides).
   const labOrgs = new Map();
