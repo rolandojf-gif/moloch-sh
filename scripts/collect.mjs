@@ -12,7 +12,7 @@
    Fuentes:
      OpenRouter  /api/v1/models y /endpoints   (sin clave)  precios, contexto, proveedores, velocidad por proveedor
      Hugging Face /api/models/<repo>           (sin clave)  existencia de pesos, licencia, fecha del repositorio
-     Epoch AI     eci_scores.csv y benchmarks.csv (CC BY 4.0) índice de capacidades ECI, SWE-bench Verified, apertura
+     Epoch AI     eci_scores.csv, benchmarks.csv y benchmark_data.zip (CC BY 4.0) índice de capacidades ECI, SWE-bench Verified, apertura, dificultad de las evaluaciones
      Artificial Analysis /api/v2/language/models/free (clave AA_API_KEY) índices de inteligencia, programación y agentes, velocidad
      OpenRouter   /api/v1/datasets/rankings-daily (clave OPENROUTER_API_KEY, CC BY 4.0) tokens diarios de los 50 modelos más usados (rankings de 7 y 30 días)
                   Se publica con su permiso por escrito, registrado en data/curated/permisos.json; sin él no se usa.
@@ -68,16 +68,18 @@ async function readJSON(p, fallback = null) {
   try { return JSON.parse(await readFile(p, 'utf8')); } catch { return fallback; }
 }
 
-const getJSON = (url, headers) => getRaw(url, headers, false);
-const getText = (url, headers) => getRaw(url, headers, true);
+const getJSON = (url, headers) => getRaw(url, headers, 'json');
+const getText = (url, headers) => getRaw(url, headers, 'text');
+const getBuf = (url, headers) => getRaw(url, headers, 'buf');
 
-async function getRaw(url, headers = {}, asText = false) {
+async function getRaw(url, headers = {}, as = 'json') {
   if (FIXTURES) {
-    const key = url.replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '_').slice(0, 180) + (asText ? '.txt' : '.json');
+    const key = url.replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '_').slice(0, 180) + ({ json: '.json', text: '.txt', buf: '.bin' })[as];
     const p = path.join(FIXTURES, key);
     if (!existsSync(p)) throw new Error(`fixture ausente: ${key}`);
+    if (as === 'buf') return readFile(p);
     const t = await readFile(p, 'utf8');
-    return asText ? t : JSON.parse(t);
+    return as === 'text' ? t : JSON.parse(t);
   }
   let lastErr;
   for (let i = 0; i < 3; i++) {
@@ -85,7 +87,7 @@ async function getRaw(url, headers = {}, asText = false) {
       const res = await fetch(url, { headers: { 'user-agent': 'moloch-sh-observatorio/1.0 (+https://github.com/rolandojf-gif/moloch-sh)', ...headers } });
       if (res.status === 404) { const e = new Error(`404 ${url}`); e.status = 404; throw e; }
       if (!res.ok) { const e = new Error(`${res.status} ${url}`); e.status = res.status; throw e; }
-      return asText ? await res.text() : await res.json();
+      return as === 'text' ? await res.text() : as === 'buf' ? Buffer.from(await res.arrayBuffer()) : await res.json();
     } catch (e) {
       lastErr = e;
       if ([401, 403, 404, 410].includes(e.status)) throw e;
@@ -794,7 +796,7 @@ async function main() {
   const base = earlier.length ? await readJSON(path.join(DATA, 'history', earlier[earlier.length - 1])) : null;
   // Indicadores de «La carrera» y «AI 2027»
   const prevInd = await readJSON(path.join(DATA, 'indicadores.json'));
-  const indicators = await collectIndicators({ getText, parseCSV, fact, log, NOW_ISO, TODAY }, ep, prevInd);
+  const indicators = await collectIndicators({ getText, getBuf, parseCSV, fact, log, NOW_ISO, TODAY }, ep, prevInd);
   indicators.ind.aa = aaIndicators(models, aaVersion, status.aa);
   const ai2027 = await readJSON(path.join(DATA, 'curated/ai2027.json'));
   const usoNow = usoRes ? usoRes.semana : null;

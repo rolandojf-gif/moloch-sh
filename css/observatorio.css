@@ -371,6 +371,16 @@ a.m-open { color: inherit; text-underline-offset: 3px; text-decoration-thickness
 .chart .pt-ln-open { fill: var(--open); }
 .legend i.sw-ln-closed { background: var(--closed); }
 .legend i.sw-ln-open { background: var(--open); }
+/* Mapa de dificultad de las evaluaciones (frente «Datos y evaluación»). */
+.chart .ln-front { stroke: var(--ink); stroke-width: 2.5; fill: none; }
+.chart .pt-front { fill: var(--ink); }
+.chart circle.pt-edi { fill: var(--card); stroke: var(--ink); stroke-width: 1.8; }
+.chart circle.pt-edi.up { fill: var(--orange); }
+.chart .edi-ci { stroke: var(--ink); stroke-width: 1.3; opacity: .28; }
+.chart .edi-ci.up { stroke: var(--orange-ink); opacity: .6; }
+.legend i.sw-front { background: var(--ink); height: 3px; vertical-align: 3px; }
+.legend i.lg-edi { background: var(--card); border: 2px solid var(--ink); border-radius: 50%; }
+.legend i.lg-edi.up { background: var(--orange); }
 .jump { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
 .jump a { display: inline-flex; gap: 8px; align-items: center; font: 600 12px/1.2 var(--f-mono); text-transform: uppercase; text-decoration: none; padding: 7px 10px; border: 2px solid var(--ink); background: var(--card); box-shadow: var(--shadow-sm); }
 .jump a i { font-style: normal; color: var(--orange-ink); font-weight: 700; }

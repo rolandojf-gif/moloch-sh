@@ -2,7 +2,7 @@
    cambiaría la lectura; después, gráficos, indicadores, hechos con fuente y la lectura marcada como interpretación. */
 import { esc, fmtDate, num, ND, aaRace, aaIndexName, AA_LINK } from './fmt.js';
 import { indicatorRow, indicatorKpi, indicatorBrief, mw, mh100, usdB, PAIS } from './indicadores.js';
-import { gaps, hbars, columns, dotci, recordChart, tip } from './charts.js';
+import { gaps, hbars, columns, dotci, recordChart, ediMap, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
 export const ESTADO = { abierta: 'Hipótesis abierta', confirmada: 'Hipótesis confirmada', debilitada: 'Hipótesis debilitada' };
@@ -95,6 +95,40 @@ function chipsTrend(ch) {
   return { rows, g: G.v, lo: G.lo, hi: G.hi };
 }
 
+/* Mapa de dificultad: cada evaluación del ECI en su fecha de publicación y a la altura de su dificultad (EDI), frente al
+   mejor ECI publicado; en la ficha, lo que el modelo de Epoch prevé para los líderes y el mejor resultado medido. */
+function ediChart(m) {
+  if (!m?.v?.length || !m.line?.length) return null;
+  const top = m.top, year = m.line[0].d.slice(0, 4), since = `${year}-01-01`;
+  const recent = m.v.filter(b => b.d && b.d >= since), old = m.v.filter(b => !b.d || b.d < since);
+  const up = recent.filter(b => top && b.edi > top.eci), oldUp = old.filter(b => top && b.edi > top.eci);
+  const same = m.cn && m.open && m.cn.model === m.open.model;
+  const pc = v => v != null ? `${num(v, 0)} %` : null;
+  const foot = [top && `El mejor: ${top.model} (${num(top.eci, 1)}).`, m.cn && `Mejor chino${same ? ' y mejor abierto' : ''}: ${m.cn.model} (${num(m.cn.eci, 1)}).`, !same && m.open && `Mejor abierto: ${m.open.model} (${num(m.open.eci, 1)}).`,
+    'Porcentaje del camino entre el azar (0) y el techo de la prueba (100); «previsto» es lo que da el modelo del ECI, no una medición.'].filter(Boolean).join(' ');
+  const items = recent.map(b => ({
+    n: b.name, d: b.d, v: b.edi, lo: b.lo, hi: b.hi, up: !!top && b.edi > top.eci,
+    tip: tip(b.name, [
+      ['Publicada', fmtDate(b.d)],
+      ['Dificultad (EDI)', `${num(b.edi, 1)}${b.lo != null ? ` (${num(b.lo, 1)}–${num(b.hi, 1)})` : ''}`],
+      ['Previsto: el mejor', pc(b.pred?.top)],
+      [same ? 'Previsto: chino y abierto' : 'Previsto: mejor chino', pc(b.pred?.cn)],
+      same ? null : ['Previsto: mejor abierto', pc(b.pred?.open)],
+      ['Medido: mejor resultado', b.best ? `${num(b.best.v, 0)} % (${b.best.model})` : null],
+      ['Modelos medidos', b.best ? num(b.best.models, 0) : null]
+    ], foot)
+  }));
+  const oldTxt = !old.length ? '' : oldUp.length
+    ? ` De las ${num(old.length, 0)} evaluaciones anteriores a ${year}, que no aparecen, ${num(oldUp.length, 0)} siguen por encima.`
+    : ` Las ${num(old.length, 0)} evaluaciones anteriores a ${year} no aparecen: todas quedan por debajo.`;
+  return {
+    title: 'Dificultad de cada evaluación frente al mejor modelo',
+    wide: true,
+    note: `Cada punto es una evaluación del ECI publicada desde ${year}, en su fecha y a la altura de su dificultad según Epoch (EDI): el ECI con el que su modelo prevé recorrer la mitad del camino entre el azar y el techo de la prueba. La raya vertical es su intervalo del 90 %. La línea es el mejor ECI publicado hasta cada fecha.${top ? ` En naranja, las ${num(up.length, 0)} que siguen por encima del mejor modelo de hoy, ${esc(top.model)} (${num(top.eci, 1)}).` : ''}${oldTxt} Al pasar el cursor, lo que el modelo de Epoch prevé en esa prueba para el mejor modelo, el mejor chino y el mejor abierto, y el mejor resultado medido: así se ve qué significan unos puntos de ECI. ${EPOCH('datos del ajuste del ECI', m.url || 'https://epoch.ai/benchmarks/eci')}`,
+    draw: el => ediMap(el, items, m.line, { today: m.asOf })
+  };
+}
+
 const CHARTS = {
   computo: I => [
     I.chips?.quarters?.length && {
@@ -161,13 +195,7 @@ const CHARTS = {
       draw: el => recordChart(el, I.bench.sweSeries.v, { yLabel: '% resuelto', unit: ' %', ref: { v: 85, label: 'AI 2027: 85 % a mediados de 2025' } })
     }
   ],
-  evaluacion: I => [
-    I.bench?.tasks?.v?.length && {
-      title: 'Mejor resultado en cada evaluación',
-      note: `${EPOCH('«Benchmarking»', I.bench.tasks.url)} Evaluaciones ejecutadas por Epoch con al menos 5 modelos. En rojo, las saturadas (90 % o más).`,
-      draw: el => hbars(el, I.bench.tasks.v.slice().sort((a, b) => b.best - a.best).map(t => ({ label: t.task, v: t.best, cls: t.best >= 90 ? 'hit' : '', value: `${num(t.best, 1)} %`, tip: tip(t.task, [['Mejor resultado', `${num(t.best, 1)} %`], ['Modelo', t.model], ['Publicado', t.release ? fmtDate(t.release) : null], ['Modelos evaluados', num(t.models, 0)]]) })), { max: 100, ref: { v: 90, label: 'saturada' }, aria: 'Mejor resultado por evaluación' })
-    }
-  ],
+  evaluacion: I => [ediChart(I.edi?.map)],
   economia: I => [
     I.companies?.revenue?.length && {
       title: 'Ingresos anualizados por empresa, último dato',
@@ -183,11 +211,19 @@ const CHARTS = {
     },
     I.eci?.labs?.length && {
       title: 'Mejor modelo de cada laboratorio (ECI)',
-      note: `${EPOCH('«Epoch Capabilities Index»', I.eci.frontier?.url || 'https://epoch.ai/benchmarks/eci')} La raya es el intervalo de confianza del 90 %: si dos rayas se solapan, no puede afirmarse cuál va primero.`,
-      draw: el => dotci(el, I.eci.labs.map(r => ({ label: r.org, v: r.eci, lo: r.ci?.[0] ?? null, hi: r.ci?.[1] ?? null, tip: tip(r.org, [['Modelo', r.model], ['ECI', num(r.eci, 1)], ['Intervalo', r.ci?.[0] != null ? `${num(r.ci[0], 1)}–${num(r.ci[1], 1)}` : null], ['Publicado', fmtDate(r.date)]]) })), { unit: 'puntos ECI', aria: 'Mejor ECI por laboratorio' })
+      note: `${EPOCH('«Epoch Capabilities Index»', I.eci.frontier?.url || 'https://epoch.ai/benchmarks/eci')} La raya es el intervalo de confianza del 90 %: si dos rayas se solapan, no puede afirmarse cuál va primero.${firstOdds(I)}`,
+      draw: el => dotci(el, I.eci.labs.map(r => ({ label: r.org, v: r.eci, lo: r.ci?.[0] ?? null, hi: r.ci?.[1] ?? null, tip: tip(r.org, [['Modelo', r.model], ['ECI', num(r.eci, 1)], ['Intervalo', r.ci?.[0] != null ? `${num(r.ci[0], 1)}–${num(r.ci[1], 1)}` : null], ['Primero en las réplicas', r.pFirst != null ? `${num(r.pFirst, 0)} %` : null], ['Publicado', fmtDate(r.date)]]) })), { unit: 'puntos ECI', aria: 'Mejor ECI por laboratorio' })
     }
   ]
 };
+/* Reparto del primer puesto en las réplicas bootstrap de Epoch: en cuántas tiene cada laboratorio el mejor modelo de todos. */
+function firstOdds(I) {
+  const n = I.eci?.gapLabs?.prob?.samples, labs = (I.eci?.labs || []).filter(l => l.pFirst != null);
+  if (!n || !labs.length) return '';
+  const some = labs.filter(l => l.pFirst > 0).sort((a, b) => b.pFirst - a.pFirst);
+  const pc = v => v >= 100 ? 'en todas' : `en el ${num(v, 0)} %`;
+  return ` En las ${num(n, 0)} réplicas con que Epoch repite el ajuste, el mejor modelo de todos es ${some.map(l => `de ${esc(l.org)} ${pc(l.pFirst)}`).join(', ').replace(/, ([^,]*)$/, ' y $1')}${some.length < labs.length ? '; del resto de laboratorios, en ninguna' : ''}.`;
+}
 const chartsOf = (f, ind) => ind && CHARTS[f.id] ? CHARTS[f.id](ind).filter(Boolean) : [];
 
 function front(f, i, ind, log) {
@@ -228,7 +264,7 @@ export function renderCarrera(d) {
     const s = ind.eci?.series;
     const ok = s ? gaps($('#ca-gaps'), s.points) : false;
     if (!ok) $('#ca-gaps').innerHTML = '<div class="chart-empty">Sin datos suficientes para la serie.</div>';
-    $('#ca-gaps-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Para cada fin de mes, el mejor ECI publicado hasta esa fecha por organizaciones de cada país (o con pesos cerrados y abiertos, según la clasificación de Epoch), y su diferencia. Epoch trata como misma capacidad dos modelos a menos de 1 punto. Epoch puntúa los modelos semanas después de salir y no mide algunos laboratorios: por eso sus cifras van por detrás de las de arriba. Las distancias no se convierten en meses. Fuente: <a href="https://epoch.ai/benchmarks/eci" target="_blank" rel="noopener">Epoch AI</a>, CC BY 4.0.`;
+    $('#ca-gaps-note').innerHTML = `<span class="lbl">Cómo se calcula</span>Para cada fin de mes, el mejor ECI publicado hasta esa fecha por organizaciones de cada país (o con pesos cerrados y abiertos, según la clasificación de Epoch), y su diferencia. Epoch trata como misma capacidad dos modelos a menos de 1 punto. Epoch puntúa los modelos semanas después de salir y no mide algunos laboratorios: por eso sus cifras van por detrás de las de arriba. La probabilidad de cada tarjeta sale de las réplicas bootstrap que publica Epoch: repite el ajuste entero remuestreando los resultados de cada modelo, y se cuenta en cuántas réplicas sigue por delante el primero. Las distancias no se convierten en meses. Fuente: <a href="https://epoch.ai/benchmarks/eci" target="_blank" rel="noopener">Epoch AI</a>, CC BY 4.0.`;
   } else {
     $('#ca-kpis').innerHTML = `<div class="empty">${ND}: todavía no hay indicadores recogidos.</div>`;
     $('#ca-gaps').innerHTML = '';

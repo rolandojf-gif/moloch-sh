@@ -43,6 +43,15 @@ const ptsAA = v => `${v < 0 ? '−' : ''}${num(Math.abs(v), 1)} puntos AA`;
 const whoAA = b => b ? `${who(b)}, ${num(b.ii, 1)}${b.anun ? ' (pesos anunciados, aún sin descargar)' : ''}` : 'sin datos';
 const ahead = (f, second) => f?.v < 0 ? ` Va por delante ${second}.` : f?.v === 0 ? ' Empatados.' : '';
 
+/* Probabilidad de las réplicas bootstrap de Epoch (scripts/indicadores.mjs, ediBlock), con su marca de fuente. */
+const odds = p => `${p.v >= 100 ? `todas las ${num(p.samples, 0)} réplicas` : p.v <= 0 ? `ninguna de las ${num(p.samples, 0)} réplicas` : `el ${num(p.v, 0)} % de las ${num(p.samples, 0)} réplicas`} del ajuste de Epoch${src(p)}`;
+/* Laboratorios: en cuántas réplicas tiene el mejor modelo cada uno de los dos primeros. */
+function labsOdds(I, f) {
+  const p = f.prob, second = (I.eci?.labs || []).find(l => l.org === f.second?.org);
+  const pc = v => v >= 100 ? 'en todas' : v <= 0 ? 'en ninguna' : `en el ${num(v, 0)} %`;
+  return ` El mejor modelo es de ${esc(f.first.org)} en ${odds(p)}${second?.pFirst != null ? `, y de ${esc(second.org)} ${pc(second.pFirst)}` : ''}.`;
+}
+
 /* Cada entrada devuelve { label, value, sub } o { label, list, sub }. value y list ya llevan su marca de fuente. */
 const REG = {
   'aa.gapUsCn': (I) => {
@@ -68,17 +77,17 @@ const REG = {
   },
   'eci.gapUsCn': (I) => {
     const f = I.eci?.gapUsCn;
-    return { label: 'Distancia EE. UU. − China (ECI)', value: fact(f, pts), sub: f?.us && f?.cn ? `${who(f.us)} frente a ${who(f.cn)}. País de la organización según Epoch.` : '' };
+    return { label: 'Distancia EE. UU. − China (ECI)', value: fact(f, pts), sub: f?.us && f?.cn ? `${who(f.us)} frente a ${who(f.cn)}. País de la organización según Epoch.${f.prob ? ` EE. UU. sigue por delante en ${odds(f.prob)}.` : ''}` : '' };
   },
   'eci.gapClosedOpen': (I) => {
     const f = I.eci?.gapClosedOpen;
-    return { label: 'Distancia cerrados − abiertos (ECI)', value: fact(f, pts), sub: f?.closed && f?.open ? `${who(f.closed)} frente a ${who(f.open)}.` : '' };
+    return { label: 'Distancia cerrados − abiertos (ECI)', value: fact(f, pts), sub: f?.closed && f?.open ? `${who(f.closed)} frente a ${who(f.open)}.${f.prob ? ` El mejor cerrado sigue por delante en ${odds(f.prob)}.` : ''}` : '' };
   },
   'eci.gapLabs': (I) => {
     const f = I.eci?.gapLabs;
     return {
       label: 'Distancia entre los dos primeros laboratorios (ECI)', value: fact(f, pts),
-      sub: f?.first && f?.second ? `${who(f.first)} frente a ${who(f.second)}.${f.overlap ? ' Sus intervalos de confianza se solapan: no puede afirmarse cuál va primero.' : ''}` : ''
+      sub: f?.first && f?.second ? `${who(f.first)} frente a ${who(f.second)}.${f.prob ? labsOdds(I, f) : f.overlap ? ' Sus intervalos de confianza se solapan: no puede afirmarse cuál va primero.' : ''}` : ''
     };
   },
   'eci.agent0': (I) => {
@@ -92,6 +101,14 @@ const REG = {
   },
   'eci.rivals2025': (I) => standing(I.eci?.rivals2025, 'Distancia entre los dos primeros laboratorios a 31 dic 2025'),
   'eci.usCn2026': (I) => standing(I.eci?.usCn2026, 'Distancia EE. UU. − China a 31 ago 2026'),
+  'edi.open': (I) => {
+    const f = I.edi?.open;
+    return {
+      label: 'Evaluaciones del ECI que el mejor modelo aún no resuelve a medias',
+      value: fact(f, v => `${num(v, 0)} de ${num(f.of, 0)}`),
+      sub: f?.v != null && f.top ? `${f.names.length ? `${f.names.map(esc).join(', ')}. ` : ''}Su dificultad, según Epoch, supera el ECI de ${esc(f.top.model)} (${num(f.top.eci, 1)}): el modelo de Epoch le prevé menos de la mitad del camino entre el azar y el techo de cada prueba.` : ''
+    };
+  },
   'bench.saturated': (I) => {
     const f = I.bench?.saturated;
     return { label: 'Evaluaciones saturadas', value: fact(f, v => `${num(v, 0)} de ${num(f.of, 0)}`), sub: 'Evaluaciones ejecutadas por Epoch, con al menos 5 modelos, cuyo mejor resultado llega al 90 %.' };

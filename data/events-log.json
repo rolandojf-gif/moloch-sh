@@ -103,6 +103,11 @@
    "path": "bench.saturated",
    "label": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %)",
    "desde": "2026-10-23"
+  },
+  {
+   "path": "edi.open",
+   "label": "Evaluaciones del ECI que el mejor modelo aún no resuelve a medias",
+   "desde": "2026-10-25"
   }
  ],
  "events": [

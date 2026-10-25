@@ -61,7 +61,7 @@ if (ind) {
 
 /* Datos curados de «La carrera» y «AI 2027». */
 const DAY = /^\d{4}-\d{2}-\d{2}$/, DAYMONTH = /^\d{4}-\d{2}(-\d{2})?$/, URL_RE = /^https:\/\/\S+$/;
-const IND_KEY = /^(aa|eci|bench|dc|chips|companies|metr)\.[A-Za-z0-9]+$/;
+const IND_KEY = /^(aa|eci|edi|bench|dc|chips|companies|metr)\.[A-Za-z0-9]+$/;
 const ESTADOS = ['abierta', 'confirmada', 'debilitada'];
 const ESCALA = ['adelantado', 'compatible', 'retrasado', 'todavía no evaluable', 'sin evidencia suficiente'];
 const REGLAS = ['swe85', 'openAgent0', 'variosAgent0', 'openaiRev2025', 'rivales39', 'deepcent6', 'mirror80'];
