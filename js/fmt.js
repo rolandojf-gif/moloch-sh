@@ -158,6 +158,7 @@ export function aaRace(catalog) {
   const yearAgo = `${Number(today.slice(0, 4)) - 1}${today.slice(4)}`;
   const now = list.length ? {
     us: top(today, m => m.c === 'US'), cn: top(today, m => m.c === 'CN'), closed: top(today, m => m.g === 'c'), open: top(today, m => m.g === 'o'),
+    openDl: top(today, m => m.g === 'o' && !m.anun),
     first: labs[0] || null, second: labs[1] || null, labs, from: top(yearAgo, () => true), to: top(today, () => true), yearAgo
   } : null;
   return { ver, today, points, models, series, now, n: list.length, from: list[0]?.d || null };
@@ -180,10 +181,12 @@ export function speed(m) {
 }
 
 /* Etiqueta de pesos. «Cerrados» inferido (sin repositorio en Hugging Face ni clasificación de Epoch) y «abiertos» anunciados
-   (el laboratorio dice que son abiertos, pero aún no se pueden descargar) se distinguen de los comprobados. */
+   (su descripción en OpenRouter dice que son abiertos, pero aún no se pueden descargar) se distinguen de los comprobados.
+   La descripción de OpenRouter no se atribuye al laboratorio: no consta quién la redacta. */
+export const anunText = m => `Su descripción en OpenRouter lo presenta como de pesos abiertos${m.weights?.since ? ` (consta desde el ${fmtDate(m.weights.since)})` : ''}, pero aún no hay repositorio público en Hugging Face: cuenta como abierto, aunque todavía no se puede descargar.`;
 export function weightsTag(m) {
   const v = m.weights?.v;
-  if (v === 'abiertos' && m.weights.announced) return '<span class="w abiertos anun" title="El laboratorio lo presenta como de pesos abiertos, pero aún no hay repositorio público en Hugging Face: cuenta como abierto, aunque todavía no se puede descargar">abiertos · anunciados</span>';
+  if (v === 'abiertos' && m.weights.announced) return `<span class="w abiertos anun" title="${esc(anunText(m))}">abiertos · anunciados</span>`;
   if (v === 'cerrados' && m.weights.inferred) return '<span class="w cerrados inf" title="OpenRouter no enlaza pesos y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; se asume cerrado">cerrados · inferido</span>';
   return `<span class="w ${v || 'nd'}">${esc(v || 'pesos sin datos')}</span>`;
 }

@@ -60,7 +60,7 @@ const REG = {
   },
   'aa.gapClosedOpen': (I) => {
     const f = I.aa?.gapClosedOpen;
-    return { label: 'Distancia cerrados − abiertos (índice AA)', value: fact(f, ptsAA), sub: f?.closed && f?.open ? `${whoAA(f.closed)} frente a ${whoAA(f.open)}.${ahead(f, 'el mejor abierto')}` : '' };
+    return { label: 'Distancia cerrados − abiertos (índice AA)', value: fact(f, ptsAA), sub: f?.closed && f?.open ? `${whoAA(f.closed)} frente a ${whoAA(f.open)}.${ahead(f, 'el mejor abierto')}${f.openDl && f.vDl != null ? ` Con pesos ya descargables, el mejor es ${whoAA(f.openDl)}: ${num(f.vDl, 1)} puntos AA.` : ''}` : '' };
   },
   'aa.gapLabs': (I) => {
     const f = I.aa?.gapLabs;

@@ -187,10 +187,14 @@ ol.reglas li { margin-bottom: 4px; }
 .chart .pt-unknown { fill: var(--unknown); }
 .chart circle { stroke: var(--card); stroke-width: 1.5; }
 .chart circle.faint { opacity: .28; }
+/* Pesos abiertos anunciados, aún sin repositorio: hueco y con borde discontinuo. */
+.chart circle.anun { fill: var(--card); stroke: var(--open); stroke-width: 2; stroke-dasharray: 2 2; }
+.chart circle.anun.faint { opacity: .6; }
 .chart .hot circle, .chart circle.hot { stroke: var(--ink); stroke-width: 2.5; opacity: 1; }
 .chart svg { touch-action: pan-y; }
 .chart .ptlabel { paint-order: stroke; stroke: var(--card); stroke-width: 3px; stroke-linejoin: round; }
 .legend i.lg-key { background: var(--card); border: 2px solid var(--ink); border-radius: 50%; }
+.legend i.lg-anun { background: var(--card); border: 2px dashed var(--open); border-radius: 50%; }
 .legend i.lg-faint { background: var(--unknown); opacity: .35; border-radius: 50%; }
 .chart.zoomed svg { cursor: grab; }
 .chart.zoomed circle.faint { opacity: .5; }

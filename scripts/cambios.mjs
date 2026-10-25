@@ -177,7 +177,7 @@ export function detectChanges(ctx) {
         what: (aNow !== null
           ? `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}: ${es(b.ii, 1)} puntos, ${margin >= 0 ? `${es(margin, 1)} más` : `${es(-margin, 1)} menos`} que ${aName} (${es(aNow, 1)}).`
           : `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}, con ${es(b.ii, 1)} puntos: ${aName}, que tenía ${es(a.ii, 1)}, ya no figura como ${adj} con puntuación.`)
-          + (nb?.weights?.announced ? ' Sus pesos están anunciados por el laboratorio, pero aún no se pueden descargar.' : ''),
+          + (nb?.weights?.announced ? ' Su descripción en OpenRouter lo presenta como de pesos abiertos, pero aún no se pueden descargar.' : ''),
         data: { block: w, version: vNow, from: { id: a.id, n: aName, ii: a.ii, iiNow: aNow }, to: { id: b.id, n: nb?.name || null, ii: b.ii }, margin }
       }));
     }

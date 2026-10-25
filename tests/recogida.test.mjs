@@ -31,6 +31,7 @@ test('recogida con respuestas grabadas, validación y parte', { timeout: 300000 
   assert.equal(kimi.v, 'abiertos');
   assert.equal(kimi.announced, true, 'sin repositorio y presentado como de pesos abiertos: anunciado');
   assert.equal(kimi.src, 'openrouter');
+  assert.match(kimi.since, /^\d{4}-\d{2}-\d{2}$/, 'con la fecha desde la que consta como anunciado');
   assert.equal(byId.get('deepseek/deepseek-v4.1-flash').weights.src, 'hf', 'con repositorio en Hugging Face: descargable');
   assert.equal(byId.get('anthropic/claude-opus-5.5').price.in.v, 5, 'precio del propio laboratorio por millón');
   assert.equal(cat.status.openrouter.ok, true);

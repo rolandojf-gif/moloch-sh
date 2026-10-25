@@ -343,14 +343,14 @@ export function frontier(el, records, opts = {}) {
     }
     const strong = m => m.rec || (highlight && highlight.has(m.n));
     const ordered = shown.map((m, i) => [m, i]).sort((a, b) => (strong(a[0]) ? 1 : 0) - (strong(b[0]) ? 1 : 0));
-    for (const [m, i] of ordered) s += `<circle data-k="${i}" class="pt-${grp(m.g)} ${strong(m) ? 'key' : 'faint'}" cx="${X(ms(m.d)).toFixed(1)}" cy="${Y(m.v).toFixed(1)}" r="${strong(m) ? 5 : 4}"/>`;
+    for (const [m, i] of ordered) s += `<circle data-k="${i}" class="pt-${grp(m.g)} ${strong(m) ? 'key' : 'faint'}${m.anun ? ' anun' : ''}" cx="${X(ms(m.d)).toFixed(1)}" cy="${Y(m.v).toFixed(1)}" r="${strong(m) ? 5 : 4}"/>`;
     s += '</g>';
     const targets = shown.map(m => ({
       x: X(ms(m.d)), y: Y(m.v),
       html: tip(m.n, [
         ['Fecha de lanzamiento', fmtDate(m.d)],
         [metric, m.lo != null && m.hi != null ? `${fmtV(m.v)} (intervalo ${num(m.lo, 1)}–${num(m.hi, 1)})` : fmtV(m.v)],
-        ['Pesos', m.g === 'o' ? (m.anun ? 'abiertos (anunciados por el laboratorio; aún no descargables)' : 'abiertos') : m.inf ? 'cerrados (inferido: no hay pesos publicados)' : 'cerrados'],
+        ['Pesos', m.g === 'o' ? (m.anun ? 'abiertos (anunciados en su descripción de OpenRouter; aún no descargables)' : 'abiertos') : m.inf ? 'cerrados (inferido: no hay pesos publicados)' : 'cerrados'],
         ['Organización', m.org || null],
         ['Nuevo récord', m.rec ? `sí, mejor ${m.g === 'o' ? 'abierto' : 'cerrado'} hasta esa fecha` : 'no']
       ])
@@ -371,7 +371,8 @@ export function frontier(el, records, opts = {}) {
     if (zoomed) rest.push(...shown.filter(m => !m.rec && !(highlight && highlight.has(m.n))).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down', faint: true })));
     s += labelSvg(placeLabels([...leaders, ...marked, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G));
     s += '</svg><div class="legend"><span><i style="background:var(--open)"></i>Mejor con pesos abiertos</span><span><i style="background:var(--closed)"></i>Mejor cerrado</span>';
-    s += (models ? '<span><i class="lg-faint"></i>Resto de modelos puntuados</span>' : '') + zoomUi(zoomed) + '</div>';
+    s += (shown.some(m => m.anun) ? '<span><i class="lg-anun"></i>Pesos anunciados, aún sin descargar</span>' : '')
+      + (models ? '<span><i class="lg-faint"></i>Resto de modelos puntuados</span>' : '') + zoomUi(zoomed) + '</div>';
     el.innerHTML = s;
     interact(el, targets, 22);
   };

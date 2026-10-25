@@ -44,6 +44,7 @@ test('aaRace: líderes, distancias y anunciados según el catálogo', () => {
   assert.equal(r.now.closed.n, 'Cerrado');
   assert.equal(r.now.open.n, 'Anunciado', 'los anunciados cuentan como abiertos');
   assert.equal(r.now.open.anun, true);
+  assert.equal(r.now.openDl.n, 'Descargable', 'y aparte, el mejor que ya se puede descargar');
   assert.equal(r.series.at(-1).closedOpen, 2.5);
   assert.equal(r.now.first.org, 'LabA');
   assert.equal(r.now.second.org, 'LabB');

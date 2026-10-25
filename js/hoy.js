@@ -15,6 +15,10 @@ function scored(models) {
 function leader(models, w) {
   return scored(models).filter(m => m.weights.v === w).sort((a, b) => ii(b) - ii(a))[0] || null;
 }
+/* Si el líder abierto sólo tiene pesos anunciados, el mejor que ya se puede descargar; si no, null. */
+function downloadable(models, lo) {
+  return lo?.weights.announced ? scored(models).filter(m => m.weights.v === 'abiertos' && !m.weights.announced).sort((a, b) => ii(b) - ii(a))[0] || null : null;
+}
 
 /* Titular, consecuencia y motivo vienen ya redactados por el recolector (scripts/parte.mjs), con plantillas y cifras de la misma recogida. */
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : '';
@@ -92,7 +96,7 @@ function cheapestAbove(rows, T, getII, getPrice) {
 
 function renderKPIs(d, gapPts) {
   const models = d.catalog.models;
-  const lo = leader(models, 'abiertos'), lc = leader(models, 'cerrados');
+  const lo = leader(models, 'abiertos'), lc = leader(models, 'cerrados'), dl = downloadable(models, lo);
   const aaSt = d.catalog.status?.aa;
   const reason = aaSt && !aaSt.ok && !scored(models).length ? `Artificial Analysis no disponible: ${esc(aaSt.reason || 'sin datos')}.` : '';
   const ver = d.catalog.aaIndexVersion;
@@ -106,7 +110,7 @@ function renderKPIs(d, gapPts) {
     if (prevLead && prevLead.id !== m.id && prevLead.ii !== undefined) delta = ` Antes: ${esc(prev.models[prevLead.id]?.n || prevLead.id)} (${num(prevLead.ii)}).`;
     const ep = eci(m) !== null ? ` ECI en Epoch AI: ${fact(m.epoch.eci, v => num(v))}.` : '';
     return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small">${modelLink(d, m.id, m.name)}</span>
-      <span class="s">${esc(m.lab.name)} · índice AA ${fact(capFact(m), v => num(v))}${aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : ''}.${m.weights.announced ? ' Pesos abiertos anunciados por el laboratorio; aún no se pueden descargar.' : ''}${ep}${delta}</span></div>`;
+      <span class="s">${esc(m.lab.name)} · índice AA ${fact(capFact(m), v => num(v))}${aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : ''}.${m.weights.announced ? ` Pesos anunciados en su descripción de OpenRouter${m.weights.since ? ` desde el ${esc(fmtDate(m.weights.since))}` : ''}; aún no se pueden descargar.` : ''}${ep}${delta}${dl && m === lo ? ` Con pesos ya descargables, el mejor es ${modelLink(d, dl.id, dl.name)} (${esc(dl.lab.name)}), índice AA ${fact(capFact(dl), v => num(v))}.` : ''}</span></div>`;
   };
 
   let gapCard;
@@ -119,7 +123,7 @@ function renderKPIs(d, gapPts) {
       else delta = ` Igual que el ${fmtDate(prev.date)}.`;
     }
     gapCard = `<div class="kpi"><span class="k">Diferencia cerrado − abierto</span><span class="v">${gap > 0 ? '' : gap < 0 ? '−' : ''}${num(Math.abs(gap))} pts${src(capFact(lc))}</span>
-      <span class="s">Puntos del ${esc(aaIndexName(ver))} entre ${esc(lc.name)} y ${esc(lo.name)}. No equivalen a meses de retraso. AA no publica intervalo de confianza para este índice.${delta}</span></div>`;
+      <span class="s">Puntos del ${esc(aaIndexName(ver))} entre ${esc(lc.name)} y ${esc(lo.name)}.${dl ? ` Con el mejor de pesos ya descargables, ${esc(dl.name)}, ${num(Math.round((ii(lc) - ii(dl)) * 10) / 10)} pts.` : ''} No equivalen a meses de retraso. AA no publica intervalo de confianza para este índice.${delta}</span></div>`;
   } else {
     gapCard = `<div class="kpi"><span class="k">Diferencia cerrado − abierto</span><span class="v">${ND}</span><span class="s">${reason || 'Falta un líder con índice en algún bloque.'}</span></div>`;
   }
@@ -188,6 +192,8 @@ function renderScatter(d, gapPts) {
     const gap = ii(lc) - ii(lo);
     const ratio = blended(lc) > 0 && blended(lo) > 0 ? blended(lc) / blended(lo) : null;
     bits.push(`El mejor modelo con pesos abiertos (${esc(lo.name)}, ${num(ii(lo))}) queda ${gap >= 0 ? `${num(gap)} puntos por debajo` : `${num(-gap)} puntos por encima`} del mejor cerrado (${esc(lc.name)}, ${num(ii(lc))})${ratio ? ` y su precio combinado es ${ratio >= 1 ? `${num(ratio)} veces menor` : `${num(1 / ratio)} veces mayor`}` : ''}.`);
+    const dl = downloadable(models, lo);
+    if (dl) bits.push(`Sus pesos sólo están anunciados; con pesos ya descargables, el mejor es ${esc(dl.name)} (${num(ii(dl))}), ${num(Math.round((ii(lc) - ii(dl)) * 10) / 10)} puntos por debajo del mejor cerrado.`);
   }
   if (best) bits.push(`Por encima del umbral de ${num(T)} puntos del índice AA, la opción más barata es ${esc(best.name)} (${best.weights.v === 'abiertos' ? 'abierto' : 'cerrado'}), a ${usd(blended(best))} por millón.`);
   if (excluded) bits.push(`${excluded} modelo${excluded > 1 ? 's' : ''} con índice pero sin precio positivo no aparece${excluded > 1 ? 'n' : ''} en el gráfico.`);

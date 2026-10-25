@@ -451,7 +451,8 @@ function labTiers(eps, own) {
   return [...seen.values()].sort((a, b) => (3 * a[0] + a[1]) - (3 * b[0] + b[1]));
 }
 
-/* Pesos anunciados: el laboratorio presenta el modelo como de pesos abiertos en su descripción de OpenRouter, pero aún no hay
+/* Pesos anunciados: la descripción del modelo en OpenRouter lo presenta como de pesos abiertos (no consta quién la redacta:
+   no se atribuye al laboratorio), pero aún no hay
    repositorio público. Sólo cuenta si la frase habla del propio modelo (al principio, o tras «is», «are», «'s»), no si lo
    compara con otros («outperforms open-weight models»). Devuelve el fragmento citado o null. */
 const OPEN_DESC = /\bopen[- ]?(?:weights?|source[d]?)\b/i;
@@ -512,7 +513,7 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv, pesosOv) 
     weights = fact(open ? 'abiertos' : 'cerrados', 'epoch', SOURCES.epoch.url, TODAY, { note: `clasificación de Epoch: ${eRow.access}` });
     license = open ? fact(null, 'epoch', SOURCES.epoch.url, TODAY, { note: `Epoch: ${eRow.access}; OpenRouter no enlaza el repositorio` }) : fact('propietaria', 'epoch', SOURCES.epoch.url, TODAY, { note: `Epoch: ${eRow.access}` });
   }
-  // Sin repositorio ni clasificación de Epoch: si el laboratorio lo presenta como de pesos abiertos, «abiertos» anunciados.
+  // Sin repositorio ni clasificación de Epoch: si su descripción de OpenRouter lo presenta como de pesos abiertos, «abiertos» anunciados.
   // data/curated/overrides.json («pesos») puede impedirlo (null) cuando la frase se lee mal.
   const quote = weights.inferred && !(pesosOv && Object.prototype.hasOwnProperty.call(pesosOv, m.id) && pesosOv[m.id] === null) ? openWeightDesc(m.description) : null;
   if (quote) {
@@ -662,7 +663,10 @@ function aaIndicators(models, version, st) {
   const base = 'índice de inteligencia de Artificial Analysis' + (version ? ` v${version}` : '') + ', con la puntuación actual de cada modelo del catálogo';
   return {
     gapUsCn: f(gap(n.us, n.cn), { signed: true, us: who(n.us), cn: who(n.cn), note: `mejor modelo de un laboratorio estadounidense menos el mejor de uno chino; ${base}` }),
-    gapClosedOpen: f(gap(n.closed, n.open), { signed: true, closed: who(n.closed), open: who(n.open), note: `mejor modelo de pesos cerrados menos el mejor de pesos abiertos (incluidos los anunciados por el laboratorio); ${base}` }),
+    gapClosedOpen: f(gap(n.closed, n.open), { signed: true, closed: who(n.closed), open: who(n.open),
+      // Si el abierto en cabeza sólo tiene pesos anunciados, también la distancia al mejor que ya se puede descargar.
+      ...(n.open?.anun && n.openDl ? { openDl: who(n.openDl), vDl: gap(n.closed, n.openDl) } : {}),
+      note: `mejor modelo de pesos cerrados menos el mejor de pesos abiertos (incluidos los anunciados en su descripción de OpenRouter, aún sin repositorio público); ${base}` }),
     gapLabs: f(gap(n.first, n.second), { first: who(n.first), second: who(n.second), note: `mejor modelo del primer laboratorio menos el del segundo; ${base}` }),
     labs: n.labs.slice(0, 10).map(who),
     rate12m: f(gap(n.to, n.from), { from: who(n.from), to: who(n.to), since: n.yearAgo, note: `puntos ganados por la frontera desde el ${n.yearAgo}: mejor modelo publicado hasta hoy menos el mejor publicado hasta esa fecha, los dos con su puntuación actual; sólo modelos que siguen en OpenRouter` })
@@ -755,6 +759,19 @@ async function main() {
     models.push(buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv, ovFile.pesos || {}));
   }
   if (status.hf.failed) status.hf.ok = status.hf.failed < models.length / 4;
+  // Desde cuándo constan los pesos anunciados de cada modelo: se arrastra de la recogida anterior; la primera vez, de la
+  // instantánea diaria más antigua que ya los registraba («a»). Sirve para ver si un anuncio no llega a publicarse.
+  const prevSince = id => { const w = prevMap.get(id)?.weights; return w?.announced ? w.since || null : null; };
+  const ann = models.filter(m => m.weights.announced), need = ann.filter(m => !prevSince(m.id)).map(m => m.id), first = new Map();
+  if (need.length) {
+    const files = (await readdir(path.join(DATA, 'history')).catch(() => [])).filter(f => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort();
+    for (const f of files) {
+      const h = await readJSON(path.join(DATA, 'history', f));
+      for (const id of need) if (!first.has(id) && h?.models?.[id]?.w === 'a') first.set(id, f.slice(0, 10));
+      if (first.size === need.length) break;
+    }
+  }
+  for (const m of ann) m.weights.since = prevSince(m.id) || first.get(m.id) || TODAY;
   log(`Hugging Face: ${hfFound.length} repositorios encontrados en la organización del laboratorio sin enlace de OpenRouter${hfFound.length ? `: ${hfFound.join(' | ')}` : ''}`);
 
   // Diagnóstico de emparejamiento con Epoch (sólo en el registro): ayuda a completar overrides.epoch.
@@ -848,7 +865,7 @@ async function main() {
       capability: `En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index${aaVersion ? ` v${aaVersion}` : ''}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.`,
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',
       price: 'Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado y con su cuantización cuando OpenRouter la publica (puede no ser la versión que evalúan AA o Epoch). El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio.',
-      weights: '«Abiertos» con un repositorio público en Hugging Face, enlazado por OpenRouter o con el mismo nombre en la organización del laboratorio. Sin repositorio, la clasificación de Epoch si la hay; si no, «abiertos · anunciados» cuando el laboratorio lo presenta como de pesos abiertos en su descripción de OpenRouter (cuenta como abierto, aunque aún no se pueda descargar), y si no, «cerrados», marcado como inferido. La licencia procede de la ficha de Hugging Face.',
+      weights: '«Abiertos» con un repositorio público en Hugging Face, enlazado por OpenRouter o con el mismo nombre en la organización del laboratorio. Sin repositorio, la clasificación de Epoch si la hay; si no, «abiertos · anunciados» cuando su descripción de OpenRouter lo presenta como de pesos abiertos (no consta quién la redacta, así que no se atribuye al laboratorio; cuenta como abierto, aunque aún no se pueda descargar), y si no, «cerrados», marcado como inferido. La licencia procede de la ficha de Hugging Face.',
       speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la latencia (tiempo hasta el primer token) incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
       window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días.`
     },
