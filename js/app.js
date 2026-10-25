@@ -47,7 +47,7 @@ function renderFreshness(d) {
   const st = Object.entries(c.status || {}).filter(([, s]) => !s.optional).map(([k, s]) => {
     const name = c.sources?.[k]?.name || k;
     const home = HOME[k] || HOME[name];
-    const lbl = home ? `<a href="${home}" target="_blank" rel="noopener">${esc(name)}</a>` : esc(name);
+    const lbl = home ? `<a href="${home}" target="_blank" rel="noopener">${esc(tr(name))}</a>` : esc(tr(name));
     return s.ok ? `<span class="st-ok">● ${lbl}</span>` : `<span class="st-bad" title="${esc(tr(s.reason || ''))}">○ ${lbl}: ${esc(s.reason ? tr(s.reason) : t('sin datos'))}</span>`;
   }).join('');
   // Indicadores de La carrera y AI 2027: una sola marca si todo va bien; cada fuente que falle, por separado.
@@ -63,7 +63,7 @@ function renderFreshness(d) {
 function renderMethod(d) {
   const c = d.catalog;
   const items = Object.values(c.method || {}).map(m => `<li>${esc(tr(m))}</li>`).join('');
-  const srcs = Object.entries(c.sources || {}).filter(([, s]) => s.url).map(([k, s]) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a> (${esc({ openrouter: 'OR', aa: 'AA', hf: 'HF', epoch: 'EP', metr: 'METR' }[k] || k)})${s.license ? t(', licencia {p1}', { p1: esc(s.license) }) : ''}${k === 'aa' ? (s.permiso ? t(', publicado con su permiso por escrito del {fmtDate}', { fmtDate: esc(fmtDate(s.permiso.fecha)) }) : t(': no se usa; sin permiso no se pueden republicar sus datos')) : ''}</li>`).join('');
+  const srcs = Object.entries(c.sources || {}).filter(([, s]) => s.url).map(([k, s]) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(tr(s.name))}</a> (${esc({ openrouter: 'OR', aa: 'AA', hf: 'HF', epoch: 'EP', metr: 'METR' }[k] || k)})${s.license ? t(', licencia {p1}', { p1: esc(tr(s.license)) }) : ''}${k === 'aa' ? (s.permiso ? t(', publicado con su permiso por escrito del {fmtDate}', { fmtDate: esc(fmtDate(s.permiso.fecha)) }) : t(': no se usa; sin permiso no se pueden republicar sus datos')) : ''}</li>`).join('');
   $('#method-body').innerHTML = `
     <p>${t('Cada cifra lleva una marca de fuente (OR, AA, HF, EP, METR). Al pasar el cursor o enfocarla se ven la fecha del dato y la fecha de consulta; al pulsarla se abre la fuente. Una marca en ámbar indica que la última consulta falló y se muestra el último valor válido. Si una fuente no da el dato, aparece «sin datos».')}</p>
     <ul>${items}</ul>

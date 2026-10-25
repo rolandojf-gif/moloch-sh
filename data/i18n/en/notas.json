@@ -66,7 +66,9 @@
   "primer modelo con un cómputo de entrenamiento estimado de al menos 10^27 FLOP": "first model with estimated training compute of at least 10^27 FLOP",
   "nombre exacto": "exact name",
   "variante": "variant",
-  "genera audio": "generates audio"
+  "genera audio": "generates audio",
+  "OpenRouter · uso": "OpenRouter · usage",
+  "Curado manualmente": "Manually curated"
  },
  "patterns": [
   [
@@ -130,10 +132,14 @@
   "10^27 FLOP",
   "2026",
   "AI 2027",
+  "Artificial Analysis",
   "CC BY 4.0",
+  "Epoch AI",
   "Epoch: API access",
+  "Hugging Face",
   "METR",
   "OpenAI",
+  "OpenRouter",
   "apache-2.0",
   "glm-5.3",
   "kimi-k3",

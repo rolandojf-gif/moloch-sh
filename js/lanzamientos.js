@@ -1,6 +1,6 @@
 /* Vista «Lanzamientos»: por modelo, qué etapas constan (anuncio, acceso restringido, API pública, pesos) y con qué fuente. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, src, weightsTag, provLine, fmtDate, dateFmt, num, ii, eci, aaConfig, nd } from './fmt.js';
+import { esc, src, weightsTag, provLine, fmtDate, dateFmt, num, ii, eci, aaConfig, nd, quote } from './fmt.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -37,7 +37,7 @@ function cardFor(m, curated) {
   const latest = dates[dates.length - 1];
   const withDelta = Object.values(st).find(s => s.delta);
   const evals = [];
-  if (ii(m) !== null) evals.push(t('índice {num}{src} en Artificial Analysis{cfg}', { num: num(ii(m)), src: src(m.aa.intelligence), cfg: aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : '' }));
+  if (ii(m) !== null) evals.push(t('índice {num}{src} en Artificial Analysis{cfg}', { num: num(ii(m)), src: src(m.aa.intelligence), cfg: aaConfig(m) ? ` (${quote(esc(aaConfig(m)))})` : '' }));
   if (eci(m) !== null) evals.push(t('ECI {num}{src} en Epoch AI', { num: num(eci(m)), src: src(m.epoch.eci) }));
   const evalTxt = evals.length ? t('sí: {p1}', { p1: evals.join(' · ') }) : t('no consta todavía en Artificial Analysis ni en Epoch AI');
   const relSrc = m.aa?.release?.v ? ['AA', m.aa.release] : m.epoch?.release?.v ? ['Epoch', m.epoch.release] : null;

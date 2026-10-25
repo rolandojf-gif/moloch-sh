@@ -83,12 +83,12 @@ const REG = {
   },
   'aa.rate12m': (I) => {
     const f = I.aa?.rate12m;
-    return { label: t('Avance de la frontera en 12 meses (índice AA)'), value: fact(f, v => `+${num(v, 1)} puntos AA`) + incTag(f), sub: f?.from && f?.to ? t('De {whoAA}, publicado el {fmtDate}, a {p3}. Cada modelo con su puntuación actual.{incNote}', { whoAA: whoAA(f.from), fmtDate: esc(fmtDate(f.from.date)), p3: whoAA(f.to), incNote: incNote(f, f.since) }) : '' };
+    return { label: t('Avance de la frontera en 12 meses (índice AA)'), value: fact(f, v => t('+{n} puntos AA', { n: num(v, 1) })) + incTag(f), sub: f?.from && f?.to ? t('De {whoAA}, publicado el {fmtDate}, a {p3}. Cada modelo con su puntuación actual.{incNote}', { whoAA: whoAA(f.from), fmtDate: esc(fmtDate(f.from.date)), p3: whoAA(f.to), incNote: incNote(f, f.since) }) : '' };
   },
   'eci.frontier': (I) => ({ label: t('Mejor modelo (ECI)'), value: fact(I.eci?.frontier, v => num(v, 1)), sub: I.eci?.frontier?.model ? esc(I.eci.frontier.model) : '' }),
   'eci.rate12m': (I) => {
     const f = I.eci?.rate12m;
-    return { label: t('Avance de la frontera en 12 meses (ECI)'), value: fact(f, v => `+${num(v, 1)} puntos ECI`), sub: f?.from && f?.to ? t('De {a}, {ea}, a {b}, {eb}.', { a: who(f.from), ea: num(f.from.eci, 1), b: who(f.to), eb: num(f.to.eci, 1) }) : '' };
+    return { label: t('Avance de la frontera en 12 meses (ECI)'), value: fact(f, v => t('+{n} puntos ECI', { n: num(v, 1) })), sub: f?.from && f?.to ? t('De {a}, {ea}, a {b}, {eb}.', { a: who(f.from), ea: num(f.from.eci, 1), b: who(f.to), eb: num(f.to.eci, 1) }) : '' };
   },
   'eci.gapUsCn': (I) => {
     const f = I.eci?.gapUsCn;

@@ -1,7 +1,7 @@
 /* Vista «AI 2027»: qué predice el escenario, en qué punto está cada predicción hoy y quién lo valora.
    Cada hito conserva la predicción original; las revisiones de los autores aparecen fechadas a su lado. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, fmtDate, dateFmt, nd } from './fmt.js';
+import { esc, fmtDate, dateFmt, nd, quote } from './fmt.js';
 import { indicatorRow, indicatorBrief } from './indicadores.js';
 import { curDate } from './carrera.js';
 import { hitoTimeline, tip } from './charts.js';
@@ -169,7 +169,7 @@ export function renderAi2027(d) {
   $('#a7-scn').innerHTML = `<span class="lbl">${t('Qué es AI 2027')}</span>
     <p><a href="${esc(e.url)}" target="_blank" rel="noopener"><b>${esc(tr(e.titulo))}</b></a> ${t('es un relato publicado el {fmtDate} por {autores}. Cuenta, periodo a periodo, cómo la IA podría pasar de agentes que todavía tropiezan a mediados de 2025 a un programador sobrehumano en 2027, en una carrera entre una empresa estadounidense y una china, las dos ficticias.', { fmtDate: esc(fmtDate(e.publicado)), autores: esc(tr(e.autores)) })}</p>
     <p>${t('No asigna probabilidades: sus autores lo presentan como uno de varios futuros posibles. {nota}', { nota: esc(tr(e.nota)) })}</p>
-    <blockquote lang="en">«${esc(e.cita)}»</blockquote>
+    <blockquote lang="en">${quote(esc(e.cita))}</blockquote>
     <p>${t('Dos desenlaces: {p1}.', { p1: e.desenlaces.map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(tr(x.nombre))}</a>`).join(` ${t('y')} `) })}</p>
     <p class="st-how"><b>${t('Qué hace esta página.')}</b> ${t('Toma {length} predicciones concretas del relato, cada una con su fecha, y las compara con datos públicos. Cada predicción lleva la valoración del observatorio y, cuando existe, la de los propios autores.', { length: all.length })}</p>`;
 

@@ -18,7 +18,7 @@ export const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname)
 const read = f => JSON.parse(readFileSync(path.join(ROOT, f), 'utf8'));
 
 /* ── Fuentes de js/: claves y literales ── */
-const ES_WORDS = /\b(de|la|el|en|con|por|para|que|los|las|un|una|del|al|se|es|no|sin|más|su|sus|hoy|hace|desde|hasta|entre|sobre|frente|como|según)\b/i;
+const ES_WORDS = /\b(de|la|el|en|con|por|para|que|los|las|un|una|del|al|se|es|no|sin|más|su|sus|hoy|hace|desde|hasta|entre|sobre|frente|como|según|puntos?|modelos?|datos?|fechas?|precios?|índices?|mejor|mejores|abiertos?|cerrados?|pesos|días?|mes|meses|años?|semanas?|millones|laboratorios?|ingresos|gasto|cifras?|fuentes?|primer[oa]?|segundo|desde|sobre|tiene|llega|usuarios|potencia|evaluaci[oó]n(es)?|resultado|nota)\b/i;
 export const spanish = s => /[áéíóúüñ¿¡]/i.test(s) || (s.trim().split(/\s+/).length >= 2 && ES_WORDS.test(s));
 const wordy = s => /[a-záéíóúüñ]{3,}/.test(s.replace(/&\w+;/g, ' '));
 const unesc = s => s.replace(/\\(.)/g, '$1');
@@ -77,7 +77,8 @@ export function scan(src) {
   const strip = s => s.replace(/\uE000/g, ' ');
   walk(src, 0, src.length, (kind, text, at) => {
     if (starts.has(at) || kind === 'str' && /^[\w./#:?&=%${}()[\]*+\-,^|~@!\s]*$/.test(text) && !spanish(text)) return;
-    const plain = strip(text);
+    // En las plantillas HTML sólo cuenta el texto y el de los atributos que se leen (title, aria-label, alt, placeholder).
+    const plain = strip(text).replace(/<[^>]*>/g, tag => ' ' + [...tag.matchAll(/\b(?:title|aria-label|alt|placeholder)="([^"]*)"/g)].map(m => m[1]).join(' ') + ' ');
     if (!wordy(plain) || !spanish(plain)) return;
     if (/^\s*<\//.test(plain) || /^[\s<>/\w=" .:;#-]+$/.test(plain) && !/[áéíóúñ]/.test(plain) && !ES_WORDS.test(plain)) return;
     lits.push({ line: lineOf(src, at), text: plain.replace(/\s+/g, ' ').trim() });

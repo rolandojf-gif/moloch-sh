@@ -12,6 +12,8 @@ export function setSources(s) { SOURCES = s || {}; }
 export const ord = n => lang() === 'en' ? `${n}${[, 'st', 'nd', 'rd'][n % 10 > 3 || Math.floor(n % 100 / 10) === 1 ? 0 : n % 10] || 'th'}` : `${n}.º`;
 /* Fuente RSS del parte diario en el idioma de la página. */
 export const rssUrl = () => lang() === 'en' ? 'data/parte.en.xml' : 'data/parte.xml';
+/* Comillas del idioma: «así» en español y “así” en inglés (británico). */
+export const quote = s => lang() === 'en' ? `“${s}”` : `«${s}»`;
 export const nd = () => `<span class="nd">${t('sin datos')}</span>`;
 /* Artificial Analysis: sus datos se publican con su permiso por escrito (data/curated/permisos.json), citándolos con enlace. */
 export const AA_LINK = '<a href="https://artificialanalysis.ai" target="_blank" rel="noopener">Artificial Analysis</a>';
@@ -43,7 +45,7 @@ export function daysAgo(iso) {
 /* Marca de fuente: abreviatura enlazada con fecha del dato y fecha de consulta en el título. */
 export function src(f) {
   if (!f || !f.src) return '';
-  const name = SOURCES[f.src]?.name || f.src;
+  const name = tr(SOURCES[f.src]?.name || f.src);
   const parts = [t('Fuente: {name}', { name })];
   if (f.asOf) parts.push(t('dato: {asOf}', { asOf: f.asOf }));
   if (f.got) parts.push(t('consulta: {got} UTC', { got: f.got.slice(0, 16).replace('T', ' ') }));
@@ -67,7 +69,7 @@ export function fact(f, format = v => esc(v)) {
 /* Línea de procedencia completa, para fichas y novedades. */
 export function provLine(s) {
   if (!s) return '';
-  const name = esc(s.name || SOURCES[s.src]?.name || s.src || '');
+  const name = esc(tr(s.name || SOURCES[s.src]?.name || s.src || ''));
   const link = s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${name}</a>` : name;
   const bits = [t('Fuente: {link}', { link })];
   if (s.asOf || s.date) bits.push(t('dato: {fecha}', { fecha: fmtDate(s.asOf || s.date) }));

@@ -2,16 +2,9 @@
  "_doc": "Literales en español que quedan en js/ fuera de t()/tn()/tr()/L() y es correcto que queden: valores de datos que se traducen al mostrarlos (nombres de país, escala de valoración, motivos del recolector) y HTML. tests/i18n.test.mjs falla ante cualquier literal nuevo: se envuelve en t() o, si es un valor de datos, se añade aquí.",
  "archivos": {
   "js/ai2027.js": [
-   "<blockquote lang=\"en\"> </blockquote>",
-   "<span class=\"lbl lbl-hoy\"> </span>",
-   "<span class=\"lbl\"> </span> <p><a href=\" \" target=\"_blank\" rel=\"noopener\"><b> </b></a> </p> <p> </p> <blockquote lang=\"en\">« »</blockquote> <p> </p> <p class=\"st-how\"><b> </b> </p>",
    "sin evidencia suficiente",
    "todavía no evaluable",
    "valoración de los autores"
-  ],
-  "js/carrera.js": [
-   "<a href=\"#frente- \" data-jump><i> </i> </a>",
-   "<article class=\"front\" id=\"frente- \" aria-labelledby=\"fh- \"> <header class=\"front-head\"><span class=\"front-n\"> </span><div><h3 id=\"fh- \"> </h3><p class=\"q\"> </p></div></header> <div class=\"front-body\"> <div class=\"front-data\"> <h4> </h4> <h4> </h4> <ul class=\"facts\"> </ul> </div> </div> </article>"
   ],
   "js/fmt.js": [
    "Canadá",
@@ -31,9 +24,6 @@
    "Japón",
    "Países Bajos",
    "Taiwán"
-  ],
-  "js/lanzamientos.js": [
-   "<div class=\"stages-no\"> </div>"
   ],
   "js/valoracion.js": [
    "La regla no ha podido calcularse en la última recogida.",

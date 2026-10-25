@@ -47,6 +47,12 @@ test('interfaz: ningún literal español nuevo fuera de t()/tn()/tr()/L() en js/
   assert.deepEqual(nuevos, [], `literales sin t(): envuélvelos en t() o, si son valores de datos que se traducen al mostrarlos, añádelos a tests/i18n-permitidos.json\n${nuevos.join('\n')}`);
 });
 
+test('interfaz: todo literal permitido tiene traducción (se traduce al mostrarlo)', () => {
+  cargarMemoria();
+  const sin = Object.entries(read('tests/i18n-permitidos.json').archivos).flatMap(([f, l]) => l.filter(x => !/^data\//.test(x) && find(x) === null).map(x => `${f}: ${x}`));
+  assert.deepEqual(sin, []);
+});
+
 test('index.html: título y descripción en los dos idiomas, y sin hreflang engañoso', () => {
   const html = text('index.html'), ui = dic.ui.exact;
   const title = /<title[^>]*>([^<]*)<\/title>/.exec(html)[1], desc = /<meta name="description"[^>]*\scontent="([^"]*)"/.exec(html)[1];

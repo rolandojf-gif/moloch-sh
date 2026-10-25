@@ -43,7 +43,10 @@
   "Su precio combinado en OpenRouter pasa de 0,99 $ a 1,98 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $.": "Its blended price on OpenRouter goes from $0.99 to $1.98 per million tokens. Of the 5 models with a similar AA index (±2 points of its 36), 5 cost less; the cheapest is DeepSeek V4 Flash 0731, at $0.075.",
   "Su precio combinado más barato en OpenRouter pasa de 2,81 $ a 5,63 $ por millón de tokens. De los 16 modelos con un índice de AA parecido (±2 puntos de su 39), 14 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $.": "Its cheapest blended price on OpenRouter goes from $2.81 to $5.63 per million tokens. Of the 16 models with a similar AA index (±2 points of its 39), 14 cost less; the cheapest is GPT-6 Luna, at $0.1.",
   "Se puede descargar y servir fuera de la API del laboratorio. Licencia: minimax-community. Índice de AA 42,7: a 3,6 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 21 de 141.": "It can be downloaded and served outside the lab’s API. Licence: minimax-community. AA index 42.7: 3.6 points behind the best open-weight model (MiMo-V2.6-Pro). Rank 21 of 141.",
-  "Se puede descargar y servir fuera de la API del laboratorio. Licencia: mit. Índice de AA 41,1: a 5,2 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 25 de 141.": "It can be downloaded and served outside the lab’s API. Licence: mit. AA index 41.1: 5.2 points behind the best open-weight model (MiMo-V2.6-Pro). Rank 25 of 141."
+  "Se puede descargar y servir fuera de la API del laboratorio. Licencia: mit. Índice de AA 41,1: a 5,2 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 25 de 141.": "It can be downloaded and served outside the lab’s API. Licence: mit. AA index 41.1: 5.2 points behind the best open-weight model (MiMo-V2.6-Pro). Rank 25 of 141.",
+  "fuera del catálogo: OpenRouter ya no lo lista o lo nombra de otro modo": "outside the catalogue: OpenRouter no longer lists it or names it differently",
+  "La regla no ha podido calcularse en la última recogida.": "The rule could not be calculated in the latest collection.",
+  "Llegaría a tiempo": "Would arrive on time"
  },
  "same": [
   "China",

@@ -1,6 +1,6 @@
 /* Vista «Hoy»: el parte del día, lo detectado en la semana, cuatro indicadores y capacidad frente a precio. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, fact, src, usd, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK } from './fmt.js';
+import { esc, fact, src, usd, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote } from './fmt.js';
 import { scatter, daily, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -24,7 +24,7 @@ function downloadable(models, lo) {
 /* Titular, consecuencia y motivo vienen ya redactados por el recolector (scripts/parte.mjs), con plantillas y cifras de la misma recogida. */
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : '';
 const toFicha = (href, text) => href ? `<a href="${esc(href)}">${esc(text)}</a>` : esc(text);
-const srcLink = s => s?.url ? `<a href="${esc(s.url)}"${/^#/.test(s.url) ? '' : ' target="_blank" rel="noopener"'}>${esc(s.name || t('fuente'))}</a>` : esc(s?.name || t('sin fuente'));
+const srcLink = s => s?.url ? `<a href="${esc(s.url)}"${/^#/.test(s.url) ? '' : ' target="_blank" rel="noopener"'}>${esc(s.name ? tr(s.name) : t('fuente'))}</a>` : esc(s?.name ? tr(s.name) : t('sin fuente'));
 /* Pie de cada cambio: fuente, fecha de publicación si la fuente la da y fecha en que lo detectó el observatorio.
    Si el texto mostrado cita el índice de AA y la fuente es otra, se añade el crédito a AA. */
 const foot = (it, shown) => `<div class="prov">${t('Fuente: {src}', { src: srcLink(it.src) })}${it.published ? ` · ${t('publicado: {fecha}', { fecha: esc(fmtDate(it.published)) })}` : ''} · ${t('detectado: {fecha}', { fecha: esc(fmtDate(it.detected || it.date)) })}${/\bAA\b|Artificial Analysis/.test(shown.join(' ')) && !/artificialanalysis\.ai/.test(it.src?.url || '') ? ` ${t('· índice de {AA_LINK}, publicado con su permiso', { AA_LINK })}` : ''}</div>`;
@@ -112,7 +112,7 @@ function renderKPIs(d, gapPts) {
     if (prevLead && prevLead.id !== m.id && prevLead.ii !== undefined) delta = ` ${t('Antes: {name} ({num}).', { name: esc(prev.models[prevLead.id]?.n || prevLead.id), num: num(prevLead.ii) })}`;
     const ep = eci(m) !== null ? ` ${t('ECI en Epoch AI: {fact}.', { fact: fact(m.epoch.eci, v => num(v)) })}` : '';
     return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small">${modelLink(d, m.id, m.name)}</span>
-      <span class="s">${t('{lab} · índice AA {fact}{cfg}.', { lab: esc(m.lab.name), fact: fact(capFact(m), v => num(v)), cfg: aaConfig(m) ? ` («${esc(aaConfig(m))}»)` : '' })}${m.weights.announced ? ` ${t('Pesos anunciados en su descripción de OpenRouter{since}; aún no se pueden descargar.', { since: m.weights.since ? ` ${t('desde el {fmtDate}', { fmtDate: esc(fmtDate(m.weights.since)) })}` : '' })}` : ''}${ep}${delta}${dl && m === lo ? ` ${t('Con pesos ya descargables, el mejor es {modelLink} ({name}), índice AA {fact}.', { modelLink: modelLink(d, dl.id, dl.name), name: esc(dl.lab.name), fact: fact(capFact(dl), v => num(v)) })}` : ''}</span></div>`;
+      <span class="s">${t('{lab} · índice AA {fact}{cfg}.', { lab: esc(m.lab.name), fact: fact(capFact(m), v => num(v)), cfg: aaConfig(m) ? ` (${quote(esc(aaConfig(m)))})` : '' })}${m.weights.announced ? ` ${t('Pesos anunciados en su descripción de OpenRouter{since}; aún no se pueden descargar.', { since: m.weights.since ? ` ${t('desde el {fmtDate}', { fmtDate: esc(fmtDate(m.weights.since)) })}` : '' })}` : ''}${ep}${delta}${dl && m === lo ? ` ${t('Con pesos ya descargables, el mejor es {modelLink} ({name}), índice AA {fact}.', { modelLink: modelLink(d, dl.id, dl.name), name: esc(dl.lab.name), fact: fact(capFact(dl), v => num(v)) })}` : ''}</span></div>`;
   };
 
   let gapCard;

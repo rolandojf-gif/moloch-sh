@@ -825,6 +825,8 @@
   "openrouter.ai/rankings": "openrouter.ai/rankings",
   "), datos hasta el {fmtDate}, CC BY 4.0; consulta {p2}{p3}.": "), data up to {fmtDate}, CC BY 4.0; checked {p2}{p3}.",
   " (la última consulta falló: se muestra el ranking anterior)": " (the latest check failed: the previous ranking is shown)",
-  "«{sub}» no está en el catálogo: puede que OpenRouter ya no lo liste, que sea de un laboratorio que no se sigue o que tenga más de {dias} días.": "“{sub}” is not in the catalogue: OpenRouter may no longer list it, it may belong to a lab that is not tracked, or it may be more than {dias} days old."
+  "«{sub}» no está en el catálogo: puede que OpenRouter ya no lo liste, que sea de un laboratorio que no se sigue o que tenga más de {dias} días.": "“{sub}” is not in the catalogue: OpenRouter may no longer list it, it may belong to a lab that is not tracked, or it may be more than {dias} days old.",
+  "+{n} puntos AA": "+{n} AA points",
+  "+{n} puntos ECI": "+{n} ECI points"
  }
 }

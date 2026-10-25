@@ -1,7 +1,7 @@
 /* Vista «La carrera»: distancias en la frontera y seis frentes. Cada uno empieza por qué sabemos, qué ha cambiado y qué
    cambiaría la lectura; después, gráficos, indicadores, hechos con fuente y la lectura marcada como interpretación. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, fmtDate, dateFmt, num, nd, aaRace, aaCoverage, coverageText, aaIndexName, AA_LINK } from './fmt.js';
+import { esc, fmtDate, dateFmt, num, nd, aaRace, aaCoverage, coverageText, aaIndexName, AA_LINK, quote } from './fmt.js';
 import { indicatorRow, indicatorKpi, indicatorBrief, mw, mh100, usdB, usdBs, PAIS } from './indicadores.js';
 import { gaps, hbars, columns, dotci, recordChart, ediMap, tip } from './charts.js';
 
@@ -74,7 +74,7 @@ function lectura(f, log) {
 
 /* Gráficos de cada frente: { title, note, url, draw(el) }. Sólo con datos recogidos; si faltan, el frente no lleva gráfico. */
 const quarter = d => { const dt = new Date(d + 'T00:00:00Z'); return `${t('T')}${Math.floor(dt.getUTCMonth() / 3) + 1} ${dt.getUTCFullYear()}`; };
-const EPOCH = (name, url, label = true) => `${label ? `${t('Fuente:')} ` : ''}<a href="${esc(url)}" target="_blank" rel="noopener">${t('Epoch AI, {name}', { name: esc(name) })}</a>, CC BY 4.0.`;
+const EPOCH = (name, url, label = true) => `${label ? `${t('Fuente:')} ` : ''}<a href="${esc(url)}" target="_blank" rel="noopener">${t('Epoch AI, {name}', { name: esc(name).replace(/«(.*?)»/g, (m, x) => quote(x)) })}</a>, CC BY 4.0.`;
 /* Entregas anuales de chips desde 2024 y extrapolación trimestral hasta END: cada trimestre futuro = el mismo trimestre
    del año anterior × crecimiento interanual. Central: últimos cuatro trimestres completos frente a los cuatro anteriores;
    horquilla: menor y mayor cociente interanual de esos cuatro trimestres. */
