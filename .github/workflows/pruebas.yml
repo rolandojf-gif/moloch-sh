@@ -12,6 +12,7 @@ on:
       - 'index.html'
       - 'scripts/**'
       - 'data/curated/**'
+      - 'data/i18n/**'
       - 'tests/**'
       - '.github/workflows/pruebas.yml'
   pull_request:

@@ -192,6 +192,17 @@ if (chg?.parte) {
   if (p.noticias?.length && p.ultima) errors.push('parte: con noticias no lleva «la última anterior»');
 }
 
+/* Versión inglesa: sólo avisos (nunca bloquea la recogida diaria); las pruebas (tests/i18n.test.mjs) sí exigen cobertura total. */
+{
+  const { cobertura } = await import('./i18n.mjs');
+  const { faltan } = cobertura();
+  for (const f of faltan) warnings.push(`::warning title=Traducción pendiente::${f.origen}: ${f.texto.length > 160 ? f.texto.slice(0, 160) + '…' : f.texto}`);
+  const guids = x => (x || '').match(/<guid[^>]*>[^<]*<\/guid>/g) || [];
+  const es = await readFile(new URL('../data/parte.xml', import.meta.url), 'utf8').catch(() => null);
+  const en = await readFile(new URL('../data/parte.en.xml', import.meta.url), 'utf8').catch(() => null);
+  if (es && !en) warnings.push('::warning title=RSS en inglés::falta data/parte.en.xml');
+  else if (es && (!/<language>en/.test(en) || guids(es).join() !== guids(en).join())) warnings.push('::warning title=RSS en inglés::data/parte.en.xml no es inglés o no tiene las mismas noticias que data/parte.xml');
+}
 if (warnings.length) console.warn(`avisos:\n${warnings.join('\n')}`);
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
 console.log(`validación correcta: ${c.models.length} modelos${ind ? ', indicadores' : ''}, ${car?.frentes?.length || 0} frentes, ${(a7?.lineas || []).reduce((n, l) => n + l.hitos.length, 0)} hitos`);

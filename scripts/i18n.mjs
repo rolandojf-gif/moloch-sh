@@ -120,30 +120,42 @@ export function cargarMemoria() {
 
 /* ── Datos publicados: qué textos hay que traducir ──
    data/i18n/campos.json dice, por archivo, qué campos son texto en español que se muestra (y cuáles no). */
-const get = (o, p) => p.split('.').reduce((x, k) => x?.[k], o);
-function* recorre(o, partes, pref = '') {
+/* Recorre «o» siguiendo «partes» y devuelve cada texto con su clave y el objeto del que cuelga su traducción:
+   el ancestro más próximo con «i18n.en» (lo escribe el recolector). «**» baja a cualquier profundidad. */
+function* recorre(o, partes, anc = [], clave = '') {
   if (o === null || o === undefined) return;
   const [k, ...resto] = partes;
-  if (k === undefined) { if (typeof o === 'string' || Array.isArray(o)) yield o; return; }
-  if (k === '*') { for (const x of Array.isArray(o) ? o : Object.values(o)) yield* recorre(x, resto); return; }
-  yield* recorre(o[k], resto);
+  const hijos = x => Array.isArray(x) ? x.map(v => [clave, v]) : Object.entries(x || {}).filter(([n]) => n !== 'i18n');
+  const dueno = () => anc.findLast(a => a?.i18n?.en);
+  if (k === undefined) { for (const v of [o].flat()) if (typeof v === 'string') yield { texto: v, clave, dueno: dueno(), lista: Array.isArray(o) }; return; }
+  const con = x => (x && typeof x === 'object' ? [...anc, x] : anc);
+  if (k === '*') { for (const [n, v] of hijos(o)) yield* recorre(v, resto, con(o), Array.isArray(o) ? clave : n); return; }
+  if (k === '**') {
+    yield* recorre(o, resto, anc, clave);
+    if (o && typeof o === 'object') for (const [n, v] of hijos(o)) yield* recorre(v, partes, con(o), Array.isArray(o) ? clave : n);
+    return;
+  }
+  yield* recorre(o[k], resto, con(o), k);
 }
 export function textosDeDatos() {
   const campos = read('data/i18n/campos.json');
-  const out = [];   // { origen, texto }
-  const add = (origen, v) => { for (const s of [v].flat()) if (typeof s === 'string' && s.trim()) out.push({ origen, texto: s }); };
+  const out = [];   // { origen, texto, enOk }: enOk = el recolector ya escribió su inglés
   for (const [file, spec] of Object.entries(campos.archivos)) {
     const p = path.join(ROOT, file);
     if (!existsSync(p)) continue;
     const data = JSON.parse(readFileSync(p, 'utf8'));
-    for (const campo of spec.campos) for (const v of recorre(data, campo.split('.'))) add(`${file}:${campo}`, v);
+    for (const campo of spec.campos) for (const r of recorre(data, campo.split('.'))) {
+      if (!r.texto.trim()) continue;
+      const en = r.dueno?.i18n?.en?.[r.clave];
+      out.push({ origen: `${file}:${campo}`, texto: r.texto, enOk: typeof en === 'string' ? en.trim() !== '' : Array.isArray(en) });
+    }
   }
   return out;
 }
 export function cobertura() {
   cargarMemoria();
   const faltan = new Map();
-  for (const { origen, texto } of textosDeDatos()) if (find(texto) === null && !faltan.has(texto)) faltan.set(texto, origen);
+  for (const { origen, texto, enOk } of textosDeDatos()) if (!enOk && find(texto) === null && !faltan.has(texto)) faltan.set(texto, origen);
   return { faltan: [...faltan].map(([texto, origen]) => ({ texto, origen })) };
 }
 

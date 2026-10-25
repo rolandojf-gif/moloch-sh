@@ -40,7 +40,33 @@
   "fecha de publicación del primer modelo que llega al 85 % en las ejecuciones de Epoch": "publication date of the first model to reach 85% in Epoch’s runs",
   "con MirrorCode": "with MirrorCode",
   "mejor modelo de cada laboratorio publicado hasta el 31 dic 2025; distancia del primero al segundo": "best model of each lab published up to 31 Dec 2025; gap from the first to the second",
-  "mejor modelo de una organización de EE. UU. y de una china publicado hasta el 31 ago 2026": "best model from a US organisation and a Chinese one published up to 31 Aug 2026"
+  "mejor modelo de una organización de EE. UU. y de una china publicado hasta el 31 ago 2026": "best model from a US organisation and a Chinese one published up to 31 Aug 2026",
+  "© METR; sólo se cita el último punto": "© METR; only the latest point is quoted",
+  "sin licencia publicada: los pesos aún no se pueden descargar": "no licence published: the weights cannot be downloaded yet",
+  "parámetro «reasoning» admitido": "“reasoning” parameter supported",
+  "precio de lectura de caché publicado": "cache-read price published",
+  "Artificial Analysis Coding Index; valor vigente en Artificial Analysis en la fecha de consulta; AA no publica la fecha de evaluación": "Artificial Analysis Coding Index; value current at Artificial Analysis on the date checked; AA does not publish the evaluation date",
+  "Artificial Analysis Agentic Index; valor vigente en Artificial Analysis en la fecha de consulta; AA no publica la fecha de evaluación": "Artificial Analysis Agentic Index; value current at Artificial Analysis on the date checked; AA does not publish the evaluation date",
+  "incluye el razonamiento previo a la respuesta": "includes the reasoning before the answer",
+  "precio de AA, mezcla 3:1 entrada/salida": "AA price, 3:1 input/output blend",
+  "inferido: sin pesos enlazados": "inferred: no linked weights",
+  "Epoch: Open weights (restricted use); OpenRouter no enlaza el repositorio": "Epoch: Open weights (restricted use); OpenRouter does not link the repository",
+  "genera imágenes": "generates images",
+  "enrutador de NVIDIA: reparte las peticiones entre otros modelos": "NVIDIA router: distributes requests among other models",
+  "enrutador de OpenRouter: elige otro modelo en cada petición": "OpenRouter router: picks a different model for each request",
+  "clasificador de seguridad, no un modelo de conversación": "safety classifier, not a conversational model",
+  "mejor ECI publicado por Epoch": "best ECI published by Epoch",
+  "mejor resultado de cada evaluación ejecutada por Epoch (tareas con al menos 5 modelos)": "best result on each evaluation run by Epoch (tasks with at least 5 models)",
+  "mejor resultado de cada modelo en las ejecuciones de Epoch, por fecha de publicación del modelo": "best result of each model in Epoch’s runs, by the model’s publication date",
+  "MirrorCode ejecutado por Epoch: reimplementar programas enteros a partir de su comportamiento; a un ingeniero, algunas tareas le llevarían semanas; mejor resultado de cada modelo, por fecha de publicación del modelo": "MirrorCode run by Epoch: reimplementing whole programs from their behaviour; some tasks would take an engineer weeks; best result of each model, by the model’s publication date",
+  "dificultad (EDI) de cada evaluación del ECI con su intervalo del 90 %, nota prevista por el modelo de Epoch para el mejor modelo, el mejor chino y el mejor abierto, y mejor resultado medido; porcentajes entre el azar (0) y el techo de la prueba (100)": "difficulty (EDI) of each ECI evaluation with its 90% interval, score predicted by Epoch’s model for the best model, the best Chinese one and the best open-weight one, and best measured result; percentages between chance (0) and the test ceiling (100)",
+  "por país del diseñador del chip, no por país donde se usa": "by the chip designer’s country, not by the country where it is used",
+  "ingresos del año 2026 estimados con los informes anualizados que recoge Epoch: interpolación entre informes y último dato mantenido hasta fin de año": "2026 revenue estimated from the annualised reports Epoch collects: interpolation between reports and the last figure held until the end of the year",
+  "estimación de Epoch del cómputo de entrenamiento; los laboratorios no lo publican": "Epoch’s estimate of training compute; the labs do not publish it",
+  "primer modelo con un cómputo de entrenamiento estimado de al menos 10^27 FLOP": "first model with estimated training compute of at least 10^27 FLOP",
+  "nombre exacto": "exact name",
+  "variante": "variant",
+  "genera audio": "generates audio"
  },
  "patterns": [
   [
@@ -90,12 +116,22 @@
   [
    "{x} · confianza de Epoch: {y}",
    "{x} · Epoch confidence: {y}"
+  ],
+  [
+   "SWE-bench Verified, ejecución de Epoch, variante {v}",
+   "SWE-bench Verified, Epoch run, variant {v}"
+  ],
+  [
+   "configuración de mayor índice entre {n}",
+   "highest-index configuration out of {n}"
   ]
  ],
  "same": [
   "10^27 FLOP",
   "2026",
   "AI 2027",
+  "CC BY 4.0",
+  "Epoch: API access",
   "METR",
   "OpenAI",
   "apache-2.0",
