@@ -1,15 +1,17 @@
 {
- "generated": "2026-10-24T06:13:33Z",
+ "generated": "2026-10-25T03:53:48Z",
  "window": 7,
- "since": "2026-10-18",
- "base": "2026-10-23",
+ "since": "2026-10-19",
+ "base": "2026-10-24",
  "parte": {
-  "fecha": "2026-10-24",
-  "noticias": [
-   "lider|open|moonshotai/kimi-k3.1-pro|2026-10-24",
-   "uso|primero|deepseek/deepseek-v4.1-flash-20261017|2026-10-24"
-  ],
-  "ultima": null,
+  "fecha": "2026-10-25",
+  "noticias": [],
+  "ultima": {
+   "key": "lider|open|moonshotai/kimi-k3.1-pro|2026-10-24",
+   "fecha": "2026-10-24",
+   "titular": "Kimi K3.1 Pro pasa a ser el mejor modelo abierto del índice de AA",
+   "ficha": "#modelos/moonshotai/kimi-k3.1-pro"
+  },
   "reglas": [
    "Cambia el mejor modelo abierto o cerrado del índice de Artificial Analysis, con la misma versión del índice y al menos 1 punto de margen.",
    "Artificial Analysis cambia la versión de su índice.",
@@ -33,7 +35,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/moonshotai/kimi-k3.1-pro",
-    "got": "2026-10-24T06:13:33Z"
+    "got": "2026-10-25T03:53:48Z"
    },
    "what": "Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -66,7 +68,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash",
-    "got": "2026-10-24T06:13:33Z"
+    "got": "2026-10-25T03:53:48Z"
    },
    "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter.",
    "data": {
