@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25T12:49:09Z",
+ "generated": "2026-10-25T14:56:26Z",
  "window": 7,
  "since": "2026-10-19",
  "base": "2026-10-24",
@@ -54,7 +54,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/moonshotai/kimi-k3.1-pro",
-    "got": "2026-10-25T12:49:09Z"
+    "got": "2026-10-25T14:56:26Z"
    },
    "what": "Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -67,14 +67,6 @@
     "rankAA": 3,
     "of": 142
    },
-   "titular": "Kimi K3.1 Pro (Moonshot AI) llega a OpenRouter: puesto 3 del índice de AA",
-   "importancia": {
-    "tier": 3,
-    "w": 18,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 142)"
-   },
-   "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
-   "consecuencia": "Índice de AA 55,1: supera en 8,8 puntos al mejor abierto anterior (MiMo-V2.6-Pro). Puesto 3 de 142. Precio combinado 4 $ por millón de tokens.",
    "i18n": {
     "en": {
      "what": "Kimi K3.1 Pro (Moonshot AI) appears in the OpenRouter catalogue.",
@@ -82,7 +74,15 @@
      "porque": "it is a new model and enters the top 20 of the AA index (rank 3 of 142)",
      "consecuencia": "AA index 55.1: 8.8 points above the previous best open-weight model (MiMo-V2.6-Pro). Rank 3 of 142. Blended price $4 per million tokens."
     }
-   }
+   },
+   "titular": "Kimi K3.1 Pro (Moonshot AI) llega a OpenRouter: puesto 3 del índice de AA",
+   "importancia": {
+    "tier": 3,
+    "w": 18,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 142)"
+   },
+   "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
+   "consecuencia": "Índice de AA 55,1: supera en 8,8 puntos al mejor abierto anterior (MiMo-V2.6-Pro). Puesto 3 de 142. Precio combinado 4 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -95,7 +95,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m3.1-flash",
-    "got": "2026-10-25T12:49:09Z"
+    "got": "2026-10-25T14:56:26Z"
    },
    "what": "MiniMax M3.1 Flash (MiniMax) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -108,87 +108,17 @@
     "rankAA": 22,
     "of": 142
    },
-   "titular": "MiniMax M3.1 Flash (MiniMax) llega a OpenRouter: puesto 22 del índice de AA",
-   "importancia": null,
-   "ficha": "#modelos/minimax/minimax-m3.1-flash",
-   "consecuencia": "Índice de AA 42,7: a 12,4 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 22 de 142. Precio combinado 0,262 $ por millón de tokens. De los 10 modelos con un índice de AA parecido (±2 puntos de su 42,7), 3 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $.",
    "i18n": {
     "en": {
      "what": "MiniMax M3.1 Flash (MiniMax) appears in the OpenRouter catalogue.",
      "titular": "MiniMax M3.1 Flash (MiniMax) arrives on OpenRouter: rank 22 on the AA index",
      "consecuencia": "AA index 42.7: 12.4 points behind the best open-weight model (Kimi K3.1 Pro). Rank 22 of 142. Blended price $0.262 per million tokens. Of the 10 models with a similar AA index (±2 points of its 42.7), 3 cost less; the cheapest is Ling 3.1 Flash, at $0.112."
     }
-   }
-  },
-  {
-   "kind": "precio",
-   "key": "precio|openai/gpt-5.6-sol|2026-10-25",
-   "published": null,
-   "detected": "2026-10-25",
-   "date": "2026-10-25",
-   "mag": {
-    "v": 100,
-    "unit": "%"
    },
-   "model": "openai/gpt-5.6-sol",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/openai/gpt-5.6-sol/providers",
-    "got": "2026-10-25T12:49:09Z"
-   },
-   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-5.6 Sol (2 $ de entrada y 10 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 4 $ de entrada y 20 $ de salida.",
-   "data": {
-    "basis": "laboratorio",
-    "sub": "tarifa-retirada",
-    "provider": "OpenAI",
-    "from": {
-     "in": 2,
-     "out": 10
-    },
-    "to": {
-     "in": 4,
-     "out": 20
-    },
-    "pct": 100,
-    "tiersFrom": [
-     [
-      2,
-      10
-     ],
-     [
-      4,
-      20
-     ],
-     [
-      8,
-      40
-     ]
-    ],
-    "tiersTo": [
-     [
-      4,
-      20
-     ],
-     [
-      8,
-      40
-     ]
-    ],
-    "since": "2026-10-24",
-    "rankAA": 13,
-    "of": 142
-   },
-   "titular": "OpenAI retira la tarifa más barata de GPT-5.6 Sol en OpenRouter",
+   "titular": "MiniMax M3.1 Flash (MiniMax) llega a OpenRouter: puesto 22 del índice de AA",
    "importancia": null,
-   "ficha": "#modelos/openai/gpt-5.6-sol",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 4 $ a 8 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 47), 5 cuestan menos; el más barato es DeepSeek V4.1 Flash 1017, a 0,262 $.",
-   "i18n": {
-    "en": {
-     "what": "OpenAI stops offering its cheapest GPT-5.6 Sol rate on OpenRouter ($2 input and $10 output per million tokens). The cheapest it has left, which already existed, is $4 input and $20 output.",
-     "titular": "OpenAI withdraws the cheapest GPT-5.6 Sol rate on OpenRouter",
-     "consecuencia": "Its cheapest blended price on OpenRouter goes from $4 to $8 per million tokens. Of the 5 models with a similar AA index (±2 points of its 47), 5 cost less; the cheapest is DeepSeek V4.1 Flash 1017, at $0.262."
-    }
-   }
+   "ficha": "#modelos/minimax/minimax-m3.1-flash",
+   "consecuencia": "Índice de AA 42,7: a 12,4 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 22 de 142. Precio combinado 0,262 $ por millón de tokens. De los 10 modelos con un índice de AA parecido (±2 puntos de su 42,7), 3 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $."
   },
   {
    "kind": "precio",
