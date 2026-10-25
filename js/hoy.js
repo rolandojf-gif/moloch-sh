@@ -100,7 +100,7 @@ function renderKPIs(d, gapPts) {
   const models = d.catalog.models;
   const lo = leader(models, 'abiertos'), lc = leader(models, 'cerrados'), dl = downloadable(models, lo);
   const aaSt = d.catalog.status?.aa;
-  const reason = aaSt && !aaSt.ok && !scored(models).length ? t('Artificial Analysis no disponible: {p1}.', { p1: esc(aaSt.reason || 'sin datos') }) : '';
+  const reason = aaSt && !aaSt.ok && !scored(models).length ? t('Artificial Analysis no disponible: {p1}.', { p1: esc(aaSt.reason ? tr(aaSt.reason) : t('sin datos')) }) : '';
   const ver = d.catalog.aaIndexVersion;
   // Las comparaciones con la recogida anterior sólo valen con la misma versión del índice de AA.
   const prev = d.prevSnap && d.prevSnap.leaders?.aa && (d.prevSnap.leaders.aa.v ?? null) === (ver ?? null) ? d.prevSnap : null;
