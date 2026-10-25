@@ -6,7 +6,7 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.xml" rel="self" type="application/rss+xml"/>
   <description>Las noticias de la carrera por la IA que detecta cada día el observatorio, elegidas con una regla fija. Cifras de OpenRouter, Artificial Analysis, Epoch AI, Hugging Face y METR, con su fuente.</description>
   <language>es</language>
-  <lastBuildDate>Sun, 25 Oct 2026 03:53:48 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 25 Oct 2026 11:12:12 GMT</lastBuildDate>
   <item>
     <title>Kimi K3.1 Pro pasa a ser el mejor modelo abierto del índice de AA</title>
     <link>https://moloch-sh.netlify.app/#modelos/moonshotai/kimi-k3.1-pro</link>
