@@ -219,69 +219,6 @@
  "events": [
   {
    "kind": "precio",
-   "key": "precio|deepseek/deepseek-v4.1-flash-1017|2026-10-26",
-   "published": null,
-   "detected": "2026-10-26",
-   "date": "2026-10-26",
-   "mag": {
-    "v": 100,
-    "unit": "%"
-   },
-   "model": "deepseek/deepseek-v4.1-flash-1017",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers",
-    "got": "2026-10-26T03:53:55Z"
-   },
-   "what": "DeepSeek sube el precio de DeepSeek V4.1 Flash 1017 en OpenRouter: entrada de 0,15 $ a 0,3 $ y salida de 0,6 $ a 1,2 $ por millón de tokens.",
-   "data": {
-    "basis": "laboratorio",
-    "sub": "precio",
-    "provider": "DeepSeek",
-    "from": {
-     "in": 0.15,
-     "out": 0.6
-    },
-    "to": {
-     "in": 0.3,
-     "out": 1.2
-    },
-    "pct": 100,
-    "tiersFrom": [
-     [
-      0.15,
-      0.6
-     ]
-    ],
-    "tiersTo": [
-     [
-      0.3,
-      1.2
-     ]
-    ],
-    "since": "2026-10-25",
-    "rankAA": 16,
-    "of": 142
-   },
-   "i18n": {
-    "en": {
-     "what": "DeepSeek raises the price of DeepSeek V4.1 Flash 1017 on OpenRouter: input from $0.15 to $0.3 and output from $0.6 to $1.2 per million tokens.",
-     "titular": "DeepSeek doubles the price of DeepSeek V4.1 Flash 1017",
-     "porque": "the lab itself raises its blended price by 100% (threshold: +50% or −33%)",
-     "consecuencia": "Its blended price on OpenRouter goes from $0.262 to $0.525 per million tokens. Of the 8 models with a similar AA index (±2 points of its 45.1), 1 costs less; the cheapest is Claude Haiku 5.5, at $0.2."
-    }
-   },
-   "titular": "DeepSeek duplica el precio de DeepSeek V4.1 Flash 1017",
-   "importancia": {
-    "tier": 5,
-    "w": 100,
-    "porque": "el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %)"
-   },
-   "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,262 $ a 0,525 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $."
-  },
-  {
-   "kind": "precio",
    "key": "precio|openai/gpt-6.1-sol|2026-10-26",
    "published": null,
    "detected": "2026-10-26",
@@ -294,7 +231,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-sol/providers",
-    "got": "2026-10-26T03:53:55Z"
+    "got": "2026-10-26T19:37:57Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6.1 Sol (1 $ de entrada y 5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2 $ de entrada y 10 $ de salida.",
    "data": {
@@ -360,7 +297,126 @@
   },
   {
    "kind": "precio",
-   "key": "precio|deepseek/deepseek-v4-pro-0813|2026-10-26",
+   "key": "precio|tencent/hy4-preview|2026-10-26",
+   "published": null,
+   "detected": "2026-10-26",
+   "date": "2026-10-26",
+   "mag": {
+    "v": -10,
+    "unit": "%"
+   },
+   "model": "tencent/hy4-preview",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/tencent/hy4-preview/providers",
+    "got": "2026-10-26T19:37:57Z"
+   },
+   "what": "Tencent baja el precio de Hy4 preview en OpenRouter: entrada de 0,834 $ a 0,7506 $ y salida de 2,501 $ a 2,2509 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "precio",
+    "provider": "Tencent",
+    "from": {
+     "in": 0.834,
+     "out": 2.501
+    },
+    "to": {
+     "in": 0.7506,
+     "out": 2.2509
+    },
+    "pct": -10,
+    "tiersFrom": [
+     [
+      0.834,
+      2.501
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.7506,
+      2.2509
+     ]
+    ],
+    "since": "2026-10-25"
+   },
+   "i18n": {
+    "en": {
+     "what": "Tencent cuts the price of Hy4 preview on OpenRouter: input from $0.834 to $0.7506 and output from $2.501 to $2.2509 per million tokens.",
+     "titular": "Tencent cuts the price of Hy4 preview by 10%",
+     "consecuencia": "Its blended price on OpenRouter goes from $1.25 to $1.13 per million tokens."
+    }
+   },
+   "titular": "Tencent baja un 10 % el precio de Hy4 preview",
+   "importancia": null,
+   "ficha": "#modelos/tencent/hy4-preview",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 1,25 $ a 1,13 $ por millón de tokens."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|tencent/hy3|2026-10-26",
+   "published": null,
+   "detected": "2026-10-26",
+   "date": "2026-10-26",
+   "mag": {
+    "v": -37.5,
+    "unit": "%"
+   },
+   "model": "tencent/hy3",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/tencent/hy3/providers",
+    "got": "2026-10-26T19:37:57Z"
+   },
+   "what": "Tencent baja el precio de Hy3 en OpenRouter: entrada de 0,132 $ a 0,0825 $ y salida de 0,528 $ a 0,33 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "precio",
+    "provider": "Tencent",
+    "from": {
+     "in": 0.132,
+     "out": 0.528
+    },
+    "to": {
+     "in": 0.0825,
+     "out": 0.33
+    },
+    "pct": -37.5,
+    "tiersFrom": [
+     [
+      0.132,
+      0.528
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.0825,
+      0.33
+     ]
+    ],
+    "since": "2026-10-25",
+    "rankAA": 72,
+    "of": 142
+   },
+   "i18n": {
+    "en": {
+     "what": "Tencent cuts the price of Hy3 on OpenRouter: input from $0.132 to $0.0825 and output from $0.528 to $0.33 per million tokens.",
+     "titular": "Tencent cuts the price of Hy3 by 38%",
+     "porque": "the lab itself cuts its blended price by 38% (threshold: +50% or −33%)",
+     "consecuencia": "Its blended price on OpenRouter goes from $0.231 to $0.144 per million tokens. Of the 17 models with a similar AA index (±2 points of its 25.3), 2 cost less; the cheapest is Ling 3.0 Flash VL, at $0.09."
+    }
+   },
+   "titular": "Tencent baja un 38 % el precio de Hy3",
+   "importancia": {
+    "tier": 5,
+    "w": 37.5,
+    "porque": "el propio laboratorio baja su precio combinado un 38 % (umbral: +50 % o −33 %)"
+   },
+   "ficha": "#modelos/tencent/hy3",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,231 $ a 0,144 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 25,3), 2 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|openai/gpt-5.4|2026-10-26",
    "published": null,
    "detected": "2026-10-26",
    "date": "2026-10-26",
@@ -368,58 +424,163 @@
     "v": 100,
     "unit": "%"
    },
-   "model": "deepseek/deepseek-v4-pro-0813",
+   "model": "openai/gpt-5.4",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers",
-    "got": "2026-10-26T03:53:55Z"
+    "url": "https://openrouter.ai/openai/gpt-5.4/providers",
+    "got": "2026-10-26T19:37:57Z"
    },
-   "what": "DeepSeek sube el precio de DeepSeek V4 Pro 0813 en OpenRouter: entrada de 0,66 $ a 1,32 $ y salida de 1,98 $ a 3,96 $ por millón de tokens.",
+   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-5.4 (1,25 $ de entrada y 7,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2,5 $ de entrada y 15 $ de salida.",
    "data": {
     "basis": "laboratorio",
-    "sub": "precio",
-    "provider": "DeepSeek",
+    "sub": "tarifa-retirada",
+    "provider": "OpenAI",
     "from": {
-     "in": 0.66,
-     "out": 1.98
+     "in": 1.25,
+     "out": 7.5
     },
     "to": {
-     "in": 1.32,
-     "out": 3.96
+     "in": 2.5,
+     "out": 15
     },
     "pct": 100,
     "tiersFrom": [
      [
-      0.66,
-      1.98
+      1.25,
+      7.5
+     ],
+     [
+      2.5,
+      15
+     ],
+     [
+      5,
+      30
      ]
     ],
     "tiersTo": [
      [
-      1.32,
-      3.96
+      2.5,
+      15
+     ],
+     [
+      5,
+      30
      ]
     ],
     "since": "2026-10-25",
-    "rankAA": 44,
+    "rankAA": 36,
     "of": 142
    },
    "i18n": {
     "en": {
-     "what": "DeepSeek raises the price of DeepSeek V4 Pro 0813 on OpenRouter: input from $0.66 to $1.32 and output from $1.98 to $3.96 per million tokens.",
-     "titular": "DeepSeek doubles the price of DeepSeek V4 Pro 0813",
-     "porque": "the lab itself raises its blended price by 100% (threshold: +50% or −33%)",
-     "consecuencia": "Its blended price on OpenRouter goes from $0.99 to $1.98 per million tokens. Of the 5 models with a similar AA index (±2 points of its 36), 5 cost less; the cheapest is DeepSeek V4 Flash 0731, at $0.075."
+     "what": "OpenAI stops offering its cheapest GPT-5.4 rate on OpenRouter ($1.25 input and $7.5 output per million tokens). The cheapest it has left, which already existed, is $2.5 input and $15 output.",
+     "titular": "OpenAI withdraws the cheapest GPT-5.4 rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $2.81 to $5.63 per million tokens. Of the 16 models with a similar AA index (±2 points of its 39), 14 cost less; the cheapest is DeepSeek V4.1 Flash, at $0.083."
     }
    },
-   "titular": "DeepSeek duplica el precio de DeepSeek V4 Pro 0813",
-   "importancia": {
-    "tier": 5,
-    "w": 100,
-    "porque": "el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %)"
+   "titular": "OpenAI retira la tarifa más barata de GPT-5.4 en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-5.4",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 2,81 $ a 5,63 $ por millón de tokens. De los 16 modelos con un índice de AA parecido (±2 puntos de su 39), 14 cuestan menos; el más barato es DeepSeek V4.1 Flash, a 0,083 $."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|arcee-ai/trinity-large-thinking|2026-10-26",
+   "published": null,
+   "detected": "2026-10-26",
+   "date": "2026-10-26",
+   "mag": null,
+   "model": "arcee-ai/trinity-large-thinking",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-10-26T19:37:57Z"
    },
-   "ficha": "#modelos/deepseek/deepseek-v4-pro-0813",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,99 $ a 1,98 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $."
+   "what": "Trinity Large Thinking deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Trinity Large Thinking"
+   },
+   "i18n": {
+    "en": {
+     "what": "Trinity Large Thinking is no longer listed in the OpenRouter catalogue.",
+     "titular": "Trinity Large Thinking is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Trinity Large Thinking deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|dcMW|2026-10-26",
+   "published": null,
+   "detected": "2026-10-26",
+   "date": "2026-10-26",
+   "mag": {
+    "v": 31,
+    "pct": 0.2,
+    "unit": "MW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-10-26T19:37:57Z"
+   },
+   "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.203 a 14.234 MW.",
+   "data": {
+    "ind": "dcMW",
+    "path": "dc.now",
+    "from": 14203,
+    "to": 14234
+   },
+   "i18n": {
+    "en": {
+     "what": "IT power in service at the data centres Epoch tracks: from 14,203 to 14,234 MW.",
+     "titular": "The power in service at the data centres Epoch tracks rises to 14,234 MW",
+     "consecuencia": "95 data centres. Power of the equipment, without cooling; it is not the world total. In AI 2027 it is evidence for “40 million H100e available”."
+    }
+   },
+   "titular": "La potencia en servicio de los centros que sigue Epoch sube a 14.234 MW",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "95 centros. Potencia de los equipos, sin refrigeración; no es el total mundial. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|capexB|2026-10-26",
+   "published": null,
+   "detected": "2026-10-26",
+   "date": "2026-10-26",
+   "mag": {
+    "v": 1.1,
+    "pct": 0.2,
+    "unit": "mil millones de $"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-10-26T19:37:57Z"
+   },
+   "what": "Coste de capital de los centros que sigue Epoch: de 538 a 539 mil millones de $.",
+   "data": {
+    "ind": "capexB",
+    "path": "dc.capex",
+    "from": 538.1,
+    "to": 539.2
+   },
+   "i18n": {
+    "en": {
+     "what": "Capital cost of the data centres Epoch tracks: from 538 to 539 billion dollars.",
+     "titular": "Capital cost of the data centres Epoch tracks: from 538 to 539 billion dollars."
+    }
+   },
+   "titular": "Coste de capital de los centros que sigue Epoch: de 538 a 539 mil millones de $.",
+   "importancia": null,
+   "ficha": "#carrera/economia",
+   "consecuencia": null
   },
   {
    "kind": "precio",
