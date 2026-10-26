@@ -6,7 +6,21 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Sun, 25 Oct 2026 14:56:26 GMT</lastBuildDate>
+  <lastBuildDate>Mon, 26 Oct 2026 03:53:55 GMT</lastBuildDate>
+  <item>
+    <title>DeepSeek doubles the price of DeepSeek V4.1 Flash 1017</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/deepseek/deepseek-v4.1-flash-1017</link>
+    <guid isPermaLink="false">precio|deepseek/deepseek-v4.1-flash-1017|2026-10-26</guid>
+    <pubDate>Mon, 26 Oct 2026 03:53:55 GMT</pubDate>
+    <description>DeepSeek raises the price of DeepSeek V4.1 Flash 1017 on OpenRouter: input from $0.15 to $0.3 and output from $0.6 to $1.2 per million tokens. Its blended price on OpenRouter goes from $0.262 to $0.525 per million tokens. Of the 8 models with a similar AA index (±2 points of its 45.1), 1 costs less; the cheapest is Claude Haiku 5.5, at $0.2. It is in the briefing because the lab itself raises its blended price by 100% (threshold: +50% or −33%). Detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
+  <item>
+    <title>DeepSeek doubles the price of DeepSeek V4 Pro 0813</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/deepseek/deepseek-v4-pro-0813</link>
+    <guid isPermaLink="false">precio|deepseek/deepseek-v4-pro-0813|2026-10-26</guid>
+    <pubDate>Mon, 26 Oct 2026 03:53:55 GMT</pubDate>
+    <description>DeepSeek raises the price of DeepSeek V4 Pro 0813 on OpenRouter: input from $0.66 to $1.32 and output from $1.98 to $3.96 per million tokens. Its blended price on OpenRouter goes from $0.99 to $1.98 per million tokens. Of the 5 models with a similar AA index (±2 points of its 36), 5 cost less; the cheapest is DeepSeek V4 Flash 0731, at $0.075. It is in the briefing because the lab itself raises its blended price by 100% (threshold: +50% or −33%). Detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
   <item>
     <title>Kimi K3.1 Pro becomes the best open-weight model on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/moonshotai/kimi-k3.1-pro</link>
