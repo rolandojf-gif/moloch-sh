@@ -1,13 +1,14 @@
 {
- "generated": "2026-10-26T19:37:57Z",
+ "generated": "2026-10-27T03:54:35Z",
  "window": 7,
- "since": "2026-10-20",
- "base": "2026-10-25",
+ "since": "2026-10-21",
+ "base": "2026-10-26",
  "parte": {
-  "fecha": "2026-10-26",
+  "fecha": "2026-10-27",
   "noticias": [
-   "nuevo|openai/gpt-6.1-terra",
-   "precio|tencent/hy3|2026-10-26"
+   "precio|deepseek/deepseek-v4.1-flash-1017|2026-10-27",
+   "precio|deepseek/deepseek-v4-pro-0813|2026-10-27",
+   "precio|tencent/hy3|2026-10-27"
   ],
   "ultima": null,
   "reglas": [
@@ -38,6 +39,40 @@
  "items": [
   {
    "kind": "nuevo",
+   "key": "nuevo|openai/gpt-6.1-terra-pro",
+   "model": "openai/gpt-6.1-terra-pro",
+   "published": "2026-10-26",
+   "detected": "2026-10-27",
+   "date": "2026-10-26",
+   "mag": null,
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/openai/gpt-6.1-terra-pro",
+    "got": "2026-10-27T03:54:35Z"
+   },
+   "what": "GPT-6.1 Terra Pro (OpenAI) aparece en el catálogo de OpenRouter.",
+   "data": {
+    "weights": "cerrados",
+    "in": 0.5,
+    "out": 2.5,
+    "ii": null,
+    "eci": null,
+    "identity": "confirmada"
+   },
+   "i18n": {
+    "en": {
+     "what": "GPT-6.1 Terra Pro (OpenAI) appears in the OpenRouter catalogue.",
+     "titular": "GPT-6.1 Terra Pro (OpenAI) arrives on OpenRouter",
+     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Blended price $1 per million tokens."
+    }
+   },
+   "titular": "GPT-6.1 Terra Pro (OpenAI) llega a OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-6.1-terra-pro",
+   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 1 $ por millón de tokens."
+  },
+  {
+   "kind": "nuevo",
    "key": "nuevo|openai/gpt-6.1-terra",
    "model": "openai/gpt-6.1-terra",
    "published": "2026-10-26",
@@ -47,7 +82,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra",
-    "got": "2026-10-26T19:37:57Z"
+    "got": "2026-10-27T03:54:35Z"
    },
    "what": "GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -88,7 +123,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/moonshotai/kimi-k3.1-pro",
-    "got": "2026-10-26T19:37:57Z"
+    "got": "2026-10-27T03:54:35Z"
    },
    "what": "Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -117,6 +152,399 @@
    },
    "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
    "consecuencia": "Índice de AA 55,1: supera en 8,8 puntos al mejor abierto anterior (MiMo-V2.6-Pro). Puesto 3 de 142. Precio combinado 4 $ por millón de tokens."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|deepseek/deepseek-v4.1-flash-1017|2026-10-27",
+   "published": null,
+   "detected": "2026-10-27",
+   "date": "2026-10-27",
+   "mag": {
+    "v": 100,
+    "unit": "%"
+   },
+   "model": "deepseek/deepseek-v4.1-flash-1017",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers",
+    "got": "2026-10-27T03:54:35Z"
+   },
+   "what": "DeepSeek sube el precio de DeepSeek V4.1 Flash 1017 en OpenRouter: entrada de 0,15 $ a 0,3 $ y salida de 0,6 $ a 1,2 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "precio",
+    "provider": "DeepSeek",
+    "from": {
+     "in": 0.15,
+     "out": 0.6
+    },
+    "to": {
+     "in": 0.3,
+     "out": 1.2
+    },
+    "pct": 100,
+    "tiersFrom": [
+     [
+      0.15,
+      0.6
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.3,
+      1.2
+     ]
+    ],
+    "since": "2026-10-26",
+    "rankAA": 17,
+    "of": 142
+   },
+   "i18n": {
+    "en": {
+     "what": "DeepSeek raises the price of DeepSeek V4.1 Flash 1017 on OpenRouter: input from $0.15 to $0.3 and output from $0.6 to $1.2 per million tokens.",
+     "titular": "DeepSeek doubles the price of DeepSeek V4.1 Flash 1017",
+     "porque": "the lab itself raises its blended price by 100% (threshold: +50% or −33%)",
+     "consecuencia": "Its blended price on OpenRouter goes from $0.262 to $0.525 per million tokens. Of the 8 models with a similar AA index (±2 points of its 45.1), 1 costs less; the cheapest is Claude Haiku 5.5, at $0.2."
+    }
+   },
+   "titular": "DeepSeek duplica el precio de DeepSeek V4.1 Flash 1017",
+   "importancia": {
+    "tier": 5,
+    "w": 100,
+    "porque": "el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %)"
+   },
+   "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,262 $ a 0,525 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|openai/gpt-6.1-sol|2026-10-27",
+   "published": null,
+   "detected": "2026-10-27",
+   "date": "2026-10-27",
+   "mag": {
+    "v": -50,
+    "unit": "%"
+   },
+   "model": "openai/gpt-6.1-sol",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/openai/gpt-6.1-sol/providers",
+    "got": "2026-10-27T03:54:35Z"
+   },
+   "what": "OpenAI añade en OpenRouter una tarifa más barata de GPT-6.1 Sol: 1 $ de entrada y 5 $ de salida por millón de tokens. La anterior (2 $ de entrada y 10 $ de salida) sigue disponible.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-nueva",
+    "provider": "OpenAI",
+    "from": {
+     "in": 2,
+     "out": 10
+    },
+    "to": {
+     "in": 1,
+     "out": 5
+    },
+    "pct": -50,
+    "tiersFrom": [
+     [
+      2,
+      10
+     ],
+     [
+      4,
+      20
+     ],
+     [
+      12,
+      60
+     ]
+    ],
+    "tiersTo": [
+     [
+      1,
+      5
+     ],
+     [
+      2,
+      10
+     ],
+     [
+      4,
+      20
+     ],
+     [
+      12,
+      60
+     ]
+    ],
+    "since": "2026-10-26",
+    "rankAA": 8,
+    "of": 142
+   },
+   "i18n": {
+    "en": {
+     "what": "OpenAI adds a cheaper GPT-6.1 Sol rate on OpenRouter: $1 input and $5 output per million tokens. The previous one ($2 input and $10 output) is still available.",
+     "titular": "OpenAI adds a cheaper GPT-6.1 Sol rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $4 to $2 per million tokens. Of the 5 models with a similar AA index (±2 points of its 51.8), none costs less."
+    }
+   },
+   "titular": "OpenAI añade una tarifa más barata de GPT-6.1 Sol en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-6.1-sol",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 4 $ a 2 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 51,8), ninguno cuesta menos."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|tencent/hy4-preview|2026-10-27",
+   "published": null,
+   "detected": "2026-10-27",
+   "date": "2026-10-27",
+   "mag": {
+    "v": 11.1,
+    "unit": "%"
+   },
+   "model": "tencent/hy4-preview",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/tencent/hy4-preview/providers",
+    "got": "2026-10-27T03:54:35Z"
+   },
+   "what": "Tencent sube el precio de Hy4 preview en OpenRouter: entrada de 0,7506 $ a 0,834 $ y salida de 2,2509 $ a 2,501 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "precio",
+    "provider": "Tencent",
+    "from": {
+     "in": 0.7506,
+     "out": 2.2509
+    },
+    "to": {
+     "in": 0.834,
+     "out": 2.501
+    },
+    "pct": 11.1,
+    "tiersFrom": [
+     [
+      0.7506,
+      2.2509
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.834,
+      2.501
+     ]
+    ],
+    "since": "2026-10-26"
+   },
+   "i18n": {
+    "en": {
+     "what": "Tencent raises the price of Hy4 preview on OpenRouter: input from $0.7506 to $0.834 and output from $2.2509 to $2.501 per million tokens.",
+     "titular": "Tencent raises the price of Hy4 preview by 11%",
+     "consecuencia": "Its blended price on OpenRouter goes from $1.13 to $1.25 per million tokens."
+    }
+   },
+   "titular": "Tencent sube un 11 % el precio de Hy4 preview",
+   "importancia": null,
+   "ficha": "#modelos/tencent/hy4-preview",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 1,13 $ a 1,25 $ por millón de tokens."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|deepseek/deepseek-v4-pro-0813|2026-10-27",
+   "published": null,
+   "detected": "2026-10-27",
+   "date": "2026-10-27",
+   "mag": {
+    "v": 100,
+    "unit": "%"
+   },
+   "model": "deepseek/deepseek-v4-pro-0813",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers",
+    "got": "2026-10-27T03:54:35Z"
+   },
+   "what": "DeepSeek sube el precio de DeepSeek V4 Pro 0813 en OpenRouter: entrada de 0,66 $ a 1,32 $ y salida de 1,98 $ a 3,96 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "precio",
+    "provider": "DeepSeek",
+    "from": {
+     "in": 0.66,
+     "out": 1.98
+    },
+    "to": {
+     "in": 1.32,
+     "out": 3.96
+    },
+    "pct": 100,
+    "tiersFrom": [
+     [
+      0.66,
+      1.98
+     ]
+    ],
+    "tiersTo": [
+     [
+      1.32,
+      3.96
+     ]
+    ],
+    "since": "2026-10-26",
+    "rankAA": 45,
+    "of": 142
+   },
+   "i18n": {
+    "en": {
+     "what": "DeepSeek raises the price of DeepSeek V4 Pro 0813 on OpenRouter: input from $0.66 to $1.32 and output from $1.98 to $3.96 per million tokens.",
+     "titular": "DeepSeek doubles the price of DeepSeek V4 Pro 0813",
+     "porque": "the lab itself raises its blended price by 100% (threshold: +50% or −33%)",
+     "consecuencia": "Its blended price on OpenRouter goes from $0.99 to $1.98 per million tokens. Of the 5 models with a similar AA index (±2 points of its 36), 5 cost less; the cheapest is DeepSeek V4 Flash 0731, at $0.075."
+    }
+   },
+   "titular": "DeepSeek duplica el precio de DeepSeek V4 Pro 0813",
+   "importancia": {
+    "tier": 5,
+    "w": 100,
+    "porque": "el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %)"
+   },
+   "ficha": "#modelos/deepseek/deepseek-v4-pro-0813",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,99 $ a 1,98 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|tencent/hy3|2026-10-27",
+   "published": null,
+   "detected": "2026-10-27",
+   "date": "2026-10-27",
+   "mag": {
+    "v": 60,
+    "unit": "%"
+   },
+   "model": "tencent/hy3",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/tencent/hy3/providers",
+    "got": "2026-10-27T03:54:35Z"
+   },
+   "what": "Tencent sube el precio de Hy3 en OpenRouter: entrada de 0,0825 $ a 0,132 $ y salida de 0,33 $ a 0,528 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "precio",
+    "provider": "Tencent",
+    "from": {
+     "in": 0.0825,
+     "out": 0.33
+    },
+    "to": {
+     "in": 0.132,
+     "out": 0.528
+    },
+    "pct": 60,
+    "tiersFrom": [
+     [
+      0.0825,
+      0.33
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.132,
+      0.528
+     ]
+    ],
+    "since": "2026-10-26",
+    "rankAA": 72,
+    "of": 142
+   },
+   "i18n": {
+    "en": {
+     "what": "Tencent raises the price of Hy3 on OpenRouter: input from $0.0825 to $0.132 and output from $0.33 to $0.528 per million tokens.",
+     "titular": "Tencent raises the price of Hy3 by 60%",
+     "porque": "the lab itself raises its blended price by 60% (threshold: +50% or −33%)",
+     "consecuencia": "Its blended price on OpenRouter goes from $0.144 to $0.231 per million tokens. Of the 17 models with a similar AA index (±2 points of its 25.3), 2 cost less; the cheapest is Ling 3.0 Flash VL, at $0.09."
+    }
+   },
+   "titular": "Tencent sube un 60 % el precio de Hy3",
+   "importancia": {
+    "tier": 5,
+    "w": 60,
+    "porque": "el propio laboratorio sube su precio combinado un 60 % (umbral: +50 % o −33 %)"
+   },
+   "ficha": "#modelos/tencent/hy3",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,144 $ a 0,231 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 25,3), 2 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|openai/gpt-5.4|2026-10-27",
+   "published": null,
+   "detected": "2026-10-27",
+   "date": "2026-10-27",
+   "mag": {
+    "v": -50,
+    "unit": "%"
+   },
+   "model": "openai/gpt-5.4",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/openai/gpt-5.4/providers",
+    "got": "2026-10-27T03:54:35Z"
+   },
+   "what": "OpenAI añade en OpenRouter una tarifa más barata de GPT-5.4: 1,25 $ de entrada y 7,5 $ de salida por millón de tokens. La anterior (2,5 $ de entrada y 15 $ de salida) sigue disponible.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-nueva",
+    "provider": "OpenAI",
+    "from": {
+     "in": 2.5,
+     "out": 15
+    },
+    "to": {
+     "in": 1.25,
+     "out": 7.5
+    },
+    "pct": -50,
+    "tiersFrom": [
+     [
+      2.5,
+      15
+     ],
+     [
+      5,
+      30
+     ]
+    ],
+    "tiersTo": [
+     [
+      1.25,
+      7.5
+     ],
+     [
+      2.5,
+      15
+     ],
+     [
+      5,
+      30
+     ]
+    ],
+    "since": "2026-10-26",
+    "rankAA": 36,
+    "of": 142
+   },
+   "i18n": {
+    "en": {
+     "what": "OpenAI adds a cheaper GPT-5.4 rate on OpenRouter: $1.25 input and $7.5 output per million tokens. The previous one ($2.5 input and $15 output) is still available.",
+     "titular": "OpenAI adds a cheaper GPT-5.4 rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $5.63 to $2.81 per million tokens. Of the 16 models with a similar AA index (±2 points of its 39), 10 cost less; the cheapest is DeepSeek V4.1 Flash, at $0.031."
+    }
+   },
+   "titular": "OpenAI añade una tarifa más barata de GPT-5.4 en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-5.4",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 5,63 $ a 2,81 $ por millón de tokens. De los 16 modelos con un índice de AA parecido (±2 puntos de su 39), 10 cuestan menos; el más barato es DeepSeek V4.1 Flash, a 0,031 $."
   },
   {
    "kind": "precio",
