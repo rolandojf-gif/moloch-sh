@@ -106,7 +106,7 @@ El español se escribe una sola vez y no se duplica el catálogo. Cifras, enlace
 
 ## Despliegue
 
-`netlify.toml` publica la raíz y fija la CSP (sólo conexiones al propio dominio).
+`netlify.toml` publica la raíz y fija la CSP. Cloudflare Web Analytics mide las visitas mediante un snippet instalado en `index.html`; la CSP permite únicamente su script de `static.cloudflareinsights.com` y el envío de métricas a `cloudflareinsights.com`. No hace falta cambiar el DNS de Netlify.
 
 
 ## Indexación y dominio público
@@ -119,4 +119,4 @@ Antes de activar un dominio propio, sustituir de forma coordinada la URL públic
 
 En Google Search Console, verificar la propiedad del dominio mediante su TXT DNS (o verificar la propiedad de prefijo de URL con el archivo o etiqueta que facilite Google), enviar `/sitemap.xml` e inspeccionar la portada para solicitar indexación. No añadir un código de verificación inventado. Preparar SEO y enviar el sitemap no garantizan que Google indexe la web.
 
-Cloudflare se usará como DNS y proxy del dominio propio; Netlify seguirá sirviendo la web. No se pueden cambiar los DNS del subdominio netlify.app. Antes de cambiar nameservers, conservar los registros existentes, incluidos los de correo; configurar HTTPS en el origen y usar Full (strict), y evitar cachear indefinidamente HTML y JSON de las recogidas diarias.
+Cloudflare Web Analytics funciona con el subdominio de Netlify, sin usar Cloudflare como DNS ni proxy. Si en el futuro se usa un dominio propio, también puede configurarse Cloudflare como DNS y proxy; Netlify seguiría sirviendo la web. No se pueden cambiar los DNS del subdominio netlify.app. Antes de cambiar nameservers, conservar los registros existentes, incluidos los de correo; configurar HTTPS en el origen y usar Full (strict), y evitar cachear indefinidamente HTML y JSON de las recogidas diarias.
