@@ -1,14 +1,12 @@
 {
- "generated": "2026-10-27T03:54:35Z",
+ "generated": "2026-10-28T03:54:19Z",
  "window": 7,
- "since": "2026-10-21",
- "base": "2026-10-26",
+ "since": "2026-10-22",
+ "base": "2026-10-27",
  "parte": {
-  "fecha": "2026-10-27",
+  "fecha": "2026-10-28",
   "noticias": [
-   "precio|deepseek/deepseek-v4.1-flash-1017|2026-10-27",
-   "precio|deepseek/deepseek-v4-pro-0813|2026-10-27",
-   "precio|tencent/hy3|2026-10-27"
+   "version|5"
   ],
   "ultima": null,
   "reglas": [
@@ -48,7 +46,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra-pro",
-    "got": "2026-10-27T03:54:35Z"
+    "got": "2026-10-28T03:54:19Z"
    },
    "what": "GPT-6.1 Terra Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -82,35 +80,35 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra",
-    "got": "2026-10-27T03:54:35Z"
+    "got": "2026-10-28T03:54:19Z"
    },
    "what": "GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
     "weights": "cerrados",
     "in": 0.5,
     "out": 2.5,
-    "ii": 48.1,
+    "ii": 51,
     "eci": null,
     "identity": "confirmada",
-    "rankAA": 11,
-    "of": 142
+    "rankAA": 5,
+    "of": 28
    },
    "i18n": {
     "en": {
      "what": "GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue.",
-     "titular": "GPT-6.1 Terra (OpenAI) arrives on OpenRouter: rank 11 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 11 of 142)",
-     "consecuencia": "AA index 48.1: 9.5 points behind the best closed model (Claude Opus 5.5). Rank 11 of 142. Blended price $1 per million tokens. Of the 6 models with a similar AA index (±2 points of its 48.1), 1 costs less; the cheapest is MiMo-V2.6-Pro, at $0.544."
+     "titular": "GPT-6.1 Terra (OpenAI) arrives on OpenRouter: rank 5 on the AA index",
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 5 of 28)",
+     "consecuencia": "AA index 51: 7.4 points behind the best closed model (Claude Opus 5.5). Rank 5 of 28. Blended price $1 per million tokens."
     }
    },
-   "titular": "GPT-6.1 Terra (OpenAI) llega a OpenRouter: puesto 11 del índice de AA",
+   "titular": "GPT-6.1 Terra (OpenAI) llega a OpenRouter: puesto 5 del índice de AA",
    "importancia": {
     "tier": 3,
-    "w": 10,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 11 de 142)"
+    "w": 16,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 5 de 28)"
    },
    "ficha": "#modelos/openai/gpt-6.1-terra",
-   "consecuencia": "Índice de AA 48,1: a 9,5 puntos del mejor cerrado (Claude Opus 5.5). Puesto 11 de 142. Precio combinado 1 $ por millón de tokens. De los 6 modelos con un índice de AA parecido (±2 puntos de su 48,1), 1 cuesta menos; el más barato es MiMo-V2.6-Pro, a 0,544 $."
+   "consecuencia": "Índice de AA 51: a 7,4 puntos del mejor cerrado (Claude Opus 5.5). Puesto 5 de 28. Precio combinado 1 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -123,35 +121,129 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/moonshotai/kimi-k3.1-pro",
-    "got": "2026-10-27T03:54:35Z"
+    "got": "2026-10-28T03:54:19Z"
    },
    "what": "Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter.",
    "data": {
     "weights": "abiertos",
     "in": 2,
     "out": 10,
-    "ii": 55.1,
+    "ii": 46,
     "eci": null,
     "identity": "confirmada",
-    "rankAA": 3,
-    "of": 142
+    "rankAA": 8,
+    "of": 28
    },
    "i18n": {
     "en": {
      "what": "Kimi K3.1 Pro (Moonshot AI) appears in the OpenRouter catalogue.",
-     "titular": "Kimi K3.1 Pro (Moonshot AI) arrives on OpenRouter: rank 3 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 3 of 142)",
-     "consecuencia": "AA index 55.1: 8.8 points above the previous best open-weight model (MiMo-V2.6-Pro). Rank 3 of 142. Blended price $4 per million tokens."
+     "titular": "Kimi K3.1 Pro (Moonshot AI) arrives on OpenRouter: rank 8 on the AA index",
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 8 of 28)",
+     "consecuencia": "AA index 46: 13.5 points above the previous best open-weight model (DeepSeek V4.1 Flash 1017). Rank 8 of 28. Blended price $4 per million tokens."
     }
    },
-   "titular": "Kimi K3.1 Pro (Moonshot AI) llega a OpenRouter: puesto 3 del índice de AA",
+   "titular": "Kimi K3.1 Pro (Moonshot AI) llega a OpenRouter: puesto 8 del índice de AA",
    "importancia": {
     "tier": 3,
-    "w": 18,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 142)"
+    "w": 13,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 8 de 28)"
    },
    "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
-   "consecuencia": "Índice de AA 55,1: supera en 8,8 puntos al mejor abierto anterior (MiMo-V2.6-Pro). Puesto 3 de 142. Precio combinado 4 $ por millón de tokens."
+   "consecuencia": "Índice de AA 46: supera en 13,5 puntos al mejor abierto anterior (DeepSeek V4.1 Flash 1017). Puesto 8 de 28. Precio combinado 4 $ por millón de tokens."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|minimax/minimax-m2.5|2026-10-28",
+   "published": null,
+   "detected": "2026-10-28",
+   "date": "2026-10-28",
+   "mag": {
+    "v": 100,
+    "unit": "%"
+   },
+   "model": "minimax/minimax-m2.5",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/minimax/minimax-m2.5/providers",
+    "got": "2026-10-28T03:54:19Z"
+   },
+   "what": "Minimax deja de ofrecer en OpenRouter su tarifa más barata de MiniMax M2.5 (0,3 $ de entrada y 1,2 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,6 $ de entrada y 2,4 $ de salida.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-retirada",
+    "provider": "Minimax",
+    "from": {
+     "in": 0.3,
+     "out": 1.2
+    },
+    "to": {
+     "in": 0.6,
+     "out": 2.4
+    },
+    "pct": 100,
+    "tiersFrom": [
+     [
+      0.3,
+      1.2
+     ],
+     [
+      0.6,
+      2.4
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.6,
+      2.4
+     ]
+    ],
+    "since": "2026-10-27"
+   },
+   "i18n": {
+    "en": {
+     "what": "Minimax stops offering its cheapest MiniMax M2.5 rate on OpenRouter ($0.3 input and $1.2 output per million tokens). The cheapest it has left, which already existed, is $0.6 input and $2.4 output.",
+     "titular": "Minimax withdraws the cheapest MiniMax M2.5 rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $0.525 to $1.05 per million tokens."
+    }
+   },
+   "titular": "Minimax retira la tarifa más barata de MiniMax M2.5 en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/minimax/minimax-m2.5",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 0,525 $ a 1,05 $ por millón de tokens."
+  },
+  {
+   "kind": "version",
+   "key": "version|5",
+   "published": null,
+   "detected": "2026-10-28",
+   "date": "2026-10-28",
+   "mag": null,
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-10-28T03:54:19Z"
+   },
+   "what": "Artificial Analysis pasa su índice de inteligencia de la versión 4.3 a la 5: las puntuaciones de una y otra versión no se comparan.",
+   "data": {
+    "from": "4.3",
+    "to": "5"
+   },
+   "i18n": {
+    "en": {
+     "what": "Artificial Analysis moves its Intelligence Index from version 4.3 to 5: scores from the two versions are not comparable.",
+     "titular": "Artificial Analysis launches version 5 of its Intelligence Index",
+     "porque": "Artificial Analysis changes the version of its index",
+     "consecuencia": "Scores from one version and the other are not comparable: the daily evolution of the leaders starts over with this version."
+    }
+   },
+   "titular": "Artificial Analysis estrena la versión 5 de su índice de inteligencia",
+   "importancia": {
+    "tier": 1,
+    "w": 0,
+    "porque": "Artificial Analysis cambia la versión de su índice"
+   },
+   "ficha": null,
+   "consecuencia": "Las puntuaciones de una versión y otra no se comparan: la evolución diaria de los líderes empieza de nuevo con esta versión."
   },
   {
    "kind": "precio",
@@ -1619,34 +1711,6 @@
     "en": {
      "what": "MiniMax M3.1 Flash: downloadable weights on Hugging Face (licence minimax-community).",
      "titular": "Open weights for MiniMax M3.1 Flash, rank 21 on the AA index"
-    }
-   }
-  },
-  {
-   "kind": "pesos",
-   "model": "inclusionai/ling-3.1-flash",
-   "date": "2026-10-13",
-   "src": {
-    "name": "Hugging Face",
-    "url": "https://huggingface.co/inclusionAI/Ling-3.1-flash",
-    "got": "2026-10-21T10:50:37Z"
-   },
-   "what": "Ling 3.1 Flash: pesos descargables en Hugging Face (licencia mit).",
-   "data": {
-    "license": "mit"
-   },
-   "key": "pesos|inclusionai/ling-3.1-flash",
-   "published": "2026-10-13",
-   "detected": "2026-10-21",
-   "mag": null,
-   "titular": "Pesos abiertos de Ling 3.1 Flash",
-   "importancia": null,
-   "ficha": "#modelos/inclusionai/ling-3.1-flash",
-   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: mit. Índice de AA 41,1: a 5,2 puntos del mejor abierto (MiMo-V2.6-Pro). Puesto 25 de 141.",
-   "i18n": {
-    "en": {
-     "what": "Ling 3.1 Flash: downloadable weights on Hugging Face (licence mit).",
-     "titular": "Open weights for Ling 3.1 Flash"
     }
    }
   }

@@ -6,7 +6,14 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Tue, 27 Oct 2026 03:54:35 GMT</lastBuildDate>
+  <lastBuildDate>Wed, 28 Oct 2026 03:54:19 GMT</lastBuildDate>
+  <item>
+    <title>Artificial Analysis launches version 5 of its Intelligence Index</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#hoy</link>
+    <guid isPermaLink="false">version|5</guid>
+    <pubDate>Wed, 28 Oct 2026 03:54:19 GMT</pubDate>
+    <description>Artificial Analysis moves its Intelligence Index from version 4.3 to 5: scores from the two versions are not comparable. Scores from one version and the other are not comparable: the daily evolution of the leaders starts over with this version. It is in the briefing because Artificial Analysis changes the version of its index. Detected on 2026-10-28. Source: Artificial Analysis (https://artificialanalysis.ai/leaderboards/models). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
   <item>
     <title>DeepSeek doubles the price of DeepSeek V4.1 Flash 1017</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/deepseek/deepseek-v4.1-flash-1017</link>
@@ -29,11 +36,11 @@
     <description>Tencent raises the price of Hy3 on OpenRouter: input from $0.0825 to $0.132 and output from $0.33 to $0.528 per million tokens. Its blended price on OpenRouter goes from $0.144 to $0.231 per million tokens. Of the 17 models with a similar AA index (±2 points of its 25.3), 2 cost less; the cheapest is Ling 3.0 Flash VL, at $0.09. It is in the briefing because the lab itself raises its blended price by 60% (threshold: +50% or −33%). Detected on 2026-10-27. Source: OpenRouter (https://openrouter.ai/tencent/hy3/providers). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>GPT-6.1 Terra (OpenAI) arrives on OpenRouter: rank 11 on the AA index</title>
+    <title>GPT-6.1 Terra (OpenAI) arrives on OpenRouter: rank 5 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.1-terra</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.1-terra</guid>
     <pubDate>Mon, 26 Oct 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue. AA index 48.1: 9.5 points behind the best closed model (Claude Opus 5.5). Rank 11 of 142. Blended price $1 per million tokens. Of the 6 models with a similar AA index (±2 points of its 48.1), 1 costs less; the cheapest is MiMo-V2.6-Pro, at $0.544. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 11 of 142). Published on 2026-10-26; detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue. AA index 51: 7.4 points behind the best closed model (Claude Opus 5.5). Rank 5 of 28. Blended price $1 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 5 of 28). Published on 2026-10-26; detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Tencent cuts the price of Hy3 by 38%</title>
@@ -50,11 +57,11 @@
     <description>Kimi K3.1 Pro becomes the best open-weight model in the catalogue on the Artificial Analysis Intelligence Index v4.3: 55.1 points, 8.8 more than MiMo-V2.6-Pro (46.3). Its weights have been announced by the lab, but cannot be downloaded yet. The gap between the best closed and the best open-weight model on the AA index stands at 2.5 points (11.3 the day before). It does not equate to months of lag. It is in the briefing because the best open-weight model changes with the same AA index version and a margin of 8.8 points (minimum 1). Detected on 2026-10-24. Source: Artificial Analysis (https://artificialanalysis.ai/models/kimi-k3-1-pro). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>Kimi K3.1 Pro (Moonshot AI) arrives on OpenRouter: rank 3 on the AA index</title>
+    <title>Kimi K3.1 Pro (Moonshot AI) arrives on OpenRouter: rank 8 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/moonshotai/kimi-k3.1-pro</link>
     <guid isPermaLink="false">nuevo|moonshotai/kimi-k3.1-pro</guid>
     <pubDate>Sat, 24 Oct 2026 05:00:00 GMT</pubDate>
-    <description>Kimi K3.1 Pro (Moonshot AI) appears in the OpenRouter catalogue. AA index 55.1: 8.8 points above the previous best open-weight model (MiMo-V2.6-Pro). Rank 3 of 142. Blended price $4 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 3 of 142). Published on 2026-10-23; detected on 2026-10-24. Source: OpenRouter (https://openrouter.ai/moonshotai/kimi-k3.1-pro). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>Kimi K3.1 Pro (Moonshot AI) appears in the OpenRouter catalogue. AA index 46: 13.5 points above the previous best open-weight model (DeepSeek V4.1 Flash 1017). Rank 8 of 28. Blended price $4 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 8 of 28). Published on 2026-10-23; detected on 2026-10-24. Source: OpenRouter (https://openrouter.ai/moonshotai/kimi-k3.1-pro). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>DeepSeek V4.1 Flash 1017 becomes the most used model on OpenRouter</title>

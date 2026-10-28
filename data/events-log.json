@@ -188,7 +188,6 @@
    "path": "aa.rate12m",
    "label": "Avance de la frontera del índice de AA en 12 meses",
    "desde": "2026-10-24",
-   "incompleto": true,
    "i18n": {
     "en": {
      "label": "Frontier gain on the AA index over 12 months"
@@ -217,6 +216,100 @@
   }
  ],
  "events": [
+  {
+   "kind": "precio",
+   "key": "precio|minimax/minimax-m2.5|2026-10-28",
+   "published": null,
+   "detected": "2026-10-28",
+   "date": "2026-10-28",
+   "mag": {
+    "v": 100,
+    "unit": "%"
+   },
+   "model": "minimax/minimax-m2.5",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/minimax/minimax-m2.5/providers",
+    "got": "2026-10-28T03:54:19Z"
+   },
+   "what": "Minimax deja de ofrecer en OpenRouter su tarifa más barata de MiniMax M2.5 (0,3 $ de entrada y 1,2 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 0,6 $ de entrada y 2,4 $ de salida.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-retirada",
+    "provider": "Minimax",
+    "from": {
+     "in": 0.3,
+     "out": 1.2
+    },
+    "to": {
+     "in": 0.6,
+     "out": 2.4
+    },
+    "pct": 100,
+    "tiersFrom": [
+     [
+      0.3,
+      1.2
+     ],
+     [
+      0.6,
+      2.4
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.6,
+      2.4
+     ]
+    ],
+    "since": "2026-10-27"
+   },
+   "i18n": {
+    "en": {
+     "what": "Minimax stops offering its cheapest MiniMax M2.5 rate on OpenRouter ($0.3 input and $1.2 output per million tokens). The cheapest it has left, which already existed, is $0.6 input and $2.4 output.",
+     "titular": "Minimax withdraws the cheapest MiniMax M2.5 rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $0.525 to $1.05 per million tokens."
+    }
+   },
+   "titular": "Minimax retira la tarifa más barata de MiniMax M2.5 en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/minimax/minimax-m2.5",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 0,525 $ a 1,05 $ por millón de tokens."
+  },
+  {
+   "kind": "version",
+   "key": "version|5",
+   "published": null,
+   "detected": "2026-10-28",
+   "date": "2026-10-28",
+   "mag": null,
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-10-28T03:54:19Z"
+   },
+   "what": "Artificial Analysis pasa su índice de inteligencia de la versión 4.3 a la 5: las puntuaciones de una y otra versión no se comparan.",
+   "data": {
+    "from": "4.3",
+    "to": "5"
+   },
+   "i18n": {
+    "en": {
+     "what": "Artificial Analysis moves its Intelligence Index from version 4.3 to 5: scores from the two versions are not comparable.",
+     "titular": "Artificial Analysis launches version 5 of its Intelligence Index",
+     "porque": "Artificial Analysis changes the version of its index",
+     "consecuencia": "Scores from one version and the other are not comparable: the daily evolution of the leaders starts over with this version."
+    }
+   },
+   "titular": "Artificial Analysis estrena la versión 5 de su índice de inteligencia",
+   "importancia": {
+    "tier": 1,
+    "w": 0,
+    "porque": "Artificial Analysis cambia la versión de su índice"
+   },
+   "ficha": null,
+   "consecuencia": "Las puntuaciones de una versión y otra no se comparan: la evolución diaria de los líderes empieza de nuevo con esta versión."
+  },
   {
    "kind": "precio",
    "key": "precio|deepseek/deepseek-v4.1-flash-1017|2026-10-27",
