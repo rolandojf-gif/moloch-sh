@@ -107,3 +107,16 @@ El español se escribe una sola vez y no se duplica el catálogo. Cifras, enlace
 ## Despliegue
 
 `netlify.toml` publica la raíz y fija la CSP (sólo conexiones al propio dominio).
+
+
+## Indexación y dominio público
+
+La base SEO incluye título y descripción, canonical, Open Graph, Twitter Card, JSON-LD de tipo WebSite, robots.txt y sitemap.xml. La CSP permite únicamente el hash exacto del JSON-LD, manteniendo el bloqueo de JavaScript inline arbitrario. Si se modifica ese bloque, hay que recalcular su hash SHA-256 en netlify.toml.
+
+El sitemap contiene sólo la portada. Las secciones con `#` y el inglés de prueba no son páginas independientes indexables; no se publican URLs con fragmentos ni hreflang ficticios. Para indexar modelos y secciones por separado harán falta rutas reales con contenido accesible en cada URL.
+
+Antes de activar un dominio propio, sustituir de forma coordinada la URL pública en index.html (canonical, og:url e identificador y URL del JSON-LD), robots.txt y sitemap.xml, y recalcular el hash del JSON-LD en netlify.toml. Una vez funcionando HTTPS, elegir el dominio principal en Netlify y verificar las redirecciones del subdominio de Netlify y de las variantes del dominio para evitar duplicados.
+
+En Google Search Console, verificar la propiedad del dominio mediante su TXT DNS (o verificar la propiedad de prefijo de URL con el archivo o etiqueta que facilite Google), enviar `/sitemap.xml` e inspeccionar la portada para solicitar indexación. No añadir un código de verificación inventado. Preparar SEO y enviar el sitemap no garantizan que Google indexe la web.
+
+Cloudflare se usará como DNS y proxy del dominio propio; Netlify seguirá sirviendo la web. No se pueden cambiar los DNS del subdominio netlify.app. Antes de cambiar nameservers, conservar los registros existentes, incluidos los de correo; configurar HTTPS en el origen y usar Full (strict), y evitar cachear indefinidamente HTML y JSON de las recogidas diarias.

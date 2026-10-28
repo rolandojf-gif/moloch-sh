@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /tests/
+Disallow: /scripts/
+
+Sitemap: https://moloch-sh.netlify.app/sitemap.xml
