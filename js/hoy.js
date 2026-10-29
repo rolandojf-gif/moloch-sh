@@ -155,7 +155,7 @@ function renderKPIs(d, gapPts) {
     costCard = `<div class="kpi"><span class="k">${t('Coste con capacidad comparable')}</span><span class="v">${nd()}</span><span class="s">${reason || t('Sin modelos con índice.')}</span></div>`;
   }
 
-  $('#hoy-kpis').innerHTML = leadCard(lo, 'open', t('Líder abierto'), prevAA?.open) + leadCard(lc, 'closed', t('Líder cerrado'), prevAA?.closed) + gapCard + costCard;
+  $('#hoy-kpis').innerHTML = leadCard(lc, 'closed', t('Líder cerrado'), prevAA?.closed) + leadCard(lo, 'open', t('Líder abierto'), prevAA?.open) + gapCard + costCard;
   $('#hoy-kpi-note').innerHTML = t('Líderes calculados entre los modelos del catálogo con puntuación en el {aaIndexName}: los que se pueden usar por API en OpenRouter y los que AA ya puntúa aunque aún no tengan API pública, marcados «sin API pública». Datos de {AA_LINK}, publicados con su permiso. De cada modelo se toma la configuración de razonamiento de mayor índice. Umbral de capacidad comparable: índice del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con el precio que cobra el propio laboratorio en OpenRouter o, si no lo sirve él, el del proveedor más barato, que se indica.', { aaIndexName: esc(aaIndexName(ver)), AA_LINK });
   $('#kpi-pct')?.addEventListener('change', e => { GAP_PTS = Number(e.target.value); renderKPIs(d, GAP_PTS); renderScatter(d, GAP_PTS); });
 }
