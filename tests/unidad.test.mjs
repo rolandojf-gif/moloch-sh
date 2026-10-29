@@ -112,6 +112,8 @@ test('emparejamiento: nombres equivalentes entre AA y el catálogo', () => {
   assert.ok(sameModelName('Qwen3.8 Max', 'Qwen3.8 Max 0902'), 'el del catálogo con sufijo');
   assert.ok(sameModelName('Muse Wonder Full', 'Muse Wonder'), 'el de AA con una palabra sin cifras');
   assert.ok(!sameModelName('GPT-6.1 Sol', 'GPT-6'), 'otra versión no es el mismo modelo');
+  assert.ok(sameModelName('Ling 3.1 Flash 1019', 'Ling 3.1 Flash'), 'el de AA con una fecha de versión');
+  assert.ok(!sameModelName('Ling 3.1 Flash 2', 'Ling 3.1 Flash'));
   assert.ok(!sameModelName('Gemini 4 Carbon', 'Gemini 4 Argon'));
 });
 

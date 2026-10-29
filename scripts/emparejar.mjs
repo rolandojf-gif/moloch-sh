@@ -47,10 +47,15 @@ export function matchAA(orModel, lab, aaRows, overrides, creatorIds) {
 export const aaBase = r => String(r.name || '').replace(/\s*\([^)]*\)\s*$/, '').trim();
 export const slugify = s => s.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '');
 /* Equivalentes: el mismo nombre, el del catálogo más largo (variante con sufijo: «Pro», «0902», «Preview»…) o el de AA más
-   largo sólo con palabras sin cifras («Full»): «GPT-6.1 Sol» no equivale a «GPT-6». */
+   largo sólo con palabras sin cifras («Full») o con una fecha de versión («1019», «2026-10-19»): «GPT-6.1 Sol» no equivale
+   a «GPT-6». Ante la duda se toman por el mismo modelo: es peor duplicarlo que dejarlo fuera. */
+const DATE_TAG = /^(\d{4}|\d{6}|\d{8}|\d{4} \d{2} \d{2})$/;
 export function sameModelName(aaName, catName) {
   const a = norm(aaName), b = norm(catName);
-  return a === b || b.startsWith(a + ' ') || (a.startsWith(b + ' ') && !/\d/.test(a.slice(b.length)));
+  if (a === b || b.startsWith(a + ' ')) return true;
+  if (!a.startsWith(b + ' ')) return false;
+  const rest = a.slice(b.length + 1);
+  return !/\d/.test(rest) || DATE_TAG.test(rest);
 }
 export function aaOnlyCandidates(aaRows, models, labs, aaCreators, overrides, ignore, since, keep = new Set()) {
   const used = new Set([...models.map(m => m.aa?.slug), ...Object.values(overrides || {})].filter(Boolean));
