@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-29T14:58:23Z",
+ "generated": "2026-10-29T15:05:11Z",
  "window": 7,
  "since": "2026-10-23",
  "base": "2026-10-28",
@@ -15,7 +15,7 @@
    "Cambia la valoración del observatorio de un hito de AI 2027.",
    "Un modelo nuevo (también uno que AA puntúa antes de que tenga API pública), o uno que recibe su primera puntuación de AA, entra en el top 20 del índice de AA. Su llegada posterior a OpenRouter no vuelve a contar.",
    "Publica pesos abiertos un modelo del top 20 del índice de AA.",
-   "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa.",
+   "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa, ni un precio que va y vuelve: el nuevo ya visto en los 14 días anteriores o el anterior que vuelve en los 14 siguientes.",
    "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos 1 punto ECI, o potencia, chips o ingresos que cambian al menos un 10 %.",
    "Cambia el modelo más usado en OpenRouter en los últimos 7 días."
   ],
@@ -27,7 +27,7 @@
      "The observatory’s assessment of an AI 2027 milestone changes.",
      "A new model (including one that AA scores before it has a public API), or one that receives its first AA score, enters the top 20 of the AA index. Its later arrival on OpenRouter does not count again.",
      "A top-20 model on the AA index publishes open weights.",
-     "The lab itself changes its price on OpenRouter by at least +50% or −33% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count.",
+     "The lab itself changes its price on OpenRouter by at least +50% or −33% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count, nor a price that comes and goes: a new one already seen in the previous 14 days or an old one that returns within the next 14.",
      "The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least 1 ECI point, or power, chips or revenue that change by at least 10%.",
      "The most used model on OpenRouter over the last 7 days changes."
     ]
@@ -46,7 +46,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra-pro",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "GPT-6.1 Terra Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -80,7 +80,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -121,7 +121,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/moonshotai/kimi-k3.1-pro",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -162,7 +162,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gemini-4-carbon",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Gemini 4 Carbon (Google) aparece puntuado en Artificial Analysis con 59,4 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -204,7 +204,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Qwen3 Next 80B A3B Thinking deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -236,7 +236,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gemini-4-carbon",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Gemini 4 Carbon pasa a ser el mejor modelo cerrado del catálogo en el índice de inteligencia de Artificial Analysis v5: 59,4 puntos, 1 más que Claude Opus 5.5 (58,4). Aún no tiene API pública: no está en OpenRouter.",
    "data": {
@@ -286,7 +286,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.234 a 14.544 MW.",
    "data": {
@@ -321,7 +321,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.850 a 21.979 MW.",
    "data": {
@@ -356,7 +356,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Coste de capital de los centros que sigue Epoch: de 539 a 551 mil millones de $.",
    "data": {
@@ -492,7 +492,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Step 5 Preview entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 7, 2,9 % de los tokens.",
    "data": {
@@ -841,7 +841,7 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/mistralai/Mistral-Large-4-1T-A52B",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Mistral Large 4: pesos descargables en Hugging Face (licencia other).",
    "data": {

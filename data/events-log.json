@@ -227,7 +227,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Qwen3 Next 80B A3B Thinking deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -259,7 +259,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gemini-4-carbon",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Gemini 4 Carbon pasa a ser el mejor modelo cerrado del catálogo en el índice de inteligencia de Artificial Analysis v5: 59,4 puntos, 1 más que Claude Opus 5.5 (58,4). Aún no tiene API pública: no está en OpenRouter.",
    "data": {
@@ -309,7 +309,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.234 a 14.544 MW.",
    "data": {
@@ -344,7 +344,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.850 a 21.979 MW.",
    "data": {
@@ -379,7 +379,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Coste de capital de los centros que sigue Epoch: de 539 a 551 mil millones de $.",
    "data": {
@@ -515,7 +515,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Step 5 Preview entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 7, 2,9 % de los tokens.",
    "data": {
@@ -892,7 +892,7 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/mistralai/Mistral-Large-4-1T-A52B",
-    "got": "2026-10-29T14:58:23Z"
+    "got": "2026-10-29T15:05:11Z"
    },
    "what": "Mistral Large 4: pesos descargables en Hugging Face (licencia other).",
    "data": {
