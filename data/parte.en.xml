@@ -6,20 +6,34 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Thu, 29 Oct 2026 09:39:26 GMT</lastBuildDate>
+  <lastBuildDate>Thu, 29 Oct 2026 12:47:26 GMT</lastBuildDate>
   <item>
     <title>Gemini 4 Carbon becomes the best closed model on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/google/gemini-4-carbon</link>
     <guid isPermaLink="false">lider|closed|google/gemini-4-carbon|2026-10-29</guid>
-    <pubDate>Thu, 29 Oct 2026 09:39:26 GMT</pubDate>
+    <pubDate>Thu, 29 Oct 2026 12:47:26 GMT</pubDate>
     <description>Gemini 4 Carbon becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v5: 59.4 points, 1 more than Claude Opus 5.5 (58.4). It has no public API yet: it is not on OpenRouter. The gap between the best closed and the best open-weight model on the AA index stands at 13.4 points (12.4 the day before). It does not equate to months of lag. It is in the briefing because the best closed model changes with the same AA index version and a margin of 1 points (minimum 1). Detected on 2026-10-29. Source: Artificial Analysis (https://artificialanalysis.ai/models/gemini-4-carbon). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Gemini 4 Carbon (Google) enters the AA index at rank 1, still without a public API</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/google/gemini-4-carbon</link>
     <guid isPermaLink="false">sinapi|google/gemini-4-carbon</guid>
-    <pubDate>Thu, 29 Oct 2026 09:39:26 GMT</pubDate>
+    <pubDate>Thu, 29 Oct 2026 12:47:26 GMT</pubDate>
     <description>Gemini 4 Carbon (Google) appears scored on Artificial Analysis with 59.4 points, still without a public API: it is not on OpenRouter. AA index 59.4: 1 points above the previous best closed model (Claude Opus 5.5). Rank 1 of 29. It is not on OpenRouter yet: no public API and no price. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 1 of 29). Published on 2026-10-28; detected on 2026-10-29. Source: Artificial Analysis (https://artificialanalysis.ai/models/gemini-4-carbon). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
+  <item>
+    <title>DeepSeek halves the price of DeepSeek V4.1 Flash 1017</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/deepseek/deepseek-v4.1-flash-1017</link>
+    <guid isPermaLink="false">precio|deepseek/deepseek-v4.1-flash-1017|2026-10-29</guid>
+    <pubDate>Thu, 29 Oct 2026 12:47:26 GMT</pubDate>
+    <description>DeepSeek cuts the price of DeepSeek V4.1 Flash 1017 on OpenRouter: input from $0.3 to $0.15 and output from $1.2 to $0.6 per million tokens. Its blended price on OpenRouter goes from $0.525 to $0.262 per million tokens. It is in the briefing because the lab itself cuts its blended price by 50% (threshold: +50% or −33%). Detected on 2026-10-29. Source: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers).</description>
+  </item>
+  <item>
+    <title>DeepSeek halves the price of DeepSeek V4 Pro 0813</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/deepseek/deepseek-v4-pro-0813</link>
+    <guid isPermaLink="false">precio|deepseek/deepseek-v4-pro-0813|2026-10-29</guid>
+    <pubDate>Thu, 29 Oct 2026 12:47:26 GMT</pubDate>
+    <description>DeepSeek cuts the price of DeepSeek V4 Pro 0813 on OpenRouter: input from $1.32 to $0.66 and output from $3.96 to $1.98 per million tokens. Its blended price on OpenRouter goes from $1.98 to $0.99 per million tokens. It is in the briefing because the lab itself cuts its blended price by 50% (threshold: +50% or −33%). Detected on 2026-10-29. Source: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers).</description>
   </item>
   <item>
     <title>Artificial Analysis launches version 5 of its Intelligence Index</title>
@@ -54,7 +68,7 @@
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.1-terra</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.1-terra</guid>
     <pubDate>Mon, 26 Oct 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue. AA index 51: 8.4 points behind the best closed model (Gemini 4 Carbon). Rank 6 of 29. Blended price $2 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 6 of 29). Published on 2026-10-26; detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue. AA index 51: 8.4 points behind the best closed model (Gemini 4 Carbon). Rank 6 of 29. Blended price $1 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 6 of 29). Published on 2026-10-26; detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Tencent cuts the price of Hy3 by 38%</title>

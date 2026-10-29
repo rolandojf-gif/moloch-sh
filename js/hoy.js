@@ -230,9 +230,25 @@ function renderDaily(d) {
   $('#hoy-daily-note').innerHTML = t('Un punto por recogida diaria{p1}: el mejor modelo cerrado y el mejor abierto del catálogo según el {aaIndexName} de {AA_LINK}. Cada día queda guardado en el repositorio (data/history), así que la serie crece con cada recogida; los días con otra versión del índice no se mezclan. Es la única serie del observatorio medida día a día con el índice de AA; las de Modelos y La carrera se reconstruyen hoy hacia atrás con las puntuaciones actuales.', { p1: first ? t(', desde el {fmtDate}', { fmtDate: esc(fmtDate(first)) }) : '', aaIndexName: esc(aaIndexName(ver)), AA_LINK });
 }
 
+/* Podio: los cinco modelos con mayor índice de AA, abiertos o cerrados, con los mismos criterios que los líderes. */
+function renderPodio(d) {
+  const top = scored(d.catalog.models).sort((a, b) => ii(b) - ii(a)).slice(0, 5);
+  const el = $('#hoy-podio');
+  el.hidden = !top.length;
+  if (!top.length) return;
+  const ver = d.catalog.aaIndexVersion;
+  el.innerHTML = `<div class="podio-h">${t('Los cinco primeros del {aaIndexName}', { aaIndexName: esc(aaIndexName(ver)) })}</div>
+    <ol class="podio-l">${top.map((m, i) => `<li class="${m.weights.v === 'abiertos' ? 'open' : 'closed'}">
+      <span class="p-pos">${i + 1}</span>${logo(m, true)}
+      <span class="p-who"><span class="p-nm">${modelLink(d, m.id, m.name)}</span><span class="p-lab">${esc(m.lab.name)} · <span class="w ${esc(m.weights.v || 'nd')}">${esc(weightsWord(m.weights.v))}</span>${sinApiTag(m)}</span></span>
+      <span class="p-val">${fact(capFact(m), v => num(v))}</span></li>`).join('')}</ol>
+    <p class="note">${t('Configuración de mayor índice de cada modelo; datos de {AA_LINK}, publicados con su permiso.', { AA_LINK })}</p>`;
+}
+
 let GAP_PTS = 10;   // umbral elegido en «Coste con capacidad comparable»: se conserva al cambiar de idioma
 export function renderHoy(d) {
   renderNews(d);
+  renderPodio(d);
   renderKPIs(d, GAP_PTS);
   renderScatter(d, GAP_PTS);
   renderDaily(d);

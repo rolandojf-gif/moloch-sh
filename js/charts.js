@@ -341,6 +341,11 @@ export function frontier(el, records, opts = {}) {
   const vals = pts.map(m => m.v);
   const full = { x0: first, x1: tmax, y0: Math.max(0, Math.floor((Math.min(...vals) - 3) / 5) * 5), y1: Math.ceil((Math.max(...vals) + 3) / 5) * 5 };
   const grp = g => g === 'o' ? 'open' : 'closed';
+  // Logo de un récord: se busca el modelo por nombre (y fecha) para tener su id y su laboratorio.
+  const iconOf = p => {
+    const m = models?.find(x => x.n === p.n && x.d === p.d) || models?.find(x => x.n === p.n);
+    return { icon: logoFor({ id: m?.id, name: p.n, org: m?.org }), anun: !!m?.anun };
+  };
   const draw = (v, zoomed) => {
     const X = val => L + (val - v.x0) / (v.x1 - v.x0 || 1) * (W - L - R);
     const Y = val => T + (1 - (val - v.y0) / (v.y1 - v.y0)) * (H - T - B);
@@ -377,7 +382,7 @@ export function frontier(el, records, opts = {}) {
     for (const g of ['closed', 'open']) {
       const r = rec[g], prefer = g === 'closed' ? 'up' : 'down';
       if (!r.length) continue;
-      const lab = p => ({ x: X(ms(p.d)), y: Y(p.v), text: p.n, prefer, jump: p.jump });
+      const lab = p => ({ x: X(ms(p.d)), y: Y(p.v), text: p.n, prefer, jump: p.jump, ...iconOf(p), g });
       const vis = p => inside(X(ms(p.d)), Y(p.v));
       if (vis(r[r.length - 1])) leaders.push(lab(r[r.length - 1]));
       const big = r.slice(0, -1).sort((a, b) => b.jump - a.jump);
@@ -386,7 +391,10 @@ export function frontier(el, records, opts = {}) {
     }
     const marked = highlight ? shown.filter(m => !m.rec && highlight.has(m.n)).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down' })) : [];
     if (zoomed) rest.push(...shown.filter(m => !m.rec && !(highlight && highlight.has(m.n))).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down', faint: true })));
-    s += labelSvg(placeLabels([...leaders, ...marked, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G));
+    const placed = placeLabels([...leaders, ...marked, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G);
+    // Los récords con nombre llevan el logo del modelo en lugar del punto, con el borde del color de su grupo.
+    s += placed.filter(l => l.icon).map(l => `<g class="logo-pt ${l.g}${l.anun ? ' anun' : ''}"><rect x="${(l.x - 9).toFixed(1)}" y="${(l.y - 9).toFixed(1)}" width="18" height="18"/><image href="${esc(l.icon)}" x="${(l.x - 6).toFixed(1)}" y="${(l.y - 6).toFixed(1)}" width="12" height="12"/></g>`).join('');
+    s += labelSvg(placed);
     s += `</svg><div class="legend"><span><i style="background:var(--open)"></i>${t('Mejor con pesos abiertos')}</span><span><i style="background:var(--closed)"></i>${t('Mejor cerrado')}</span>`;
     s += (shown.some(m => m.anun) ? `<span><i class="lg-anun"></i>${t('Pesos anunciados, aún sin descargar')}</span>` : '')
       + (models ? `<span><i class="lg-faint"></i>${t('Resto de modelos puntuados')}</span>` : '') + (cov ? covLegend() : '') + zoomUi(zoomed) + '</div>';

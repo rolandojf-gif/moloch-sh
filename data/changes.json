@@ -1,12 +1,14 @@
 {
- "generated": "2026-10-29T09:39:26Z",
+ "generated": "2026-10-29T12:47:26Z",
  "window": 7,
  "since": "2026-10-23",
  "base": "2026-10-28",
  "parte": {
   "fecha": "2026-10-29",
   "noticias": [
-   "lider|closed|google/gemini-4-carbon|2026-10-29"
+   "lider|closed|google/gemini-4-carbon|2026-10-29",
+   "precio|deepseek/deepseek-v4.1-flash-1017|2026-10-29",
+   "precio|deepseek/deepseek-v4-pro-0813|2026-10-29"
   ],
   "ultima": null,
   "reglas": [
@@ -46,7 +48,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra-pro",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "GPT-6.1 Terra Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -80,13 +82,13 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
     "weights": "cerrados",
-    "in": 1,
-    "out": 5,
+    "in": 0.5,
+    "out": 2.5,
     "ii": 51,
     "eci": null,
     "identity": "confirmada",
@@ -98,7 +100,7 @@
      "what": "GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue.",
      "titular": "GPT-6.1 Terra (OpenAI) arrives on OpenRouter: rank 6 on the AA index",
      "porque": "it is a new model and enters the top 20 of the AA index (rank 6 of 29)",
-     "consecuencia": "AA index 51: 8.4 points behind the best closed model (Gemini 4 Carbon). Rank 6 of 29. Blended price $2 per million tokens."
+     "consecuencia": "AA index 51: 8.4 points behind the best closed model (Gemini 4 Carbon). Rank 6 of 29. Blended price $1 per million tokens."
     }
    },
    "titular": "GPT-6.1 Terra (OpenAI) llega a OpenRouter: puesto 6 del índice de AA",
@@ -108,7 +110,7 @@
     "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 6 de 29)"
    },
    "ficha": "#modelos/openai/gpt-6.1-terra",
-   "consecuencia": "Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 29. Precio combinado 2 $ por millón de tokens."
+   "consecuencia": "Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 29. Precio combinado 1 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -121,7 +123,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/moonshotai/kimi-k3.1-pro",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -162,7 +164,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gemini-4-carbon",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "Gemini 4 Carbon (Google) aparece puntuado en Artificial Analysis con 59,4 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -195,77 +197,70 @@
   },
   {
    "kind": "precio",
-   "key": "precio|openai/gpt-6.1-terra|2026-10-29",
+   "key": "precio|deepseek/deepseek-v4.1-flash-1017|2026-10-29",
    "published": null,
    "detected": "2026-10-29",
    "date": "2026-10-29",
    "mag": {
-    "v": 100,
+    "v": -50,
     "unit": "%"
    },
-   "model": "openai/gpt-6.1-terra",
+   "model": "deepseek/deepseek-v4.1-flash-1017",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/openai/gpt-6.1-terra/providers",
-    "got": "2026-10-29T09:39:26Z"
+    "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers",
+    "got": "2026-10-29T12:47:26Z"
    },
-   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6.1 Terra (0,5 $ de entrada y 2,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 1 $ de entrada y 5 $ de salida.",
+   "what": "DeepSeek baja el precio de DeepSeek V4.1 Flash 1017 en OpenRouter: entrada de 0,3 $ a 0,15 $ y salida de 1,2 $ a 0,6 $ por millón de tokens.",
    "data": {
     "basis": "laboratorio",
-    "sub": "tarifa-retirada",
-    "provider": "OpenAI",
+    "sub": "precio",
+    "provider": "DeepSeek",
     "from": {
-     "in": 0.5,
-     "out": 2.5
+     "in": 0.3,
+     "out": 1.2
     },
     "to": {
-     "in": 1,
-     "out": 5
+     "in": 0.15,
+     "out": 0.6
     },
-    "pct": 100,
+    "pct": -50,
     "tiersFrom": [
      [
-      0.5,
-      2.5
-     ],
-     [
-      1,
-      5
-     ],
-     [
-      2,
-      10
+      0.3,
+      1.2
      ]
     ],
     "tiersTo": [
      [
-      1,
-      5
-     ],
-     [
-      2,
-      10
+      0.15,
+      0.6
      ]
     ],
     "since": "2026-10-28",
-    "rankAA": 6,
+    "rankAA": 14,
     "of": 29
    },
    "i18n": {
     "en": {
-     "what": "OpenAI stops offering its cheapest GPT-6.1 Terra rate on OpenRouter ($0.5 input and $2.5 output per million tokens). The cheapest it has left, which already existed, is $1 input and $5 output.",
-     "titular": "OpenAI withdraws the cheapest GPT-6.1 Terra rate on OpenRouter",
-     "consecuencia": "Its cheapest blended price on OpenRouter goes from $1 to $2 per million tokens."
+     "what": "DeepSeek cuts the price of DeepSeek V4.1 Flash 1017 on OpenRouter: input from $0.3 to $0.15 and output from $1.2 to $0.6 per million tokens.",
+     "titular": "DeepSeek halves the price of DeepSeek V4.1 Flash 1017",
+     "porque": "the lab itself cuts its blended price by 50% (threshold: +50% or −33%)",
+     "consecuencia": "Its blended price on OpenRouter goes from $0.525 to $0.262 per million tokens."
     }
    },
-   "titular": "OpenAI retira la tarifa más barata de GPT-6.1 Terra en OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/openai/gpt-6.1-terra",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 1 $ a 2 $ por millón de tokens."
+   "titular": "DeepSeek reduce a la mitad el precio de DeepSeek V4.1 Flash 1017",
+   "importancia": {
+    "tier": 5,
+    "w": 50,
+    "porque": "el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %)"
+   },
+   "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,525 $ a 0,262 $ por millón de tokens."
   },
   {
    "kind": "precio",
-   "key": "precio|openai/gpt-5.4|2026-10-29",
+   "key": "precio|openai/gpt-6.1-sol|2026-10-29",
    "published": null,
    "detected": "2026-10-29",
    "date": "2026-10-29",
@@ -273,63 +268,136 @@
     "v": 100,
     "unit": "%"
    },
-   "model": "openai/gpt-5.4",
+   "model": "openai/gpt-6.1-sol",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/openai/gpt-5.4/providers",
-    "got": "2026-10-29T09:39:26Z"
+    "url": "https://openrouter.ai/openai/gpt-6.1-sol/providers",
+    "got": "2026-10-29T12:47:26Z"
    },
-   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-5.4 (1,25 $ de entrada y 7,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2,5 $ de entrada y 15 $ de salida.",
+   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6.1 Sol (1 $ de entrada y 5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2 $ de entrada y 10 $ de salida.",
    "data": {
     "basis": "laboratorio",
     "sub": "tarifa-retirada",
     "provider": "OpenAI",
     "from": {
-     "in": 1.25,
-     "out": 7.5
+     "in": 1,
+     "out": 5
     },
     "to": {
-     "in": 2.5,
-     "out": 15
+     "in": 2,
+     "out": 10
     },
     "pct": 100,
     "tiersFrom": [
      [
-      1.25,
-      7.5
+      1,
+      5
      ],
      [
-      2.5,
-      15
+      2,
+      10
      ],
      [
-      5,
-      30
+      4,
+      20
+     ],
+     [
+      12,
+      60
      ]
     ],
     "tiersTo": [
      [
-      2.5,
-      15
+      2,
+      10
      ],
      [
-      5,
-      30
+      4,
+      20
+     ],
+     [
+      12,
+      60
      ]
     ],
-    "since": "2026-10-28"
+    "since": "2026-10-28",
+    "rankAA": 4,
+    "of": 29
    },
    "i18n": {
     "en": {
-     "what": "OpenAI stops offering its cheapest GPT-5.4 rate on OpenRouter ($1.25 input and $7.5 output per million tokens). The cheapest it has left, which already existed, is $2.5 input and $15 output.",
-     "titular": "OpenAI withdraws the cheapest GPT-5.4 rate on OpenRouter",
-     "consecuencia": "Its cheapest blended price on OpenRouter goes from $2.81 to $5.63 per million tokens."
+     "what": "OpenAI stops offering its cheapest GPT-6.1 Sol rate on OpenRouter ($1 input and $5 output per million tokens). The cheapest it has left, which already existed, is $2 input and $10 output.",
+     "titular": "OpenAI withdraws the cheapest GPT-6.1 Sol rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $2 to $4 per million tokens."
     }
    },
-   "titular": "OpenAI retira la tarifa más barata de GPT-5.4 en OpenRouter",
+   "titular": "OpenAI retira la tarifa más barata de GPT-6.1 Sol en OpenRouter",
    "importancia": null,
-   "ficha": "#modelos/openai/gpt-5.4",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 2,81 $ a 5,63 $ por millón de tokens."
+   "ficha": "#modelos/openai/gpt-6.1-sol",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 2 $ a 4 $ por millón de tokens."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|deepseek/deepseek-v4-pro-0813|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": -50,
+    "unit": "%"
+   },
+   "model": "deepseek/deepseek-v4-pro-0813",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers",
+    "got": "2026-10-29T12:47:26Z"
+   },
+   "what": "DeepSeek baja el precio de DeepSeek V4 Pro 0813 en OpenRouter: entrada de 1,32 $ a 0,66 $ y salida de 3,96 $ a 1,98 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "precio",
+    "provider": "DeepSeek",
+    "from": {
+     "in": 1.32,
+     "out": 3.96
+    },
+    "to": {
+     "in": 0.66,
+     "out": 1.98
+    },
+    "pct": -50,
+    "tiersFrom": [
+     [
+      1.32,
+      3.96
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.66,
+      1.98
+     ]
+    ],
+    "since": "2026-10-28",
+    "rankAA": 24,
+    "of": 29
+   },
+   "i18n": {
+    "en": {
+     "what": "DeepSeek cuts the price of DeepSeek V4 Pro 0813 on OpenRouter: input from $1.32 to $0.66 and output from $3.96 to $1.98 per million tokens.",
+     "titular": "DeepSeek halves the price of DeepSeek V4 Pro 0813",
+     "porque": "the lab itself cuts its blended price by 50% (threshold: +50% or −33%)",
+     "consecuencia": "Its blended price on OpenRouter goes from $1.98 to $0.99 per million tokens."
+    }
+   },
+   "titular": "DeepSeek reduce a la mitad el precio de DeepSeek V4 Pro 0813",
+   "importancia": {
+    "tier": 5,
+    "w": 50,
+    "porque": "el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %)"
+   },
+   "ficha": "#modelos/deepseek/deepseek-v4-pro-0813",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 1,98 $ a 0,99 $ por millón de tokens."
   },
   {
    "kind": "precio",
@@ -345,7 +413,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m2.5/providers",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "Minimax añade en OpenRouter una tarifa más barata de MiniMax M2.5: 0,3 $ de entrada y 1,2 $ de salida por millón de tokens. La anterior (0,6 $ de entrada y 2,4 $ de salida) sigue disponible.",
    "data": {
@@ -402,7 +470,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "Qwen3 Next 80B A3B Thinking deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -434,7 +502,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gemini-4-carbon",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "Gemini 4 Carbon pasa a ser el mejor modelo cerrado del catálogo en el índice de inteligencia de Artificial Analysis v5: 59,4 puntos, 1 más que Claude Opus 5.5 (58,4). Aún no tiene API pública: no está en OpenRouter.",
    "data": {
@@ -484,7 +552,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.234 a 14.544 MW.",
    "data": {
@@ -519,7 +587,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.850 a 21.979 MW.",
    "data": {
@@ -554,7 +622,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "Coste de capital de los centros que sigue Epoch: de 539 a 551 mil millones de $.",
    "data": {
@@ -690,7 +758,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-10-29T09:39:26Z"
+    "got": "2026-10-29T12:47:26Z"
    },
    "what": "Step 5 Preview entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 7, 2,9 % de los tokens.",
    "data": {

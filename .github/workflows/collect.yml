@@ -57,6 +57,9 @@ jobs:
       - name: Validar
         if: steps.frescura.outputs.falta != 'false'
         run: node scripts/validate.mjs
+      - name: Imagen para compartir
+        if: steps.frescura.outputs.falta != 'false'
+        run: node scripts/imagen.mjs
       - name: Publicar datos
         if: steps.frescura.outputs.falta != 'false'
         run: |

@@ -7,7 +7,7 @@ import { frontier, hbars, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const state = { w: 'all', sort: 'ii', dir: -1, q: '', open: new Set(), cmp: [], all: false };
+const state = { w: 'all', lab: null, sort: 'ii', dir: -1, q: '', open: new Set(), cmp: [], all: false };
 /* Sentido por defecto de cada criterio: el precio, de más barato a más caro; el resto, de mayor a menor. */
 const DIR0 = { ii: -1, eci: -1, tps: -1, price: 1, date: -1 };
 const PAGE = 40;
@@ -31,6 +31,7 @@ function rows() {
   const q = state.q.trim().toLowerCase();
   return D.catalog.models
     .filter(m => state.w === 'all' || m.weights.v === state.w)
+    .filter(m => !state.lab || m.lab.name === state.lab)
     .filter(m => !q || `${m.name} ${m.lab.name} ${m.id}`.toLowerCase().includes(q))
     .sort((a, b) => {
       const ka = sortKey(a), kb = sortKey(b);
@@ -301,6 +302,7 @@ export function showModelPath(sub) {
     return;
   }
   const m = D.byId.get(id);
+  if (state.lab && m.lab.name !== state.lab) { state.lab = null; renderLabs(); }
   if (state.w !== 'all' && m.weights.v !== state.w) { state.w = 'all'; $$('#mx-weights [data-w]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.w === 'all'))); }
   if (state.q && !`${m.name} ${m.lab.name} ${m.id}`.toLowerCase().includes(state.q.trim().toLowerCase())) { state.q = ''; $('#mx-q').value = ''; }
   if (rows().findIndex(x => x.id === id) >= PAGE) state.all = true;
@@ -312,12 +314,34 @@ export function showModelPath(sub) {
   row?.focus({ preventScroll: true });
 }
 
+/* Filtro por laboratorio: un botón con el logo de cada uno, ordenados por su mejor índice de AA (los que no tienen, al
+   final, por número de modelos). Se agrupan por nombre: algunos publican con más de un autor en OpenRouter. */
+function renderLabs() {
+  const by = new Map();
+  for (const m of D.catalog.models) {
+    if (m.lab.id === 'openrouter') continue;
+    if (!by.has(m.lab.name)) by.set(m.lab.name, []);
+    by.get(m.lab.name).push(m);
+  }
+  const best = ms => Math.max(...ms.map(m => ii(m) ?? -1));
+  const labs = [...by.entries()].sort((a, b) => best(b[1]) - best(a[1]) || b[1].length - a[1].length);
+  const sel = state.lab;
+  $('#mx-labs').innerHTML = `<button type="button" class="lab-all" data-lab="" aria-pressed="${!sel}">${t('Todos')}</button>` +
+    labs.map(([name, ms]) => {
+      const top = ms.slice().sort((a, b) => (ii(b) ?? -1) - (ii(a) ?? -1))[0];
+      const label = tn(ms.length, ['{lab}: {n} modelo', '{lab}: {n} modelos'], { lab: name });
+      return `<button type="button" class="lab-chip" data-lab="${esc(name)}" aria-pressed="${sel === name}" title="${esc(label)}" aria-label="${esc(label)}">${logo(top)}</button>`;
+    }).join('') +
+    (sel ? `<span class="lab-sel">${esc(sel)}</span>` : '');
+}
+
 /* Los escuchadores se enlazan una sola vez; renderModelos() puede volver a llamarse al cambiar de idioma y vuelve a dibujar
    todo desde el mismo estado (filtros, orden, comparación y fichas abiertas). */
 let bound = false;
 export function renderModelos(d) {
   D = d;
   if (!bound) { bound = true; initModelos(d); }
+  renderLabs();
   renderTable();
   renderCompare();
   drawNotFound();
@@ -336,6 +360,12 @@ function initModelos(d) {
     state.w = b.dataset.w;
     $$('#mx-weights [data-w]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
     renderTable();
+  });
+  $('#mx-labs').addEventListener('click', e => {
+    const b = e.target.closest('[data-lab]'); if (!b) return;
+    state.lab = b.dataset.lab && b.dataset.lab !== state.lab ? b.dataset.lab : null;
+    state.all = false;
+    renderLabs(); renderTable();
   });
   $('#mx-sort').addEventListener('change', e => { state.sort = e.target.value; state.dir = DIR0[state.sort]; renderTable(); });
   // Flechas en las cabeceras: pulsar la columna activa invierte el orden; otra columna empieza en su sentido por defecto.

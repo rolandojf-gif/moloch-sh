@@ -15,7 +15,13 @@
 <meta property="og:title" content="MOLOCH.SH · Observatorio de la carrera por la IA">
 <meta property="og:description" content="Qué ha salido, qué mejora, cuánto cuesta y dónde comprobarlo: modelos abiertos y cerrados con fuente y fecha en cada cifra.">
 <meta property="og:url" content="https://moloch-sh.netlify.app/">
-<meta name="twitter:card" content="summary">
+<!-- Imagen para compartir: la genera cada día scripts/imagen.mjs (líderes cerrado y abierto del índice de AA). -->
+<meta property="og:image" content="https://moloch-sh.netlify.app/data/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Líder cerrado y líder abierto del índice de inteligencia de Artificial Analysis, con la distancia entre ambos">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://moloch-sh.netlify.app/data/og.png">
 <meta name="twitter:title" content="MOLOCH.SH · Observatorio de la carrera por la IA">
 <meta name="twitter:description" content="Modelos de IA abiertos y cerrados, precios, capacidades y seguimiento de AI 2027, con fuentes y fechas.">
 <script type="application/ld+json">
@@ -96,6 +102,7 @@
     <details class="more" id="hoy-all"><summary></summary><ul class="changes" id="hoy-all-list"></ul></details>
 
     <h2 class="sec" data-t>Indicadores</h2>
+    <div class="podio" id="hoy-podio" hidden></div>
     <div class="kpis" id="hoy-kpis"></div>
     <p class="note" id="hoy-kpi-note"></p>
 
@@ -138,6 +145,8 @@
         <input id="mx-q" type="search" placeholder="Modelo o laboratorio" data-t-attr="placeholder" autocomplete="off">
       </label>
     </div>
+
+    <div class="labs" id="mx-labs" role="group" aria-label="Laboratorio" data-t-attr="aria-label"></div>
 
     <div class="compare" id="mx-compare" hidden></div>
 
