@@ -8,6 +8,7 @@ import { resolve } from '../js/valoracion.js';
 import { importancia } from '../scripts/parte.mjs';
 import { unzip } from '../scripts/indicadores.mjs';
 import { sameModelName, aaOnlyCandidates } from '../scripts/emparejar.mjs';
+import { labPrices, vaiven } from '../scripts/cambios.mjs';
 
 const fixture = name => new URL(`./fixtures/${name}`, import.meta.url);
 
@@ -138,4 +139,22 @@ test('modelos de AA sin OpenRouter: sólo los nuevos, sin duplicar los que ya es
   assert.deepEqual(aaOnlyCandidates(rows, models, labs, creators, {}, { 'gemini-4-carbon': null }, '2026-09-01'), [], 'overrides.aaSolo lo descarta');
   // Uno que ya constaba sin API pública sigue aunque salga de la ventana.
   assert.deepEqual(aaOnlyCandidates(rows, models, labs, creators, {}, {}, '2026-11-01', new Set(['gemini-4-carbon'])).map(c => c.id), ['google/gemini-4-carbon']);
+});
+
+test('vaivén de precios: el que vuelve a uno reciente no es un cambio; el nuevo sí', () => {
+  const snap = (date, x) => ({ date, models: { 'deepseek/flash': { pb: 'laboratorio', ...x } } });
+  const seen = labPrices([
+    snap('2026-10-20', { in: 0.15, out: 0.6, lp: [[0.15, 0.6]] }),
+    snap('2026-10-22', { in: 0.3, out: 1.2 }),
+    snap('2026-10-23', { in: 0.15, out: 0.6 }),
+    { date: '2026-10-23', models: { 'otro/x': { pb: 'proveedor', in: 0.1, out: 0.2 } } }
+  ]);
+  const ev = (detected, from, to, model = 'deepseek/flash') => ({ kind: 'precio', detected, model, data: { from, to } });
+  const lo = { in: 0.15, out: 0.6 }, hi = { in: 0.3, out: 1.2 };
+  assert.equal(vaiven(ev('2026-10-29', hi, lo), seen), true, 'vuelve a un precio visto el 23');
+  assert.equal(vaiven(ev('2026-10-22', lo, hi), seen), true, 'el anterior vuelve el 23');
+  assert.equal(vaiven(ev('2026-11-20', hi, lo), seen), false, 'visto hace más de 14 días: sí es cambio');
+  assert.equal(vaiven(ev('2026-10-29', hi, { in: 0.1, out: 0.4 }), seen), false, 'precio nunca visto');
+  assert.equal(vaiven(ev('2026-10-29', hi, lo, 'otro/x'), seen), false, 'sólo cuentan los precios del laboratorio');
+  assert.equal(vaiven({ kind: 'pesos', detected: '2026-10-29', model: 'deepseek/flash' }, seen), false);
 });
