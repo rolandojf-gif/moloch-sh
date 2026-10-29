@@ -58,6 +58,8 @@ País, licencia y disponibilidad de pesos son campos separados. «Abiertos» exi
 
 **Logos.** Cada modelo lleva el logo de su laboratorio (Google, el de la familia: Gemini o Gemma), copiado en `assets/logos/` de [LobeHub Icons](https://github.com/lobehub/lobe-icons) (MIT, licencia y cambios en `assets/logos/LICENSE`), en color y sobre un recuadro claro en los dos temas. La correspondencia autor de OpenRouter → logo está en `js/logos.js`; un laboratorio sin logo sale con sus iniciales y la identidad sin confirmar con «?». Las marcas son de sus dueños y sólo identifican el modelo. Se sirven desde el propio sitio: la política de seguridad sólo admite imágenes propias.
 
+**Imagen para compartir.** `scripts/imagen.mjs` dibuja cada día `data/og.png` (1200×630, la `og:image` de la página): el líder cerrado y el abierto del índice de AA con sus logos, la distancia y la fecha de la recogida. Usa Chrome sin interfaz por su protocolo de depuración en una tubería, sin dependencias; si no hay Chrome o falla, deja la imagen anterior y la recogida sigue.
+
 ## Recogida
 
 El flujo `.github/workflows/collect.yml` ejecuta el recolector, valida y confirma los JSON. Corre a diario a las 04:17 de Madrid, también con el cambio de hora, con un disparo de respaldo a las 06:47 que no hace nada si ya hay una recogida completa del día (`scripts/frescura.mjs`; GitHub retrasa los programados y sólo los ejecuta en la rama principal), a mano (Actions → Recogida de datos → Run workflow) o al subir cambios del recolector o de los datos curados a una rama de trabajo, para su vista previa. El registro de cada ejecución lista los modelos que no se han podido emparejar con Epoch, para completar `overrides.epoch`.

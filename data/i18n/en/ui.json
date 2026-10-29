@@ -840,6 +840,12 @@
   "Aún no está en OpenRouter: sin proveedores ni precio públicos.": "Not on OpenRouter yet: no public providers or price.",
   "Puntuado por AA, sin API pública": "Scored by AA, no public API",
   "detectado por el observatorio; aún no está en OpenRouter": "detected by the observatory; not on OpenRouter yet",
-  "detectado por el observatorio, hasta su alta en OpenRouter": "detected by the observatory, until it was listed on OpenRouter"
+  "detectado por el observatorio, hasta su alta en OpenRouter": "detected by the observatory, until it was listed on OpenRouter",
+  "Los cinco primeros del {aaIndexName}": "Top five on the {aaIndexName}",
+  "Configuración de mayor índice de cada modelo; datos de {AA_LINK}, publicados con su permiso.": "Each model's highest-scoring configuration; data from {AA_LINK}, published with permission.",
+  "{lab}: {n} modelo": [
+   "{lab}: {n} model",
+   "{lab}: {n} models"
+  ]
  }
 }
