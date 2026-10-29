@@ -12,6 +12,11 @@ on:
     - cron: '47 6 * * *'
       timezone: 'Europe/Madrid'
   workflow_dispatch:
+    inputs:
+      aa_fresca:
+        description: 'Consultar Artificial Analysis aunque haya una consulta reciente (gasta cupo diario)'
+        type: boolean
+        default: false
   push:
     branches-ignore: [main]
     paths:
@@ -47,6 +52,7 @@ jobs:
           AA_API_KEY: ${{ secrets.AA_API_KEY }}
           # Clave de OpenRouter (secreto MOLOCHSH_API_KEY), sólo para el ranking de uso (conjunto de datos CC BY 4.0); sin ella el ranking queda «sin datos».
           OPENROUTER_API_KEY: ${{ secrets.MOLOCHSH_API_KEY }}
+          AA_FRESH: ${{ inputs.aa_fresca && '1' || '' }}
         run: node scripts/collect.mjs
       - name: Validar
         if: steps.frescura.outputs.falta != 'false'

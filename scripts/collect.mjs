@@ -706,7 +706,8 @@ async function main() {
   catch (e) { console.error('[collect] OpenRouter falló; no se escribe nada:', e.message); process.exit(2); }
 
   const aaPrevGot = prevCatalog?.status?.aa?.ok ? prevCatalog.status.aa.got : null;
-  const aaReuse = !FIXTURES && aaPrevGot && (NOW - new Date(aaPrevGot)) / 3600e3 < AA_REUSE_H && prevCatalog?.models?.some(m => m.aa);
+  // AA_FRESH (entrada «aa_fresca» de la ejecución manual) obliga a consultar AA aunque haya una consulta reciente.
+  const aaReuse = !FIXTURES && !process.env.AA_FRESH && aaPrevGot && (NOW - new Date(aaPrevGot)) / 3600e3 < AA_REUSE_H && prevCatalog?.models?.some(m => m.aa);
   if (aaReuse) log(`Artificial Analysis: se reutiliza la consulta de ${aaPrevGot} (menos de ${AA_REUSE_H} h) para no gastar el cupo diario`);
   const aaRes = aaReuse ? undefined : await loadAA(permisos.aa);
   const usoRes = await loadUso(orModels.names);
