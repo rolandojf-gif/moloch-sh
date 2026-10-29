@@ -184,7 +184,8 @@ export function detectChanges(ctx) {
   }
   const now = new Set(models.map(m => m.id));
   for (const [id, p] of Object.entries(prev)) {
-    if (!now.has(id) && !ctx.listed.has(id)) out.push(item('retirada', `retirada|${id}|${TODAY}`, {
+    // Un modelo que sólo constaba por AA (sin API pública) no se retira de OpenRouter: o ha llegado con otro id o AA lo ha quitado.
+    if (!now.has(id) && !ctx.listed.has(id) && !p.ao) out.push(item('retirada', `retirada|${id}|${TODAY}`, {
       model: id, src: { name: 'OpenRouter', url: 'https://openrouter.ai/models', got: NOW_ISO },
       what: both(F => F.t(`${p.n || id} deja de figurar en el catálogo de OpenRouter.`, `${p.n || id} is no longer listed in the OpenRouter catalogue.`)), data: { name: p.n || null }
     }));
@@ -214,11 +215,13 @@ export function detectChanges(ctx) {
           (aNow !== null
             ? `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}: ${es(b.ii, 1)} puntos, ${margin >= 0 ? `${es(margin, 1)} más` : `${es(-margin, 1)} menos`} que ${aName} (${es(aNow, 1)}).`
             : `${nb?.name || b.id} pasa a ser el mejor modelo ${adj} del catálogo en el índice de inteligencia de Artificial Analysis v${vNow}, con ${es(b.ii, 1)} puntos: ${aName}, que tenía ${es(a.ii, 1)}, ya no figura como ${adj} con puntuación.`)
-            + (nb?.weights?.announced ? ' Su descripción en OpenRouter lo presenta como de pesos abiertos, pero aún no se pueden descargar.' : ''),
+            + (nb?.weights?.announced ? ' Su descripción en OpenRouter lo presenta como de pesos abiertos, pero aún no se pueden descargar.' : '')
+            + (nb?.aaOnly ? ' Aún no tiene API pública: no está en OpenRouter.' : ''),
           (aNow !== null
             ? `${nb?.name || b.id} becomes the best ${adjEn} model in the catalogue on the Artificial Analysis Intelligence Index v${vNow}: ${F.n(b.ii, 1)} points, ${margin >= 0 ? `${F.n(margin, 1)} more` : `${F.n(-margin, 1)} fewer`} than ${aName} (${F.n(aNow, 1)}).`
             : `${nb?.name || b.id} becomes the best ${adjEn} model in the catalogue on the Artificial Analysis Intelligence Index v${vNow}, with ${F.n(b.ii, 1)} points: ${aName}, which had ${F.n(a.ii, 1)}, is no longer listed as a scored ${adjEn} model.`)
-            + (nb?.weights?.announced ? ' Its OpenRouter description presents it as open-weight, but it cannot be downloaded yet.' : ''))),
+            + (nb?.weights?.announced ? ' Its OpenRouter description presents it as open-weight, but it cannot be downloaded yet.' : '')
+            + (nb?.aaOnly ? ' It has no public API yet: it is not on OpenRouter.' : ''))),
         data: { block: w, version: vNow, from: { id: a.id, n: aName, ii: a.ii, iiNow: aNow }, to: { id: b.id, n: nb?.name || null, ii: b.ii }, margin }
       }));
     }
@@ -292,21 +295,41 @@ export function detectChanges(ctx) {
   return { items: out, novedades: novedades(models, ctx, rk) };
 }
 
-/* Modelos dados de alta en OpenRouter en la ventana de «Hoy»: publicados el día del alta, detectados en la primera recogida que los vio. */
+/* Modelos dados de alta en OpenRouter en la ventana de «Hoy»: publicados el día del alta, detectados en la primera recogida que los vio.
+   Si ya constaban puntuados por AA sin API pública (preApi), el alta es su llegada a una API pública (sub «llega-api»).
+   Los que AA puntúa sin que estén en OpenRouter (aaOnly) entran por la fecha del modelo según AA (sub «sin-api»). */
 export function novedades(models, ctx, rk) {
-  return models.filter(m => m.orCreated.v && m.orCreated.v >= ctx.hoyFrom).map(m => {
+  const or = models.filter(m => !m.aaOnly && m.orCreated.v && m.orCreated.v >= ctx.hoyFrom).map(m => {
     const v = m.orVariant ? m.orVariant.slice(m.orVariant.lastIndexOf(':')) : null;
-    const what = both(F => F.t(`${m.name} (${m.lab.name}) aparece en el catálogo de OpenRouter${v ? `, de momento sólo como variante ${v}` : ''}.`,
-      `${m.name} (${m.lab.name}) appears in the OpenRouter catalogue${v ? `, for now only as the ${v} variant` : ''}.`));
+    const what = both(F => m.preApi
+      ? F.t(`${m.name} (${m.lab.name}) llega a OpenRouter${v ? `, de momento sólo como variante ${v}` : ''}: ya tiene API pública. Hasta ahora sólo constaba su puntuación en Artificial Analysis.`,
+        `${m.name} (${m.lab.name}) arrives on OpenRouter${v ? `, for now only as the ${v} variant` : ''}: it now has a public API. Until now only its Artificial Analysis score was known.`)
+      : F.t(`${m.name} (${m.lab.name}) aparece en el catálogo de OpenRouter${v ? `, de momento sólo como variante ${v}` : ''}.`,
+        `${m.name} (${m.lab.name}) appears in the OpenRouter catalogue${v ? `, for now only as the ${v} variant` : ''}.`));
     return {
       kind: 'nuevo', key: `nuevo|${m.id}`, model: m.id,
       published: m.orCreated.v, detected: ctx.firstSeen?.get(m.id) || ctx.TODAY, date: m.orCreated.v, mag: null,
       src: { name: 'OpenRouter', url: `https://openrouter.ai/${m.orVariant || m.id}`, got: ctx.NOW_ISO },
       what: what.es,
-      data: { weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, ii: m.aa?.intelligence?.v ?? null, eci: m.epoch?.eci?.v ?? null, identity: m.identity, ...rk(m.id) },
+      data: { ...(m.preApi ? { sub: 'llega-api', sinApiDesde: m.preApi.since } : {}), weights: m.weights.v, in: m.price.in.v, out: m.price.out.v, ii: m.aa?.intelligence?.v ?? null, eci: m.epoch?.eci?.v ?? null, identity: m.identity, ...rk(m.id) },
       i18n: { en: { what: what.en } }
     };
   });
+  const aaDate = m => m.aa?.release?.v || m.aaOnly.since;
+  const aa = models.filter(m => m.aaOnly && aaDate(m) >= ctx.hoyFrom).map(m => {
+    const s = m.aa.intelligence.v;
+    const what = both(F => F.t(`${m.name} (${m.lab.name}) aparece puntuado en Artificial Analysis con ${es(s, 1)} puntos, aún sin API pública: no está en OpenRouter.`,
+      `${m.name} (${m.lab.name}) appears scored on Artificial Analysis with ${F.n(s, 1)} points, still without a public API: it is not on OpenRouter.`));
+    return {
+      kind: 'nuevo', key: `sinapi|${m.id}`, model: m.id,
+      published: m.aa.release?.v || null, detected: ctx.firstSeen?.get(m.id) || ctx.TODAY, date: aaDate(m), mag: null,
+      src: { name: 'Artificial Analysis', url: m.aa.url, got: ctx.NOW_ISO },
+      what: what.es,
+      data: { sub: 'sin-api', weights: m.weights.v, in: null, out: null, ii: s, eci: m.epoch?.eci?.v ?? null, identity: m.identity, ...rk(m.id) },
+      i18n: { en: { what: what.en } }
+    };
+  });
+  return or.concat(aa);
 }
 
 /* Clave y fechas de los acontecimientos registrados antes de que existiera este módulo. */

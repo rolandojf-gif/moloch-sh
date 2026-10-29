@@ -1,27 +1,19 @@
 {
- "generated": "2026-10-29T03:54:12Z",
+ "generated": "2026-10-29T09:39:26Z",
  "window": 7,
  "since": "2026-10-23",
  "base": "2026-10-28",
  "parte": {
   "fecha": "2026-10-29",
-  "noticias": [],
-  "ultima": {
-   "key": "version|5",
-   "fecha": "2026-10-28",
-   "titular": "Artificial Analysis estrena la versión 5 de su índice de inteligencia",
-   "ficha": null,
-   "i18n": {
-    "en": {
-     "titular": "Artificial Analysis launches version 5 of its Intelligence Index"
-    }
-   }
-  },
+  "noticias": [
+   "lider|closed|google/gemini-4-carbon|2026-10-29"
+  ],
+  "ultima": null,
   "reglas": [
    "Cambia el mejor modelo abierto o cerrado del índice de Artificial Analysis, con la misma versión del índice y al menos 1 punto de margen.",
    "Artificial Analysis cambia la versión de su índice.",
    "Cambia la valoración del observatorio de un hito de AI 2027.",
-   "Un modelo nuevo, o uno que recibe su primera puntuación de AA, entra en el top 20 del índice de AA.",
+   "Un modelo nuevo (también uno que AA puntúa antes de que tenga API pública), o uno que recibe su primera puntuación de AA, entra en el top 20 del índice de AA. Su llegada posterior a OpenRouter no vuelve a contar.",
    "Publica pesos abiertos un modelo del top 20 del índice de AA.",
    "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa.",
    "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos 1 punto ECI, o potencia, chips o ingresos que cambian al menos un 10 %.",
@@ -33,7 +25,7 @@
      "The best open-weight or closed model on the Artificial Analysis index changes, with the same index version and a margin of at least 1 point.",
      "Artificial Analysis changes the version of its index.",
      "The observatory’s assessment of an AI 2027 milestone changes.",
-     "A new model, or one that receives its first AA score, enters the top 20 of the AA index.",
+     "A new model (including one that AA scores before it has a public API), or one that receives its first AA score, enters the top 20 of the AA index. Its later arrival on OpenRouter does not count again.",
      "A top-20 model on the AA index publishes open weights.",
      "The lab itself changes its price on OpenRouter by at least +50% or −33% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count.",
      "The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least 1 ECI point, or power, chips or revenue that change by at least 10%.",
@@ -54,7 +46,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra-pro",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:39:26Z"
    },
    "what": "GPT-6.1 Terra Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -88,7 +80,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:39:26Z"
    },
    "what": "GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -98,25 +90,25 @@
     "ii": 51,
     "eci": null,
     "identity": "confirmada",
-    "rankAA": 5,
-    "of": 28
+    "rankAA": 6,
+    "of": 29
    },
    "i18n": {
     "en": {
      "what": "GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue.",
-     "titular": "GPT-6.1 Terra (OpenAI) arrives on OpenRouter: rank 5 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 5 of 28)",
-     "consecuencia": "AA index 51: 7.4 points behind the best closed model (Claude Opus 5.5). Rank 5 of 28. Blended price $2 per million tokens."
+     "titular": "GPT-6.1 Terra (OpenAI) arrives on OpenRouter: rank 6 on the AA index",
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 6 of 29)",
+     "consecuencia": "AA index 51: 8.4 points behind the best closed model (Gemini 4 Carbon). Rank 6 of 29. Blended price $2 per million tokens."
     }
    },
-   "titular": "GPT-6.1 Terra (OpenAI) llega a OpenRouter: puesto 5 del índice de AA",
+   "titular": "GPT-6.1 Terra (OpenAI) llega a OpenRouter: puesto 6 del índice de AA",
    "importancia": {
     "tier": 3,
-    "w": 16,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 5 de 28)"
+    "w": 15,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 6 de 29)"
    },
    "ficha": "#modelos/openai/gpt-6.1-terra",
-   "consecuencia": "Índice de AA 51: a 7,4 puntos del mejor cerrado (Claude Opus 5.5). Puesto 5 de 28. Precio combinado 2 $ por millón de tokens."
+   "consecuencia": "Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 29. Precio combinado 2 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -129,7 +121,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/moonshotai/kimi-k3.1-pro",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:39:26Z"
    },
    "what": "Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -139,25 +131,67 @@
     "ii": 46,
     "eci": null,
     "identity": "confirmada",
-    "rankAA": 8,
-    "of": 28
+    "rankAA": 9,
+    "of": 29
    },
    "i18n": {
     "en": {
      "what": "Kimi K3.1 Pro (Moonshot AI) appears in the OpenRouter catalogue.",
-     "titular": "Kimi K3.1 Pro (Moonshot AI) arrives on OpenRouter: rank 8 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 8 of 28)",
-     "consecuencia": "AA index 46: 13.5 points above the previous best open-weight model (DeepSeek V4.1 Flash 1017). Rank 8 of 28. Blended price $4 per million tokens."
+     "titular": "Kimi K3.1 Pro (Moonshot AI) arrives on OpenRouter: rank 9 on the AA index",
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 9 of 29)",
+     "consecuencia": "AA index 46: 13.5 points above the previous best open-weight model (DeepSeek V4.1 Flash 1017). Rank 9 of 29. Blended price $4 per million tokens."
     }
    },
-   "titular": "Kimi K3.1 Pro (Moonshot AI) llega a OpenRouter: puesto 8 del índice de AA",
+   "titular": "Kimi K3.1 Pro (Moonshot AI) llega a OpenRouter: puesto 9 del índice de AA",
    "importancia": {
     "tier": 3,
-    "w": 13,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 8 de 28)"
+    "w": 12,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 9 de 29)"
    },
    "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
-   "consecuencia": "Índice de AA 46: supera en 13,5 puntos al mejor abierto anterior (DeepSeek V4.1 Flash 1017). Puesto 8 de 28. Precio combinado 4 $ por millón de tokens."
+   "consecuencia": "Índice de AA 46: supera en 13,5 puntos al mejor abierto anterior (DeepSeek V4.1 Flash 1017). Puesto 9 de 29. Precio combinado 4 $ por millón de tokens."
+  },
+  {
+   "kind": "nuevo",
+   "key": "sinapi|google/gemini-4-carbon",
+   "model": "google/gemini-4-carbon",
+   "published": "2026-10-28",
+   "detected": "2026-10-29",
+   "date": "2026-10-28",
+   "mag": null,
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/gemini-4-carbon",
+    "got": "2026-10-29T09:39:26Z"
+   },
+   "what": "Gemini 4 Carbon (Google) aparece puntuado en Artificial Analysis con 59,4 puntos, aún sin API pública: no está en OpenRouter.",
+   "data": {
+    "sub": "sin-api",
+    "weights": "cerrados",
+    "in": null,
+    "out": null,
+    "ii": 59.4,
+    "eci": null,
+    "identity": "confirmada",
+    "rankAA": 1,
+    "of": 29
+   },
+   "i18n": {
+    "en": {
+     "what": "Gemini 4 Carbon (Google) appears scored on Artificial Analysis with 59.4 points, still without a public API: it is not on OpenRouter.",
+     "titular": "Gemini 4 Carbon (Google) enters the AA index at rank 1, still without a public API",
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 1 of 29)",
+     "consecuencia": "AA index 59.4: 1 points above the previous best closed model (Claude Opus 5.5). Rank 1 of 29. It is not on OpenRouter yet: no public API and no price."
+    }
+   },
+   "titular": "Gemini 4 Carbon (Google) entra en el índice de AA en el puesto 1, aún sin API pública",
+   "importancia": {
+    "tier": 3,
+    "w": 20,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 1 de 29)"
+   },
+   "ficha": "#modelos/google/gemini-4-carbon",
+   "consecuencia": "Índice de AA 59,4: supera en 1 puntos al mejor cerrado anterior (Claude Opus 5.5). Puesto 1 de 29. Aún no está en OpenRouter: sin API pública ni precio."
   },
   {
    "kind": "precio",
@@ -173,7 +207,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra/providers",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:39:26Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6.1 Terra (0,5 $ de entrada y 2,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 1 $ de entrada y 5 $ de salida.",
    "data": {
@@ -214,8 +248,8 @@
      ]
     ],
     "since": "2026-10-28",
-    "rankAA": 5,
-    "of": 28
+    "rankAA": 6,
+    "of": 29
    },
    "i18n": {
     "en": {
@@ -231,63 +265,71 @@
   },
   {
    "kind": "precio",
-   "key": "precio|mistralai/mistral-medium-3-5|2026-10-29",
+   "key": "precio|openai/gpt-5.4|2026-10-29",
    "published": null,
    "detected": "2026-10-29",
    "date": "2026-10-29",
    "mag": {
-    "v": 10,
+    "v": 100,
     "unit": "%"
    },
-   "model": "mistralai/mistral-medium-3-5",
+   "model": "openai/gpt-5.4",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/mistralai/mistral-medium-3-5/providers",
-    "got": "2026-10-29T03:54:12Z"
+    "url": "https://openrouter.ai/openai/gpt-5.4/providers",
+    "got": "2026-10-29T09:39:26Z"
    },
-   "what": "Mistral deja de ofrecer en OpenRouter su tarifa más barata de Mistral Medium 3.5 (1,5 $ de entrada y 7,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 1,65 $ de entrada y 8,25 $ de salida.",
+   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-5.4 (1,25 $ de entrada y 7,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2,5 $ de entrada y 15 $ de salida.",
    "data": {
     "basis": "laboratorio",
     "sub": "tarifa-retirada",
-    "provider": "Mistral",
+    "provider": "OpenAI",
     "from": {
-     "in": 1.5,
+     "in": 1.25,
      "out": 7.5
     },
     "to": {
-     "in": 1.65,
-     "out": 8.25
+     "in": 2.5,
+     "out": 15
     },
-    "pct": 10,
+    "pct": 100,
     "tiersFrom": [
      [
-      1.5,
+      1.25,
       7.5
      ],
      [
-      1.65,
-      8.25
+      2.5,
+      15
+     ],
+     [
+      5,
+      30
      ]
     ],
     "tiersTo": [
      [
-      1.65,
-      8.25
+      2.5,
+      15
+     ],
+     [
+      5,
+      30
      ]
     ],
     "since": "2026-10-28"
    },
    "i18n": {
     "en": {
-     "what": "Mistral stops offering its cheapest Mistral Medium 3.5 rate on OpenRouter ($1.5 input and $7.5 output per million tokens). The cheapest it has left, which already existed, is $1.65 input and $8.25 output.",
-     "titular": "Mistral withdraws the cheapest Mistral Medium 3.5 rate on OpenRouter",
-     "consecuencia": "Its cheapest blended price on OpenRouter goes from $3 to $3.3 per million tokens."
+     "what": "OpenAI stops offering its cheapest GPT-5.4 rate on OpenRouter ($1.25 input and $7.5 output per million tokens). The cheapest it has left, which already existed, is $2.5 input and $15 output.",
+     "titular": "OpenAI withdraws the cheapest GPT-5.4 rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $2.81 to $5.63 per million tokens."
     }
    },
-   "titular": "Mistral retira la tarifa más barata de Mistral Medium 3.5 en OpenRouter",
+   "titular": "OpenAI retira la tarifa más barata de GPT-5.4 en OpenRouter",
    "importancia": null,
-   "ficha": "#modelos/mistralai/mistral-medium-3-5",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 3 $ a 3,3 $ por millón de tokens."
+   "ficha": "#modelos/openai/gpt-5.4",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 2,81 $ a 5,63 $ por millón de tokens."
   },
   {
    "kind": "precio",
@@ -303,7 +345,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m2.5/providers",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:39:26Z"
    },
    "what": "Minimax añade en OpenRouter una tarifa más barata de MiniMax M2.5: 0,3 $ de entrada y 1,2 $ de salida por millón de tokens. La anterior (0,6 $ de entrada y 2,4 $ de salida) sigue disponible.",
    "data": {
@@ -360,7 +402,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:39:26Z"
    },
    "what": "Qwen3 Next 80B A3B Thinking deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -379,6 +421,56 @@
    "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
   },
   {
+   "kind": "lider",
+   "key": "lider|closed|google/gemini-4-carbon|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": 1,
+    "unit": "puntos AA"
+   },
+   "model": "google/gemini-4-carbon",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/gemini-4-carbon",
+    "got": "2026-10-29T09:39:26Z"
+   },
+   "what": "Gemini 4 Carbon pasa a ser el mejor modelo cerrado del catálogo en el índice de inteligencia de Artificial Analysis v5: 59,4 puntos, 1 más que Claude Opus 5.5 (58,4). Aún no tiene API pública: no está en OpenRouter.",
+   "data": {
+    "block": "cerrados",
+    "version": "5",
+    "from": {
+     "id": "anthropic/claude-opus-5.5",
+     "n": "Claude Opus 5.5",
+     "ii": 58.4,
+     "iiNow": 58.4
+    },
+    "to": {
+     "id": "google/gemini-4-carbon",
+     "n": "Gemini 4 Carbon",
+     "ii": 59.4
+    },
+    "margin": 1
+   },
+   "i18n": {
+    "en": {
+     "what": "Gemini 4 Carbon becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v5: 59.4 points, 1 more than Claude Opus 5.5 (58.4). It has no public API yet: it is not on OpenRouter.",
+     "titular": "Gemini 4 Carbon becomes the best closed model on the AA index",
+     "porque": "the best closed model changes with the same AA index version and a margin of 1 points (minimum 1)",
+     "consecuencia": "The gap between the best closed and the best open-weight model on the AA index stands at 13.4 points (12.4 the day before). It does not equate to months of lag."
+    }
+   },
+   "titular": "Gemini 4 Carbon pasa a ser el mejor modelo cerrado del índice de AA",
+   "importancia": {
+    "tier": 0,
+    "w": 1,
+    "porque": "cambia el mejor modelo cerrado con la misma versión del índice de AA y 1 puntos de margen (mínimo 1)"
+   },
+   "ficha": "#modelos/google/gemini-4-carbon",
+   "consecuencia": "La distancia entre el mejor cerrado y el mejor abierto en el índice de AA queda en 13,4 puntos (12,4 el día anterior). No equivale a meses de retraso."
+  },
+  {
    "kind": "indicador",
    "key": "indicador|dcMW|2026-10-29",
    "published": null,
@@ -392,7 +484,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:39:26Z"
    },
    "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.234 a 14.544 MW.",
    "data": {
@@ -427,7 +519,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:39:26Z"
    },
    "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.850 a 21.979 MW.",
    "data": {
@@ -462,7 +554,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:39:26Z"
    },
    "what": "Coste de capital de los centros que sigue Epoch: de 539 a 551 mil millones de $.",
    "data": {
@@ -483,6 +575,108 @@
    "consecuencia": null
   },
   {
+   "kind": "indicador",
+   "key": "indicador|aaUsCn|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": 1,
+    "pct": 8.1,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-10-29T09:39:26Z"
+   },
+   "what": "Distancia EE. UU. − China en el índice de AA: de 12,4 a 13,4 puntos (Gemini 4 Carbon frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "aaUsCn",
+    "path": "aa.gapUsCn",
+    "from": 12.4,
+    "to": 13.4
+   },
+   "i18n": {
+    "en": {
+     "what": "US − China gap on the AA index: from 12.4 to 13.4 points (Gemini 4 Carbon versus Kimi K3.1 Pro).",
+     "titular": "US − China gap on the AA index: from 12.4 to 13.4 points (Gemini 4 Carbon versus Kimi K3.1 Pro)."
+    }
+   },
+   "titular": "Distancia EE. UU. − China en el índice de AA: de 12,4 a 13,4 puntos (Gemini 4 Carbon frente a Kimi K3.1 Pro).",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaClosedOpen|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": 1,
+    "pct": 8.1,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-10-29T09:39:26Z"
+   },
+   "what": "Distancia cerrados − abiertos en el índice de AA: de 12,4 a 13,4 puntos (Gemini 4 Carbon frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "aaClosedOpen",
+    "path": "aa.gapClosedOpen",
+    "from": 12.4,
+    "to": 13.4
+   },
+   "i18n": {
+    "en": {
+     "what": "Closed − open gap on the AA index: from 12.4 to 13.4 points (Gemini 4 Carbon versus Kimi K3.1 Pro).",
+     "titular": "Closed − open gap on the AA index: from 12.4 to 13.4 points (Gemini 4 Carbon versus Kimi K3.1 Pro)."
+    }
+   },
+   "titular": "Distancia cerrados − abiertos en el índice de AA: de 12,4 a 13,4 puntos (Gemini 4 Carbon frente a Kimi K3.1 Pro).",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaLabs|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": -0.5,
+    "pct": -33.3,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-10-29T09:39:26Z"
+   },
+   "what": "Distancia entre los dos primeros laboratorios en el índice de AA: de 1,5 a 1 puntos (Google frente a Anthropic).",
+   "data": {
+    "ind": "aaLabs",
+    "path": "aa.gapLabs",
+    "from": 1.5,
+    "to": 1
+   },
+   "i18n": {
+    "en": {
+     "what": "Gap between the top two labs on the AA index: from 1.5 to 1 points (Google versus Anthropic).",
+     "titular": "Gap between the top two labs on the AA index: from 1.5 to 1 points (Google versus Anthropic)."
+    }
+   },
+   "titular": "Distancia entre los dos primeros laboratorios en el índice de AA: de 1,5 a 1 puntos (Google frente a Anthropic).",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": null
+  },
+  {
    "kind": "uso",
    "key": "uso|entra|stepfun/step-5-preview-20261008|2026-10-29",
    "published": "2026-10-28",
@@ -496,7 +690,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:39:26Z"
    },
    "what": "Step 5 Preview entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 7, 2,9 % de los tokens.",
    "data": {

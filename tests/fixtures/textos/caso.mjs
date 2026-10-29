@@ -27,7 +27,11 @@ export const models = [
   mk('zeta/anon', 'Zeta Anónimo', { identity: 'anónima', orCreated: { v: '2026-10-24' }, orVariant: 'zeta/anon:free', aa: { intelligence: { v: 60 } } }),
   mk('eta/peer1', 'Eta 1', { price: price(0.4, 1.2), aa: { intelligence: { v: 70.5 } } }),
   mk('eta/peer2', 'Eta 2', { price: price(0.8, 2.4), aa: { intelligence: { v: 69 } } }),
-  mk('eta/peer3', 'Eta 3', { price: price(3, 9), aa: { intelligence: { v: 71 } } })
+  mk('eta/peer3', 'Eta 3', { price: price(3, 9), aa: { intelligence: { v: 71 } } }),
+  // Puntuado por AA sin estar en OpenRouter (aaOnly) y uno que llega hoy a OpenRouter tras constar así (preApi).
+  mk('theta/sinapi', 'Theta Sin API', { aaOnly: { v: true, since: '2026-10-25' }, orCreated: { v: null }, price: { basis: 'sin-api', provider: null, in: { v: null }, out: { v: null } },
+    aa: { intelligence: { v: 72.4 }, release: { v: '2026-10-24' }, url: 'https://aa.test/theta' } }),
+  mk('theta/llega', 'Theta Llega', { orCreated: { v: '2026-10-23' }, preApi: { id: 'theta/llega', since: '2026-10-10' }, aa: { intelligence: { v: 68 }, url: 'https://aa.test/tl' } })
 ];
 const byId = new Map(models.map(m => [m.id, m]));
 
@@ -45,7 +49,9 @@ const prevModels = {
   'delta/lider-abierto': { pb: 'laboratorio', in: 1, out: 2, w: 'o', ii: 70 },
   'eps/cerrado': { pb: 'laboratorio', in: 1, out: 2, w: 'c', ii: 74.1 },
   'old/closed': { pb: 'laboratorio', in: 1, out: 2, w: 'c', ii: 73, n: 'Old Closed' },
-  'omega/retirado': { pb: 'laboratorio', in: 1, out: 2, w: 'c', n: 'Omega Retirado' }
+  'omega/retirado': { pb: 'laboratorio', in: 1, out: 2, w: 'c', n: 'Omega Retirado' },
+  'theta/llega': { pb: 'sin-api', in: null, out: null, w: 'c', ii: 68, ao: 1, n: 'Theta Llega' },
+  'theta/otro-id': { pb: 'sin-api', in: null, out: null, w: 'c', ii: 61, ao: 1, n: 'Theta Otro' }   // sin API pública que desaparece: no es retirada
 };
 const prevTiers = id => prevModels[id]?.lp || null;
 // Tarifas actuales: Retira ha perdido la barata (en `models` sólo queda [1,1]); Nueva ha ganado una (tiene [0.5,0.5] y [1,1]).

@@ -29,8 +29,15 @@ for (const m of c.models || []) {
   if (m.aa) for (const k of ['intelligence', 'coding', 'agentic', 'tps', 'ttft', 'release']) if (m.aa[k] !== undefined) checkFact(m.aa[k], `${w}.aa.${k}`);
   if (m.aa && !c.sources?.aa?.permiso) errors.push(`${w}: datos de Artificial Analysis sin permiso registrado en data/curated/permisos.json`);
   if (m.price?.in?.v > 1000 || m.price?.out?.v > 1000) errors.push(`${w}: precio fuera de rango`);
-  if (!['laboratorio', 'proveedor', 'referencia'].includes(m.price?.basis)) errors.push(`${w}: criterio de precio no permitido ${m.price?.basis}`);
-  if (m.price?.basis !== 'referencia' && !m.price?.provider) errors.push(`${w}: precio sin proveedor indicado`);
+  if (!['laboratorio', 'proveedor', 'referencia', 'sin-api'].includes(m.price?.basis)) errors.push(`${w}: criterio de precio no permitido ${m.price?.basis}`);
+  if (!['referencia', 'sin-api'].includes(m.price?.basis) && !m.price?.provider) errors.push(`${w}: precio sin proveedor indicado`);
+  // Puntuado por AA sin estar en OpenRouter: con su puntuación de AA, sin precio ni alta en OpenRouter.
+  if (m.aaOnly) {
+    checkFact(m.aaOnly, `${w}.aaOnly`);
+    if (m.aaOnly.v !== true || !/^\d{4}-\d{2}-\d{2}$/.test(m.aaOnly.since || '')) errors.push(`${w}: aaOnly mal formado`);
+    if (m.aa?.intelligence?.v == null) errors.push(`${w}: sin API pública y sin índice de AA`);
+    if (m.price?.basis !== 'sin-api' || m.price.in.v !== null || m.price.out.v !== null || m.orCreated.v !== null) errors.push(`${w}: sin API pública pero con precio o alta en OpenRouter`);
+  } else if (m.price?.basis === 'sin-api') errors.push(`${w}: precio «sin-api» en un modelo de OpenRouter`);
 }
 // Lo que queda fuera del catálogo: tipo conocido y nunca a la vez dentro y fuera.
 for (const e of c.excluded || []) {
