@@ -51,7 +51,8 @@
     "items.*.titular",
     "items.*.consecuencia",
     "items.*.importancia.porque"
-   ]
+   ],
+   "opcionales": ["parte.ultima.titular"]
   },
   "data/curated/events.json": {
    "campos": [
