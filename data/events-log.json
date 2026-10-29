@@ -230,7 +230,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra/providers",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:35:57Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6.1 Terra (0,5 $ de entrada y 2,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 1 $ de entrada y 5 $ de salida.",
    "data": {
@@ -288,63 +288,71 @@
   },
   {
    "kind": "precio",
-   "key": "precio|mistralai/mistral-medium-3-5|2026-10-29",
+   "key": "precio|openai/gpt-5.4|2026-10-29",
    "published": null,
    "detected": "2026-10-29",
    "date": "2026-10-29",
    "mag": {
-    "v": 10,
+    "v": 100,
     "unit": "%"
    },
-   "model": "mistralai/mistral-medium-3-5",
+   "model": "openai/gpt-5.4",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/mistralai/mistral-medium-3-5/providers",
-    "got": "2026-10-29T03:54:12Z"
+    "url": "https://openrouter.ai/openai/gpt-5.4/providers",
+    "got": "2026-10-29T09:35:57Z"
    },
-   "what": "Mistral deja de ofrecer en OpenRouter su tarifa más barata de Mistral Medium 3.5 (1,5 $ de entrada y 7,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 1,65 $ de entrada y 8,25 $ de salida.",
+   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-5.4 (1,25 $ de entrada y 7,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2,5 $ de entrada y 15 $ de salida.",
    "data": {
     "basis": "laboratorio",
     "sub": "tarifa-retirada",
-    "provider": "Mistral",
+    "provider": "OpenAI",
     "from": {
-     "in": 1.5,
+     "in": 1.25,
      "out": 7.5
     },
     "to": {
-     "in": 1.65,
-     "out": 8.25
+     "in": 2.5,
+     "out": 15
     },
-    "pct": 10,
+    "pct": 100,
     "tiersFrom": [
      [
-      1.5,
+      1.25,
       7.5
      ],
      [
-      1.65,
-      8.25
+      2.5,
+      15
+     ],
+     [
+      5,
+      30
      ]
     ],
     "tiersTo": [
      [
-      1.65,
-      8.25
+      2.5,
+      15
+     ],
+     [
+      5,
+      30
      ]
     ],
     "since": "2026-10-28"
    },
    "i18n": {
     "en": {
-     "what": "Mistral stops offering its cheapest Mistral Medium 3.5 rate on OpenRouter ($1.5 input and $7.5 output per million tokens). The cheapest it has left, which already existed, is $1.65 input and $8.25 output.",
-     "titular": "Mistral withdraws the cheapest Mistral Medium 3.5 rate on OpenRouter",
-     "consecuencia": "Its cheapest blended price on OpenRouter goes from $3 to $3.3 per million tokens."
+     "what": "OpenAI stops offering its cheapest GPT-5.4 rate on OpenRouter ($1.25 input and $7.5 output per million tokens). The cheapest it has left, which already existed, is $2.5 input and $15 output.",
+     "titular": "OpenAI withdraws the cheapest GPT-5.4 rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $2.81 to $5.63 per million tokens."
     }
    },
-   "titular": "Mistral retira la tarifa más barata de Mistral Medium 3.5 en OpenRouter",
+   "titular": "OpenAI retira la tarifa más barata de GPT-5.4 en OpenRouter",
    "importancia": null,
-   "ficha": "#modelos/mistralai/mistral-medium-3-5",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 3 $ a 3,3 $ por millón de tokens."
+   "ficha": "#modelos/openai/gpt-5.4",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 2,81 $ a 5,63 $ por millón de tokens."
   },
   {
    "kind": "precio",
@@ -360,7 +368,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m2.5/providers",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:35:57Z"
    },
    "what": "Minimax añade en OpenRouter una tarifa más barata de MiniMax M2.5: 0,3 $ de entrada y 1,2 $ de salida por millón de tokens. La anterior (0,6 $ de entrada y 2,4 $ de salida) sigue disponible.",
    "data": {
@@ -417,7 +425,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:35:57Z"
    },
    "what": "Qwen3 Next 80B A3B Thinking deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -449,7 +457,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:35:57Z"
    },
    "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.234 a 14.544 MW.",
    "data": {
@@ -484,7 +492,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:35:57Z"
    },
    "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.850 a 21.979 MW.",
    "data": {
@@ -519,7 +527,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:35:57Z"
    },
    "what": "Coste de capital de los centros que sigue Epoch: de 539 a 551 mil millones de $.",
    "data": {
@@ -553,7 +561,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-10-29T03:54:12Z"
+    "got": "2026-10-29T09:35:57Z"
    },
    "what": "Step 5 Preview entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 7, 2,9 % de los tokens.",
    "data": {
