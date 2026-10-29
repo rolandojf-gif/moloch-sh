@@ -230,7 +230,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.1-terra/providers",
-    "got": "2026-10-29T09:36:39Z"
+    "got": "2026-10-29T09:38:34Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6.1 Terra (0,5 $ de entrada y 2,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 1 $ de entrada y 5 $ de salida.",
    "data": {
@@ -300,7 +300,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-5.4/providers",
-    "got": "2026-10-29T09:36:39Z"
+    "got": "2026-10-29T09:38:34Z"
    },
    "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-5.4 (1,25 $ de entrada y 7,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 2,5 $ de entrada y 15 $ de salida.",
    "data": {
@@ -368,7 +368,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/minimax/minimax-m2.5/providers",
-    "got": "2026-10-29T09:36:39Z"
+    "got": "2026-10-29T09:38:34Z"
    },
    "what": "Minimax añade en OpenRouter una tarifa más barata de MiniMax M2.5: 0,3 $ de entrada y 1,2 $ de salida por millón de tokens. La anterior (0,6 $ de entrada y 2,4 $ de salida) sigue disponible.",
    "data": {
@@ -425,7 +425,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-10-29T09:36:39Z"
+    "got": "2026-10-29T09:38:34Z"
    },
    "what": "Qwen3 Next 80B A3B Thinking deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -457,7 +457,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T09:36:39Z"
+    "got": "2026-10-29T09:38:34Z"
    },
    "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.234 a 14.544 MW.",
    "data": {
@@ -492,7 +492,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
-    "got": "2026-10-29T09:36:39Z"
+    "got": "2026-10-29T09:38:34Z"
    },
    "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.850 a 21.979 MW.",
    "data": {
@@ -527,7 +527,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-10-29T09:36:39Z"
+    "got": "2026-10-29T09:38:34Z"
    },
    "what": "Coste de capital de los centros que sigue Epoch: de 539 a 551 mil millones de $.",
    "data": {
@@ -561,7 +561,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-10-29T09:36:39Z"
+    "got": "2026-10-29T09:38:34Z"
    },
    "what": "Step 5 Preview entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 7, 2,9 % de los tokens.",
    "data": {
