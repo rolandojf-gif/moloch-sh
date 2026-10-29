@@ -1,7 +1,7 @@
 /* Vista «Hoy»: el parte del día, lo detectado en la semana, cuatro indicadores y capacidad frente a precio. */
 import { t, tn, tr, L } from './i18n.js';
 import { esc, fact, src, usd, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote, sinApiTag } from './fmt.js';
-import { logo } from './logos.js';
+import { logo, logoFor } from './logos.js';
 import { scatter, daily, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -185,7 +185,7 @@ function renderScatter(d, gapPts) {
       [t('Entrada / salida'), `${usd(m.price.in.v)} / ${usd(m.price.out.v)}`],
       [t('Precio de'), priceBasis(m)],
       [t('Pesos'), m.weights.v ? weightsWord(m.weights.v) : t('sin datos')]
-    ])
+    ], '', logoFor(m))
   }));
   const sinApi = models.filter(m => m.aaOnly).length, excluded = models.length - pts.length - sinApi;
   const lo = leader(models, 'abiertos'), lc = leader(models, 'cerrados');

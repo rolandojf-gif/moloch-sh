@@ -4,6 +4,7 @@ import { t, tn, tr, L } from './i18n.js';
 import { esc, fmtDate, dateFmt, num, nd, aaRace, aaCoverage, coverageText, aaIndexName, AA_LINK, quote } from './fmt.js';
 import { indicatorRow, indicatorKpi, indicatorBrief, mw, mh100, usdB, usdBs, PAIS } from './indicadores.js';
 import { gaps, hbars, columns, dotci, recordChart, ediMap, tip } from './charts.js';
+import { logoFor } from './logos.js';
 
 const $ = s => document.querySelector(s);
 let bound = false;
@@ -222,19 +223,19 @@ const CHARTS = {
     I.companies?.revenue?.length && {
       title: t('Ingresos anualizados por empresa, último dato'),
       note: t('{EPOCH} Informes de prensa y de las empresas; las fechas y el tipo de cifra varían, véanse en cada barra.', { EPOCH: EPOCH('«AI companies»', 'https://epoch.ai/data/ai-companies') }),
-      draw: el => hbars(el, I.companies.revenue.map(f => ({ label: `${f.company} · ${fmtDate(f.asOf)}`, v: f.v, value: usdBs(f.v), tip: tip(f.company, [[t('Ingresos anualizados'), usdB(f.v)], [t('Fecha del dato'), fmtDate(f.asOf)], [t('Tipo'), f.type], [t('Confianza de Epoch'), f.confidence]]) })), { aria: t('Ingresos anualizados por empresa') })
+      draw: el => hbars(el, I.companies.revenue.map(f => ({ label: `${f.company} · ${fmtDate(f.asOf)}`, v: f.v, value: usdBs(f.v), icon: logoFor({ org: f.company }), tip: tip(f.company, [[t('Ingresos anualizados'), usdB(f.v)], [t('Fecha del dato'), fmtDate(f.asOf)], [t('Tipo'), f.type], [t('Confianza de Epoch'), f.confidence]], '', logoFor({ org: f.company })) })), { aria: t('Ingresos anualizados por empresa') })
     }
   ],
   coordinacion: I => [
     I.aa?.labs?.length && {
       title: t('Mejor modelo de cada laboratorio (índice AA)'),
       note: t('{AA_LINK}, {aaIndexName}, consultado el {fmtDate}; publicado con su permiso. Cada laboratorio con su modelo mejor puntuado del catálogo; AA no publica intervalo de confianza.', { AA_LINK, aaIndexName: esc(aaIndexName(I.aa.gapLabs?.version)), fmtDate: esc(fmtDate(I.aa.gapLabs?.got)) }),
-      draw: el => hbars(el, I.aa.labs.map(r => ({ label: r.org, v: r.ii, value: num(r.ii, 1), tip: tip(r.org, [[t('Modelo'), r.model], [t('Índice AA'), num(r.ii, 1)], [t('Pesos'), r.anun ? t('abiertos (anunciados en su descripción de OpenRouter; aún no descargables)') : null], [t('Publicado'), fmtDate(r.date)]]) })), { aria: t('Mejor índice de AA por laboratorio') })
+      draw: el => hbars(el, I.aa.labs.map(r => ({ label: r.org, v: r.ii, value: num(r.ii, 1), icon: logoFor({ name: r.model, org: r.org }), tip: tip(r.org, [[t('Modelo'), r.model], [t('Índice AA'), num(r.ii, 1)], [t('Pesos'), r.anun ? t('abiertos (anunciados en su descripción de OpenRouter; aún no descargables)') : null], [t('Publicado'), fmtDate(r.date)]], '', logoFor({ name: r.model, org: r.org })) })), { aria: t('Mejor índice de AA por laboratorio') })
     },
     I.eci?.labs?.length && {
       title: t('Mejor modelo de cada laboratorio (ECI)'),
       note: t('{EPOCH} La raya es el intervalo de confianza del 90 %: si dos rayas se solapan, no puede afirmarse cuál va primero.{firstOdds}', { EPOCH: EPOCH('«Epoch Capabilities Index»', I.eci.frontier?.url || 'https://epoch.ai/benchmarks/eci'), firstOdds: firstOdds(I) }),
-      draw: el => dotci(el, I.eci.labs.map(r => ({ label: r.org, v: r.eci, lo: r.ci?.[0] ?? null, hi: r.ci?.[1] ?? null, tip: tip(r.org, [[t('Modelo'), r.model], ['ECI', num(r.eci, 1)], [t('Intervalo'), r.ci?.[0] != null ? `${num(r.ci[0], 1)}–${num(r.ci[1], 1)}` : null], [t('Primero en las réplicas'), r.pFirst != null ? `${num(r.pFirst, 0)} %` : null], [t('Publicado'), fmtDate(r.date)]]) })), { unit: t('puntos ECI'), aria: t('Mejor ECI por laboratorio') })
+      draw: el => dotci(el, I.eci.labs.map(r => ({ label: r.org, v: r.eci, lo: r.ci?.[0] ?? null, hi: r.ci?.[1] ?? null, icon: logoFor({ name: r.model, org: r.org }), tip: tip(r.org, [[t('Modelo'), r.model], ['ECI', num(r.eci, 1)], [t('Intervalo'), r.ci?.[0] != null ? `${num(r.ci[0], 1)}–${num(r.ci[1], 1)}` : null], [t('Primero en las réplicas'), r.pFirst != null ? `${num(r.pFirst, 0)} %` : null], [t('Publicado'), fmtDate(r.date)]], '', logoFor({ name: r.model, org: r.org })) })), { unit: t('puntos ECI'), aria: t('Mejor ECI por laboratorio') })
     }
   ]
 };

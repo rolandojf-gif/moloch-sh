@@ -272,6 +272,8 @@ ol.reglas li { margin-bottom: 4px; }
 /* Ventana emergente de los gráficos, al estilo de Epoch */
 .chart-tip { position: fixed; z-index: 50; pointer-events: none; min-width: 260px; max-width: min(380px, calc(100vw - 16px)); background: var(--card); color: var(--text); border: 2px solid var(--ink); box-shadow: var(--shadow); font: 400 13.5px/1.35 var(--f-body); }
 .chart-tip .tt-title { font: 700 15px/1.25 var(--f-head); padding: 10px 12px 8px; border-bottom: 1px solid var(--line); }
+.chart-tip .tt-title { display: flex; align-items: center; gap: 8px; }
+.chart-tip .tt-title .logo { margin-right: 0; }
 .chart-tip table { width: 100%; border-collapse: collapse; }
 .chart-tip th, .chart-tip td { text-align: left; vertical-align: top; padding: 6px 12px; }
 .chart-tip th { font: 500 12.5px var(--f-body); color: var(--muted); white-space: nowrap; width: 1%; }
