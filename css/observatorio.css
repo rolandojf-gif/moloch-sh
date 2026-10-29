@@ -19,6 +19,7 @@
   --warn: #B45309;
   --bad: #C81E3A;
   --on-accent: #121211;
+  --logo-bg: #FFFFFF; --logo-ink: #121211;
   --shadow: 4px 4px 0 var(--ink);
   --shadow-sm: 2px 2px 0 var(--ink);
   --f-head: 'Space Grotesk', 'Arial Narrow', Arial, sans-serif;
@@ -30,14 +31,14 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --paper: #0F0F0E; --grid: rgba(232, 231, 225, 0.045); --ink: #E8E7E1; --text: #E8E7E1; --muted: #9C9B95;
-    --card: #181816; --card-2: #1E1E1C; --line: #34342F; --orange-ink: #FF8A5C;
+    --card: #181816; --card-2: #1E1E1C; --line: #34342F; --orange-ink: #FF8A5C; --logo-bg: #EDECE6;
     --open: #34D399; --closed: #FF7A4D; --unknown: #8A8984; --warn: #FBBF24; --bad: #FF5C7A;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --paper: #0F0F0E; --grid: rgba(232, 231, 225, 0.045); --ink: #E8E7E1; --text: #E8E7E1; --muted: #9C9B95;
-  --card: #181816; --card-2: #1E1E1C; --line: #34342F; --orange-ink: #FF8A5C;
+  --card: #181816; --card-2: #1E1E1C; --line: #34342F; --orange-ink: #FF8A5C; --logo-bg: #EDECE6;
   --open: #34D399; --closed: #FF7A4D; --unknown: #8A8984; --warn: #FBBF24; --bad: #FF5C7A;
   color-scheme: dark;
 }
@@ -139,6 +140,8 @@ h3.sub-sec { font: 700 12px/1.2 var(--f-mono); text-transform: uppercase; letter
 .news { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .news-card { background: var(--card); border: 2px solid var(--ink); box-shadow: var(--shadow); padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .news-card h3 { margin: 0; font: 700 19px/1.2 var(--f-head); }
+.news-h { display: flex; gap: 12px; align-items: flex-start; }
+.news-h h3 { min-width: 0; }
 .news-card p { margin: 0; font-size: 14.5px; }
 .news-card .lbl { font: 700 10.5px var(--f-mono); text-transform: uppercase; color: var(--muted); letter-spacing: .05em; display: block; margin-bottom: 2px; }
 .news-card .prov { margin-top: auto; border-top: 1px dashed var(--line); padding-top: 8px; }
@@ -302,13 +305,27 @@ table.mx td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical
 table.mx .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 /* Las líneas secundarias (configuración, proveedor) parten en varias líneas: la tabla cabe en la ventana. */
 table.mx .num .m-sub { white-space: normal; max-width: 22ch; margin-left: auto; }
-table.mx td.c-name { min-width: 160px; }
+table.mx td.c-name { min-width: 190px; }
 table.mx tr.row { cursor: pointer; }
 table.mx tr.row:hover td { background: rgba(204, 255, 0, .12); }
 table.mx tr.row[aria-expanded="true"] td { background: rgba(204, 255, 0, .2); border-bottom-color: transparent; }
 .c-sel { width: 34px; }
 .c-sel input { width: 18px; height: 18px; accent-color: var(--orange); }
 .m-name { font-weight: 600; }
+/* Logo del modelo: recuadro claro en los dos temas, para que los logos se vean con sus colores de marca. */
+.logo { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 24px; height: 24px; margin-right: 6px; vertical-align: middle; background: var(--logo-bg); border: 1px solid var(--line); }
+.logo img { display: block; width: 16px; height: 16px; }
+.logo.big { width: 40px; height: 40px; margin-right: 0; }
+.logo.big img { width: 26px; height: 26px; }
+.logo.ini { font: 700 9.5px/1 var(--f-mono); color: var(--logo-ink); letter-spacing: 0; }
+.logo.big.ini { font-size: 13px; }
+.m-id { display: flex; align-items: center; gap: 10px; }
+.m-id .logo { margin-right: 0; }
+.m-id > div { min-width: 0; }
+.kpi .v.lead { display: flex; align-items: center; gap: 10px; }
+.kpi .v.lead > span:last-child { min-width: 0; }
+svg rect.logo-bg { fill: var(--logo-bg); stroke: var(--line); }
+svg text.logo-q { fill: var(--logo-ink); font: 700 11px var(--f-mono); }
 .m-lab { font: 400 12px var(--f-mono); color: var(--muted); }
 .m-sub { font: 400 11.5px var(--f-mono); color: var(--muted); display: block; }
 .excl { margin-top: 6px; }

@@ -1,6 +1,7 @@
 /* Vista «Hoy»: el parte del día, lo detectado en la semana, cuatro indicadores y capacidad frente a precio. */
 import { t, tn, tr, L } from './i18n.js';
 import { esc, fact, src, usd, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote, sinApiTag } from './fmt.js';
+import { logo } from './logos.js';
 import { scatter, daily, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -23,6 +24,11 @@ function downloadable(models, lo) {
 
 /* Titular, consecuencia y motivo vienen ya redactados por el recolector (scripts/parte.mjs), con plantillas y cifras de la misma recogida. */
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : '';
+/* Modelo al que apunta una ficha «#modelos/<id>», para su logo; si ya no está en el catálogo, sólo su autor. */
+const fichaModel = (d, href) => {
+  const id = /^#modelos\/(.+)$/.exec(href || '')?.[1];
+  return id ? d.byId.get(id) || { id, name: id.split('/').pop(), lab: { id: id.split('/')[0], name: '' } } : null;
+};
 const toFicha = (href, text) => href ? `<a href="${esc(href)}">${esc(text)}</a>` : esc(text);
 const srcLink = s => s?.url ? `<a href="${esc(s.url)}"${/^#/.test(s.url) ? '' : ' target="_blank" rel="noopener"'}>${esc(s.name ? tr(s.name) : t('fuente'))}</a>` : esc(s?.name ? tr(s.name) : t('sin fuente'));
 /* Pie de cada cambio: fuente, fecha de publicación si la fuente la da y fecha en que lo detectó el observatorio.
@@ -50,7 +56,7 @@ function renderVisit(d, items, p) {
   if (!nuevos.length) { el.innerHTML = `<b>${t('Desde tu última visita')}</b> ${t('(parte del {fmtDate}): nada nuevo.', { fmtDate: esc(fmtDate(ref)) })}`; return; }
   const n = nuevos.filter(it => it.importancia).length;
   const head = tn(nuevos.length, ['(parte del {fecha}): {n} cambio detectado, {noticias}.', '(parte del {fecha}): {n} cambios detectados, {noticias}.'], { fecha: esc(fmtDate(ref)), noticias: n ? t('{n} de ellos noticia', { n }) : t('ninguno noticia') });
-  el.innerHTML = `<b>${t('Desde tu última visita')}</b> ${head}${since && ref < since ? ` ${t('Sólo cuentan los de los últimos {p1} días, desde el {fmtDate}.', { p1: d.changes.window || 7, fmtDate: esc(fmtDate(since)) })}` : ''}${sig.length ? ` ${p.noticias.length ? t('Además de las de arriba') : t('Las noticias')}:<ul>${sig.slice(0, 5).map(it => `<li><span>${esc(fmtDate(it.detected))}</span> ${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</li>`).join('')}</ul>${sig.length > 5 ? t('Y {p1} más en la lista de abajo.', { p1: sig.length - 5 }) : ''}` : ''}`;
+  el.innerHTML = `<b>${t('Desde tu última visita')}</b> ${head}${since && ref < since ? ` ${t('Sólo cuentan los de los últimos {p1} días, desde el {fmtDate}.', { p1: d.changes.window || 7, fmtDate: esc(fmtDate(since)) })}` : ''}${sig.length ? ` ${p.noticias.length ? t('Además de las de arriba') : t('Las noticias')}:<ul>${sig.slice(0, 5).map(it => `<li><span>${esc(fmtDate(it.detected))}</span> ${logo(fichaModel(d, it.ficha))}${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</li>`).join('')}</ul>${sig.length > 5 ? t('Y {p1} más en la lista de abajo.', { p1: sig.length - 5 }) : ''}` : ''}`;
 }
 
 function renderNews(d) {
@@ -68,7 +74,7 @@ function renderNews(d) {
   $('#hoy-news').innerHTML = top.length ? top.map(it => `
     <article class="news-card">
       <span class="tag k-${esc(it.kind)}">${esc(kind(it.kind))}</span>
-      <h3>${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</h3>
+      <div class="news-h">${logo(fichaModel(d, it.ficha), true)}<h3>${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</h3></div>
       <p><span class="lbl">${t('Qué ocurrió')}</span>${esc(L(it, 'what'))}</p>
       ${it.consecuencia ? `<p><span class="lbl">${t('Qué cambia')}</span>${esc(L(it, 'consecuencia'))}</p>` : ''}
       <p><span class="lbl">${t('Por qué es noticia')}</span>${esc(cap(L(it, 'porque', it.importancia?.porque)))}.</p>
@@ -86,7 +92,7 @@ function renderNews(d) {
   const sig = items.filter(it => it.importancia).length;
   more.querySelector('summary').textContent = t('Ver todo lo detectado en {days} días ({n}{noticias})', { days, n: items.length, noticias: sig ? ', ' + tn(sig, ['{n} noticia', '{n} noticias']) : '' });
   const link = it => it.ficha ? ` <a href="${esc(it.ficha)}">${/^#modelos/.test(it.ficha) ? t('Abrir el modelo') : t('Ver la ficha')}</a>` : '';
-  $('#hoy-all-list').innerHTML = items.map(it => `<li><span>${esc(fmtDate(it.detected || it.date))}</span><span>${it.importancia ? `<span class="tag k-noticia">${t('Noticia')}</span> ` : ''}<b>${esc(kind(it.kind))}.</b> ${esc(L(it, 'what'))}${link(it)}</span>${foot(it, [L(it, 'what')])}</li>`).join('');
+  $('#hoy-all-list').innerHTML = items.map(it => `<li><span>${esc(fmtDate(it.detected || it.date))}</span><span>${logo(fichaModel(d, it.ficha))}${it.importancia ? `<span class="tag k-noticia">${t('Noticia')}</span> ` : ''}<b>${esc(kind(it.kind))}.</b> ${esc(L(it, 'what'))}${link(it)}</span>${foot(it, [L(it, 'what')])}</li>`).join('');
 }
 
 const priceBy = m => priceBasis(m) ? `, ${esc(priceBasis(m))}` : '';
@@ -111,7 +117,7 @@ function renderKPIs(d, gapPts) {
     let delta = '';
     if (prevLead && prevLead.id !== m.id && prevLead.ii !== undefined) delta = ` ${t('Antes: {name} ({num}).', { name: esc(prev.models[prevLead.id]?.n || prevLead.id), num: num(prevLead.ii) })}`;
     const ep = eci(m) !== null ? ` ${t('ECI en Epoch AI: {fact}.', { fact: fact(m.epoch.eci, v => num(v)) })}` : '';
-    return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small">${modelLink(d, m.id, m.name)}${sinApiTag(m)}</span>
+    return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small lead">${logo(m, true)}<span>${modelLink(d, m.id, m.name)}${sinApiTag(m)}</span></span>
       <span class="s">${t('{lab} · índice AA {fact}{cfg}.', { lab: esc(m.lab.name), fact: fact(capFact(m), v => num(v)), cfg: aaConfig(m) ? ` (${quote(esc(aaConfig(m)))})` : '' })}${m.weights.announced ? ` ${t('Pesos anunciados en su descripción de OpenRouter{since}; aún no se pueden descargar.', { since: m.weights.since ? ` ${t('desde el {fmtDate}', { fmtDate: esc(fmtDate(m.weights.since)) })}` : '' })}` : ''}${ep}${delta}${dl && m === lo ? ` ${t('Con pesos ya descargables, el mejor es {modelLink} ({name}), índice AA {fact}.', { modelLink: modelLink(d, dl.id, dl.name), name: esc(dl.lab.name), fact: fact(capFact(dl), v => num(v)) })}` : ''}</span></div>`;
   };
 

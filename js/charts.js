@@ -501,7 +501,8 @@ function watchWidth(el, redraw) {
 }
 
 /* ── Barras horizontales ────────────────────────────────────────────────── */
-/* rows: [{ label, v, cls?, tip, value? }]; ref: { v, label } dibuja una línea de referencia (p. ej. saturación al 90 %). */
+/* rows: [{ label, v, cls?, tip, value?, icon? }]; ref: { v, label } dibuja una línea de referencia (p. ej. saturación al 90 %).
+   icon: ruta de un logo, que va en un recuadro delante de la etiqueta; si otras filas lo tienen y ésta no, el recuadro lleva «?». */
 export function hbars(el, rows, opts = {}) {
   const { fmt = v => num(v, 0), max = null, ref = null, aria = '', right = null } = opts;
   if (!rows.length) { el.innerHTML = `<div class="chart-empty">${t('Sin datos.')}</div>`; return false; }
@@ -509,8 +510,9 @@ export function hbars(el, rows, opts = {}) {
   const W = fitWidth(el), nw = isNarrow(el, 480), rowH = nw ? 46 : 30;
   // En estrecho, cada etiqueta va encima de su barra, a todo lo ancho, y el margen derecho se ajusta al valor más largo.
   const longest = Math.max(...rows.map(r => String(r.value ?? fmt(r.v)).length));
+  const ic = rows.some(r => r.icon), IS = nw ? 16 : 22, IG = ic ? IS + 8 : 0;   // lado del recuadro del logo y hueco que ocupa
   const G = nw ? { W, L: 4, R: Math.min(Math.round(W * 0.4), Math.round(longest * 7.6 + 14)), T: ref ? 22 : 6, B: 8, cw: 7.2 }
-    : { W, L: Math.min(250, Math.round(W * 0.3)), R: right ?? Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8, cw: 8 };
+    : { W, L: Math.min(250 + IG, Math.round(W * 0.3)), R: right ?? Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8, cw: 8 };
   const H = G.T + rows.length * rowH + G.B;
   const top = max ?? Math.max(...rows.map(r => r.v), ref?.v ?? 0);
   const X = v => G.L + Math.max(0, v) / (top || 1) * (G.W - G.L - G.R);
@@ -523,8 +525,14 @@ export function hbars(el, rows, opts = {}) {
   const targets = rows.map((r, i) => {
     const y = G.T + i * rowH, by = nw ? y + 21 : y + 5, bh = nw ? 18 : rowH - 10;
     s += `<g data-k="${i}" class="bar ${r.cls || ''}"><rect class="bar-bg" x="0" y="${y}" width="${G.W}" height="${rowH}"/>`;
-    if (nw) s += `<text class="bar-l" x="${G.L}" y="${y + 15}">${esc(fitText(r.label, Math.floor((G.W - G.L) / G.cw)))}</text>`;
-    else s += `<text class="bar-l" x="${G.L - 10}" y="${y + rowH / 2 + 5}" text-anchor="end">${esc(fitText(r.label, Math.floor((G.L - 14) / G.cw)))}</text>`;
+    if (ic) {
+      const ix = nw ? G.L : G.L - 10 - IS, iy = nw ? y + 2 : y + (rowH - IS) / 2, p = nw ? 2 : 3;
+      s += `<rect class="logo-bg" x="${ix}" y="${iy}" width="${IS}" height="${IS}"/>`;
+      s += r.icon ? `<image href="${esc(r.icon)}" x="${ix + p}" y="${iy + p}" width="${IS - 2 * p}" height="${IS - 2 * p}"/>`
+        : `<text class="logo-q" x="${ix + IS / 2}" y="${iy + IS / 2 + 4}" text-anchor="middle">?</text>`;
+    }
+    if (nw) s += `<text class="bar-l" x="${G.L + IG}" y="${y + 15}">${esc(fitText(r.label, Math.floor((G.W - G.L - IG) / G.cw)))}</text>`;
+    else s += `<text class="bar-l" x="${G.L - 10 - IG}" y="${y + rowH / 2 + 5}" text-anchor="end">${esc(fitText(r.label, Math.floor((G.L - 14 - IG) / G.cw)))}</text>`;
     s += `<rect class="bar-v" x="${G.L}" y="${by}" width="${Math.max(1.5, X(r.v) - G.L).toFixed(1)}" height="${bh}"/>`;
     s += `<text class="bar-n" x="${(X(r.v) + 8).toFixed(1)}" y="${by + bh / 2 + 5}">${esc(r.value ?? fmt(r.v))}</text></g>`;
     return { box: [0, y, G.W, y + rowH], html: r.tip || tip(r.label, [[t('Valor'), r.value ?? fmt(r.v)]]) };

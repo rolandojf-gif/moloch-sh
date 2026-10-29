@@ -1,6 +1,7 @@
 /* Vista «Lanzamientos»: por modelo, qué etapas constan (anuncio, acceso restringido, API pública, pesos) y con qué fuente. */
 import { t, tn, tr, L } from './i18n.js';
 import { esc, src, weightsTag, provLine, fmtDate, dateFmt, num, ii, eci, aaConfig, nd, quote } from './fmt.js';
+import { logo } from './logos.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -52,7 +53,7 @@ function cardFor(m, curated) {
     html: `<article class="rel">
       <div class="rel-date">${esc(fmtDate(latest))}</div>
       <div>
-        <h3><a class="m-open" href="#modelos/${esc(m.id)}" title="${t('Abrir su ficha en Modelos')}">${esc(m.name)}</a> ${weightsTag(m)}${identity}</h3>
+        <h3>${logo(m)}<a class="m-open" href="#modelos/${esc(m.id)}" title="${t('Abrir su ficha en Modelos')}">${esc(m.name)}</a> ${weightsTag(m)}${identity}</h3>
         <div class="m-lab">${esc(m.lab.name)}</div>
         <div class="stages">${STAGES.filter(([k]) => st[k]).sort((a, b) => st[a[0]].date.localeCompare(st[b[0]].date)).map(([k, label]) =>
           `<div class="stage yes"><span class="lbl">${label}</span>${esc(fmtDate(st[k].date))}${st[k].html}${st[k].note ? `<span class="m-sub">${esc(st[k].note)}</span>` : ''}</div>`).join('')}</div>
