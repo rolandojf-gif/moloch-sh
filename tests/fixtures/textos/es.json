@@ -1243,7 +1243,7 @@
    "Cambia la valoración del observatorio de un hito de AI 2027.",
    "Un modelo nuevo (también uno que AA puntúa antes de que tenga API pública), o uno que recibe su primera puntuación de AA, entra en el top 20 del índice de AA. Su llegada posterior a OpenRouter no vuelve a contar.",
    "Publica pesos abiertos un modelo del top 20 del índice de AA.",
-   "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa.",
+   "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa, ni un precio que va y vuelve: el nuevo ya visto en los 14 días anteriores o el anterior que vuelve en los 14 siguientes.",
    "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos 1 punto ECI, o potencia, chips o ingresos que cambian al menos un 10 %.",
    "Cambia el modelo más usado en OpenRouter en los últimos 7 días."
   ]
@@ -1255,7 +1255,7 @@
   "Cambia la valoración del observatorio de un hito de AI 2027.",
   "Un modelo nuevo (también uno que AA puntúa antes de que tenga API pública), o uno que recibe su primera puntuación de AA, entra en el top 20 del índice de AA. Su llegada posterior a OpenRouter no vuelve a contar.",
   "Publica pesos abiertos un modelo del top 20 del índice de AA.",
-  "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa.",
+  "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa, ni un precio que va y vuelve: el nuevo ya visto en los 14 días anteriores o el anterior que vuelve en los 14 siguientes.",
   "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos 1 punto ECI, o potencia, chips o ingresos que cambian al menos un 10 %.",
   "Cambia el modelo más usado en OpenRouter en los últimos 7 días."
  ]

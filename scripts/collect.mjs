@@ -31,7 +31,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { collectIndicators } from './indicadores.mjs';
 import { aaRace, aaCoverage } from '../js/fmt.js';
-import { detectChanges, mergeLog, snapshotExtras, indSnapshot, vigilados } from './cambios.mjs';
+import { detectChanges, mergeLog, snapshotExtras, indSnapshot, vigilados, labPrices, vaiven, PRICE_BACK_DAYS } from './cambios.mjs';
 import { enrich, parte, rss } from './parte.mjs';
 import { AVISOS, failedStatus } from './textos.mjs';
 import { norm, matchAA, aaBase, aaOnlyCandidates } from './emparejar.mjs';
@@ -862,9 +862,11 @@ async function main() {
   // Serie diaria compacta para los gráficos de evolución: un registro por instantánea guardada.
   const serie = [];
   const firstSeen = new Map();   // primera recogida en la que figura cada modelo: su fecha de detección
+  const snaps = [];              // todas las instantáneas, para el vaivén de precios (scripts/cambios.mjs)
   for (const f of histFiles.slice().sort()) {
     const h = f === `${TODAY}.json` ? snap : await readJSON(path.join(DATA, 'history', f));
     if (!h?.models) continue;
+    snaps.push(h);
     for (const id of Object.keys(h.models)) if (!firstSeen.has(id)) firstSeen.set(id, h.date);
     const best = w => Object.entries(h.models).filter(([, x]) => (x.w === w || (w === 'o' && x.w === 'a')) && x.ii !== null && x.ii !== undefined).sort((x, y) => y[1].ii - x[1].ii)[0];
     const lead = (id, w) => { const e = id && h.models[id] ? [id, h.models[id]] : best(w); return e ? { id: e[0], n: e[1].n, ii: e[1].ii } : null; };
@@ -895,7 +897,7 @@ async function main() {
     method: {
       capability: `En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index${aaVersion ? ` v${aaVersion}` : ''}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.`,
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',
-      price: 'Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado y con su cuantización cuando OpenRouter la publica (puede no ser la versión que evalúan AA o Epoch). El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio.',
+      price: 'Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado y con su cuantización cuando OpenRouter la publica (puede no ser la versión que evalúan AA o Epoch). El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio, y no cuando el precio nuevo ya se vio en los 14 días anteriores o el anterior vuelve en los 14 siguientes: algunos laboratorios cobran distinto según la hora.',
       weights: '«Abiertos» con un repositorio público en Hugging Face, enlazado por OpenRouter o con el mismo nombre en la organización del laboratorio. Sin repositorio, la clasificación de Epoch si la hay; si no, «abiertos · anunciados» cuando su descripción de OpenRouter lo presenta como de pesos abiertos (no consta quién la redacta, así que no se atribuye al laboratorio; cuenta como abierto, aunque aún no se pueda descargar), y si no, «cerrados», marcado como inferido. La licencia procede de la ficha de Hugging Face.',
       speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la latencia (tiempo hasta el primer token) incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
       window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días, y los que Artificial Analysis ya puntúa sin que estén en OpenRouter (publicados en los últimos ${AA_ONLY_DAYS} días), marcados «sin API pública» y sin precio hasta que llegan.`
@@ -928,6 +930,12 @@ async function main() {
   const exclIds = new Set((orModels.excluded || []).map(e => e.id));
   evLog.events = evLog.events.filter(e => !exclIds.has(e.model));
   evLog.events = mergeLog(evLog.events, changeItems, TODAY);
+  // Precios que van y vuelven (según la hora a la que se recoge): no son cambios. También retira los ya registrados.
+  const seenPrices = labPrices(snaps), vaivenes = evLog.events.filter(e => vaiven(e, seenPrices));
+  if (vaivenes.length) {
+    evLog.events = evLog.events.filter(e => !vaivenes.includes(e));
+    log(`precios que van y vuelven (${PRICE_BACK_DAYS} días), no se registran: ${vaivenes.map(e => `${e.model} ${e.detected}`).join(' | ')}`);
+  }
   // Parte diario: titular, importancia según la regla fija y consecuencia de cada cambio (scripts/parte.mjs).
   const carrera = await readJSON(path.join(DATA, 'curated/carrera.json'));
   const P = {

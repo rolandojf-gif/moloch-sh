@@ -6,34 +6,20 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.xml" rel="self" type="application/rss+xml"/>
   <description>Las noticias de la carrera por la IA que detecta cada día el observatorio, elegidas con una regla fija. Cifras de OpenRouter, Artificial Analysis, Epoch AI, Hugging Face y METR, con su fuente.</description>
   <language>es</language>
-  <lastBuildDate>Thu, 29 Oct 2026 12:47:26 GMT</lastBuildDate>
+  <lastBuildDate>Thu, 29 Oct 2026 15:05:11 GMT</lastBuildDate>
   <item>
     <title>Gemini 4 Carbon pasa a ser el mejor modelo cerrado del índice de AA</title>
     <link>https://moloch-sh.netlify.app/#modelos/google/gemini-4-carbon</link>
     <guid isPermaLink="false">lider|closed|google/gemini-4-carbon|2026-10-29</guid>
-    <pubDate>Thu, 29 Oct 2026 12:47:26 GMT</pubDate>
+    <pubDate>Thu, 29 Oct 2026 15:05:11 GMT</pubDate>
     <description>Gemini 4 Carbon pasa a ser el mejor modelo cerrado del catálogo en el índice de inteligencia de Artificial Analysis v5: 59,4 puntos, 1 más que Claude Opus 5.5 (58,4). Aún no tiene API pública: no está en OpenRouter. La distancia entre el mejor cerrado y el mejor abierto en el índice de AA queda en 13,4 puntos (12,4 el día anterior). No equivale a meses de retraso. Está en el parte porque cambia el mejor modelo cerrado con la misma versión del índice de AA y 1 puntos de margen (mínimo 1). Detectado el 2026-10-29. Fuente: Artificial Analysis (https://artificialanalysis.ai/models/gemini-4-carbon). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
     <title>Gemini 4 Carbon (Google) entra en el índice de AA en el puesto 1, aún sin API pública</title>
     <link>https://moloch-sh.netlify.app/#modelos/google/gemini-4-carbon</link>
     <guid isPermaLink="false">sinapi|google/gemini-4-carbon</guid>
-    <pubDate>Thu, 29 Oct 2026 12:47:26 GMT</pubDate>
+    <pubDate>Thu, 29 Oct 2026 15:05:11 GMT</pubDate>
     <description>Gemini 4 Carbon (Google) aparece puntuado en Artificial Analysis con 59,4 puntos, aún sin API pública: no está en OpenRouter. Índice de AA 59,4: supera en 1 puntos al mejor cerrado anterior (Claude Opus 5.5). Puesto 1 de 29. Aún no está en OpenRouter: sin API pública ni precio. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 1 de 29). Publicado el 2026-10-28; detectado el 2026-10-29. Fuente: Artificial Analysis (https://artificialanalysis.ai/models/gemini-4-carbon). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>DeepSeek reduce a la mitad el precio de DeepSeek V4.1 Flash 1017</title>
-    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4.1-flash-1017</link>
-    <guid isPermaLink="false">precio|deepseek/deepseek-v4.1-flash-1017|2026-10-29</guid>
-    <pubDate>Thu, 29 Oct 2026 12:47:26 GMT</pubDate>
-    <description>DeepSeek baja el precio de DeepSeek V4.1 Flash 1017 en OpenRouter: entrada de 0,3 $ a 0,15 $ y salida de 1,2 $ a 0,6 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,525 $ a 0,262 $ por millón de tokens. Está en el parte porque el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %). Detectado el 2026-10-29. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers).</description>
-  </item>
-  <item>
-    <title>DeepSeek reduce a la mitad el precio de DeepSeek V4 Pro 0813</title>
-    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4-pro-0813</link>
-    <guid isPermaLink="false">precio|deepseek/deepseek-v4-pro-0813|2026-10-29</guid>
-    <pubDate>Thu, 29 Oct 2026 12:47:26 GMT</pubDate>
-    <description>DeepSeek baja el precio de DeepSeek V4 Pro 0813 en OpenRouter: entrada de 1,32 $ a 0,66 $ y salida de 3,96 $ a 1,98 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 1,98 $ a 0,99 $ por millón de tokens. Está en el parte porque el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %). Detectado el 2026-10-29. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers).</description>
   </item>
   <item>
     <title>Artificial Analysis estrena la versión 5 de su índice de inteligencia</title>
@@ -43,39 +29,11 @@
     <description>Artificial Analysis pasa su índice de inteligencia de la versión 4.3 a la 5: las puntuaciones de una y otra versión no se comparan. Las puntuaciones de una versión y otra no se comparan: la evolución diaria de los líderes empieza de nuevo con esta versión. Está en el parte porque Artificial Analysis cambia la versión de su índice. Detectado el 2026-10-28. Fuente: Artificial Analysis (https://artificialanalysis.ai/leaderboards/models). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
-    <title>DeepSeek duplica el precio de DeepSeek V4.1 Flash 1017</title>
-    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4.1-flash-1017</link>
-    <guid isPermaLink="false">precio|deepseek/deepseek-v4.1-flash-1017|2026-10-27</guid>
-    <pubDate>Tue, 27 Oct 2026 03:54:35 GMT</pubDate>
-    <description>DeepSeek sube el precio de DeepSeek V4.1 Flash 1017 en OpenRouter: entrada de 0,15 $ a 0,3 $ y salida de 0,6 $ a 1,2 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,262 $ a 0,525 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $. Está en el parte porque el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %). Detectado el 2026-10-27. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>DeepSeek duplica el precio de DeepSeek V4 Pro 0813</title>
-    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4-pro-0813</link>
-    <guid isPermaLink="false">precio|deepseek/deepseek-v4-pro-0813|2026-10-27</guid>
-    <pubDate>Tue, 27 Oct 2026 03:54:35 GMT</pubDate>
-    <description>DeepSeek sube el precio de DeepSeek V4 Pro 0813 en OpenRouter: entrada de 0,66 $ a 1,32 $ y salida de 1,98 $ a 3,96 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,99 $ a 1,98 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $. Está en el parte porque el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %). Detectado el 2026-10-27. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>Tencent sube un 60 % el precio de Hy3</title>
-    <link>https://moloch-sh.netlify.app/#modelos/tencent/hy3</link>
-    <guid isPermaLink="false">precio|tencent/hy3|2026-10-27</guid>
-    <pubDate>Tue, 27 Oct 2026 03:54:35 GMT</pubDate>
-    <description>Tencent sube el precio de Hy3 en OpenRouter: entrada de 0,0825 $ a 0,132 $ y salida de 0,33 $ a 0,528 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,144 $ a 0,231 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 25,3), 2 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $. Está en el parte porque el propio laboratorio sube su precio combinado un 60 % (umbral: +50 % o −33 %). Detectado el 2026-10-27. Fuente: OpenRouter (https://openrouter.ai/tencent/hy3/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
     <title>GPT-6.1 Terra (OpenAI) llega a OpenRouter: puesto 6 del índice de AA</title>
     <link>https://moloch-sh.netlify.app/#modelos/openai/gpt-6.1-terra</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.1-terra</guid>
     <pubDate>Mon, 26 Oct 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter. Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 29. Precio combinado 1 $ por millón de tokens. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 6 de 29). Publicado el 2026-10-26; detectado el 2026-10-26. Fuente: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>Tencent baja un 38 % el precio de Hy3</title>
-    <link>https://moloch-sh.netlify.app/#modelos/tencent/hy3</link>
-    <guid isPermaLink="false">precio|tencent/hy3|2026-10-26</guid>
-    <pubDate>Mon, 26 Oct 2026 19:37:57 GMT</pubDate>
-    <description>Tencent baja el precio de Hy3 en OpenRouter: entrada de 0,132 $ a 0,0825 $ y salida de 0,528 $ a 0,33 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,231 $ a 0,144 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 25,3), 2 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $. Está en el parte porque el propio laboratorio baja su precio combinado un 38 % (umbral: +50 % o −33 %). Detectado el 2026-10-26. Fuente: OpenRouter (https://openrouter.ai/tencent/hy3/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+    <description>GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter. Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 29. Precio combinado 2 $ por millón de tokens. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 6 de 29). Publicado el 2026-10-26; detectado el 2026-10-26. Fuente: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
     <title>Kimi K3.1 Pro pasa a ser el mejor modelo abierto del índice de AA</title>
@@ -104,41 +62,6 @@
     <guid isPermaLink="false">precio|minimax/minimax-m3.1-flash|2026-10-23</guid>
     <pubDate>Fri, 23 Oct 2026 04:25:22 GMT</pubDate>
     <description>Minimax empieza a cobrar MiniMax M3.1 Flash en OpenRouter: 0,15 $ de entrada y 0,6 $ de salida por millón de tokens. Hasta ahora era gratis. Su precio combinado en OpenRouter pasa de gratis a 0,262 $ por millón de tokens. De los 10 modelos con un índice de AA parecido (±2 puntos de su 42,7), 3 cuestan menos; el más barato es Ling 3.1 Flash, a 0,112 $. Está en el parte porque el propio laboratorio empieza a cobrarlo en OpenRouter, donde era gratis. Detectado el 2026-10-23. Fuente: OpenRouter (https://openrouter.ai/minimax/minimax-m3.1-flash/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>DeepSeek reduce a la mitad el precio de DeepSeek V4.1 Flash 1017</title>
-    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4.1-flash-1017</link>
-    <guid isPermaLink="false">precio|deepseek/deepseek-v4.1-flash-1017|2026-10-23</guid>
-    <pubDate>Fri, 23 Oct 2026 04:25:22 GMT</pubDate>
-    <description>DeepSeek baja el precio de DeepSeek V4.1 Flash 1017 en OpenRouter: entrada de 0,3 $ a 0,15 $ y salida de 1,2 $ a 0,6 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,525 $ a 0,262 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $. Está en el parte porque el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %). Detectado el 2026-10-23. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>DeepSeek reduce a la mitad el precio de DeepSeek V4 Pro 0813</title>
-    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4-pro-0813</link>
-    <guid isPermaLink="false">precio|deepseek/deepseek-v4-pro-0813|2026-10-23</guid>
-    <pubDate>Fri, 23 Oct 2026 04:25:22 GMT</pubDate>
-    <description>DeepSeek baja el precio de DeepSeek V4 Pro 0813 en OpenRouter: entrada de 1,32 $ a 0,66 $ y salida de 3,96 $ a 1,98 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 1,98 $ a 0,99 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $. Está en el parte porque el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %). Detectado el 2026-10-23. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>DeepSeek duplica el precio de DeepSeek V4.1 Flash 1017</title>
-    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4.1-flash-1017</link>
-    <guid isPermaLink="false">precio|deepseek/deepseek-v4.1-flash-1017|2026-10-22</guid>
-    <pubDate>Thu, 22 Oct 2026 08:22:56 GMT</pubDate>
-    <description>DeepSeek sube el precio de DeepSeek V4.1 Flash 1017 en OpenRouter: entrada de 0,15 $ a 0,3 $ y salida de 0,6 $ a 1,2 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,262 $ a 0,525 $ por millón de tokens. De los 8 modelos con un índice de AA parecido (±2 puntos de su 45,1), 1 cuesta menos; el más barato es Claude Haiku 5.5, a 0,2 $. Está en el parte porque el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %). Detectado el 2026-10-22. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>DeepSeek duplica el precio de DeepSeek V4 Pro 0813</title>
-    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4-pro-0813</link>
-    <guid isPermaLink="false">precio|deepseek/deepseek-v4-pro-0813|2026-10-22</guid>
-    <pubDate>Thu, 22 Oct 2026 08:22:56 GMT</pubDate>
-    <description>DeepSeek sube el precio de DeepSeek V4 Pro 0813 en OpenRouter: entrada de 0,66 $ a 1,32 $ y salida de 1,98 $ a 3,96 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,99 $ a 1,98 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 36), 5 cuestan menos; el más barato es DeepSeek V4 Flash 0731, a 0,075 $. Está en el parte porque el propio laboratorio sube su precio combinado un 100 % (umbral: +50 % o −33 %). Detectado el 2026-10-22. Fuente: OpenRouter (https://openrouter.ai/deepseek/deepseek-v4-pro-0813/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>Tencent sube un 60 % el precio de Hy3</title>
-    <link>https://moloch-sh.netlify.app/#modelos/tencent/hy3</link>
-    <guid isPermaLink="false">precio|tencent/hy3|2026-10-22</guid>
-    <pubDate>Thu, 22 Oct 2026 08:22:56 GMT</pubDate>
-    <description>Tencent sube el precio de Hy3 en OpenRouter: entrada de 0,0825 $ a 0,132 $ y salida de 0,33 $ a 0,528 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,144 $ a 0,231 $ por millón de tokens. De los 17 modelos con un índice de AA parecido (±2 puntos de su 25,3), 2 cuestan menos; el más barato es Ling 3.0 Flash VL, a 0,09 $. Está en el parte porque el propio laboratorio sube su precio combinado un 60 % (umbral: +50 % o −33 %). Detectado el 2026-10-22. Fuente: OpenRouter (https://openrouter.ai/tencent/hy3/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
 </channel>
 </rss>

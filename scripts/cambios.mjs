@@ -342,6 +342,31 @@ function migrate(e) {
 
 /* Registro acumulado: lo detectado hoy se recalcula entero en cada recogida del día (siempre contra la misma base),
    así que sustituye a lo registrado antes hoy; lo de días anteriores no se toca. */
+/* Vaivén de precios: algunos laboratorios cobran en OpenRouter un precio u otro según la hora (DeepSeek alterna 0,15/0,6 $ y
+   0,3/1,2 $ varias veces al día), y una recogida a otra hora lo leía como subida o bajada. Un cambio de precio no cuenta si
+   el precio nuevo ya se vio en ese modelo en los PRICE_BACK_DAYS días anteriores, o si el anterior vuelve en los siguientes.
+   labPrices reúne, de las instantáneas diarias, el precio del laboratorio y sus tarifas: id → [{ d, pairs }]. */
+export const PRICE_BACK_DAYS = 14;
+const pk = (i, o) => `${Math.round(i * 1e6)}|${Math.round(o * 1e6)}`;
+export function labPrices(snaps) {
+  const seen = new Map();
+  for (const h of snaps) for (const [id, x] of Object.entries(h?.models || {})) {
+    if (x.pb !== 'laboratorio') continue;
+    const pairs = new Set((x.lp || []).map(([i, o]) => pk(i, o)));
+    if (x.in != null && x.out != null) pairs.add(pk(x.in, x.out));
+    if (!seen.has(id)) seen.set(id, []);
+    seen.get(id).push({ d: h.date, pairs });
+  }
+  return seen;
+}
+export function vaiven(e, seen) {
+  if (e.kind !== 'precio' || !e.data?.from || !e.data?.to) return false;
+  const D = e.detected, ms = PRICE_BACK_DAYS * 86400e3;
+  const from = new Date(Date.parse(D) - ms).toISOString().slice(0, 10), to = new Date(Date.parse(D) + ms).toISOString().slice(0, 10);
+  const a = pk(e.data.from.in, e.data.from.out), b = pk(e.data.to.in, e.data.to.out);
+  return (seen.get(e.model) || []).some(s => (s.d >= from && s.d < D && s.pairs.has(b)) || (s.d > D && s.d <= to && s.pairs.has(a)));
+}
+
 export function mergeLog(events, items, TODAY) {
   const kept = events.map(migrate).filter(e => e.detected !== TODAY);
   const known = new Set(kept.map(e => e.key));
