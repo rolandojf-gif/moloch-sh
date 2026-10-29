@@ -2,6 +2,7 @@
    evolución de la frontera. */
 import { t, tn, tr, L } from './i18n.js';
 import { esc, fact, src, weightsTag, usd, num, tokens, fmtDate, country, ord, weightsWord, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, aaRace, aaCoverage, coverageText, speed, priceBasis, nd, AA_LINK, sinApiTag, sinApiText } from './fmt.js';
+import { logo, logoUrl } from './logos.js';
 import { frontier, hbars, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -93,7 +94,7 @@ function race(m) {
   const cmp = [m, ...new Map(refs.filter(r => r.x).map(r => [r.x.id, r.x])).values()].slice(0, 3);
   return `<div class="race"><h4>${t('Frente a otros modelos del catálogo')}</h4>
     <p>${t('Puesto')} <b>${rank}</b> ${t('de {length} en el {aaIndexName}{p3}. {p4}', { length: all.length, aaIndexName: esc(aaIndexName(D.catalog.aaIndexVersion)), p3: rankB ? (m.weights.v === 'abiertos' ? t('; {rank} de {length} entre los abiertos', { rank: ord(rankB), length: block.length }) : t('; {rank} de {length} entre los cerrados', { rank: ord(rankB), length: block.length })) : '', p4: myLat ? t('Tarda {num} s en empezar a responder{how}.', { num: num(myLat.v, 2), how: esc(myLat.how) }) : t('Sin dato de latencia.') })}</p>
-    ${refs.length ? `<ul>${refs.map(r => `<li><span class="k">${esc(r.k)}</span>${r.x ? `<a href="#modelos/${esc(r.x.id)}">${esc(r.x.name)}</a> <span class="m-lab">${esc(r.x.lab.name)} · ${esc(weightsWord(r.x.weights.v))}</span><span class="d">${dist(r.x)}</span>` : esc(r.t)}</li>`).join('')}</ul>` : ''}
+    ${refs.length ? `<ul>${refs.map(r => `<li><span class="k">${esc(r.k)}</span>${r.x ? `${logo(r.x)}<a href="#modelos/${esc(r.x.id)}">${esc(r.x.name)}</a> <span class="m-lab">${esc(r.x.lab.name)} · ${esc(weightsWord(r.x.weights.v))}</span><span class="d">${dist(r.x)}</span>` : esc(r.t)}</li>`).join('')}</ul>` : ''}
     ${cmp.length > 1 ? `<p class="m-link"><a href="#modelos/comparar/${cmp.map(x => esc(x.id)).join(',')}">${cmp.length > 2 ? t('Comparar con ellos') : t('Comparar con él')}</a></p>` : ''}
     <p class="note">${t('Describe dónde queda este modelo en la carrera, no es una recomendación. Entre paréntesis, la diferencia con este modelo. Latencia: segundos hasta el primer token de la respuesta según AA, con la configuración que obtiene el índice e incluido el tiempo de pensar; por eso unos modelos tardan minutos y otros segundos en llegar a un índice parecido. Si AA no la mide, el primer token del proveedor más rápido de OpenRouter; sólo se comparan latencias de la misma fuente.')}</p>
   </div>`;
@@ -171,7 +172,7 @@ function renderTable() {
     const dis = !checked && state.cmp.length >= 3;
     return `<tr class="row" data-id="${esc(m.id)}" aria-expanded="${open}" tabindex="0">
       <td class="c-sel" data-label="${t('Comparar')}"><input type="checkbox" aria-label="${t('Comparar {name}', { name: esc(m.name) })}" data-cmp="${esc(m.id)}"${checked ? ' checked' : ''}${dis ? ' disabled' : ''}></td>
-      <td class="c-name"><div class="m-name">${esc(m.name)}${sinApiTag(m)}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></td>
+      <td class="c-name"><div class="m-id">${logo(m)}<div><div class="m-name">${esc(m.name)}${sinApiTag(m)}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></div></div></td>
       <td data-label="${t('Pesos')}">${weightsBadge(m)}${m.license.v && m.weights.v === 'abiertos' ? `<span class="m-sub">${esc(tr(m.license.v))}</span>` : ''}</td>
       <td class="num" data-label="${t('Inteligencia (AA)')}">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfigShort(m) ? `<span class="m-sub" title="${t('Configuración de AA con mayor índice: {aaConfig}', { aaConfig: esc(aaConfig(m)) })}">${esc(aaConfigShort(m))}</span>` : ''}` : nd()}</td>
       <td class="num" data-label="${t('ECI (Epoch)')}">${m.epoch ? `<span class="big">${fact(m.epoch.eci, v => num(v))}</span>` : nd()}</td>
@@ -207,7 +208,7 @@ function renderCompare() {
   ];
   const cols = ms.length;
   let html = `<div class="compare-head"><span>${t('Comparación ({cols} de 3)', { cols })}</span><a href="#modelos/comparar/${ms.map(m => esc(m.id)).join(',')}" title="${t('Dirección propia de esta comparación, para compartirla')}">${t('Enlace a esta comparación')}</a><button type="button" id="cmp-clear">${t('Vaciar')}</button></div>`;
-  html += `<div class="cmp-grid" style="grid-template-columns: minmax(110px, .8fr) repeat(${cols}, minmax(140px, 1fr))"><div class="rh ch"></div>${ms.map(m => `<div class="ch">${esc(m.name)}<span class="m-sub">${esc(m.lab.name)}</span></div>`).join('')}`;
+  html += `<div class="cmp-grid" style="grid-template-columns: minmax(110px, .8fr) repeat(${cols}, minmax(140px, 1fr))"><div class="rh ch"></div>${ms.map(m => `<div class="ch"><div class="m-id">${logo(m)}<div>${esc(m.name)}<span class="m-sub">${esc(m.lab.name)}</span></div></div></div>`).join('')}`;
   for (const [label, show, val, better, free] of rowsDef) {
     let bestIdx = -1;
     if (val && cols > 1) {
@@ -265,8 +266,8 @@ function renderUso(u, el, note, dias) {
   }
   const inCat = new Set(D.catalog.models.map(m => m.id));
   hbars(el, u.top.map(r => ({
-    label: `${r.rank}. ${usoName(r)}${/:free$/.test(r.slug) ? ' :free' : ''}`, v: r.tokens, value: `${tokB(r.tokens)}${r.share != null ? ` (${num(r.share, 0)} %)` : ''}`,
-    tip: tip(usoName(r), [[t('Tokens en {dias} días', { dias }), t('{tokens} (entrada + salida)', { tokens: tokES(r.tokens) })], [t('Cuota del total de OpenRouter'), r.share != null ? `${num(r.share, 1)} %` : null], [t('Identificador'), r.slug], [t('Variante'), /:free$/.test(r.slug) ? t('gratuita: OpenRouter la cuenta aparte de la de pago') : null], [t('En la tabla de arriba'), r.id && inCat.has(r.id) ? t('sí') : r.id ? t('no (laboratorio no seguido o fuera de la ventana)') : t('no: OpenRouter ya no lo lista')]])
+    label: `${r.rank}. ${usoName(r)}${/:free$/.test(r.slug) ? ' :free' : ''}`, v: r.tokens, icon: logoUrl((r.id || r.slug).split('/')[0], usoName(r)), value: `${tokB(r.tokens)}${r.share != null ? ` (${num(r.share, 0)} %)` : ''}`,
+    tip: tip(usoName(r), [[t('Tokens en {dias} días', { dias }), t('{tokens} (entrada + salida)', { tokens: tokES(r.tokens) })], [t('Cuota del total de OpenRouter'), r.share != null ? `${num(r.share, 1)} %` : null], [t('Identificador'), r.slug], [t('Variante'), /:free$/.test(r.slug) ? t('gratuita: OpenRouter la cuenta aparte de la de pago') : null], [t('En la tabla de arriba'), r.id && inCat.has(r.id) ? t('sí') : r.id ? t('no (laboratorio no seguido o fuera de la ventana)') : t('no: OpenRouter ya no lo lista')]], '', logoUrl((r.id || r.slug).split('/')[0], usoName(r)))
   })), { aria: t('Modelos más usados en OpenRouter en los últimos {dias} días', { dias }), right: 130 });
   note.innerHTML = `<span class="lbl">${t('Cómo leerlo')}</span>${t('B = billones de tokens (un billón es un millón de millones); entre paréntesis, la cuota. Tokens de entrada más salida procesados en OpenRouter del {fmtDate} al {p2} (días UTC completos), sumando el ranking diario. Es el uso en OpenRouter, no en todo el mercado: no cuenta lo que se consume en la API propia de cada laboratorio ni en sus aplicaciones, y los modelos gratuitos o en promoción suben mucho. La cuota es sobre todo el tráfico de OpenRouter esos días. Puede diferir un poco de las páginas de OpenRouter, que usan su propia ventana. Fuente: OpenRouter (', { fmtDate: esc(fmtDate(u.from)), p2: esc(fmtDate(u.to)) })}<a href="${esc(u.url)}" target="_blank" rel="noopener">${t('openrouter.ai/rankings')}</a>${t('), datos hasta el {fmtDate}, CC BY 4.0; consulta {p2}{p3}.', { fmtDate: esc(fmtDate(u.asOf)), p2: esc((u.got || '').slice(0, 10)), p3: u.stale ? t(' (la última consulta falló: se muestra el ranking anterior)') : '' })}`;
 }

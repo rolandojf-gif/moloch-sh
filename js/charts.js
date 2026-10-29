@@ -2,6 +2,7 @@
    sobre el elemento más cercano al cursor (o al dedo) y etiquetas fijas para los puntos que importan. */
 import { t, tn, tr } from './i18n.js';
 import { esc, usd, num, fmtDate, dateFmt } from './fmt.js';
+import { logoFor } from './logos.js';
 
 /* ── Ventana emergente ──────────────────────────────────────────────────── */
 let tipEl = null, hot = null;
@@ -20,11 +21,12 @@ function tipBox() {
 }
 export function hideTip() { if (tipEl) tipEl.hidden = true; hot?.classList.remove('hot'); hot = null; }
 
-/* Contenido al estilo de Epoch: título y filas «etiqueta · valor» en texto; las filas sin valor se omiten. */
-export function tip(title, rows, foot = '') {
+/* Contenido al estilo de Epoch: título y filas «etiqueta · valor» en texto; las filas sin valor se omiten.
+   icon: ruta del logo del modelo o laboratorio, delante del título. */
+export function tip(title, rows, foot = '', icon = null) {
   const body = rows.filter(r => r && r[1] !== null && r[1] !== undefined && r[1] !== '')
     .map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(String(v))}</td></tr>`).join('');
-  return `<div class="tt-title">${esc(title)}</div>${body ? `<table>${body}</table>` : ''}${foot ? `<div class="tt-foot">${esc(foot)}</div>` : ''}`;
+  return `<div class="tt-title">${icon ? `<span class="logo"><img src="${esc(icon)}" alt="" width="16" height="16"></span>` : ''}<span>${esc(title)}</span></div>${body ? `<table>${body}</table>` : ''}${foot ? `<div class="tt-foot">${esc(foot)}</div>` : ''}`;
 }
 
 function placeTip(e) {
@@ -368,7 +370,7 @@ export function frontier(el, records, opts = {}) {
         [t('Pesos'), m.g === 'o' ? (m.anun ? t('abiertos (anunciados en su descripción de OpenRouter; aún no descargables)') : t('abiertos')) : m.inf ? t('cerrados (inferido: no hay pesos publicados)') : t('cerrados')],
         [t('Organización'), m.org || null],
         [t('Nuevo récord'), m.rec ? t('sí, mejor {g} hasta esa fecha', { g: m.g === 'o' ? t('abierto') : t('cerrado') }) : t('no')]
-      ])
+      ], '', logoFor({ id: m.id, name: m.n, org: m.org }))
     }));
     // Etiquetas fijas: el líder actual de cada grupo y los saltos más grandes, sin pisarse; al acercar, también el resto visible.
     const leaders = [], jumps = [], rest = [];
@@ -500,8 +502,17 @@ function watchWidth(el, redraw) {
   ro.observe(el); el._ro = ro;
 }
 
+/* Logo de una fila en un recuadro claro de lado n; sin logo, «?». */
+function iconSvg(x, y, n, icon) {
+  const p = n < 20 ? 2 : 3;
+  return `<rect class="logo-bg" x="${x}" y="${y}" width="${n}" height="${n}"/>` + (icon
+    ? `<image href="${esc(icon)}" x="${x + p}" y="${y + p}" width="${n - 2 * p}" height="${n - 2 * p}"/>`
+    : `<text class="logo-q" x="${x + n / 2}" y="${y + n / 2 + 4}" text-anchor="middle">?</text>`);
+}
+
 /* ── Barras horizontales ────────────────────────────────────────────────── */
-/* rows: [{ label, v, cls?, tip, value? }]; ref: { v, label } dibuja una línea de referencia (p. ej. saturación al 90 %). */
+/* rows: [{ label, v, cls?, tip, value?, icon? }]; ref: { v, label } dibuja una línea de referencia (p. ej. saturación al 90 %).
+   icon: ruta de un logo, que va en un recuadro delante de la etiqueta; si otras filas lo tienen y ésta no, el recuadro lleva «?». */
 export function hbars(el, rows, opts = {}) {
   const { fmt = v => num(v, 0), max = null, ref = null, aria = '', right = null } = opts;
   if (!rows.length) { el.innerHTML = `<div class="chart-empty">${t('Sin datos.')}</div>`; return false; }
@@ -509,8 +520,9 @@ export function hbars(el, rows, opts = {}) {
   const W = fitWidth(el), nw = isNarrow(el, 480), rowH = nw ? 46 : 30;
   // En estrecho, cada etiqueta va encima de su barra, a todo lo ancho, y el margen derecho se ajusta al valor más largo.
   const longest = Math.max(...rows.map(r => String(r.value ?? fmt(r.v)).length));
+  const ic = rows.some(r => r.icon), IS = nw ? 16 : 22, IG = ic ? IS + 8 : 0;   // lado del recuadro del logo y hueco que ocupa
   const G = nw ? { W, L: 4, R: Math.min(Math.round(W * 0.4), Math.round(longest * 7.6 + 14)), T: ref ? 22 : 6, B: 8, cw: 7.2 }
-    : { W, L: Math.min(250, Math.round(W * 0.3)), R: right ?? Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8, cw: 8 };
+    : { W, L: Math.min(250, Math.round(W * 0.3)) + IG, R: right ?? Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8, cw: 8 };
   const H = G.T + rows.length * rowH + G.B;
   const top = max ?? Math.max(...rows.map(r => r.v), ref?.v ?? 0);
   const X = v => G.L + Math.max(0, v) / (top || 1) * (G.W - G.L - G.R);
@@ -523,8 +535,9 @@ export function hbars(el, rows, opts = {}) {
   const targets = rows.map((r, i) => {
     const y = G.T + i * rowH, by = nw ? y + 21 : y + 5, bh = nw ? 18 : rowH - 10;
     s += `<g data-k="${i}" class="bar ${r.cls || ''}"><rect class="bar-bg" x="0" y="${y}" width="${G.W}" height="${rowH}"/>`;
-    if (nw) s += `<text class="bar-l" x="${G.L}" y="${y + 15}">${esc(fitText(r.label, Math.floor((G.W - G.L) / G.cw)))}</text>`;
-    else s += `<text class="bar-l" x="${G.L - 10}" y="${y + rowH / 2 + 5}" text-anchor="end">${esc(fitText(r.label, Math.floor((G.L - 14) / G.cw)))}</text>`;
+    if (ic) s += iconSvg(nw ? G.L : G.L - 10 - IS, nw ? y + 2 : y + (rowH - IS) / 2, IS, r.icon);
+    if (nw) s += `<text class="bar-l" x="${G.L + IG}" y="${y + 15}">${esc(fitText(r.label, Math.floor((G.W - G.L - IG) / G.cw)))}</text>`;
+    else s += `<text class="bar-l" x="${G.L - 10 - IG}" y="${y + rowH / 2 + 5}" text-anchor="end">${esc(fitText(r.label, Math.floor((G.L - 14 - IG) / G.cw)))}</text>`;
     s += `<rect class="bar-v" x="${G.L}" y="${by}" width="${Math.max(1.5, X(r.v) - G.L).toFixed(1)}" height="${bh}"/>`;
     s += `<text class="bar-n" x="${(X(r.v) + 8).toFixed(1)}" y="${by + bh / 2 + 5}">${esc(r.value ?? fmt(r.v))}</text></g>`;
     return { box: [0, y, G.W, y + rowH], html: r.tip || tip(r.label, [[t('Valor'), r.value ?? fmt(r.v)]]) };
@@ -593,7 +606,8 @@ export function dotci(el, rows, opts = {}) {
   if (!rows.length) { el.innerHTML = `<div class="chart-empty">${t('Sin datos.')}</div>`; return false; }
   watchWidth(el, () => dotci(el, rows, opts));
   const W = fitWidth(el), rowH = 30, nw = isNarrow(el, 480);
-  const G = nw ? { W, L: Math.round(W * 0.38), R: 16, T: 8, B: 34, cw: 7.2 } : { W, L: Math.min(250, Math.round(W * 0.3)), R: 40, T: 8, B: 34, cw: 8 };
+  const ic = rows.some(r => r.icon), IS = nw ? 18 : 22, IG = ic ? IS + 8 : 0;   // como en hbars: logo delante de la etiqueta
+  const G = nw ? { W, L: Math.round(W * 0.38) + IG, R: 16, T: 8, B: 34, cw: 7.2 } : { W, L: Math.min(250, Math.round(W * 0.3)) + IG, R: 40, T: 8, B: 34, cw: 8 };
   const H = G.T + rows.length * rowH + G.B;
   const lo = Math.floor(Math.min(...rows.map(r => r.lo ?? r.v)) - 1), hi = Math.ceil(Math.max(...rows.map(r => r.hi ?? r.v)) + 1);
   const X = v => G.L + (v - lo) / (hi - lo || 1) * (G.W - G.L - G.R);
@@ -606,8 +620,9 @@ export function dotci(el, rows, opts = {}) {
   const targets = rows.map((r, i) => {
     const y = G.T + i * rowH + rowH / 2;
     s += `<g data-k="${i}" class="ci-row"><rect class="bar-bg" x="0" y="${y - rowH / 2}" width="${G.W}" height="${rowH}"/>`;
-    const max = Math.floor((G.L - 14) / G.cw);
-    s += `<text class="bar-l" x="${G.L - 10}" y="${y + 4}" text-anchor="end">${esc(r.label.length > max ? r.label.slice(0, max - 1) + '…' : r.label)}</text>`;
+    const max = Math.floor((G.L - 14 - IG) / G.cw);
+    if (ic) s += iconSvg(G.L - 10 - IS, y - IS / 2, IS, r.icon);
+    s += `<text class="bar-l" x="${G.L - 10 - IG}" y="${y + 4}" text-anchor="end">${esc(r.label.length > max ? r.label.slice(0, max - 1) + '…' : r.label)}</text>`;
     if (r.lo != null && r.hi != null) s += `<line class="ci" x1="${X(r.lo).toFixed(1)}" x2="${X(r.hi).toFixed(1)}" y1="${y}" y2="${y}"/>`;
     s += `<circle class="ci-dot" cx="${X(r.v).toFixed(1)}" cy="${y}" r="5.5"/></g>`;
     return { box: [0, y - rowH / 2, G.W, y + rowH / 2], html: r.tip };
@@ -711,7 +726,7 @@ export function recordChart(el, pts, { yLabel = '', fmt = v => num(v, 0), ref = 
     const ord = shown.map((p, i) => [p, i]).sort((a, b) => (a[0].rec ? 1 : 0) - (b[0].rec ? 1 : 0));
     for (const [p, i] of ord) s += `<circle data-k="${i}" class="pt-closed ${p.rec ? 'key' : 'faint'}" cx="${X(ms(p.d)).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${p.rec ? 5 : 4}"/>`;
     s += '</g>';
-    const targets = shown.map(p => ({ x: X(ms(p.d)), y: Y(p.v), html: tip(p.n, [[t('Fecha de publicación'), fmtDate(p.d)], [t('Resultado'), `${fmt(p.v)}${unit}`], [t('Nuevo récord'), p.rec ? t('sí') : t('no')]]) }));
+    const targets = shown.map(p => ({ x: X(ms(p.d)), y: Y(p.v), html: tip(p.n, [[t('Fecha de publicación'), fmtDate(p.d)], [t('Resultado'), `${fmt(p.v)}${unit}`], [t('Nuevo récord'), p.rec ? t('sí') : t('no')]], '', logoFor({ name: p.n })) }));
     // Etiquetas: el último récord y los mayores saltos; al acercar, también el resto de puntos visibles que quepan.
     const vis = p => inside(X(ms(p.d)), Y(p.v));
     const lab = (p, faint) => ({ x: X(ms(p.d)), y: Y(p.v), text: `${p.n} · ${fmt(p.v)}${unit}`, prefer: 'up', faint });
@@ -757,7 +772,7 @@ export function ediMap(el, items, line, opts = {}) {
     for (const [i, b] of pts.entries()) s += `<circle data-k="${i}" class="pt-edi${b.up ? ' up' : ''}" cx="${b.x.toFixed(1)}" cy="${b.y.toFixed(1)}" r="5.5"/>`;
     s += '</g>';
     const targets = pts.map(b => ({ x: b.x, y: b.y, html: b.tip }))
-      .concat(recs.map(p => ({ x: p.x, y: p.y, html: tip(p.n, [[t('Publicado'), fmtDate(p.d)], ['ECI', num(p.v, 1)], [t('Nuevo récord'), t('sí, mejor ECI publicado hasta esa fecha')]]) })));
+      .concat(recs.map(p => ({ x: p.x, y: p.y, html: tip(p.n, [[t('Publicado'), fmtDate(p.d)], ['ECI', num(p.v, 1)], [t('Nuevo récord'), t('sí, mejor ECI publicado hasta esa fecha')]], '', logoFor({ name: p.n })) })));
     // Etiquetas: el mejor modelo de hoy, las evaluaciones que siguen por encima y, al acercar, el resto que quepa.
     const last = line[line.length - 1];
     const cands = pts.filter(b => b.up).sort((a, b) => b.v - a.v).map(b => ({ x: b.x, y: b.y, text: b.n, prefer: 'up', far: true }))
