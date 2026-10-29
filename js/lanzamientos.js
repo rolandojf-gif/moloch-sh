@@ -11,6 +11,7 @@ const stages = () => [
   ['anuncio', t('Anuncio')],
   ['preview', t('Acceso restringido')],
   ['producto', t('Solo en productos del laboratorio')],
+  ['sinapi', t('Puntuado por AA, sin API pública')],
   ['api', t('API pública')],
   ['pesos', t('Pesos descargables')]
 ];
@@ -24,6 +25,9 @@ function stagesOf(m, curated) {
     if (!st[e.type] || e.date < st[e.type].date) st[e.type] = { date: e.date, html: src({ src: 'curated', url: e.url, asOf: e.date, got: e.consulta, noteTr: true, note: [tr(e.fuente), e.verificacion === 'buscador' ? t('fecha comprobada con buscador') : null].filter(Boolean).join(' · ') }), note: e.nota ? tr(e.nota) : null, delta: e.delta };
   }
   if (!st.anuncio && m.epochPub?.v) st.anuncio = { date: m.epochPub.v, html: src(m.epochPub), note: t('publicación según Epoch AI') };
+  // Puntuado por AA antes de tener API pública: desde que el observatorio lo detectó así (aaOnly o, ya en OpenRouter, preApi).
+  if (m.aaOnly) st.sinapi = { date: m.aaOnly.since, html: src(m.aaOnly), note: t('detectado por el observatorio; aún no está en OpenRouter') };
+  else if (m.preApi?.since) st.sinapi = { date: m.preApi.since, html: '', note: t('detectado por el observatorio, hasta su alta en OpenRouter') };
   if (m.orCreated.v) st.api = st.api || { date: m.orCreated.v, html: src(m.orCreated), note: t('alta en OpenRouter') };
   if (m.weights.v === 'abiertos' && m.hfCreated?.v) st.pesos = st.pesos || { date: m.hfCreated.v, html: src(m.hfCreated), note: t('repositorio creado · {licencia}', { licencia: m.license.v ? tr(m.license.v) : t('licencia sin datos') }) };
   return st;
@@ -32,7 +36,7 @@ function stagesOf(m, curated) {
 function cardFor(m, curated) {
   const st = stagesOf(m, curated);
   const STAGES = stages();
-  const missing = STAGES.filter(([k]) => !st[k]).map(([, label]) => label.toLowerCase());
+  const missing = STAGES.filter(([k]) => !st[k] && k !== 'sinapi').map(([, label]) => label.toLowerCase());
   const dates = Object.values(st).map(s => s.date).filter(Boolean).sort();
   const latest = dates[dates.length - 1];
   const withDelta = Object.values(st).find(s => s.delta);
@@ -90,7 +94,7 @@ function render() {
     html += c.html;
   }
   if (gone.length) html += `<h2 class="sec">${t('Retirados de OpenRouter en el periodo')}</h2><ul class="changes">${gone.map(e => `<li><span>${esc(fmtDate(e.date))}</span><span>${esc(L(e, 'what'))}</span>${provLine(e.src)}</li>`).join('')}</ul>`;
-  html += `<p class="note">${t('«API pública» es la fecha de alta en OpenRouter, que puede ser posterior a la API del laboratorio. «Pesos descargables» es la fecha de creación del repositorio en Hugging Face. «Acceso restringido» es una fase en la que sólo podían usarlo organizaciones o personas seleccionadas; «Solo en productos del laboratorio», una fase en la que se podía usar en sus aplicaciones o suscripciones pero no por API. Anuncios y estas dos fases constan cuando se han registrado a mano con enlace a la fuente primaria (blog, documentación o repositorio del laboratorio); si no hay anuncio registrado, se toma la fecha de publicación de la base de modelos de Epoch AI. Las etapas sin dato se agrupan en «No constan».')}</p>`;
+  html += `<p class="note">${t('«API pública» es la fecha de alta en OpenRouter, que puede ser posterior a la API del laboratorio. «Puntuado por AA, sin API pública» es el día en que el observatorio vio por primera vez su puntuación en Artificial Analysis sin que estuviera en OpenRouter. «Pesos descargables» es la fecha de creación del repositorio en Hugging Face. «Acceso restringido» es una fase en la que sólo podían usarlo organizaciones o personas seleccionadas; «Solo en productos del laboratorio», una fase en la que se podía usar en sus aplicaciones o suscripciones pero no por API. Anuncios y estas dos fases constan cuando se han registrado a mano con enlace a la fuente primaria (blog, documentación o repositorio del laboratorio); si no hay anuncio registrado, se toma la fecha de publicación de la base de modelos de Epoch AI. Las etapas sin dato se agrupan en «No constan».')}</p>`;
   $('#ln-list').innerHTML = html;
 }
 

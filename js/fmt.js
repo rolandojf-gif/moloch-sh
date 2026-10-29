@@ -83,7 +83,8 @@ export const country = c => c ? (COUNTRY[c] ? tr(COUNTRY[c]) : c) : t('sin confi
 /* Quién fija el precio mostrado: el propio laboratorio en OpenRouter o, si no lo sirve, el proveedor más barato. Texto sin escapar. */
 export const priceBasis = m => m.price?.basis === 'laboratorio' ? t('precio de {provider}', { provider: m.price.provider })
   : m.price?.basis === 'proveedor' ? t('proveedor más barato: {provider}{p2}', { provider: m.price.provider, p2: m.price.quant ? t(', cuantización {quant}', { quant: m.price.quant }) : '' })
-  : m.price?.basis === 'referencia' ? t('precio de referencia de OpenRouter') : null;
+  : m.price?.basis === 'referencia' ? t('precio de referencia de OpenRouter')
+  : m.price?.basis === 'sin-api' ? t('sin API pública') : null;
 /* Precio combinado 3:1 (convención de Artificial Analysis), a partir de los precios de OpenRouter. */
 export function blended(m) {
   const i = m.price?.in?.v, o = m.price?.out?.v;
@@ -111,7 +112,8 @@ export const aaConfigShort = m => {
    modelos del catálogo puntuados por AA, colocados en la fecha del modelo según AA (si falta, la de Epoch o el alta en
    OpenRouter) con su índice actual. Abiertos y cerrados según el catálogo: los abiertos anunciados cuentan como abiertos y
    un «cerrados» inferido, como cerrado.
-   Sólo entran los modelos que siguen en OpenRouter: los retirados faltan en los meses antiguos. */
+   Sólo entran los modelos del catálogo (los que siguen en OpenRouter y los que AA ya puntúa sin API pública): los retirados
+   faltan en los meses antiguos. */
 export function aaRace(catalog) {
   const ver = catalog?.aaIndexVersion ?? null, today = (catalog?.generated || new Date().toISOString()).slice(0, 10);
   const list = (catalog?.models || []).filter(m => ii(m) !== null && (!ver || !m.aa.version || m.aa.version === ver))
@@ -228,11 +230,15 @@ export function speed(m) {
    La descripción de OpenRouter no se atribuye al laboratorio: no consta quién la redacta. */
 export const anunText = m => t('Su descripción en OpenRouter lo presenta como de pesos abiertos{since}, pero aún no hay repositorio público en Hugging Face: cuenta como abierto, aunque todavía no se puede descargar.',
   { since: m.weights?.since ? ' ' + t('(consta desde el {fecha})', { fecha: fmtDate(m.weights.since) }) : '' });
+/* Modelos que Artificial Analysis ya puntúa y aún no están en OpenRouter (aaOnly): cuentan como los demás, sin precio. */
+export const sinApiText = m => t('Artificial Analysis ya lo puntúa, pero aún no está en OpenRouter: sin API pública ni precio{since}.',
+  { since: m.aaOnly?.since ? ' ' + t('(consta desde el {fecha})', { fecha: fmtDate(m.aaOnly.since) }) : '' });
+export const sinApiTag = m => m.aaOnly ? ` <span class="sinapi" title="${esc(sinApiText(m))}">${t('sin API pública')}</span>` : '';
 /* Valor de pesos de los datos (abiertos / cerrados) en el idioma de la página. */
 export const weightsWord = v => v === 'abiertos' ? t('abiertos') : v === 'cerrados' ? t('cerrados') : t('pesos sin datos');
 export function weightsTag(m) {
   const v = m.weights?.v;
   if (v === 'abiertos' && m.weights.announced) return `<span class="w abiertos anun" title="${esc(anunText(m))}">${t('abiertos · anunciados')}</span>`;
-  if (v === 'cerrados' && m.weights.inferred) return `<span class="w cerrados inf" title="${t('OpenRouter no enlaza pesos y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; se asume cerrado')}">${t('cerrados · inferido')}</span>`;
+  if (v === 'cerrados' && m.weights.inferred) return `<span class="w cerrados inf" title="${m.aaOnly ? t('Aún no está en OpenRouter y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; se asume cerrado') : t('OpenRouter no enlaza pesos y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; se asume cerrado')}">${t('cerrados · inferido')}</span>`;
   return `<span class="w ${v || 'nd'}">${esc(weightsWord(v))}</span>`;
 }

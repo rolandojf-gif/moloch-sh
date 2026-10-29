@@ -1,0 +1,75 @@
+{
+ "_doc": "Respuesta sintética de la API de Artificial Analysis para la prueba de recogida: cifras inventadas, no se publican.",
+ "intelligence_index_version": 5,
+ "data": [
+  {
+   "id": "fx-claude-opus-5-5",
+   "slug": "claude-opus-5-5",
+   "name": "Claude Opus 5.5 (Max)",
+   "model_creator": {
+    "id": "f0aa413f-e8ae-4fcd-9c48-0e049f4f3128",
+    "name": "Anthropic",
+    "slug": "anthropic"
+   },
+   "release_date": "2026-09-01",
+   "evaluations": {
+    "artificial_analysis_intelligence_index": 70.1,
+    "artificial_analysis_coding_index": null,
+    "artificial_analysis_agentic_index": null
+   },
+   "pricing": {
+    "price_1m_input_tokens": null,
+    "price_1m_output_tokens": null
+   },
+   "median_output_tokens_per_second": null,
+   "median_time_to_first_token_seconds": null
+  },
+  {
+   "id": "fx-gemini-4-carbon-low",
+   "slug": "gemini-4-carbon-low",
+   "name": "Gemini 4 Carbon (Low)",
+   "model_creator": {
+    "id": "faddc6d9-2c14-445f-9b28-56726f59c793",
+    "name": "Google",
+    "slug": "google"
+   },
+   "release_date": "2026-10-28",
+   "evaluations": {
+    "artificial_analysis_intelligence_index": 64.0,
+    "artificial_analysis_coding_index": null,
+    "artificial_analysis_agentic_index": null
+   },
+   "pricing": {
+    "price_1m_input_tokens": null,
+    "price_1m_output_tokens": null
+   },
+   "median_output_tokens_per_second": null,
+   "median_time_to_first_token_seconds": null
+  },
+  {
+   "id": "fx-gemini-4-carbon",
+   "slug": "gemini-4-carbon",
+   "name": "Gemini 4 Carbon (High)",
+   "model_creator": {
+    "id": "faddc6d9-2c14-445f-9b28-56726f59c793",
+    "name": "Google",
+    "slug": "google"
+   },
+   "release_date": "2026-10-28",
+   "evaluations": {
+    "artificial_analysis_intelligence_index": 72.3,
+    "artificial_analysis_coding_index": null,
+    "artificial_analysis_agentic_index": null
+   },
+   "pricing": {
+    "price_1m_input_tokens": null,
+    "price_1m_output_tokens": null
+   },
+   "median_output_tokens_per_second": null,
+   "median_time_to_first_token_seconds": null
+  }
+ ],
+ "pagination": {
+  "has_more": false
+ }
+}

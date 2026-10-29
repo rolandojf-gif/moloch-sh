@@ -1,7 +1,7 @@
 /* Vista «Modelos»: comparador, ficha desplegable (con su posición frente a otros modelos), comparación de hasta tres y
    evolución de la frontera. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, fact, src, weightsTag, usd, num, tokens, fmtDate, country, ord, weightsWord, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, aaRace, aaCoverage, coverageText, speed, priceBasis, nd, AA_LINK } from './fmt.js';
+import { esc, fact, src, weightsTag, usd, num, tokens, fmtDate, country, ord, weightsWord, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, aaRace, aaCoverage, coverageText, speed, priceBasis, nd, AA_LINK, sinApiTag, sinApiText } from './fmt.js';
 import { frontier, hbars, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -21,7 +21,7 @@ function sortKey(m) {
     case 'eci': return eci(m);
     case 'price': return freeOnly(m) ? null : blended(m);
     case 'tps': return speed(m)?.tps ?? null;
-    case 'date': return m.orCreated.v ? new Date(m.orCreated.v).getTime() : null;
+    case 'date': { const d = m.orCreated.v || m.aa?.release?.v; return d ? new Date(d).getTime() : null; }
   }
   return null;
 }
@@ -111,8 +111,8 @@ function detail(m) {
     [t('Contexto'), fact(m.ctx, v => tokens(v) + ' tokens')],
     [t('Razonamiento'), fact(m.reasoning, yesNo)],
     [t('Caché (lectura)'), m.price.cacheRead.v !== null ? usd(m.price.cacheRead.v) + ' / M' + src(m.price.cacheRead) : nd() + src(m.price.cacheRead)],
-    [t('Precio combinado 3:1'), freeOnly(m) ? t('gratis: solo variante {p1}, sin precio de pago todavía', { p1: esc(m.orVariant.slice(m.orVariant.lastIndexOf(':'))) }) : blended(m) !== null ? usd(blended(m)) + ' / M' + src(m.price.in) + (priceBasis(m) ? `<span class="m-sub">${esc(priceBasis(m))}</span>` : '') : nd()],
-    [t('Alta en OpenRouter'), fact(m.orCreated, v => fmtDate(v))],
+    [t('Precio combinado 3:1'), m.aaOnly ? esc(sinApiText(m)) : freeOnly(m) ? t('gratis: solo variante {p1}, sin precio de pago todavía', { p1: esc(m.orVariant.slice(m.orVariant.lastIndexOf(':'))) }) : blended(m) !== null ? usd(blended(m)) + ' / M' + src(m.price.in) + (priceBasis(m) ? `<span class="m-sub">${esc(priceBasis(m))}</span>` : '') : nd()],
+    [t('Alta en OpenRouter'), m.aaOnly ? t('aún no está en OpenRouter') + src(m.aaOnly) : fact(m.orCreated, v => fmtDate(v)) + (m.preApi ? `<span class="m-sub">${t('antes, puntuado por AA sin API pública desde el {fecha}', { fecha: esc(fmtDate(m.preApi.since)) })}</span>` : '')],
     [t('Repositorio de pesos'), m.hfCreated ? fact(m.hfCreated, v => fmtDate(v)) : nd()],
     [t('Inteligencia (Artificial Analysis)'), aa ? `${fact(aa.intelligence, v => num(v))}<span class="m-sub">${t('{aaIndexName} · como', { aaIndexName: esc(aaIndexName(aa.version)) })} <a href="${esc(aa.url)}" target="_blank" rel="noopener">«${esc(aa.name)}»</a> ${t('en AA{how}', { how: aa.how && aa.how !== 'nombre exacto' ? ` (${esc(tr(aa.how))})` : '' })}</span>` : t('sin puntuación en Artificial Analysis todavía')],
     [t('Programación (AA)'), aa ? fact(aa.coding, v => num(v)) + '<span class="m-sub">Artificial Analysis Coding Index</span>' : nd()],
@@ -134,7 +134,7 @@ function detail(m) {
         <td class="num">${e.tps ? num(e.tps, 0) : sd}</td><td class="num">${e.ttft !== null && e.ttft !== undefined ? num(e.ttft, 2) + ' s' : sd}</td>
         <td class="num">${e.uptime !== null && e.uptime !== undefined ? num(e.uptime, 1) + ' %' : sd}</td></tr>`).join('')}</tbody>
     </table>
-    <div class="prov">${t('Proveedores: {src} {consulta}. Velocidad y espera dependen de quién sirve el modelo.', { src: src(m.endpointsMeta), consulta: m.endpointsMeta ? t('consulta {fecha}', { fecha: esc(m.endpointsMeta.got.slice(0, 10)) }) : '' })}</div>` : `<p class="note">${t('Sin datos de proveedores.')}</p>`;
+    <div class="prov">${t('Proveedores: {src} {consulta}. Velocidad y espera dependen de quién sirve el modelo.', { src: src(m.endpointsMeta), consulta: m.endpointsMeta ? t('consulta {fecha}', { fecha: esc(m.endpointsMeta.got.slice(0, 10)) }) : '' })}</div>` : `<p class="note">${m.aaOnly ? t('Aún no está en OpenRouter: sin proveedores ni precio públicos.') : t('Sin datos de proveedores.')}</p>`;
   return `<p class="m-link"><a href="#modelos/${esc(m.id)}" title="${t('Dirección propia de esta ficha, para volver a ella o compartirla')}">${t('Enlace a esta ficha')}</a></p><dl class="dgrid">${dl.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${race(m)}${provTable}`;
 }
 
@@ -171,12 +171,12 @@ function renderTable() {
     const dis = !checked && state.cmp.length >= 3;
     return `<tr class="row" data-id="${esc(m.id)}" aria-expanded="${open}" tabindex="0">
       <td class="c-sel" data-label="${t('Comparar')}"><input type="checkbox" aria-label="${t('Comparar {name}', { name: esc(m.name) })}" data-cmp="${esc(m.id)}"${checked ? ' checked' : ''}${dis ? ' disabled' : ''}></td>
-      <td class="c-name"><div class="m-name">${esc(m.name)}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></td>
+      <td class="c-name"><div class="m-name">${esc(m.name)}${sinApiTag(m)}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></td>
       <td data-label="${t('Pesos')}">${weightsBadge(m)}${m.license.v && m.weights.v === 'abiertos' ? `<span class="m-sub">${esc(tr(m.license.v))}</span>` : ''}</td>
       <td class="num" data-label="${t('Inteligencia (AA)')}">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfigShort(m) ? `<span class="m-sub" title="${t('Configuración de AA con mayor índice: {aaConfig}', { aaConfig: esc(aaConfig(m)) })}">${esc(aaConfigShort(m))}</span>` : ''}` : nd()}</td>
       <td class="num" data-label="${t('ECI (Epoch)')}">${m.epoch ? `<span class="big">${fact(m.epoch.eci, v => num(v))}</span>` : nd()}</td>
       <td class="num" data-label="${t('Velocidad')}">${speedCell(m)}</td>
-      <td class="num" data-label="${t('Entrada / salida')}">${freeOnly(m) ? `<span class="big">${t('gratis')}</span>${src(m.price.in)}<span class="m-sub">${t('solo variante {p1}; sin precio de pago todavía', { p1: esc(m.orVariant.slice(m.orVariant.lastIndexOf(':'))) })}</span>` : `<span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">${t('salida {fact}', { fact: fact(m.price.out, usd) })}</span>`}${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}${t(', el más barato')}` : ''}</span>` : ''}</td>
+      <td class="num" data-label="${t('Entrada / salida')}">${m.aaOnly ? `<span class="big">${nd()}</span><span class="m-sub">${t('sin API pública')}</span>` : freeOnly(m) ? `<span class="big">${t('gratis')}</span>${src(m.price.in)}<span class="m-sub">${t('solo variante {p1}; sin precio de pago todavía', { p1: esc(m.orVariant.slice(m.orVariant.lastIndexOf(':'))) })}</span>` : `<span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">${t('salida {fact}', { fact: fact(m.price.out, usd) })}</span>`}${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}${t(', el más barato')}` : ''}</span>` : ''}</td>
     </tr>${open ? `<tr class="detail"><td colspan="7">${detail(m)}</td></tr>` : ''}`;
   }).join('');
 }
@@ -235,7 +235,7 @@ function renderFrontierAA() {
   const last = r.points[r.points.length - 1];
   const gap = last && last.open && last.closed ? Math.round((last.closed.v - last.open.v) * 10) / 10 : null;
   const anun = r.models.filter(m => m.anun && top10.includes(m)).map(m => m.n);
-  $('#mx-frontier-aa-note').innerHTML = `<span class="lbl">${t('Cómo leerlo')}</span>${t('Cada línea es el mejor {idx} de un modelo con pesos abiertos y de uno cerrado publicado hasta esa fecha; los puntos claros son el resto. Con nombre, el líder de cada grupo y los mayores saltos.', { idx: esc(aaIndexName(r.ver)) })}${nuevos.length ? ` ${t('En punto lleno y con nombre si cabe, lo publicado en los últimos 14 días que está entre los diez primeros ({p1}).', { p1: esc(nuevos.map(m => m.n).join(', ')) })}` : ''} ${t('Cada modelo va en su fecha según AA, con su índice de hoy. Es una reconstrucción hecha hoy, no una serie medida en cada fecha: sólo cuentan los {n} modelos puntuados que siguen en OpenRouter, así que los retirados faltan y los meses antiguos pueden quedar por debajo de lo que hubo.', { n: r.n })}${esc(coverageText(cov))} ${t('«Abiertos» incluye los que su descripción en OpenRouter presenta como de pesos abiertos aunque aún no se puedan descargar')}${anun.length ? ` ${t('(entre los diez primeros: {p1})', { p1: esc(anun.join(', ')) })}` : ''}.${gap !== null ? ` ${t('Distancia actual: {num} puntos ({name} frente a {p3}).', { num: num(gap), name: esc(last.closed.name), p3: esc(last.open.name) })}` : ''} ${t('Datos de {AA_LINK}, publicados con su permiso.', { AA_LINK })}`;
+  $('#mx-frontier-aa-note').innerHTML = `<span class="lbl">${t('Cómo leerlo')}</span>${t('Cada línea es el mejor {idx} de un modelo con pesos abiertos y de uno cerrado publicado hasta esa fecha; los puntos claros son el resto. Con nombre, el líder de cada grupo y los mayores saltos.', { idx: esc(aaIndexName(r.ver)) })}${nuevos.length ? ` ${t('En punto lleno y con nombre si cabe, lo publicado en los últimos 14 días que está entre los diez primeros ({p1}).', { p1: esc(nuevos.map(m => m.n).join(', ')) })}` : ''} ${t('Cada modelo va en su fecha según AA, con su índice de hoy. Es una reconstrucción hecha hoy, no una serie medida en cada fecha: sólo cuentan los {n} modelos puntuados del catálogo (los que siguen en OpenRouter y los que AA ya puntúa sin API pública), así que los retirados faltan y los meses antiguos pueden quedar por debajo de lo que hubo.', { n: r.n })}${esc(coverageText(cov))} ${t('«Abiertos» incluye los que su descripción en OpenRouter presenta como de pesos abiertos aunque aún no se puedan descargar')}${anun.length ? ` ${t('(entre los diez primeros: {p1})', { p1: esc(anun.join(', ')) })}` : ''}.${gap !== null ? ` ${t('Distancia actual: {num} puntos ({name} frente a {p3}).', { num: num(gap), name: esc(last.closed.name), p3: esc(last.open.name) })}` : ''} ${t('Datos de {AA_LINK}, publicados con su permiso.', { AA_LINK })}`;
 }
 
 function renderFrontier() {

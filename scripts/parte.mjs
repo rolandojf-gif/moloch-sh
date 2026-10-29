@@ -24,8 +24,8 @@ const reglas = F => [
     `The best open-weight or closed model on the Artificial Analysis index changes, with the same index version and a margin of at least ${LIDER_MIN} point.`),
   F.t('Artificial Analysis cambia la versión de su índice.', 'Artificial Analysis changes the version of its index.'),
   F.t('Cambia la valoración del observatorio de un hito de AI 2027.', 'The observatory’s assessment of an AI 2027 milestone changes.'),
-  F.t(`Un modelo nuevo, o uno que recibe su primera puntuación de AA, entra en el top ${TOP} del índice de AA.`,
-    `A new model, or one that receives its first AA score, enters the top ${TOP} of the AA index.`),
+  F.t(`Un modelo nuevo (también uno que AA puntúa antes de que tenga API pública), o uno que recibe su primera puntuación de AA, entra en el top ${TOP} del índice de AA. Su llegada posterior a OpenRouter no vuelve a contar.`,
+    `A new model (including one that AA scores before it has a public API), or one that receives its first AA score, enters the top ${TOP} of the AA index. Its later arrival on OpenRouter does not count again.`),
   F.t(`Publica pesos abiertos un modelo del top ${TOP} del índice de AA.`, `A top-${TOP} model on the AA index publishes open weights.`),
   F.t(`El propio laboratorio cambia su precio en OpenRouter al menos un +${SUBE} % o un ${String(BAJA).replace('-', '−')} % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa.`,
     `The lab itself changes its price on OpenRouter by at least +${SUBE}% or ${String(BAJA).replace('-', '−')}% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count.`),
@@ -60,7 +60,7 @@ export function importancia(e, F = globalF.es) {
     case 'valoracion':
       return d.which === 'observatorio' ? { tier: 2, w: 0, porque: F.t('cambia la valoración del observatorio de un hito de AI 2027', 'the observatory’s assessment of an AI 2027 milestone changes') } : null;
     case 'nuevo': case 'evaluacion': {
-      const r = e.kind === 'nuevo' || d.field === 'ii' ? d.rankAA : null;
+      const r = (e.kind === 'nuevo' && d.sub !== 'llega-api') || d.field === 'ii' ? d.rankAA : null;
       return r && r <= TOP ? { tier: 3, w: TOP + 1 - r, porque: F.t(`${e.kind === 'nuevo' ? 'es un modelo nuevo' : 'recibe su primera puntuación de AA'} y entra en el top ${TOP} del índice de AA (puesto ${r} de ${d.of})`,
         `${e.kind === 'nuevo' ? 'it is a new model' : 'it receives its first AA score'} and enters the top ${TOP} of the AA index (rank ${r} of ${d.of})`) } : null;
     }
@@ -109,8 +109,11 @@ export function titular(e, C, F = globalF.es) {
     }
     case 'lider': return F.t(`${name} pasa a ser el mejor modelo ${d.block === 'abiertos' ? 'abierto' : 'cerrado'} del índice de AA`, `${name} becomes the best ${adj(F, d.block)} model on the AA index`);
     case 'version': return F.t(`Artificial Analysis estrena la versión ${d.to} de su índice de inteligencia`, `Artificial Analysis launches version ${d.to} of its Intelligence Index`);
-    case 'nuevo': return F.t(`${name} (${m?.lab?.name || 'laboratorio sin confirmar'}) llega a OpenRouter${d.rankAA ? `: puesto ${d.rankAA} del índice de AA` : ''}`,
-      `${name} (${m?.lab?.name || 'unconfirmed lab'}) arrives on OpenRouter${d.rankAA ? `: rank ${d.rankAA} on the AA index` : ''}`);
+    case 'nuevo': return d.sub === 'sin-api'
+      ? F.t(`${name} (${m?.lab?.name || 'laboratorio sin confirmar'}) entra en el índice de AA${d.rankAA ? ` en el puesto ${d.rankAA}` : ''}, aún sin API pública`,
+        `${name} (${m?.lab?.name || 'unconfirmed lab'}) enters the AA index${d.rankAA ? ` at rank ${d.rankAA}` : ''}, still without a public API`)
+      : F.t(`${name} (${m?.lab?.name || 'laboratorio sin confirmar'}) llega a OpenRouter${d.sub === 'llega-api' ? ' y ya tiene API pública' : ''}${d.rankAA ? `: puesto ${d.rankAA} del índice de AA` : ''}`,
+        `${name} (${m?.lab?.name || 'unconfirmed lab'}) arrives on OpenRouter${d.sub === 'llega-api' ? ' and now has a public API' : ''}${d.rankAA ? `: rank ${d.rankAA} on the AA index` : ''}`);
     case 'evaluacion': return d.field === 'ii' ? F.t(`${name} entra en el índice de AA en el puesto ${d.rankAA ?? '—'}`, `${name} enters the AA index at rank ${d.rankAA ?? '—'}`)
       : F.t(`Epoch AI puntúa por primera vez ${name} en el ECI`, `Epoch AI scores ${name} on the ECI for the first time`);
     case 'pesos': return F.t(`Pesos abiertos de ${name}${d.rankAA ? `, puesto ${d.rankAA} del índice de AA` : ''}`, `Open weights for ${name}${d.rankAA ? `, rank ${d.rankAA} on the AA index` : ''}`);
@@ -182,8 +185,8 @@ export function consecuencia(e, C, F = globalF.es) {
         `The gap between the best closed and the best open-weight model on the AA index stands at ${F.n(gap(now), 1)} points${gap(then) !== null ? ` (${F.n(gap(then), 1)} the day before)` : ''}. It does not equate to months of lag.`) : null;
     }
     case 'version': return F.t('Las puntuaciones de una versión y otra no se comparan: la evolución diaria de los líderes empieza de nuevo con esta versión.', 'Scores from one version and the other are not comparable: the daily evolution of the leaders starts over with this version.');
-    case 'nuevo': case 'evaluacion': return m ? F.t(`${m.identity !== 'confirmada' ? 'Modelo anónimo: el laboratorio no está confirmado. ' : ''}${posicion(m, C, F)} ${precioRel(m, C, F)}`.trim(),
-      `${m.identity !== 'confirmada' ? 'Anonymous model: the lab is not confirmed. ' : ''}${posicion(m, C, F)} ${precioRel(m, C, F)}`.trim()) : null;
+    case 'nuevo': case 'evaluacion': return m ? F.t(`${m.identity !== 'confirmada' ? 'Modelo anónimo: el laboratorio no está confirmado. ' : ''}${posicion(m, C, F)} ${m.aaOnly ? 'Aún no está en OpenRouter: sin API pública ni precio.' : precioRel(m, C, F)}`.trim(),
+      `${m.identity !== 'confirmada' ? 'Anonymous model: the lab is not confirmed. ' : ''}${posicion(m, C, F)} ${m.aaOnly ? 'It is not on OpenRouter yet: no public API and no price.' : precioRel(m, C, F)}`.trim()) : null;
     case 'pesos': return m ? F.t(`Se puede descargar y servir fuera de la API del laboratorio. Licencia: ${m.license.v || 'sin datos'}. ${posicion(m, C, F)}`, `It can be downloaded and served outside the lab’s API. Licence: ${m.license.v || 'no data'}. ${posicion(m, C, F)}`) : null;
     case 'retirada': return F.t('Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio.', 'It can no longer be used through OpenRouter. It may still be available through the lab’s own API.');
     case 'valoracion': {

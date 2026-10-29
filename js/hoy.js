@@ -1,6 +1,6 @@
 /* Vista «Hoy»: el parte del día, lo detectado en la semana, cuatro indicadores y capacidad frente a precio. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, fact, src, usd, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote } from './fmt.js';
+import { esc, fact, src, usd, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote, sinApiTag } from './fmt.js';
 import { scatter, daily, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
@@ -111,7 +111,7 @@ function renderKPIs(d, gapPts) {
     let delta = '';
     if (prevLead && prevLead.id !== m.id && prevLead.ii !== undefined) delta = ` ${t('Antes: {name} ({num}).', { name: esc(prev.models[prevLead.id]?.n || prevLead.id), num: num(prevLead.ii) })}`;
     const ep = eci(m) !== null ? ` ${t('ECI en Epoch AI: {fact}.', { fact: fact(m.epoch.eci, v => num(v)) })}` : '';
-    return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small">${modelLink(d, m.id, m.name)}</span>
+    return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small">${modelLink(d, m.id, m.name)}${sinApiTag(m)}</span>
       <span class="s">${t('{lab} · índice AA {fact}{cfg}.', { lab: esc(m.lab.name), fact: fact(capFact(m), v => num(v)), cfg: aaConfig(m) ? ` (${quote(esc(aaConfig(m)))})` : '' })}${m.weights.announced ? ` ${t('Pesos anunciados en su descripción de OpenRouter{since}; aún no se pueden descargar.', { since: m.weights.since ? ` ${t('desde el {fmtDate}', { fmtDate: esc(fmtDate(m.weights.since)) })}` : '' })}` : ''}${ep}${delta}${dl && m === lo ? ` ${t('Con pesos ya descargables, el mejor es {modelLink} ({name}), índice AA {fact}.', { modelLink: modelLink(d, dl.id, dl.name), name: esc(dl.lab.name), fact: fact(capFact(dl), v => num(v)) })}` : ''}</span></div>`;
   };
 
@@ -156,7 +156,7 @@ function renderKPIs(d, gapPts) {
   }
 
   $('#hoy-kpis').innerHTML = leadCard(lo, 'open', t('Líder abierto'), prevAA?.open) + leadCard(lc, 'closed', t('Líder cerrado'), prevAA?.closed) + gapCard + costCard;
-  $('#hoy-kpi-note').innerHTML = t('Líderes calculados entre los modelos que se pueden usar por API en OpenRouter y tienen puntuación en el {aaIndexName}. Datos de {AA_LINK}, publicados con su permiso. De cada modelo se toma la configuración de razonamiento de mayor índice. Umbral de capacidad comparable: índice del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con el precio que cobra el propio laboratorio en OpenRouter o, si no lo sirve él, el del proveedor más barato, que se indica.', { aaIndexName: esc(aaIndexName(ver)), AA_LINK });
+  $('#hoy-kpi-note').innerHTML = t('Líderes calculados entre los modelos del catálogo con puntuación en el {aaIndexName}: los que se pueden usar por API en OpenRouter y los que AA ya puntúa aunque aún no tengan API pública, marcados «sin API pública». Datos de {AA_LINK}, publicados con su permiso. De cada modelo se toma la configuración de razonamiento de mayor índice. Umbral de capacidad comparable: índice del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con el precio que cobra el propio laboratorio en OpenRouter o, si no lo sirve él, el del proveedor más barato, que se indica.', { aaIndexName: esc(aaIndexName(ver)), AA_LINK });
   $('#kpi-pct')?.addEventListener('change', e => { GAP_PTS = Number(e.target.value); renderKPIs(d, GAP_PTS); renderScatter(d, GAP_PTS); });
 }
 
@@ -181,7 +181,7 @@ function renderScatter(d, gapPts) {
       [t('Pesos'), m.weights.v ? weightsWord(m.weights.v) : t('sin datos')]
     ])
   }));
-  const excluded = models.length - pts.length;
+  const sinApi = models.filter(m => m.aaOnly).length, excluded = models.length - pts.length - sinApi;
   const lo = leader(models, 'abiertos'), lc = leader(models, 'cerrados');
   const top = lc ? ii(lc) : ii(lo);
   const T = Math.round((top - gapPts) * 10) / 10;
@@ -203,6 +203,7 @@ function renderScatter(d, gapPts) {
   }
   if (best) bits.push(t('Por encima del umbral de {T} puntos del índice AA, la opción más barata es {name} ({tipo}), a {usd} por millón.', { T: num(T), name: esc(best.name), tipo: best.weights.v === 'abiertos' ? t('abierto') : t('cerrado'), usd: usd(blended(best)) }));
   if (excluded) bits.push(tn(excluded, ['{n} modelo con índice pero sin precio positivo no aparece en el gráfico.', '{n} modelos con índice pero sin precio positivo no aparecen en el gráfico.']));
+  if (sinApi) bits.push(tn(sinApi, ['{n} modelo puntuado por AA que aún no tiene API pública, y por tanto precio, tampoco aparece.', '{n} modelos puntuados por AA que aún no tienen API pública, y por tanto precio, tampoco aparecen.']));
   $('#hoy-reading').innerHTML = `<span class="lbl">${t('Lectura automática a partir de las cifras')}</span>${bits.join(' ')}<span class="m-sub">${t('Capacidad: {aaIndexName}, datos de {AA_LINK}. Precio:', { aaIndexName: esc(aaIndexName(d.catalog.aaIndexVersion)), AA_LINK })} <a href="https://openrouter.ai/models" target="_blank" rel="noopener">${t('OpenRouter')}</a>${t(', el del propio laboratorio o, si no lo sirve, el del proveedor más barato.')}</span>`;
 }
 

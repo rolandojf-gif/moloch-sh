@@ -1,9 +1,10 @@
 /* La recogida completa con respuestas grabadas (tests/fixtures/recogida) en una copia del repositorio, y después la
-   validación. Sólo hay respuestas de OpenRouter y de Hugging Face: el resto de fuentes falla a propósito, así que también
-   se prueba que el recolector conserva los valores anteriores y sigue. No toca data/ del repositorio. */
+   validación. Sólo hay respuestas de OpenRouter, Hugging Face y una sintética de Artificial Analysis: el resto de fuentes
+   falla a propósito, así que también se prueba que el recolector conserva los valores anteriores y sigue. No toca data/
+   del repositorio. */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -14,7 +15,14 @@ test('recogida con respuestas grabadas, validación y parte', { timeout: 300000 
   const dir = mkdtempSync(path.join(tmpdir(), 'moloch-recogida-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   for (const d of ['scripts', 'js', 'data']) cpSync(path.join(ROOT, d), path.join(dir, d), { recursive: true });
-  const env = { ...process.env, FIXTURES: path.join(ROOT, 'tests/fixtures/recogida'), WINDOW_DAYS: '100000', AA_API_KEY: '', OPENROUTER_API_KEY: '', GITHUB_REF: '' };
+  // Respuestas grabadas en una copia: el modelo de AA sin OpenRouter sale con fecha de ayer, para que caiga en la ventana de Hoy.
+  const fx = path.join(dir, 'fixtures');
+  cpSync(path.join(ROOT, 'tests/fixtures/recogida'), fx, { recursive: true });
+  const aaFx = path.join(fx, 'artificialanalysis_ai_api_v2_language_models_free_page_1.json'), aa = JSON.parse(readFileSync(aaFx, 'utf8'));
+  const ayer = new Date(Date.now() - 86400e3).toISOString().slice(0, 10);
+  for (const r of aa.data) if (/^gemini-4-carbon/.test(r.slug)) r.release_date = ayer;
+  writeFileSync(aaFx, JSON.stringify(aa));
+  const env = { ...process.env, FIXTURES: fx, WINDOW_DAYS: '100000', AA_API_KEY: '', OPENROUTER_API_KEY: '', GITHUB_REF: '' };
   const run = script => spawnSync(process.execPath, [script], { cwd: dir, env, encoding: 'utf8' });
 
   const c = run('scripts/collect.mjs');
@@ -24,7 +32,7 @@ test('recogida con respuestas grabadas, validación y parte', { timeout: 300000 
 
   const read = p => JSON.parse(readFileSync(path.join(dir, p), 'utf8'));
   const cat = read('data/catalog.json');
-  assert.deepEqual(cat.models.map(m => m.id).sort(), ['anthropic/claude-opus-5.5', 'deepseek/deepseek-v4.1-flash', 'moonshotai/kimi-k3.1-pro']);
+  assert.deepEqual(cat.models.map(m => m.id).sort(), ['anthropic/claude-opus-5.5', 'deepseek/deepseek-v4.1-flash', 'google/gemini-4-carbon', 'moonshotai/kimi-k3.1-pro']);
   assert.ok(cat.excluded.some(e => e.id === 'openai/gpt-image-3'), 'los generadores de imagen quedan fuera');
   const byId = new Map(cat.models.map(m => [m.id, m]));
   const kimi = byId.get('moonshotai/kimi-k3.1-pro').weights;
@@ -34,6 +42,16 @@ test('recogida con respuestas grabadas, validación y parte', { timeout: 300000 
   assert.match(kimi.since, /^\d{4}-\d{2}-\d{2}$/, 'con la fecha desde la que consta como anunciado');
   assert.equal(byId.get('deepseek/deepseek-v4.1-flash').weights.src, 'hf', 'con repositorio en Hugging Face: descargable');
   assert.equal(byId.get('anthropic/claude-opus-5.5').price.in.v, 5, 'precio del propio laboratorio por millón');
+  // Puntuado por AA sin estar en OpenRouter: entra marcado, con la configuración de mayor índice y sin precio.
+  const carbon = byId.get('google/gemini-4-carbon');
+  assert.equal(carbon.aaOnly?.v, true);
+  assert.equal(carbon.aa.slug, 'gemini-4-carbon');
+  assert.equal(carbon.aa.intelligence.v, 72.3);
+  assert.equal(carbon.price.basis, 'sin-api');
+  assert.equal(carbon.price.in.v, null);
+  assert.equal(carbon.orCreated.v, null);
+  assert.equal(byId.get('anthropic/claude-opus-5.5').aa?.slug, 'claude-opus-5-5', 'los de OpenRouter se siguen emparejando');
+  assert.equal(byId.get('anthropic/claude-opus-5.5').aaOnly, undefined);
   assert.equal(cat.status.openrouter.ok, true);
   assert.equal(cat.status.epoch.ok, false, 'una fuente sin respuesta queda marcada como fallida');
 
@@ -45,5 +63,7 @@ test('recogida con respuestas grabadas, validación y parte', { timeout: 300000 
   assert.ok(en.startsWith('<?xml') && /<language>en/.test(en), 'se escribe el RSS inglés');
   assert.equal(ch.parte.i18n.en.reglas.length, ch.parte.reglas.length, 'las reglas del parte llevan su inglés');
   for (const e of ch.items) assert.ok(e.i18n?.en?.what, `${e.key}: el cambio lleva su inglés`);
+  assert.ok(ch.items.some(e => e.key === 'sinapi|google/gemini-4-carbon'), 'su aparición figura en Hoy');
+  assert.equal(read(`data/history/${cat.generated.slice(0, 10)}.json`).models['google/gemini-4-carbon'].ao, 1, 'la instantánea lo marca para no darlo por retirado');
   assert.ok(Object.values(read('data/indicadores.json').checks || {}).every(k => k.i18n?.en?.texto), 'las comprobaciones de AI 2027 llevan su inglés');
 });

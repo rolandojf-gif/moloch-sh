@@ -1,5 +1,5 @@
 {
- "_doc": "Campos de los datos publicados que contienen texto en español que la web muestra. scripts/i18n.mjs (cobertura) comprueba que todos tienen traducción inglesa: en la memoria de traducción (data/i18n/en) o, si el recolector la escribió, en el «i18n.en» del objeto que lo contiene. «*» = un nivel, «**» = cualquier profundidad. Los textos que se muestran tal cual (nombres propios, siglas) se declaran en «same» de la memoria.",
+ "_doc": "Campos de los datos publicados que contienen texto en español que la web muestra. scripts/i18n.mjs (cobertura) comprueba que todos tienen traducción inglesa: en la memoria de traducción (data/i18n/en) o, si el recolector la escribió, en el «i18n.en» del objeto que lo contiene. «*» = un nivel, «**» = cualquier profundidad. Los textos que se muestran tal cual (nombres propios, siglas) se declaran en «same» de la memoria. «opcionales»: campos que sólo existen en algunas recogidas (un hueco de cobertura, un modelo sin API pública).",
  "archivos": {
   "data/catalog.json": {
    "campos": [
@@ -10,6 +10,7 @@
     "models.*.orCreated.note",
     "models.*.epochPub.note",
     "models.*.reasoning.note",
+    "models.*.aaOnly.note",
     "models.*.caching.note",
     "models.*.hfCreated.note",
     "models.*.price.*.note",
@@ -21,7 +22,8 @@
     "curatedEvents.*.fuente",
     "curatedEvents.*.delta",
     "curatedEvents.*.nota"
-   ]
+   ],
+   "opcionales": ["models.*.aaOnly.note"]
   },
   "data/indicadores.json": {
    "campos": [
@@ -29,7 +31,8 @@
     "ind.**.why",
     "checks.*.texto",
     "checks.*.sentido"
-   ]
+   ],
+   "opcionales": ["ind.**.why"]
   },
   "data/events-log.json": {
    "campos": [

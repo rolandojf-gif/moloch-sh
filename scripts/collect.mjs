@@ -34,6 +34,7 @@ import { aaRace, aaCoverage } from '../js/fmt.js';
 import { detectChanges, mergeLog, snapshotExtras, indSnapshot, vigilados } from './cambios.mjs';
 import { enrich, parte, rss } from './parte.mjs';
 import { AVISOS, failedStatus } from './textos.mjs';
+import { norm, matchAA, aaBase, aaOnlyCandidates } from './emparejar.mjs';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DATA = path.join(ROOT, 'data');
@@ -42,6 +43,7 @@ const NOW_ISO = NOW.toISOString().replace(/\.\d{3}Z$/, 'Z');
 const TODAY = NOW_ISO.slice(0, 10);
 const WINDOW_DAYS = Number(process.env.WINDOW_DAYS || 540);   // antigüedad máxima en OpenRouter para entrar en el catálogo
 const NEW_DAYS = 14;                                           // altas recientes de autores no seguidos, para el registro
+const AA_ONLY_DAYS = 60;                                       // modelos de AA sin OpenRouter: publicados en los últimos N días
 const HOY_DAYS = 7;                                            // ventana de «Hoy»: modelos nuevos y acontecimientos de la última semana
 const FIXTURES = process.env.FIXTURES;
 const AA_KEY = process.env.AA_API_KEY || '';
@@ -112,13 +114,6 @@ const pctl = x => (x && typeof x === 'object') ? (x.p50 ?? null) : (Number.isFin
 function baseId(id) {
   return id.replace(/:[a-z0-9-]+$/, '');          // :free, :batch, :thinking… son variantes de servicio, no modelos
 }
-
-const norm = s => String(s || '').toLowerCase()
-  .replace(/\(.*?\)/g, ' ')
-  .replace(/^[^:]+:\s*/, '')                    // «Anthropic: Claude …» → «Claude …»
-  .replace(/[^a-z0-9.]+/g, ' ')
-  .replace(/\b(preview|instruct|chat|latest|exp|experimental)\b/g, ' ')
-  .replace(/\s+/g, ' ').trim();
 
 /* ── OpenRouter ─────────────────────────────────────────────────────────── */
 /* Lo que no es un modelo de lenguaje de uso general: generadores de imagen o audio (por la salida que declara
@@ -398,35 +393,6 @@ async function loadUso(names) {
   }
 }
 
-/* AA publica una fila por configuración de razonamiento («GPT-6 Sol (High)», «(Max, Default Fallback)»…). Se toma la de
-   mayor índice entre ésas; las ediciones especiales («(Daybreak Blue, max)») sólo cuentan si no hay otra. */
-const AA_SETTING = /^(non-reasoning|reasoning|minimal|low|medium|high|xhigh|max)$/;
-const aaSetting = r => ((/\(([^)]*)\)\s*$/.exec(r.name || '') || [])[1] || '').split(',')[0].toLowerCase().trim();
-
-function matchAA(orModel, lab, aaRows, overrides, creatorIds) {
-  if (!aaRows || !lab.aa_creator) return null;
-  if (Object.prototype.hasOwnProperty.call(overrides, orModel.id)) {
-    const slug = overrides[orModel.id];
-    if (!slug) return null;
-    const row = aaRows.find(r => r.slug === slug);
-    return row ? { row, how: 'manual' } : null;
-  }
-  const target = norm(orModel.name);
-  const cid = creatorIds[lab.aa_creator];
-  const cands = aaRows.filter(r => r.model_creator && (r.model_creator.slug ? r.model_creator.slug === lab.aa_creator : r.model_creator.id === cid));
-  const exact = cands.filter(r => norm(r.name) === target);
-  const variants = exact.length ? exact : cands.filter(r => {
-    const n = norm(r.name);
-    return n.startsWith(target + ' ') && !/\d/.test(n.slice(target.length));   // «gpt 5» no casa con «gpt 5.1»
-  });
-  if (!variants.length) return null;
-  const plain = variants.filter(r => !aaSetting(r) || AA_SETTING.test(aaSetting(r)));
-  const pool = plain.length ? plain : variants;
-  const ii = r => (r.evaluations && r.evaluations.artificial_analysis_intelligence_index) ?? -1;
-  const best = pool.slice().sort((a, b) => ii(b) - ii(a))[0];
-  return { row: best, how: pool.length > 1 ? `configuración de mayor índice entre ${pool.length}` : exact.length ? 'nombre exacto' : 'variante', variants: pool.length };
-}
-
 /* ── Construcción del catálogo ──────────────────────────────────────────── */
 function speedFromEndpoints(endpoints) {
   if (!endpoints) return null;
@@ -635,6 +601,26 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv, pesosOv) 
   };
 }
 
+/* Un modelo puntuado por AA que aún no está en OpenRouter: sin precio, proveedores ni fecha de alta, y sin enlaces a una
+   página de OpenRouter que no existe. «aaOnly» guarda desde cuándo consta así. */
+function asAAOnly(m, prev) {
+  const aaUrl = m.aa?.url || SOURCES.aa.url;
+  const none = (note) => fact(null, 'openrouter', null, TODAY, { note });
+  const noApi = 'sin API pública: aún no está en OpenRouter';
+  m.aaOnly = fact(true, 'aa', aaUrl, TODAY, { since: prev?.aaOnly?.since || TODAY, note: 'Artificial Analysis lo puntúa, pero aún no está en OpenRouter: sin API pública ni precio' });
+  m.orCreated = none('aún no está en OpenRouter');
+  m.price = { basis: 'sin-api', provider: null, in: none(noApi), out: none(noApi), cacheRead: none(noApi), cacheWrite: none(noApi) };
+  m.endpoints = null; m.endpointsMeta = null;
+  m.ctx = none(noApi); m.reasoning = none(noApi); m.caching = none(noApi);
+  if (m.weights.inferred) {
+    m.weights = fact('cerrados', 'aa', aaUrl, TODAY, { inferred: true, note: 'inferido: aún no está en OpenRouter y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face' });
+    m.license = fact('propietaria', 'aa', aaUrl, TODAY, { inferred: true, note: 'inferido: sin pesos publicados' });
+  }
+  return m;
+}
+/* Copia de la recogida anterior cuando AA no se ha consultado: cifras marcadas como no actualizadas. */
+const staleCopy = p => JSON.parse(JSON.stringify(p, (k, v) => (v && typeof v === 'object' && 'v' in v && 'src' in v) ? { ...v, stale: true } : v));
+
 /* Líderes abierto y cerrado por índice de AA (vistas de modelos) y por ECI de Epoch (referencia histórica). */
 function leaders(models, version) {
   const pick = (val) => {
@@ -679,7 +665,7 @@ function aaIndicators(models, version, st, epFront) {
       note: `mejor modelo de pesos cerrados menos el mejor de pesos abiertos (incluidos los anunciados en su descripción de OpenRouter, aún sin repositorio público); ${base}` }),
     gapLabs: f(gap(n.first, n.second), { first: who(n.first), second: who(n.second), ...inc(r.today), note: `mejor modelo del primer laboratorio menos el del segundo; ${base}` }),
     labs: n.labs.slice(0, 10).map(who),
-    rate12m: f(gap(n.to, n.from), { from: who(n.from), to: who(n.to), since: n.yearAgo, ...inc(n.yearAgo, r.today), note: `puntos ganados por la frontera desde el ${n.yearAgo}: mejor modelo publicado hasta hoy menos el mejor publicado hasta esa fecha, los dos con su puntuación actual; sólo modelos que siguen en OpenRouter` })
+    rate12m: f(gap(n.to, n.from), { from: who(n.from), to: who(n.to), since: n.yearAgo, ...inc(n.yearAgo, r.today), note: `puntos ganados por la frontera desde el ${n.yearAgo}: mejor modelo publicado hasta hoy menos el mejor publicado hasta esa fecha, los dos con su puntuación actual; modelos del catálogo: los que siguen en OpenRouter y los que AA ya puntúa sin API pública` })
   };
 }
 
@@ -692,7 +678,8 @@ function snapshot(models) {
       w: m.weights.v === 'abiertos' ? (m.weights.announced ? 'a' : 'o') : m.weights.v === 'cerrados' ? 'c' : null,
       in: m.price.in.v, out: m.price.out.v, pb: m.price.basis, pp: m.price.provider, ...(m.price.tiers ? { lp: m.price.tiers } : {}),
       eci: m.epoch?.eci?.v ?? null, swe: m.epoch?.swe?.v ?? null,
-      ii: m.aa?.intelligence?.v ?? null
+      ii: m.aa?.intelligence?.v ?? null,
+      ...(m.aaOnly ? { ao: 1 } : {})   // puntuado por AA, aún sin API pública: no cuenta como retirada si desaparece
     };
   }
   return out;
@@ -768,6 +755,37 @@ async function main() {
     if (aaMatch && aaMatch !== 'keep') aaMatch.version = aaVersion;
     models.push(buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv, ovFile.pesos || {}));
   }
+  // Modelos que AA ya puntúa sin estar en OpenRouter (scripts/emparejar.mjs, aaOnlyCandidates). Si AA no se ha consultado
+  // en esta recogida, se conservan los de la anterior que siguen sin llegar a OpenRouter.
+  const aaOnly = [];
+  const prevAO = (prevCatalog?.models || []).filter(p => p.aaOnly && p.aa);
+  if (aaRows) {
+    const since = new Date(NOW.getTime() - AA_ONLY_DAYS * 86400e3).toISOString().slice(0, 10);
+    const keep = new Set(prevAO.map(p => p.aa.slug));
+    for (const c of aaOnlyCandidates(aaRows, models, labs, aaCreators, overrides, ovFile.aaSolo || {}, since, keep)) {
+      const lab = labs[c.author], prev = prevMap.get(c.id);
+      const pseudo = { id: c.id, name: c.name, created: null, description: '', pricing: {}, supported_parameters: [], architecture: null, context_length: null };
+      if (labOrgs.has(lab.name)) pseudo._hfFound = await findHFRepo(pseudo, labOrgs.get(lab.name));
+      const hf = pseudo._hfFound ? await loadHF(pseudo._hfFound) : null;
+      const m = buildModel(pseudo, lab, null, hf, { row: c.row, how: c.variants > 1 ? `configuración de mayor índice entre ${c.variants}` : 'sin pareja en OpenRouter', variants: c.variants, version: aaVersion }, prev, ep, epochOv, ovFile.pesos || {});
+      aaOnly.push(asAAOnly(m, prev));
+    }
+  } else if (aaRows === undefined) {
+    const now = new Set(models.map(m => m.id));
+    for (const p of prevCatalog?.models || []) if (p.aaOnly && !now.has(p.id)) aaOnly.push(staleCopy(p));
+  }
+  // Los que llegan a OpenRouter conservan desde cuándo constaban sin API pública (preApi): con el mismo id, por el id; con
+  // otro, por su fila de AA (slug o nombre base del mismo laboratorio).
+  const aoKey = (lab, name) => `${lab}|${norm(name)}`;
+  const aoBySlug = new Map(prevAO.map(p => [p.aa.slug, p])), aoByName = new Map(prevAO.map(p => [aoKey(p.lab.id, aaBase(p.aa)), p]));
+  for (const m of models) {
+    const prev = prevMap.get(m.id);
+    const was = prev?.aaOnly ? prev : m.aa && !m.aa.stale ? aoBySlug.get(m.aa.slug) || aoByName.get(aoKey(m.lab.id, aaBase(m.aa))) : null;
+    const link = prev?.preApi || (was ? { id: was.id, since: was.aaOnly.since } : null);
+    if (link) { m.preApi = link; if (!prev?.preApi) log(`llega a OpenRouter sin API pública hasta ahora: ${link.id} → ${m.id}`); }
+  }
+  if (aaOnly.length) log(`AA sin OpenRouter (${aaOnly.length}): ${aaOnly.map(m => `${m.id} «${m.aa?.name}» ${m.aa?.intelligence?.v ?? '—'}`).join(' | ')}`);
+  models.push(...aaOnly);
   if (status.hf.failed) status.hf.ok = status.hf.failed < models.length / 4;
   // Desde cuándo constan los pesos anunciados de cada modelo: se arrastra de la recogida anterior; la primera vez, de la
   // instantánea diaria más antigua que ya los registraba («a»). Sirve para ver si un anuncio no llega a publicarse.
@@ -814,7 +832,8 @@ async function main() {
     if (others.length) log(`  creadores de AA con modelos de los últimos 60 días que no se siguen: ${others.join(', ')}`);
   }
 
-  models.sort((a, b) => (b.orCreated.v || '').localeCompare(a.orCreated.v || ''));
+  const sortDate = m => m.orCreated.v || m.aa?.release?.v || '';
+  models.sort((a, b) => sortDate(b).localeCompare(sortDate(a)));
 
   // Instantánea del día e histórico
   await mkdir(path.join(DATA, 'history'), { recursive: true });
@@ -878,7 +897,7 @@ async function main() {
       price: 'Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado y con su cuantización cuando OpenRouter la publica (puede no ser la versión que evalúan AA o Epoch). El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio.',
       weights: '«Abiertos» con un repositorio público en Hugging Face, enlazado por OpenRouter o con el mismo nombre en la organización del laboratorio. Sin repositorio, la clasificación de Epoch si la hay; si no, «abiertos · anunciados» cuando su descripción de OpenRouter lo presenta como de pesos abiertos (no consta quién la redacta, así que no se atribuye al laboratorio; cuenta como abierto, aunque aún no se pueda descargar), y si no, «cerrados», marcado como inferido. La licencia procede de la ficha de Hugging Face.',
       speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la latencia (tiempo hasta el primer token) incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
-      window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días.`
+      window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días, y los que Artificial Analysis ya puntúa sin que estén en OpenRouter (publicados en los últimos ${AA_ONLY_DAYS} días), marcados «sin API pública» y sin precio hasta que llegan.`
     },
     models,
     excluded: orModels.excluded || prevCatalog?.excluded || [],

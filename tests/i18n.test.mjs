@@ -111,7 +111,7 @@ test('cobertura: todo texto en español de los datos publicados tiene versión i
 test('cobertura: los campos de campos.json existen en los datos', () => {
   const campos = read('data/i18n/campos.json').archivos, hoy = new Set(textosDeDatos().map(x => x.origen));
   const vacios = [];
-  for (const [file, spec] of Object.entries(campos)) for (const c of spec.campos) if (!hoy.has(`${file}:${c}`)) vacios.push(`${file}:${c}`);
+  for (const [file, spec] of Object.entries(campos)) for (const c of spec.campos) if (!hoy.has(`${file}:${c}`) && !(spec.opcionales || []).includes(c)) vacios.push(`${file}:${c}`);
   assert.deepEqual(vacios, [], 'campo declarado que no tiene ningún texto (¿cambió el esquema?)');
 });
 

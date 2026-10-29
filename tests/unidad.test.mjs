@@ -7,6 +7,7 @@ import { fmtDate, fmtDateTime, num, usd, aaRace, aaCoverage } from '../js/fmt.js
 import { resolve } from '../js/valoracion.js';
 import { importancia } from '../scripts/parte.mjs';
 import { unzip } from '../scripts/indicadores.mjs';
+import { sameModelName, aaOnlyCandidates } from '../scripts/emparejar.mjs';
 
 const fixture = name => new URL(`./fixtures/${name}`, import.meta.url);
 
@@ -104,4 +105,35 @@ test('aaCoverage: tramos sin el mejor modelo según Epoch, sin rellenar nada', (
   assert.deepEqual(c.at('2025-12-01').map(r => r.n), ['GPT-5 Pro']);
   assert.deepEqual(c.at('2026-07-01'), []);
   assert.equal(c.completeFrom, '2026-06-01');
+});
+
+test('emparejamiento: nombres equivalentes entre AA y el catálogo', () => {
+  assert.ok(sameModelName('Gemini 4 Argon', 'Gemini 4 Argon'));
+  assert.ok(sameModelName('Qwen3.8 Max', 'Qwen3.8 Max 0902'), 'el del catálogo con sufijo');
+  assert.ok(sameModelName('Muse Wonder Full', 'Muse Wonder'), 'el de AA con una palabra sin cifras');
+  assert.ok(!sameModelName('GPT-6.1 Sol', 'GPT-6'), 'otra versión no es el mismo modelo');
+  assert.ok(!sameModelName('Gemini 4 Carbon', 'Gemini 4 Argon'));
+});
+
+test('modelos de AA sin OpenRouter: sólo los nuevos, sin duplicar los que ya están', () => {
+  const labs = { google: { name: 'Google', aa_creator: 'google' }, qwen: { name: 'Qwen', aa_creator: 'alibaba' }, anon: { name: '?', aa_creator: 'x', stealth: true } };
+  const creators = { google: 'c-g', alibaba: 'c-q', x: 'c-x' };
+  const row = (slug, name, cid, ii, date = '2026-10-28') => ({ slug, name, model_creator: { id: cid }, release_date: date, evaluations: { artificial_analysis_intelligence_index: ii } });
+  const rows = [
+    row('gemini-4-carbon-low', 'Gemini 4 Carbon (Low)', 'c-g', 70), row('gemini-4-carbon', 'Gemini 4 Carbon (High)', 'c-g', 78),
+    row('gemini-4-argon', 'Gemini 4 Argon', 'c-g', 75),                       // ya emparejado en el catálogo
+    row('qwen3-8-max-0902', 'Qwen3.8 Max (0902)', 'c-q', 66),                  // en el catálogo con otro nombre equivalente
+    row('gemini-3-old', 'Gemini 3 Old', 'c-g', 60, '2026-06-01'),              // fuera de la ventana
+    row('gemini-4-tiny', 'Gemini 4 Tiny', 'c-g', null),                        // sin índice
+    row('stealth-1', 'Stealth One', 'c-x', 80)                                 // laboratorio anónimo
+  ];
+  const models = [
+    { id: 'google/gemini-4-argon', name: 'Gemini 4 Argon', aa: { slug: 'gemini-4-argon' } },
+    { id: 'qwen/qwen3.8-max-0902', name: 'Qwen3.8 Max 0902', aa: null }
+  ];
+  const got = aaOnlyCandidates(rows, models, labs, creators, {}, {}, '2026-09-01');
+  assert.deepEqual(got.map(c => [c.id, c.name, c.row.slug, c.variants]), [['google/gemini-4-carbon', 'Gemini 4 Carbon', 'gemini-4-carbon', 2]]);
+  assert.deepEqual(aaOnlyCandidates(rows, models, labs, creators, {}, { 'gemini-4-carbon': null }, '2026-09-01'), [], 'overrides.aaSolo lo descarta');
+  // Uno que ya constaba sin API pública sigue aunque salga de la ventana.
+  assert.deepEqual(aaOnlyCandidates(rows, models, labs, creators, {}, {}, '2026-11-01', new Set(['gemini-4-carbon'])).map(c => c.id), ['google/gemini-4-carbon']);
 });

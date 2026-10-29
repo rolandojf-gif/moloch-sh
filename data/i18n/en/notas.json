@@ -11,15 +11,10 @@
   "inferido: OpenRouter no enlaza pesos públicos y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; puede corregirse en data/curated/overrides.json": "inferred: OpenRouter links no public weights and there is no repository with its name in the lab’s Hugging Face organisation; it can be corrected in data/curated/overrides.json",
   "precio de referencia de OpenRouter; no se pudieron leer sus proveedores": "OpenRouter reference price; its providers could not be read",
   "intervalo null–null": "interval null–null",
-  "En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index v4.3, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.": "In the model views, capability is measured with the Artificial Analysis Intelligence Index v4.3, which AA computes with its own tests and which usually scores a model a few days after release. AA publishes one figure per reasoning configuration; the one with the highest index is shown and named. Alongside it is Epoch AI’s Epoch Capabilities Index (ECI) (CC BY 4.0), which combines many benchmarks with a confidence interval and is the basis of the historical series in “The AI Race”. The two scales are not comparable with each other. Matching with OpenRouter is by lab and normalised name.",
   "Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.": "Blended price = (3 × input + output) / 4, in USD per million tokens, as Artificial Analysis does.",
   "Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado y con su cuantización cuando OpenRouter la publica (puede no ser la versión que evalúan AA o Epoch). El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio.": "Price: what the lab itself charges when it serves the model on OpenRouter; if it does not serve it, that of the cheapest provider, named and with its quantisation when OpenRouter publishes it (it may not be the version that AA or Epoch evaluate). The per-model price that OpenRouter publishes is not used because it corresponds to a reference provider that changes from one day to the next. Only the lab’s own prices are recorded as price changes.",
   "«Abiertos» con un repositorio público en Hugging Face, enlazado por OpenRouter o con el mismo nombre en la organización del laboratorio. Sin repositorio, la clasificación de Epoch si la hay; si no, «abiertos · anunciados» cuando su descripción de OpenRouter lo presenta como de pesos abiertos (no consta quién la redacta, así que no se atribuye al laboratorio; cuenta como abierto, aunque aún no se pueda descargar), y si no, «cerrados», marcado como inferido. La licencia procede de la ficha de Hugging Face.": "“Open” means a public repository on Hugging Face, linked by OpenRouter or with the same name in the lab’s organisation. Without a repository, Epoch’s classification if there is one; if not, “open · announced” when its OpenRouter description presents it as open-weight (it is not stated who writes it, so it is not attributed to the lab; it counts as open even though it cannot yet be downloaded), and otherwise “closed”, marked as inferred. The licence comes from the Hugging Face model card.",
   "La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la latencia (tiempo hasta el primer token) incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.": "Speed depends on who serves the model. The median measured by Artificial Analysis at the reference provider is shown, with the same configuration that gives its score; with reasoning at maximum, latency (time to first token) includes thinking time and can reach minutes. If AA does not have it, that of the fastest OpenRouter provider is used when its API publishes it.",
-  "Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos 540 días.": "Models from the tracked labs listed on OpenRouter in the last 540 days are included.",
-  "mejor modelo de un laboratorio estadounidense menos el mejor de uno chino; índice de inteligencia de Artificial Analysis v4.3, con la puntuación actual de cada modelo del catálogo": "best model from a US lab minus the best from a Chinese one; Artificial Analysis Intelligence Index v4.3, with each catalogue model’s current score",
-  "mejor modelo de pesos cerrados menos el mejor de pesos abiertos (incluidos los anunciados en su descripción de OpenRouter, aún sin repositorio público); índice de inteligencia de Artificial Analysis v4.3, con la puntuación actual de cada modelo del catálogo": "best closed-weight model minus the best open-weight one (including those announced in their OpenRouter description, still without a public repository); Artificial Analysis Intelligence Index v4.3, with each catalogue model’s current score",
-  "mejor modelo del primer laboratorio menos el del segundo; índice de inteligencia de Artificial Analysis v4.3, con la puntuación actual de cada modelo del catálogo": "best model of the first lab minus that of the second; Artificial Analysis Intelligence Index v4.3, with each catalogue model’s current score",
   "sin índice AA": "no AA index",
   "mejor modelo de una organización estadounidense menos el mejor de una china; país de la organización según Epoch": "best model from a US organisation minus the best from a Chinese one; organisation’s country according to Epoch",
   "porcentaje de las réplicas de Epoch en las que el mejor modelo de EE. UU. supera al mejor chino": "percentage of Epoch’s replicates in which the best US model beats the best Chinese one",
@@ -77,7 +72,13 @@
   "la consulta falló; se conserva el ranking anterior": "the check failed; the previous ranking has been retained",
   "no conectado": "not connected",
   "sin permiso de publicación": "publication permission not granted",
-  "Curado manualmente": "Manually curated"
+  "Curado manualmente": "Manually curated",
+  "Artificial Analysis lo puntúa, pero aún no está en OpenRouter: sin API pública ni precio": "Artificial Analysis scores it, but it is not on OpenRouter yet: no public API and no price",
+  "sin API pública: aún no está en OpenRouter": "no public API: not on OpenRouter yet",
+  "aún no está en OpenRouter": "not on OpenRouter yet",
+  "inferido: aún no está en OpenRouter y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face": "inferred: not on OpenRouter yet and there is no repository with its name in the lab’s Hugging Face organisation",
+  "inferido: sin pesos publicados": "inferred: no published weights",
+  "sin pareja en OpenRouter": "no OpenRouter counterpart"
  },
  "patterns": [
   [
@@ -117,6 +118,10 @@
    "points gained by the frontier since {d}: best model published to date minus the best published up to that date, both with their current score; only models still on OpenRouter"
   ],
   [
+   "puntos ganados por la frontera desde el {d}: mejor modelo publicado hasta hoy menos el mejor publicado hasta esa fecha, los dos con su puntuación actual; modelos del catálogo: los que siguen en OpenRouter y los que AA ya puntúa sin API pública",
+   "points gained by the frontier since {d}: best model published to date minus the best published up to that date, both with their current score; catalogue models: those still on OpenRouter and those AA already scores without a public API"
+  ],
+  [
    "puntos ganados por la frontera desde {d}",
    "points gained by the frontier since {d}"
   ],
@@ -135,6 +140,30 @@
   [
    "configuración de mayor índice entre {n}",
    "highest-index configuration out of {n}"
+  ],
+  [
+   "En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index v{v}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.",
+   "In the model views, capability is measured with the Artificial Analysis Intelligence Index v{v}, which AA computes with its own tests and which usually scores a model a few days after release. AA publishes one figure per reasoning configuration; the one with the highest index is shown and named. Alongside it is Epoch AI’s Epoch Capabilities Index (ECI) (CC BY 4.0), which combines many benchmarks with a confidence interval and is the basis of the historical series in “The AI Race”. The two scales are not comparable with each other. Matching with OpenRouter is by lab and normalised name."
+  ],
+  [
+   "mejor modelo de un laboratorio estadounidense menos el mejor de uno chino; índice de inteligencia de Artificial Analysis v{v}, con la puntuación actual de cada modelo del catálogo",
+   "best model from a US lab minus the best from a Chinese one; Artificial Analysis Intelligence Index v{v}, with each catalogue model’s current score"
+  ],
+  [
+   "mejor modelo de pesos cerrados menos el mejor de pesos abiertos (incluidos los anunciados en su descripción de OpenRouter, aún sin repositorio público); índice de inteligencia de Artificial Analysis v{v}, con la puntuación actual de cada modelo del catálogo",
+   "best closed-weight model minus the best open-weight one (including those announced in their OpenRouter description, still without a public repository); Artificial Analysis Intelligence Index v{v}, with each catalogue model’s current score"
+  ],
+  [
+   "mejor modelo del primer laboratorio menos el del segundo; índice de inteligencia de Artificial Analysis v{v}, con la puntuación actual de cada modelo del catálogo",
+   "best model of the first lab minus that of the second; Artificial Analysis Intelligence Index v{v}, with each catalogue model’s current score"
+  ],
+  [
+   "Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos {a} días, y los que Artificial Analysis ya puntúa sin que estén en OpenRouter (publicados en los últimos {b} días), marcados «sin API pública» y sin precio hasta que llegan.",
+   "Models from the tracked labs listed on OpenRouter in the last {a} days are included, as are those Artificial Analysis already scores while they are not on OpenRouter (published in the last {b} days), marked “no public API” and without a price until they arrive."
+  ],
+  [
+   "Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos {a} días.",
+   "Models from the tracked labs listed on OpenRouter in the last {a} days are included."
   ]
  ],
  "same": [

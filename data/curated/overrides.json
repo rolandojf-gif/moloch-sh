@@ -21,5 +21,7 @@
     "google/gemini-2.5-flash": "Gemini 2.5 Flash (Jun 2025)"
   },
   "_doc_pesos": "Pesos anunciados: sin repositorio en Hugging Face ni clasificación de Epoch, un modelo cuenta como «abiertos · anunciados» si su descripción de OpenRouter lo presenta como de pesos abiertos. Clave: id de OpenRouter. Valor null para no aplicar esa lectura a un modelo cuya descripción se lea mal.",
-  "pesos": {}
+  "pesos": {},
+  "_doc_aaSolo": "Modelos que Artificial Analysis puntúa sin que estén en OpenRouter: entran en el catálogo marcados «sin API pública» (scripts/emparejar.mjs, aaOnlyCandidates). { \"slug-de-AA\": null } descarta uno que sea un duplicado o un error; si en realidad está en OpenRouter con otro nombre, mejor emparejarlo en «aa».",
+  "aaSolo": {}
 }

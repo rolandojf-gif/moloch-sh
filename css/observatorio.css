@@ -321,6 +321,8 @@ table.mx tr.row[aria-expanded="true"] td { background: rgba(204, 255, 0, .2); bo
 .w.nd { background: var(--card-2); color: var(--muted); }
 .w.cerrados.inf { background: var(--card-2); color: var(--text); border-style: dashed; border-color: var(--closed); }
 .w.abiertos.anun { background: var(--card-2); color: var(--text); border-style: dashed; border-color: var(--open); }
+/* Puntuado por AA, aún sin API pública (no está en OpenRouter). */
+.sinapi { display: inline-block; font: 700 9.5px/1 var(--f-mono); padding: 2px 4px; border: 1px dashed var(--ink); text-transform: uppercase; color: var(--text); background: var(--card-2); vertical-align: 1px; white-space: nowrap; cursor: help; }
 .big { font: 700 17px var(--f-head); }
 tr.detail td { background: var(--card-2); padding: 14px 16px 18px; }
 .dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 22px; }
