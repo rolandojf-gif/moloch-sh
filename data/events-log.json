@@ -218,6 +218,366 @@
  "events": [
   {
    "kind": "precio",
+   "key": "precio|openai/gpt-6.1-terra|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": 100,
+    "unit": "%"
+   },
+   "model": "openai/gpt-6.1-terra",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/openai/gpt-6.1-terra/providers",
+    "got": "2026-10-29T03:54:12Z"
+   },
+   "what": "OpenAI deja de ofrecer en OpenRouter su tarifa más barata de GPT-6.1 Terra (0,5 $ de entrada y 2,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 1 $ de entrada y 5 $ de salida.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-retirada",
+    "provider": "OpenAI",
+    "from": {
+     "in": 0.5,
+     "out": 2.5
+    },
+    "to": {
+     "in": 1,
+     "out": 5
+    },
+    "pct": 100,
+    "tiersFrom": [
+     [
+      0.5,
+      2.5
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      2,
+      10
+     ]
+    ],
+    "tiersTo": [
+     [
+      1,
+      5
+     ],
+     [
+      2,
+      10
+     ]
+    ],
+    "since": "2026-10-28",
+    "rankAA": 5,
+    "of": 28
+   },
+   "i18n": {
+    "en": {
+     "what": "OpenAI stops offering its cheapest GPT-6.1 Terra rate on OpenRouter ($0.5 input and $2.5 output per million tokens). The cheapest it has left, which already existed, is $1 input and $5 output.",
+     "titular": "OpenAI withdraws the cheapest GPT-6.1 Terra rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $1 to $2 per million tokens."
+    }
+   },
+   "titular": "OpenAI retira la tarifa más barata de GPT-6.1 Terra en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-6.1-terra",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 1 $ a 2 $ por millón de tokens."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|mistralai/mistral-medium-3-5|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": 10,
+    "unit": "%"
+   },
+   "model": "mistralai/mistral-medium-3-5",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/mistralai/mistral-medium-3-5/providers",
+    "got": "2026-10-29T03:54:12Z"
+   },
+   "what": "Mistral deja de ofrecer en OpenRouter su tarifa más barata de Mistral Medium 3.5 (1,5 $ de entrada y 7,5 $ de salida por millón de tokens). La más barata que le queda, que ya existía, es de 1,65 $ de entrada y 8,25 $ de salida.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-retirada",
+    "provider": "Mistral",
+    "from": {
+     "in": 1.5,
+     "out": 7.5
+    },
+    "to": {
+     "in": 1.65,
+     "out": 8.25
+    },
+    "pct": 10,
+    "tiersFrom": [
+     [
+      1.5,
+      7.5
+     ],
+     [
+      1.65,
+      8.25
+     ]
+    ],
+    "tiersTo": [
+     [
+      1.65,
+      8.25
+     ]
+    ],
+    "since": "2026-10-28"
+   },
+   "i18n": {
+    "en": {
+     "what": "Mistral stops offering its cheapest Mistral Medium 3.5 rate on OpenRouter ($1.5 input and $7.5 output per million tokens). The cheapest it has left, which already existed, is $1.65 input and $8.25 output.",
+     "titular": "Mistral withdraws the cheapest Mistral Medium 3.5 rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $3 to $3.3 per million tokens."
+    }
+   },
+   "titular": "Mistral retira la tarifa más barata de Mistral Medium 3.5 en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/mistralai/mistral-medium-3-5",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 3 $ a 3,3 $ por millón de tokens."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|minimax/minimax-m2.5|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": -50,
+    "unit": "%"
+   },
+   "model": "minimax/minimax-m2.5",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/minimax/minimax-m2.5/providers",
+    "got": "2026-10-29T03:54:12Z"
+   },
+   "what": "Minimax añade en OpenRouter una tarifa más barata de MiniMax M2.5: 0,3 $ de entrada y 1,2 $ de salida por millón de tokens. La anterior (0,6 $ de entrada y 2,4 $ de salida) sigue disponible.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-nueva",
+    "provider": "Minimax",
+    "from": {
+     "in": 0.6,
+     "out": 2.4
+    },
+    "to": {
+     "in": 0.3,
+     "out": 1.2
+    },
+    "pct": -50,
+    "tiersFrom": [
+     [
+      0.6,
+      2.4
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.3,
+      1.2
+     ],
+     [
+      0.6,
+      2.4
+     ]
+    ],
+    "since": "2026-10-28"
+   },
+   "i18n": {
+    "en": {
+     "what": "Minimax adds a cheaper MiniMax M2.5 rate on OpenRouter: $0.3 input and $1.2 output per million tokens. The previous one ($0.6 input and $2.4 output) is still available.",
+     "titular": "Minimax adds a cheaper MiniMax M2.5 rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $1.05 to $0.525 per million tokens."
+    }
+   },
+   "titular": "Minimax añade una tarifa más barata de MiniMax M2.5 en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/minimax/minimax-m2.5",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 1,05 $ a 0,525 $ por millón de tokens."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|qwen/qwen3-next-80b-a3b-thinking|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": null,
+   "model": "qwen/qwen3-next-80b-a3b-thinking",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-10-29T03:54:12Z"
+   },
+   "what": "Qwen3 Next 80B A3B Thinking deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Qwen3 Next 80B A3B Thinking"
+   },
+   "i18n": {
+    "en": {
+     "what": "Qwen3 Next 80B A3B Thinking is no longer listed in the OpenRouter catalogue.",
+     "titular": "Qwen3 Next 80B A3B Thinking is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Qwen3 Next 80B A3B Thinking deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|dcMW|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": 310,
+    "pct": 2.2,
+    "unit": "MW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-10-29T03:54:12Z"
+   },
+   "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.234 a 14.544 MW.",
+   "data": {
+    "ind": "dcMW",
+    "path": "dc.now",
+    "from": 14234,
+    "to": 14544
+   },
+   "i18n": {
+    "en": {
+     "what": "IT power in service at the data centres Epoch tracks: from 14,234 to 14,544 MW.",
+     "titular": "The power in service at the data centres Epoch tracks rises to 14,544 MW",
+     "consecuencia": "96 data centres. Power of the equipment, without cooling; it is not the world total. In AI 2027 it is evidence for “40 million H100e available”."
+    }
+   },
+   "titular": "La potencia en servicio de los centros que sigue Epoch sube a 14.544 MW",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "96 centros. Potencia de los equipos, sin refrigeración; no es el total mundial. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|dcPlan26|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": 129,
+    "pct": 0.6,
+    "unit": "MW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
+    "got": "2026-10-29T03:54:12Z"
+   },
+   "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.850 a 21.979 MW.",
+   "data": {
+    "ind": "dcPlan26",
+    "path": "dc.plan",
+    "from": 21850,
+    "to": 21979
+   },
+   "i18n": {
+    "en": {
+     "what": "Power planned for the end of 2026 in Epoch’s schedule: from 21,850 to 21,979 MW.",
+     "titular": "Power planned for the end of 2026 in Epoch’s schedule: from 21,850 to 21,979 MW.",
+     "consecuencia": "In AI 2027 it is evidence for “AI power in 2026”."
+    }
+   },
+   "titular": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.850 a 21.979 MW.",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "En AI 2027 es evidencia de «Potencia de la IA en 2026»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|capexB|2026-10-29",
+   "published": null,
+   "detected": "2026-10-29",
+   "date": "2026-10-29",
+   "mag": {
+    "v": 11.8,
+    "pct": 2.2,
+    "unit": "mil millones de $"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-10-29T03:54:12Z"
+   },
+   "what": "Coste de capital de los centros que sigue Epoch: de 539 a 551 mil millones de $.",
+   "data": {
+    "ind": "capexB",
+    "path": "dc.capex",
+    "from": 539.2,
+    "to": 551
+   },
+   "i18n": {
+    "en": {
+     "what": "Capital cost of the data centres Epoch tracks: from 539 to 551 billion dollars.",
+     "titular": "Capital cost of the data centres Epoch tracks: from 539 to 551 billion dollars."
+    }
+   },
+   "titular": "Coste de capital de los centros que sigue Epoch: de 539 a 551 mil millones de $.",
+   "importancia": null,
+   "ficha": "#carrera/economia",
+   "consecuencia": null
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|stepfun/step-5-preview-20261008|2026-10-29",
+   "published": "2026-10-28",
+   "detected": "2026-10-29",
+   "date": "2026-10-28",
+   "mag": {
+    "v": 7,
+    "unit": "puesto"
+   },
+   "model": "stepfun/step-5-preview",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-10-29T03:54:12Z"
+   },
+   "what": "Step 5 Preview entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 7, 2,9 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "stepfun/step-5-preview-20261008",
+    "rank": 7,
+    "share": 2.9,
+    "tokens": 5388002622302,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "Step 5 Preview enters the ten most used models on OpenRouter over the last 7 days: rank 7, 2.9% of tokens.",
+     "titular": "Step 5 Preview enters OpenRouter’s top 10 by usage",
+     "consecuencia": "2.9% of OpenRouter’s tokens from 2026-10-22 to 2026-10-28. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "Step 5 Preview entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/stepfun/step-5-preview",
+   "consecuencia": "2,9 % de los tokens de OpenRouter del 2026-10-22 al 2026-10-28. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
+   "kind": "precio",
    "key": "precio|minimax/minimax-m2.5|2026-10-28",
    "published": null,
    "detected": "2026-10-28",

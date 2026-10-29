@@ -6,7 +6,7 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Wed, 28 Oct 2026 03:54:19 GMT</lastBuildDate>
+  <lastBuildDate>Thu, 29 Oct 2026 03:54:12 GMT</lastBuildDate>
   <item>
     <title>Artificial Analysis launches version 5 of its Intelligence Index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#hoy</link>
@@ -40,7 +40,7 @@
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.1-terra</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.1-terra</guid>
     <pubDate>Mon, 26 Oct 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue. AA index 51: 7.4 points behind the best closed model (Claude Opus 5.5). Rank 5 of 28. Blended price $1 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 5 of 28). Published on 2026-10-26; detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue. AA index 51: 7.4 points behind the best closed model (Claude Opus 5.5). Rank 5 of 28. Blended price $2 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 5 of 28). Published on 2026-10-26; detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Tencent cuts the price of Hy3 by 38%</title>
