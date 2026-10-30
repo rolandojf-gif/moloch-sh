@@ -51,6 +51,7 @@
   "enrutador de OpenRouter: elige otro modelo en cada petición": "OpenRouter router: picks a different model for each request",
   "clasificador de seguridad, no un modelo de conversación": "safety classifier, not a conversational model",
   "mejor ECI publicado por Epoch": "best ECI published by Epoch",
+  "récords de cada laboratorio en el ECI por fecha de publicación del modelo; entran los que estuvieron entre los diez primeros a fin de algún mes": "each lab’s ECI records by model release date; labs that were among the top ten at the end of some month are included",
   "mejor resultado de cada evaluación ejecutada por Epoch (tareas con al menos 5 modelos)": "best result on each evaluation run by Epoch (tasks with at least 5 models)",
   "mejor resultado de cada modelo en las ejecuciones de Epoch, por fecha de publicación del modelo": "best result of each model in Epoch’s runs, by the model’s publication date",
   "MirrorCode ejecutado por Epoch: reimplementar programas enteros a partir de su comportamiento; a un ingeniero, algunas tareas le llevarían semanas; mejor resultado de cada modelo, por fecha de publicación del modelo": "MirrorCode run by Epoch: reimplementing whole programs from their behaviour; some tasks would take an engineer weeks; best result of each model, by the model’s publication date",

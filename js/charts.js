@@ -14,7 +14,7 @@ function tipBox() {
     tipEl.hidden = true;
     document.body.appendChild(tipEl);
     // En pantallas táctiles la ventana se queda hasta tocar fuera de un gráfico o desplazar la página.
-    document.addEventListener('pointerdown', e => { if (!e.target.closest?.('.chart svg')) hideTip(); });
+    document.addEventListener('pointerdown', e => { if (!e.target.closest?.('.chart svg, canvas.race-cv')) hideTip(); });
     addEventListener('scroll', hideTip, { passive: true });
   }
   return tipEl;
@@ -27,6 +27,14 @@ export function tip(title, rows, foot = '', icon = null) {
   const body = rows.filter(r => r && r[1] !== null && r[1] !== undefined && r[1] !== '')
     .map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(String(v))}</td></tr>`).join('');
   return `<div class="tt-title">${icon ? `<span class="logo"><img src="${esc(icon)}" alt="" width="16" height="16"></span>` : ''}<span>${esc(title)}</span></div>${body ? `<table>${body}</table>` : ''}${foot ? `<div class="tt-foot">${esc(foot)}</div>` : ''}`;
+}
+
+/* Ventana de un gráfico que no es SVG (la carrera animada, en canvas): key evita rehacer el contenido en cada movimiento. */
+export function showTip(e, html, key) {
+  const t = tipBox();
+  if (t.dataset.k !== key) { t.innerHTML = html; t.dataset.k = key; }
+  t.hidden = false;
+  placeTip(e);
 }
 
 function placeTip(e) {
