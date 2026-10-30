@@ -230,7 +230,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "GPT-6.1 Terra: primera puntuación en el índice ECI de Epoch AI (168.05).",
    "data": {
@@ -243,13 +243,76 @@
     "en": {
      "what": "GPT-6.1 Terra: first score on Epoch AI’s ECI (168.05).",
      "titular": "Epoch AI scores GPT-6.1 Terra on the ECI for the first time",
-     "consecuencia": "AA index 51: 8.4 points behind the best closed model (Gemini 4 Carbon). Rank 6 of 33. Blended price $1 per million tokens."
+     "consecuencia": "AA index 51: 8.4 points behind the best closed model (Gemini 4 Carbon). Rank 6 of 33. Blended price $2 per million tokens."
     }
    },
    "titular": "Epoch AI puntúa por primera vez GPT-6.1 Terra en el ECI",
    "importancia": null,
    "ficha": "#modelos/openai/gpt-6.1-terra",
-   "consecuencia": "Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 33. Precio combinado 1 $ por millón de tokens."
+   "consecuencia": "Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 33. Precio combinado 2 $ por millón de tokens."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|minimax/minimax-m3.1-flash|2026-10-30",
+   "published": null,
+   "detected": "2026-10-30",
+   "date": "2026-10-30",
+   "mag": {
+    "v": -50,
+    "unit": "%"
+   },
+   "model": "minimax/minimax-m3.1-flash",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/minimax/minimax-m3.1-flash/providers",
+    "got": "2026-10-30T20:14:30Z"
+   },
+   "what": "Minimax baja el precio de MiniMax M3.1 Flash en OpenRouter: entrada de 0,15 $ a 0,075 $ y salida de 0,6 $ a 0,3 $ por millón de tokens.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "precio",
+    "provider": "Minimax",
+    "from": {
+     "in": 0.15,
+     "out": 0.6
+    },
+    "to": {
+     "in": 0.075,
+     "out": 0.3
+    },
+    "pct": -50,
+    "tiersFrom": [
+     [
+      0.15,
+      0.6
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.075,
+      0.3
+     ]
+    ],
+    "since": "2026-10-29",
+    "rankAA": 18,
+    "of": 33
+   },
+   "i18n": {
+    "en": {
+     "what": "Minimax cuts the price of MiniMax M3.1 Flash on OpenRouter: input from $0.15 to $0.075 and output from $0.6 to $0.3 per million tokens.",
+     "titular": "Minimax halves the price of MiniMax M3.1 Flash",
+     "porque": "the lab itself cuts its blended price by 50% (threshold: +50% or −33%)",
+     "consecuencia": "Its blended price on OpenRouter goes from $0.262 to $0.131 per million tokens. Of the 5 models with a similar AA index (±2 points of its 28.9), none costs less."
+    }
+   },
+   "titular": "Minimax reduce a la mitad el precio de MiniMax M3.1 Flash",
+   "importancia": {
+    "tier": 5,
+    "w": 50,
+    "porque": "el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %)"
+   },
+   "ficha": "#modelos/minimax/minimax-m3.1-flash",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,262 $ a 0,131 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 28,9), ninguno cuesta menos."
   },
   {
    "kind": "evaluacion",
@@ -265,7 +328,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "DeepSeek V4.1 Flash 1017: primera puntuación en el índice ECI de Epoch AI (158.65).",
    "data": {
@@ -278,13 +341,13 @@
     "en": {
      "what": "DeepSeek V4.1 Flash 1017: first score on Epoch AI’s ECI (158.65).",
      "titular": "Epoch AI scores DeepSeek V4.1 Flash 1017 on the ECI for the first time",
-     "consecuencia": "AA index 32.5: 13.5 points behind the best open-weight model (Kimi K3.1 Pro). Rank 14 of 33. Blended price $0.525 per million tokens."
+     "consecuencia": "AA index 32.5: 13.5 points behind the best open-weight model (Kimi K3.1 Pro). Rank 14 of 33. Blended price $0.262 per million tokens."
     }
    },
    "titular": "Epoch AI puntúa por primera vez DeepSeek V4.1 Flash 1017 en el ECI",
    "importancia": null,
    "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
-   "consecuencia": "Índice de AA 32,5: a 13,5 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 14 de 33. Precio combinado 0,525 $ por millón de tokens."
+   "consecuencia": "Índice de AA 32,5: a 13,5 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 14 de 33. Precio combinado 0,262 $ por millón de tokens."
   },
   {
    "kind": "precio",
@@ -300,7 +363,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/mistralai/mistral-large-4-0/providers",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "Mistral baja el precio de Mistral Large 4 en OpenRouter: entrada de 1,36 $ a 0,7 $ y salida de 4,18 $ a 2,1 $ por millón de tokens.",
    "data": {
@@ -345,7 +408,7 @@
      "what": "Mistral cuts the price of Mistral Large 4 on OpenRouter: input from $1.36 to $0.7 and output from $4.18 to $2.1 per million tokens.",
      "titular": "Mistral cuts the price of Mistral Large 4 by 49%",
      "porque": "the lab itself cuts its blended price by 49% (threshold: +50% or −33%)",
-     "consecuencia": "Its blended price on OpenRouter goes from $2.07 to $1.05 per million tokens. Of the 4 models with a similar AA index (±2 points of its 26), 3 cost less; the cheapest is GPT-6 Luna, at $0.1."
+     "consecuencia": "Its blended price on OpenRouter goes from $2.07 to $1.05 per million tokens. Of the 4 models with a similar AA index (±2 points of its 26), 3 cost less; the cheapest is MiMo-V2.6-Flash, at $0.175."
     }
    },
    "titular": "Mistral baja un 49 % el precio de Mistral Large 4",
@@ -355,7 +418,7 @@
     "porque": "el propio laboratorio baja su precio combinado un 49 % (umbral: +50 % o −33 %)"
    },
    "ficha": "#modelos/mistralai/mistral-large-4-0",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 2,07 $ a 1,05 $ por millón de tokens. De los 4 modelos con un índice de AA parecido (±2 puntos de su 26), 3 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $."
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 2,07 $ a 1,05 $ por millón de tokens. De los 4 modelos con un índice de AA parecido (±2 puntos de su 26), 3 cuestan menos; el más barato es MiMo-V2.6-Flash, a 0,175 $."
   },
   {
    "kind": "evaluacion",
@@ -371,7 +434,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/glm-5-3-flash",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "GLM 5.3 Flash: primera puntuación en el índice de inteligencia de Artificial Analysis (27.8, v5).",
    "data": {
@@ -384,13 +447,13 @@
     "en": {
      "what": "GLM 5.3 Flash: first score on the Artificial Analysis Intelligence Index (27.8, v5).",
      "titular": "GLM 5.3 Flash enters the AA index at rank 21",
-     "consecuencia": "AA index 27.8: 18.2 points behind the best open-weight model (Kimi K3.1 Pro). Rank 21 of 33. Blended price $0.238 per million tokens. Of the 5 models with a similar AA index (±2 points of its 27.8), 2 cost less; the cheapest is GPT-6 Luna, at $0.1."
+     "consecuencia": "AA index 27.8: 18.2 points behind the best open-weight model (Kimi K3.1 Pro). Rank 21 of 33. Blended price $0.238 per million tokens. Of the 5 models with a similar AA index (±2 points of its 27.8), 3 cost less; the cheapest is MiniMax M3.1 Flash, at $0.131."
     }
    },
    "titular": "GLM 5.3 Flash entra en el índice de AA en el puesto 21",
    "importancia": null,
    "ficha": "#modelos/z-ai/glm-5.3-flash",
-   "consecuencia": "Índice de AA 27,8: a 18,2 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 21 de 33. Precio combinado 0,238 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 27,8), 2 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $."
+   "consecuencia": "Índice de AA 27,8: a 18,2 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 21 de 33. Precio combinado 0,238 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 27,8), 3 cuestan menos; el más barato es MiniMax M3.1 Flash, a 0,131 $."
   },
   {
    "kind": "evaluacion",
@@ -406,7 +469,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/nemotron-3-5-lightning",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "Nemotron 3.5 Lightning: primera puntuación en el índice de inteligencia de Artificial Analysis (5.5, v5).",
    "data": {
@@ -441,7 +504,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/kimi-k3-low",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "Kimi K3: primera puntuación en el índice de inteligencia de Artificial Analysis (17.4, v5).",
    "data": {
@@ -476,7 +539,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/mistral-small-4",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "Mistral Small 4: primera puntuación en el índice de inteligencia de Artificial Analysis (4.3, v5).",
    "data": {
@@ -511,7 +574,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "Distancia EE. UU. − China en el ECI: de 10,97 a 10,27 puntos (GPT-6 Astra frente a DeepSeek V4.1 Flash 1017).",
    "data": {
@@ -546,7 +609,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "Distancia cerrados − abiertos en el ECI: de 10,97 a 10,27 puntos (GPT-6 Astra frente a DeepSeek V4.1 Flash 1017).",
    "data": {
@@ -581,7 +644,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "Distancia entre los dos primeros laboratorios en el ECI: de 0,02 a 0,28 puntos (OpenAI frente a Anthropic).",
    "data": {
@@ -616,7 +679,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "Avance de la frontera del ECI en 12 meses: de 18,2 a 18,3 puntos.",
    "data": {
@@ -637,6 +700,78 @@
    "consecuencia": null
   },
   {
+   "kind": "indicador",
+   "key": "indicador|saturated|2026-10-30",
+   "published": null,
+   "detected": "2026-10-30",
+   "date": "2026-10-30",
+   "mag": {
+    "v": 1,
+    "pct": 14.3,
+    "unit": "evaluaciones"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks",
+    "got": "2026-10-30T20:14:30Z"
+   },
+   "what": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %): de 7 a 8 evaluaciones (de 21).",
+   "data": {
+    "ind": "saturated",
+    "path": "bench.saturated",
+    "from": 7,
+    "to": 8
+   },
+   "i18n": {
+    "en": {
+     "what": "Epoch evaluations saturated (best result of at least 90%): from 7 to 8 evaluations (of 21).",
+     "titular": "Epoch evaluations saturated (best result of at least 90%): from 7 to 8 evaluations (of 21)."
+    }
+   },
+   "titular": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %): de 7 a 8 evaluaciones (de 21).",
+   "importancia": null,
+   "ficha": "#carrera/evaluacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "valoracion",
+   "key": "valoracion|horizonte3s|observatorio|2026-10-30",
+   "published": null,
+   "detected": "2026-10-30",
+   "date": "2026-10-30",
+   "mag": null,
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/mirrorcode",
+    "got": "2026-10-30T20:14:30Z"
+   },
+   "what": "«Horizonte de unas tres semanas de trabajo»: la valoración del observatorio pasa de «todavía no evaluable» a «adelantado».",
+   "data": {
+    "hito": "horizonte3s",
+    "which": "observatorio",
+    "from": "todavía no evaluable",
+    "to": "adelantado",
+    "plazo": "2026-12-31",
+    "ficha": "#ai2027/horizonte3s"
+   },
+   "i18n": {
+    "en": {
+     "what": "“Horizon of about three weeks of work”: the observatory’s assessment goes from “not yet assessable” to “ahead”.",
+     "titular": "AI 2027: “Horizon of about three weeks of work” is ahead of the scenario",
+     "porque": "the observatory’s assessment of an AI 2027 milestone changes",
+     "consecuencia": "The authors frame it with METR’s 80% horizon, which does not measure reliably above 16 hours, and the last model it has measured was published on 7 Apr 2026. The observatory checks it against MirrorCode, from Epoch and METR: reimplementing whole programs from their behaviour, with tasks that would take an engineer weeks. The first model to reach 80% is Claude Opus 5 (max), with 87.8%, published on 24 Jul 2026. Rule (the observatory’s reading): “consistent” if, when the deadline expires, the best result reaches 80%. MirrorCode only covers programming and its score is not the success rate on three-week tasks. Before: “not yet assessable”. Scenario deadline: late 2026."
+    }
+   },
+   "titular": "AI 2027: «Horizonte de unas tres semanas de trabajo» va por delante del escenario",
+   "importancia": {
+    "tier": 2,
+    "w": 0,
+    "porque": "cambia la valoración del observatorio de un hito de AI 2027"
+   },
+   "ficha": "#ai2027/horizonte3s",
+   "consecuencia": "Los autores lo plantean con el horizonte al 80 % de METR, que no mide con fiabilidad por encima de 16 horas, y el último modelo que ha medido se publicó el 7 abr 2026. El observatorio lo contrasta con MirrorCode, de Epoch y METR: reimplementar programas enteros a partir de su comportamiento, con tareas que a un ingeniero le llevarían semanas. El primer modelo que llega al 80 % es Claude Opus 5 (max), con un 87,8 %, publicado el 24 jul 2026. Regla (lectura del observatorio): «compatible» si al vencer el plazo el mejor resultado llega al 80 %. MirrorCode sólo cubre programación y su puntuación no es el porcentaje de éxito en tareas de tres semanas. Antes: «todavía no evaluable». Plazo del escenario: finales de 2026."
+  },
+  {
    "kind": "uso",
    "key": "uso|entra|minimax/minimax-m3.1-flash-20261019|2026-10-30",
    "published": "2026-10-29",
@@ -650,7 +785,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "MiniMax M3.1 Flash entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 9, 2,2 % de los tokens.",
    "data": {
@@ -687,7 +822,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "DeepSeek V4 Flash 0731 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2,1 % de los tokens.",
    "data": {
@@ -1410,35 +1545,35 @@
   {
    "kind": "indicador",
    "key": "indicador|mirror|2026-10-30",
-   "published": "2026-09-22",
+   "published": "2026-09-28",
    "detected": "2026-10-30",
-   "date": "2026-09-22",
+   "date": "2026-09-28",
    "mag": {
-    "v": 1.5,
-    "pct": 1.9,
+    "v": 20.4,
+    "pct": 26.4,
     "unit": "%"
    },
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/mirrorcode",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
-   "what": "Mejor resultado en MirrorCode (ejecuciones de Epoch): de 77,4 a 78,9 % (Claude Opus 5.5 (high)).",
+   "what": "Mejor resultado en MirrorCode (ejecuciones de Epoch): de 77,4 a 97,8 % (Claude Sonnet 5.5 (max)).",
    "data": {
     "ind": "mirror",
     "path": "bench.mirror",
     "from": 77.4,
-    "to": 78.9
+    "to": 97.8
    },
    "i18n": {
     "en": {
-     "what": "Best MirrorCode result (Epoch runs): from 77.4 to 78.9% (Claude Opus 5.5 (high)).",
-     "titular": "Claude Opus 5.5 (high) sets a new MirrorCode record: 78.9%",
+     "what": "Best MirrorCode result (Epoch runs): from 77.4 to 97.8% (Claude Sonnet 5.5 (max)).",
+     "titular": "Claude Sonnet 5.5 (max) sets a new MirrorCode record: 97.8%",
      "porque": "a new MirrorCode record, the measure of tasks lasting weeks with which the observatory replaces METR",
      "consecuencia": "Before, 77.4%. Reimplementing whole programs from their behaviour, tasks that would take an engineer weeks; Epoch runs. In AI 2027 it is evidence for “Horizon of about three weeks of work” and “Superhuman coder”."
     }
    },
-   "titular": "Claude Opus 5.5 (high) marca un nuevo récord en MirrorCode: 78,9 %",
+   "titular": "Claude Sonnet 5.5 (max) marca un nuevo récord en MirrorCode: 97,8 %",
    "importancia": {
     "tier": 6,
     "w": 90,
@@ -1461,7 +1596,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-30T03:54:11Z"
+    "got": "2026-10-30T20:14:30Z"
    },
    "what": "Mejor modelo en el ECI de Epoch: de 168,83 a 168,92 puntos (GPT-6 Astra).",
    "data": {
