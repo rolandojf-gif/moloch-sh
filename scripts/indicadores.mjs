@@ -112,6 +112,35 @@ function standingAt(rows, keyOf, d, k = 4) {
   };
 }
 
+/* Carrera por laboratorio: para cada organización, los modelos con los que superó su propio mejor ECI, por fecha de
+   publicación. Entran las que estuvieron entre las `top` primeras a fin de algún mes desde `from`; de cada una se guarda
+   también el último récord anterior a `from`, que es su punto de partida. Sin interpolar: entre dos récords, la barra
+   no se mueve. */
+const RACE_FROM = '2023-01';
+export function raceOf(rows, today, { from = RACE_FROM, top = 10 } = {}) {
+  const dated = rows.filter(r => r.date && firstOrg(r.org)).sort((a, b) => a.date.localeCompare(b.date) || b.eci - a.eci);
+  const labs = new Map();
+  for (const r of dated) {
+    const o = firstOrg(r.org);
+    const lab = labs.get(o) || { org: o, c: null, steps: [] };
+    const last = lab.steps[lab.steps.length - 1];
+    if (!last || r.eci > last.v) lab.steps.push({ d: r.date, v: r.eci, lo: r.lo, hi: r.hi, m: r.name, w: r.group === 'Open weights' ? 'o' : r.group === 'Closed weights' ? 'c' : null });
+    lab.c = countryCode(r.country) || lab.c;
+    labs.set(o, lab);
+  }
+  const at = (lab, d) => { let s = null; for (const x of lab.steps) { if (x.d > d) break; s = x; } return s; };
+  const keep = new Set();
+  for (const d of monthEnds(from, today)) {
+    [...labs.values()].map(l => [l, at(l, d)]).filter(([, s]) => s).sort((a, b) => b[1].v - a[1].v).slice(0, top).forEach(([l]) => keep.add(l));
+  }
+  const start = `${from}-01`;
+  return [...keep].map(l => {
+    const i = l.steps.findIndex(s => s.d >= start);
+    const steps = i < 0 ? l.steps.slice(-1) : l.steps.slice(Math.max(0, i - 1));
+    return { org: l.org, c: l.c, steps: steps.map(s => ({ ...s, v: r2(s.v), lo: s.lo === null ? null : r2(s.lo), hi: s.hi === null ? null : r2(s.hi) })) };
+  }).sort((a, b) => b.steps[b.steps.length - 1].v - a.steps[a.steps.length - 1].v);
+}
+
 /* ── ECI: brechas en puntos ─────────────────────────────────────────────── */
 function eciBlock(rows, ctx) {
   const { fact, TODAY } = ctx;
@@ -147,7 +176,8 @@ function eciBlock(rows, ctx) {
       note: 'mejor modelo del primer laboratorio menos el del segundo'
     }),
     labs: labs.slice(0, 8).map(r => ({ org: firstOrg(r.org), model: r.name, eci: r.eci, date: r.date, ci: [r.lo, r.hi] })),
-    series: { points: series, src: 'epoch', url, got: ctx.NOW_ISO }
+    series: { points: series, src: 'epoch', url, got: ctx.NOW_ISO },
+    race: (race => fact(race.length ? race : null, 'epoch', url, TODAY, { from: RACE_FROM, note: 'récords de cada laboratorio en el ECI por fecha de publicación del modelo; entran los que estuvieron entre los diez primeros a fin de algún mes' }))(raceOf(rows, TODAY, { from: RACE_FROM }))
   };
 }
 

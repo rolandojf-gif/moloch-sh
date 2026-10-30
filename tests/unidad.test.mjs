@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { fmtDate, fmtDateTime, num, usd, aaRace, aaCoverage } from '../js/fmt.js';
 import { resolve } from '../js/valoracion.js';
 import { importancia } from '../scripts/parte.mjs';
-import { unzip } from '../scripts/indicadores.mjs';
+import { unzip, raceOf } from '../scripts/indicadores.mjs';
 import { sameModelName, aaOnlyCandidates } from '../scripts/emparejar.mjs';
 import { labPrices, vaiven } from '../scripts/cambios.mjs';
 
@@ -157,4 +157,25 @@ test('vaivén de precios: el que vuelve a uno reciente no es un cambio; el nuevo
   assert.equal(vaiven(ev('2026-10-29', hi, { in: 0.1, out: 0.4 }), seen), false, 'precio nunca visto');
   assert.equal(vaiven(ev('2026-10-29', hi, lo, 'otro/x'), seen), false, 'sólo cuentan los precios del laboratorio');
   assert.equal(vaiven({ kind: 'pesos', detected: '2026-10-29', model: 'deepseek/flash' }, seen), false);
+});
+
+test('raceOf: récords por laboratorio, sin interpolar, solo los que llegaron a estar arriba', () => {
+  const row = (name, org, country, group, eci, date) => ({ name, org, country, group, eci, lo: eci - 2, hi: eci + 2, date });
+  const US = 'United States of America';
+  const race = raceOf([
+    row('A1', 'LabA', US, 'Closed weights', 120, '2022-11-01'),
+    row('A0', 'LabA', US, 'Closed weights', 100, '2022-12-01'),
+    row('A2', 'LabA', US, 'Closed weights', 130, '2023-05-01'),
+    row('A3', 'LabA', US, 'Closed weights', 125, '2023-07-01'),
+    row('B1', 'LabB, Universidad', 'China', 'Open weights', 110, '2023-02-01'),
+    row('B2', 'LabB', 'China', 'Open weights', 135, '2024-02-01'),
+    row('C1', 'LabC', 'China', 'Open weights', 90, '2023-03-01'),
+    row('Sin fecha', 'LabC', 'China', 'Open weights', 200, null)
+  ], '2024-03-15', { top: 2 });
+  assert.deepEqual(race.map(l => l.org), ['LabB', 'LabA']);
+  const a = race.find(l => l.org === 'LabA');
+  // Arranca en el último récord anterior a 2023 y solo suma los modelos que lo superan.
+  assert.deepEqual(a.steps.map(s => s.m), ['A1', 'A2']);
+  assert.equal(a.c, 'US');
+  assert.deepEqual(race[0].steps.map(s => [s.d, s.v, s.w]), [['2023-02-01', 110, 'o'], ['2024-02-01', 135, 'o']]);
 });
