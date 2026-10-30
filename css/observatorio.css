@@ -225,8 +225,9 @@ ol.reglas li { margin-bottom: 4px; }
 .chart.panning svg, .chart.panning svg * { cursor: grabbing !important; }
 .chart.zoomable svg { user-select: none; }
 .legend .zoom-hint { margin-left: auto; font-weight: 500; }
-/* Sin ratón no hay rueda ni arrastre: la pista sobra. */
-@media (hover: none) { .legend .zoom-hint { display: none; } }
+/* Con ratón, la pista de la rueda; en pantallas táctiles, la del pellizco. */
+.legend .zoom-hint.touch { display: none; }
+@media (hover: none) { .legend .zoom-hint { display: none; } .legend .zoom-hint.touch { display: inline; margin-left: 0; } }
 .legend .zoom-reset { font: 700 11.5px var(--f-mono); text-transform: uppercase; letter-spacing: .04em; padding: 3px 9px; border: 2px solid var(--ink); background: var(--lime); color: var(--ink); cursor: pointer; }
 .legend .zoom-reset:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 /* Barras, columnas e intervalos */

@@ -227,13 +227,51 @@ function zoomable(el, G, full, draw, { minX, minY }) {
   };
   el.addEventListener('pointerup', end, on);
   el.addEventListener('pointercancel', end, on);
+  // Pellizco con dos dedos: acerca o aleja alrededor del punto medio y lo arrastra con ellos. Un dedo sigue desplazando la
+  // página. Se anula el gesto del navegador para que no amplíe la página entera (Safari lo anuncia con «gesturestart»).
+  // Cada repintado sustituye el SVG y los toques siguen llegando a sus elementos ya retirados, que no reenvían los eventos
+  // al contenedor: durante el pellizco se escuchan en esos elementos.
+  let pinch = null;
+  const two = e => e.touches.length === 2 && [...e.touches].every(t => el.contains(t.target) && t.target.closest('svg'));
+  const mid = e => ({ clientX: (e.touches[0].clientX + e.touches[1].clientX) / 2, clientY: (e.touches[0].clientY + e.touches[1].clientY) / 2 });
+  const dist = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY) || 1;
+  const move = e => {
+    if (!pinch || e.touches.length !== 2) return;
+    e.preventDefault();
+    const p = at(mid(e));
+    if (!p) return;
+    const k = pinch.d / dist(e);
+    const sx = Math.min(full.x1 - full.x0, Math.max(minX, (pinch.v.x1 - pinch.v.x0) * k));
+    const sy = Math.min(full.y1 - full.y0, Math.max(minY, (pinch.v.y1 - pinch.v.y0) * k));
+    [v.x0, v.x1] = fit(pinch.cx - p.fx * sx, pinch.cx - p.fx * sx + sx, full.x0, full.x1);
+    [v.y0, v.y1] = fit(pinch.cy - (1 - p.fy) * sy, pinch.cy - (1 - p.fy) * sy + sy, full.y0, full.y1);
+    later();
+  };
+  const unpinch = e => { if (pinch && e.touches.length < 2) { pinch.ac.abort(); pinch = null; } };
+  el.addEventListener('touchstart', e => {
+    if (!two(e)) return;
+    const p = at(mid(e));
+    if (!p) return;
+    e.preventDefault();
+    pinch?.ac.abort();
+    const pac = new AbortController(), opt = { signal: pac.signal, passive: false };
+    ac.signal.addEventListener('abort', () => pac.abort(), { once: true });
+    pinch = { ac: pac, d: dist(e), v: { ...v }, cx: v.x0 + p.fx * (v.x1 - v.x0), cy: v.y1 - p.fy * (v.y1 - v.y0) };
+    for (const t of new Set([...e.touches].map(x => x.target))) {
+      t.addEventListener('touchmove', move, opt);
+      t.addEventListener('touchend', unpinch, opt);
+      t.addEventListener('touchcancel', unpinch, opt);
+    }
+  }, { ...on, passive: false });
+  for (const g of ['gesturestart', 'gesturechange']) el.addEventListener(g, e => { if (e.target.closest?.('svg')) e.preventDefault(); }, { ...on, passive: false });
   const reset = () => { v = { ...full }; later(); };
   el.addEventListener('dblclick', e => { if (e.target.closest('svg') && !isFull()) { e.preventDefault(); reset(); } }, on);
   el.addEventListener('click', e => { if (e.target.closest('.zoom-reset')) reset(); }, on);
   render();
 }
 const zoomUi = zoomed => (zoomed ? `<button type="button" class="zoom-reset">${t('Ver todo')}</button>` : '')
-  + `<span class="zoom-hint">${t('Rueda del ratón: acercar o alejar · arrastrar: mover · doble clic: ver todo')}</span>`;
+  + `<span class="zoom-hint">${t('Rueda del ratón: acercar o alejar · arrastrar: mover · doble clic: ver todo')}</span>`
+  + `<span class="zoom-hint touch">${t('Pellizca con dos dedos para acercar o alejar y muévelos para desplazar')}</span>`;
 const clip = (id, { W, H, L, R, T, B }) => `<clipPath id="clip-${id}"><rect x="${L}" y="${T - 8}" width="${W - L - R}" height="${H - T - B + 8}"/></clipPath>`;
 
 /* ── Pantallas estrechas ────────────────────────────────────────────────── */
