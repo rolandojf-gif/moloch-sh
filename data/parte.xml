@@ -6,7 +6,28 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.xml" rel="self" type="application/rss+xml"/>
   <description>Las noticias de la carrera por la IA que detecta cada día el observatorio, elegidas con una regla fija. Cifras de OpenRouter, Artificial Analysis, Epoch AI, Hugging Face y METR, con su fuente.</description>
   <language>es</language>
-  <lastBuildDate>Thu, 29 Oct 2026 15:05:11 GMT</lastBuildDate>
+  <lastBuildDate>Fri, 30 Oct 2026 03:54:11 GMT</lastBuildDate>
+  <item>
+    <title>Mistral baja un 49 % el precio de Mistral Large 4</title>
+    <link>https://moloch-sh.netlify.app/#modelos/mistralai/mistral-large-4-0</link>
+    <guid isPermaLink="false">precio|mistralai/mistral-large-4-0|2026-10-30</guid>
+    <pubDate>Fri, 30 Oct 2026 03:54:11 GMT</pubDate>
+    <description>Mistral baja el precio de Mistral Large 4 en OpenRouter: entrada de 1,36 $ a 0,7 $ y salida de 4,18 $ a 2,1 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 2,07 $ a 1,05 $ por millón de tokens. De los 4 modelos con un índice de AA parecido (±2 puntos de su 26), 3 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $. Está en el parte porque el propio laboratorio baja su precio combinado un 49 % (umbral: +50 % o −33 %). Detectado el 2026-10-30. Fuente: OpenRouter (https://openrouter.ai/mistralai/mistral-large-4-0/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+  </item>
+  <item>
+    <title>GPT-6 Astra pasa a ser el mejor modelo según el ECI de Epoch</title>
+    <link>https://moloch-sh.netlify.app/#carrera</link>
+    <guid isPermaLink="false">indicador|eci|2026-10-30</guid>
+    <pubDate>Fri, 30 Oct 2026 03:54:11 GMT</pubDate>
+    <description>Mejor modelo en el ECI de Epoch: de 168,83 a 168,92 puntos (GPT-6 Astra). GPT-6 Astra, de OpenAI, con 168,9 puntos. Está en el parte porque cambia el mejor modelo según el ECI de Epoch. Publicado el 2026-09-03; detectado el 2026-10-30. Fuente: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
+  </item>
+  <item>
+    <title>Claude Opus 5.5 (high) marca un nuevo récord en MirrorCode: 78,9 %</title>
+    <link>https://moloch-sh.netlify.app/#carrera/agentes</link>
+    <guid isPermaLink="false">indicador|mirror|2026-10-30</guid>
+    <pubDate>Fri, 30 Oct 2026 03:54:11 GMT</pubDate>
+    <description>Mejor resultado en MirrorCode (ejecuciones de Epoch): de 77,4 a 78,9 % (Claude Opus 5.5 (high)). Antes, 77,4 %. Reimplementar programas enteros a partir de su comportamiento, tareas que a un ingeniero le llevarían semanas; ejecuciones de Epoch. En AI 2027 es evidencia de «Horizonte de unas tres semanas de trabajo» y «Programador sobrehumano». Está en el parte porque nuevo récord en MirrorCode, la medida de tareas de semanas con la que el observatorio sustituye a METR. Publicado el 2026-09-22; detectado el 2026-10-30. Fuente: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
+  </item>
   <item>
     <title>Gemini 4 Carbon pasa a ser el mejor modelo cerrado del índice de AA</title>
     <link>https://moloch-sh.netlify.app/#modelos/google/gemini-4-carbon</link>
@@ -18,8 +39,8 @@
     <title>Gemini 4 Carbon (Google) entra en el índice de AA en el puesto 1, aún sin API pública</title>
     <link>https://moloch-sh.netlify.app/#modelos/google/gemini-4-carbon</link>
     <guid isPermaLink="false">sinapi|google/gemini-4-carbon</guid>
-    <pubDate>Thu, 29 Oct 2026 15:05:11 GMT</pubDate>
-    <description>Gemini 4 Carbon (Google) aparece puntuado en Artificial Analysis con 59,4 puntos, aún sin API pública: no está en OpenRouter. Índice de AA 59,4: supera en 1 puntos al mejor cerrado anterior (Claude Opus 5.5). Puesto 1 de 29. Aún no está en OpenRouter: sin API pública ni precio. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 1 de 29). Publicado el 2026-10-28; detectado el 2026-10-29. Fuente: Artificial Analysis (https://artificialanalysis.ai/models/gemini-4-carbon). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+    <pubDate>Thu, 29 Oct 2026 05:00:00 GMT</pubDate>
+    <description>Gemini 4 Carbon (Google) aparece puntuado en Artificial Analysis con 59,4 puntos, aún sin API pública: no está en OpenRouter. Índice de AA 59,4: supera en 1 puntos al mejor cerrado anterior (Claude Opus 5.5). Puesto 1 de 33. Aún no está en OpenRouter: sin API pública ni precio. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 1 de 33). Publicado el 2026-10-28; detectado el 2026-10-29. Fuente: Artificial Analysis (https://artificialanalysis.ai/models/gemini-4-carbon). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
     <title>Artificial Analysis estrena la versión 5 de su índice de inteligencia</title>
@@ -33,7 +54,7 @@
     <link>https://moloch-sh.netlify.app/#modelos/openai/gpt-6.1-terra</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.1-terra</guid>
     <pubDate>Mon, 26 Oct 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter. Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 29. Precio combinado 2 $ por millón de tokens. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 6 de 29). Publicado el 2026-10-26; detectado el 2026-10-26. Fuente: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+    <description>GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter. Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 33. Precio combinado 1 $ por millón de tokens. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 6 de 33). Publicado el 2026-10-26; detectado el 2026-10-26. Fuente: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
     <title>Kimi K3.1 Pro pasa a ser el mejor modelo abierto del índice de AA</title>
@@ -41,13 +62,6 @@
     <guid isPermaLink="false">lider|open|moonshotai/kimi-k3.1-pro|2026-10-24</guid>
     <pubDate>Sat, 24 Oct 2026 06:13:33 GMT</pubDate>
     <description>Kimi K3.1 Pro pasa a ser el mejor modelo abierto del catálogo en el índice de inteligencia de Artificial Analysis v4.3: 55,1 puntos, 8,8 más que MiMo-V2.6-Pro (46,3). Sus pesos están anunciados por el laboratorio, pero aún no se pueden descargar. La distancia entre el mejor cerrado y el mejor abierto en el índice de AA queda en 2,5 puntos (11,3 el día anterior). No equivale a meses de retraso. Está en el parte porque cambia el mejor modelo abierto con la misma versión del índice de AA y 8,8 puntos de margen (mínimo 1). Detectado el 2026-10-24. Fuente: Artificial Analysis (https://artificialanalysis.ai/models/kimi-k3-1-pro). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>Kimi K3.1 Pro (Moonshot AI) llega a OpenRouter: puesto 9 del índice de AA</title>
-    <link>https://moloch-sh.netlify.app/#modelos/moonshotai/kimi-k3.1-pro</link>
-    <guid isPermaLink="false">nuevo|moonshotai/kimi-k3.1-pro</guid>
-    <pubDate>Sat, 24 Oct 2026 05:00:00 GMT</pubDate>
-    <description>Kimi K3.1 Pro (Moonshot AI) aparece en el catálogo de OpenRouter. Índice de AA 46: supera en 13,5 puntos al mejor abierto anterior (DeepSeek V4.1 Flash 1017). Puesto 9 de 29. Precio combinado 4 $ por millón de tokens. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 9 de 29). Publicado el 2026-10-23; detectado el 2026-10-24. Fuente: OpenRouter (https://openrouter.ai/moonshotai/kimi-k3.1-pro). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
     <title>DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter</title>
