@@ -640,6 +640,12 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
 .foot summary { cursor: pointer; font: 700 12px var(--f-mono); text-transform: uppercase; }
 .foot ul { padding-left: 18px; font-size: 14px; }
 .foot-line { font: 400 12px var(--f-mono); color: var(--muted); margin-top: 14px; }
+.credits { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; margin-bottom: 18px; padding: 14px 16px; background: var(--card); border: 2px solid var(--ink); box-shadow: var(--shadow); }
+.credits-by { margin: 0; font: 400 14px var(--f-mono); text-transform: uppercase; letter-spacing: .04em; }
+.credits-by strong { font: 700 20px var(--f-head); text-transform: none; letter-spacing: 0; margin-left: 4px; }
+.bmc { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; background: var(--lime); color: #121211; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); font: 700 13px var(--f-mono); text-transform: uppercase; text-decoration: none; }
+.bmc:hover, .bmc:focus-visible { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+.bmc-cup { font-size: 18px; line-height: 1; }
 
 /* ── Responsive ───────────────────────────────────────────────────────── */
 @media (max-width: 1000px) {
