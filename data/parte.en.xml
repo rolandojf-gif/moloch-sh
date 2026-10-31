@@ -6,27 +6,41 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Fri, 30 Oct 2026 03:54:11 GMT</lastBuildDate>
+  <lastBuildDate>Fri, 30 Oct 2026 20:14:30 GMT</lastBuildDate>
+  <item>
+    <title>AI 2027: “Horizon of about three weeks of work” is ahead of the scenario</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#ai2027/horizonte3s</link>
+    <guid isPermaLink="false">valoracion|horizonte3s|observatorio|2026-10-30</guid>
+    <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
+    <description>“Horizon of about three weeks of work”: the observatory’s assessment goes from “not yet assessable” to “ahead”. The authors frame it with METR’s 80% horizon, which does not measure reliably above 16 hours, and the last model it has measured was published on 7 Apr 2026. The observatory checks it against MirrorCode, from Epoch and METR: reimplementing whole programs from their behaviour, with tasks that would take an engineer weeks. The first model to reach 80% is Claude Opus 5 (max), with 87.8%, published on 24 Jul 2026. Rule (the observatory’s reading): “consistent” if, when the deadline expires, the best result reaches 80%. MirrorCode only covers programming and its score is not the success rate on three-week tasks. Before: “not yet assessable”. Scenario deadline: late 2026. It is in the briefing because the observatory’s assessment of an AI 2027 milestone changes. Detected on 2026-10-30. Source: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
+  </item>
+  <item>
+    <title>Minimax halves the price of MiniMax M3.1 Flash</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/minimax/minimax-m3.1-flash</link>
+    <guid isPermaLink="false">precio|minimax/minimax-m3.1-flash|2026-10-30</guid>
+    <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
+    <description>Minimax cuts the price of MiniMax M3.1 Flash on OpenRouter: input from $0.15 to $0.075 and output from $0.6 to $0.3 per million tokens. Its blended price on OpenRouter goes from $0.262 to $0.131 per million tokens. Of the 5 models with a similar AA index (±2 points of its 28.9), none costs less. It is in the briefing because the lab itself cuts its blended price by 50% (threshold: +50% or −33%). Detected on 2026-10-30. Source: OpenRouter (https://openrouter.ai/minimax/minimax-m3.1-flash/providers). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
   <item>
     <title>Mistral cuts the price of Mistral Large 4 by 49%</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/mistralai/mistral-large-4-0</link>
     <guid isPermaLink="false">precio|mistralai/mistral-large-4-0|2026-10-30</guid>
-    <pubDate>Fri, 30 Oct 2026 03:54:11 GMT</pubDate>
-    <description>Mistral cuts the price of Mistral Large 4 on OpenRouter: input from $1.36 to $0.7 and output from $4.18 to $2.1 per million tokens. Its blended price on OpenRouter goes from $2.07 to $1.05 per million tokens. Of the 4 models with a similar AA index (±2 points of its 26), 3 cost less; the cheapest is GPT-6 Luna, at $0.1. It is in the briefing because the lab itself cuts its blended price by 49% (threshold: +50% or −33%). Detected on 2026-10-30. Source: OpenRouter (https://openrouter.ai/mistralai/mistral-large-4-0/providers). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
+    <description>Mistral cuts the price of Mistral Large 4 on OpenRouter: input from $1.36 to $0.7 and output from $4.18 to $2.1 per million tokens. Its blended price on OpenRouter goes from $2.07 to $1.05 per million tokens. Of the 4 models with a similar AA index (±2 points of its 26), 3 cost less; the cheapest is MiMo-V2.6-Flash, at $0.175. It is in the briefing because the lab itself cuts its blended price by 49% (threshold: +50% or −33%). Detected on 2026-10-30. Source: OpenRouter (https://openrouter.ai/mistralai/mistral-large-4-0/providers). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>GPT-6 Astra becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-10-30</guid>
-    <pubDate>Fri, 30 Oct 2026 03:54:11 GMT</pubDate>
+    <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
     <description>Best model on Epoch’s ECI: from 168.83 to 168.92 points (GPT-6 Astra). GPT-6 Astra, from OpenAI, with 168.9 points. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-09-03; detected on 2026-10-30. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
-    <title>Claude Opus 5.5 (high) sets a new MirrorCode record: 78.9%</title>
+    <title>Claude Sonnet 5.5 (max) sets a new MirrorCode record: 97.8%</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera/agentes</link>
     <guid isPermaLink="false">indicador|mirror|2026-10-30</guid>
-    <pubDate>Fri, 30 Oct 2026 03:54:11 GMT</pubDate>
-    <description>Best MirrorCode result (Epoch runs): from 77.4 to 78.9% (Claude Opus 5.5 (high)). Before, 77.4%. Reimplementing whole programs from their behaviour, tasks that would take an engineer weeks; Epoch runs. In AI 2027 it is evidence for “Horizon of about three weeks of work” and “Superhuman coder”. It is in the briefing because a new MirrorCode record, the measure of tasks lasting weeks with which the observatory replaces METR. Published on 2026-09-22; detected on 2026-10-30. Source: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
+    <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
+    <description>Best MirrorCode result (Epoch runs): from 77.4 to 97.8% (Claude Sonnet 5.5 (max)). Before, 77.4%. Reimplementing whole programs from their behaviour, tasks that would take an engineer weeks; Epoch runs. In AI 2027 it is evidence for “Horizon of about three weeks of work” and “Superhuman coder”. It is in the briefing because a new MirrorCode record, the measure of tasks lasting weeks with which the observatory replaces METR. Published on 2026-09-28; detected on 2026-10-30. Source: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
   </item>
   <item>
     <title>Gemini 4 Carbon becomes the best closed model on the AA index</title>
@@ -54,7 +68,7 @@
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.1-terra</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.1-terra</guid>
     <pubDate>Mon, 26 Oct 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue. AA index 51: 8.4 points behind the best closed model (Gemini 4 Carbon). Rank 6 of 33. Blended price $1 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 6 of 33). Published on 2026-10-26; detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue. AA index 51: 8.4 points behind the best closed model (Gemini 4 Carbon). Rank 6 of 33. Blended price $2 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 6 of 33). Published on 2026-10-26; detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Kimi K3.1 Pro becomes the best open-weight model on the AA index</title>

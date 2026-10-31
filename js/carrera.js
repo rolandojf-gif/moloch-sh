@@ -5,6 +5,7 @@ import { esc, fmtDate, dateFmt, num, nd, aaRace, aaCoverage, coverageText, aaInd
 import { indicatorRow, indicatorKpi, indicatorBrief, mw, mh100, usdB, usdBs, PAIS } from './indicadores.js';
 import { gaps, hbars, columns, dotci, recordChart, ediMap, tip } from './charts.js';
 import { logoFor } from './logos.js';
+import { renderRace } from './carrera-anim.js';
 
 const $ = s => document.querySelector(s);
 let bound = false;
@@ -274,7 +275,9 @@ export function renderCarrera(d) {
     $('#ca-fronts').innerHTML = `<div class="empty">${t('No se han podido cargar los frentes (data/curated/carrera.json).')}</div>`;
     return;
   }
-  // Primero el índice de AA, al día: puntúa un modelo a los pocos días de salir y cuenta laboratorios que Epoch no mide.
+  // Arriba, la carrera animada con los récords de ECI de cada laboratorio.
+  renderRace($('#ca-race'), ind?.eci?.race);
+  // Después, el índice de AA, al día: puntúa un modelo a los pocos días de salir y cuenta laboratorios que Epoch no mide.
   const aa = aaRace(d.catalog), cov = d.catalog.epochFrontier?.points?.length ? aaCoverage(d.catalog, aa.from) : null;
   $('#ca-kpis-aa').innerHTML = ind?.aa?.gapUsCn
     ? ['aa.gapUsCn', 'aa.gapClosedOpen', 'aa.gapLabs', 'aa.rate12m'].map(k => indicatorKpi(ind, k)).join('')

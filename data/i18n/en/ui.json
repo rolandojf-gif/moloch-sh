@@ -849,6 +849,50 @@
   "{lab}: {n} modelo": [
    "{lab}: {n} model",
    "{lab}: {n} models"
-  ]
+  ],
+  "La carrera, en movimiento": "The race, in motion",
+  "El mejor modelo de cada laboratorio desde 2023, según el índice de capacidades de Epoch (ECI). Una barra sólo avanza cuando su laboratorio publica un modelo mejor.": "Each lab’s best model since 2023, according to Epoch’s Capabilities Index (ECI). A bar only moves forward when its lab releases a better model.",
+  "Cada barra es el mejor modelo que un laboratorio había publicado en esa fecha, con la puntuación que le da hoy Epoch. Sólo cambia cuando el laboratorio publica un modelo que supera su récord: entre dos récords no se interpola nada, y la cifra es siempre la de un modelo real. Color: país del laboratorio; rayado: pesos abiertos, ambos según Epoch. La raya fina es el intervalo de confianza del 90 %: si dos se solapan, no puede afirmarse cuál va primero. El eje empieza en {a0} puntos, no en cero.": "Each bar is the best model a lab had released by that date, with the score Epoch gives it today. It only changes when the lab releases a model that beats its record: nothing is interpolated between two records, and the figure is always that of a real model. Colour: the lab’s country; hatching: open weights, both according to Epoch. The thin line is the 90% confidence interval: if two overlap, it cannot be said which one is ahead. The axis starts at {a0} points, not at zero.",
+  "Cambio de nº 1": "Change of no. 1",
+  "Cambios de nº 1": "Changes of no. 1",
+  "Carrera del ECI por laboratorio a {fecha}: {lista}.": "ECI race by lab on {fecha}: {lista}.",
+  "Datos: Epoch AI, Epoch Capabilities Index (CC BY 4.0), con las puntuaciones de hoy.": "Data: Epoch AI, Epoch Capabilities Index (CC BY 4.0), with today’s scores.",
+  "Descargar imagen": "Download image",
+  "Desde el primer modelo de la serie ({modelo}, de {org}, {fecha}), el primer puesto ha cambiado de manos {veces}: son los logos sobre la línea de tiempo, y cada uno lleva a ese momento.": "Since the first model in the series ({modelo}, by {org}, {fecha}), first place has changed hands {veces}: these are the logos above the timeline, and each one takes you to that moment.",
+  "Desde el primer modelo de la serie ({modelo}, de {org}, {fecha}), nadie le ha quitado el primer puesto.": "Since the first model in the series ({modelo}, by {org}, {fecha}), nobody has taken first place from it.",
+  "Empate técnico con el nº 2": "Statistical tie with no. 2",
+  "Epoch AI, «Epoch Capabilities Index»": "Epoch AI, “Epoch Capabilities Index”",
+  "Es una reconstrucción con las puntuaciones de hoy, no lo que se medía en cada fecha, y sólo cuentan los modelos que Epoch ha puntuado.": "It is a reconstruction with today’s scores, not what was measured at each date, and only models Epoch has scored count.",
+  "Fecha de la carrera": "Race date",
+  "Intervalo del 90 %": "90% interval",
+  "La carrera del ECI": "The ECI race",
+  "Los datos de este fotograma ({fecha})": "The data in this frame ({fecha})",
+  "Mejor modelo de cada laboratorio hasta el {fecha}": "Each lab’s best model up to {fecha}",
+  "Ninguno fue por menos de 1 punto, la distancia que Epoch trata como la misma capacidad.": "None was by less than 1 point, the gap Epoch treats as the same capability.",
+  "Nuevo nº 1 · empate técnico": "New no. 1 · statistical tie",
+  "Nuevo nº 1": "New no. 1",
+  "Otro país": "Another country",
+  "Pausa": "Pause",
+  "Puntuación de hoy según Epoch AI.": "Today’s score according to Epoch AI.",
+  "Rayado: pesos abiertos": "Hatched: open weights",
+  "Repetir": "Replay",
+  "Reproducir": "Play",
+  "Sin datos suficientes para la carrera.": "Not enough data for the race.",
+  "empate técnico": "statistical tie",
+  "{fecha}: {org} pasa al primer puesto con {modelo} ({eci})": "{fecha}: {org} takes first place with {modelo} ({eci})",
+  "{org} adelanta a {prev} con {modelo}: ECI {eci}{dif}": "{org} overtakes {prev} with {modelo}: ECI {eci}{dif}",
+  "Uno de esos cambios fue por menos de 1 punto, la distancia que Epoch trata como la misma capacidad.": [
+   "One of those changes was by less than 1 point, the gap Epoch treats as the same capability.",
+   "{n} of those changes were by less than 1 point, the gap Epoch treats as the same capability."
+  ],
+  "una vez": [
+   "once",
+   "{n} times"
+  ],
+  "{n} punto más": [
+   "{n} point ahead",
+   "{n} points ahead"
+  ],
+  "Cómo se lee": "How to read it"
  }
 }

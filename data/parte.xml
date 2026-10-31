@@ -6,27 +6,41 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.xml" rel="self" type="application/rss+xml"/>
   <description>Las noticias de la carrera por la IA que detecta cada día el observatorio, elegidas con una regla fija. Cifras de OpenRouter, Artificial Analysis, Epoch AI, Hugging Face y METR, con su fuente.</description>
   <language>es</language>
-  <lastBuildDate>Fri, 30 Oct 2026 03:54:11 GMT</lastBuildDate>
+  <lastBuildDate>Fri, 30 Oct 2026 20:14:30 GMT</lastBuildDate>
+  <item>
+    <title>AI 2027: «Horizonte de unas tres semanas de trabajo» va por delante del escenario</title>
+    <link>https://moloch-sh.netlify.app/#ai2027/horizonte3s</link>
+    <guid isPermaLink="false">valoracion|horizonte3s|observatorio|2026-10-30</guid>
+    <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
+    <description>«Horizonte de unas tres semanas de trabajo»: la valoración del observatorio pasa de «todavía no evaluable» a «adelantado». Los autores lo plantean con el horizonte al 80 % de METR, que no mide con fiabilidad por encima de 16 horas, y el último modelo que ha medido se publicó el 7 abr 2026. El observatorio lo contrasta con MirrorCode, de Epoch y METR: reimplementar programas enteros a partir de su comportamiento, con tareas que a un ingeniero le llevarían semanas. El primer modelo que llega al 80 % es Claude Opus 5 (max), con un 87,8 %, publicado el 24 jul 2026. Regla (lectura del observatorio): «compatible» si al vencer el plazo el mejor resultado llega al 80 %. MirrorCode sólo cubre programación y su puntuación no es el porcentaje de éxito en tareas de tres semanas. Antes: «todavía no evaluable». Plazo del escenario: finales de 2026. Está en el parte porque cambia la valoración del observatorio de un hito de AI 2027. Detectado el 2026-10-30. Fuente: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
+  </item>
+  <item>
+    <title>Minimax reduce a la mitad el precio de MiniMax M3.1 Flash</title>
+    <link>https://moloch-sh.netlify.app/#modelos/minimax/minimax-m3.1-flash</link>
+    <guid isPermaLink="false">precio|minimax/minimax-m3.1-flash|2026-10-30</guid>
+    <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
+    <description>Minimax baja el precio de MiniMax M3.1 Flash en OpenRouter: entrada de 0,15 $ a 0,075 $ y salida de 0,6 $ a 0,3 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 0,262 $ a 0,131 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 28,9), ninguno cuesta menos. Está en el parte porque el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %). Detectado el 2026-10-30. Fuente: OpenRouter (https://openrouter.ai/minimax/minimax-m3.1-flash/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+  </item>
   <item>
     <title>Mistral baja un 49 % el precio de Mistral Large 4</title>
     <link>https://moloch-sh.netlify.app/#modelos/mistralai/mistral-large-4-0</link>
     <guid isPermaLink="false">precio|mistralai/mistral-large-4-0|2026-10-30</guid>
-    <pubDate>Fri, 30 Oct 2026 03:54:11 GMT</pubDate>
-    <description>Mistral baja el precio de Mistral Large 4 en OpenRouter: entrada de 1,36 $ a 0,7 $ y salida de 4,18 $ a 2,1 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 2,07 $ a 1,05 $ por millón de tokens. De los 4 modelos con un índice de AA parecido (±2 puntos de su 26), 3 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $. Está en el parte porque el propio laboratorio baja su precio combinado un 49 % (umbral: +50 % o −33 %). Detectado el 2026-10-30. Fuente: OpenRouter (https://openrouter.ai/mistralai/mistral-large-4-0/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+    <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
+    <description>Mistral baja el precio de Mistral Large 4 en OpenRouter: entrada de 1,36 $ a 0,7 $ y salida de 4,18 $ a 2,1 $ por millón de tokens. Su precio combinado en OpenRouter pasa de 2,07 $ a 1,05 $ por millón de tokens. De los 4 modelos con un índice de AA parecido (±2 puntos de su 26), 3 cuestan menos; el más barato es MiMo-V2.6-Flash, a 0,175 $. Está en el parte porque el propio laboratorio baja su precio combinado un 49 % (umbral: +50 % o −33 %). Detectado el 2026-10-30. Fuente: OpenRouter (https://openrouter.ai/mistralai/mistral-large-4-0/providers). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
     <title>GPT-6 Astra pasa a ser el mejor modelo según el ECI de Epoch</title>
     <link>https://moloch-sh.netlify.app/#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-10-30</guid>
-    <pubDate>Fri, 30 Oct 2026 03:54:11 GMT</pubDate>
+    <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
     <description>Mejor modelo en el ECI de Epoch: de 168,83 a 168,92 puntos (GPT-6 Astra). GPT-6 Astra, de OpenAI, con 168,9 puntos. Está en el parte porque cambia el mejor modelo según el ECI de Epoch. Publicado el 2026-09-03; detectado el 2026-10-30. Fuente: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
-    <title>Claude Opus 5.5 (high) marca un nuevo récord en MirrorCode: 78,9 %</title>
+    <title>Claude Sonnet 5.5 (max) marca un nuevo récord en MirrorCode: 97,8 %</title>
     <link>https://moloch-sh.netlify.app/#carrera/agentes</link>
     <guid isPermaLink="false">indicador|mirror|2026-10-30</guid>
-    <pubDate>Fri, 30 Oct 2026 03:54:11 GMT</pubDate>
-    <description>Mejor resultado en MirrorCode (ejecuciones de Epoch): de 77,4 a 78,9 % (Claude Opus 5.5 (high)). Antes, 77,4 %. Reimplementar programas enteros a partir de su comportamiento, tareas que a un ingeniero le llevarían semanas; ejecuciones de Epoch. En AI 2027 es evidencia de «Horizonte de unas tres semanas de trabajo» y «Programador sobrehumano». Está en el parte porque nuevo récord en MirrorCode, la medida de tareas de semanas con la que el observatorio sustituye a METR. Publicado el 2026-09-22; detectado el 2026-10-30. Fuente: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
+    <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
+    <description>Mejor resultado en MirrorCode (ejecuciones de Epoch): de 77,4 a 97,8 % (Claude Sonnet 5.5 (max)). Antes, 77,4 %. Reimplementar programas enteros a partir de su comportamiento, tareas que a un ingeniero le llevarían semanas; ejecuciones de Epoch. En AI 2027 es evidencia de «Horizonte de unas tres semanas de trabajo» y «Programador sobrehumano». Está en el parte porque nuevo récord en MirrorCode, la medida de tareas de semanas con la que el observatorio sustituye a METR. Publicado el 2026-09-28; detectado el 2026-10-30. Fuente: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
   </item>
   <item>
     <title>Gemini 4 Carbon pasa a ser el mejor modelo cerrado del índice de AA</title>
@@ -54,7 +68,7 @@
     <link>https://moloch-sh.netlify.app/#modelos/openai/gpt-6.1-terra</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.1-terra</guid>
     <pubDate>Mon, 26 Oct 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter. Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 33. Precio combinado 1 $ por millón de tokens. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 6 de 33). Publicado el 2026-10-26; detectado el 2026-10-26. Fuente: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+    <description>GPT-6.1 Terra (OpenAI) aparece en el catálogo de OpenRouter. Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 33. Precio combinado 2 $ por millón de tokens. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 6 de 33). Publicado el 2026-10-26; detectado el 2026-10-26. Fuente: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
     <title>Kimi K3.1 Pro pasa a ser el mejor modelo abierto del índice de AA</title>
