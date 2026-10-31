@@ -217,6 +217,111 @@
  ],
  "events": [
   {
+   "kind": "indicador",
+   "key": "indicador|usCn|2026-10-31",
+   "published": null,
+   "detected": "2026-10-31",
+   "date": "2026-10-31",
+   "mag": {
+    "v": -0.04,
+    "pct": -0.4,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-10-31T03:54:09Z"
+   },
+   "what": "Distancia EE. UU. − China en el ECI: de 10,27 a 10,23 puntos (GPT-6 Astra frente a DeepSeek V4.1 Flash 1017).",
+   "data": {
+    "ind": "usCn",
+    "path": "eci.gapUsCn",
+    "from": 10.27,
+    "to": 10.23
+   },
+   "i18n": {
+    "en": {
+     "what": "US − China gap on the ECI: from 10.27 to 10.23 points (GPT-6 Astra versus DeepSeek V4.1 Flash 1017).",
+     "titular": "The US − China gap on the ECI falls from 10.3 to 10.2 points",
+     "consecuencia": "GPT-6 Astra (OpenAI, 169.1) versus DeepSeek V4.1 Flash 1017 (DeepSeek, 158.8). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”."
+    }
+   },
+   "titular": "La distancia EE. UU. − China en el ECI baja de 10,3 a 10,2 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "GPT-6 Astra (OpenAI, 169,1) frente a DeepSeek V4.1 Flash 1017 (DeepSeek, 158,8). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «China, unos seis meses por detrás con el 12 % del cómputo»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|closedOpen|2026-10-31",
+   "published": null,
+   "detected": "2026-10-31",
+   "date": "2026-10-31",
+   "mag": {
+    "v": -0.04,
+    "pct": -0.4,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-10-31T03:54:09Z"
+   },
+   "what": "Distancia cerrados − abiertos en el ECI: de 10,27 a 10,23 puntos (GPT-6 Astra frente a DeepSeek V4.1 Flash 1017).",
+   "data": {
+    "ind": "closedOpen",
+    "path": "eci.gapClosedOpen",
+    "from": 10.27,
+    "to": 10.23
+   },
+   "i18n": {
+    "en": {
+     "what": "Closed − open gap on the ECI: from 10.27 to 10.23 points (GPT-6 Astra versus DeepSeek V4.1 Flash 1017).",
+     "titular": "The closed − open gap on the ECI falls from 10.3 to 10.2 points",
+     "consecuencia": "GPT-6 Astra (OpenAI, 169.1) versus DeepSeek V4.1 Flash 1017 (DeepSeek, 158.8). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”."
+    }
+   },
+   "titular": "La distancia cerrados − abiertos en el ECI baja de 10,3 a 10,2 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "GPT-6 Astra (OpenAI, 169,1) frente a DeepSeek V4.1 Flash 1017 (DeepSeek, 158,8). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «Un modelo de pesos abiertos iguala a Agent-0»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|labs|2026-10-31",
+   "published": null,
+   "detected": "2026-10-31",
+   "date": "2026-10-31",
+   "mag": {
+    "v": 0.38,
+    "pct": 135.7,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-10-31T03:54:09Z"
+   },
+   "what": "Distancia entre los dos primeros laboratorios en el ECI: de 0,28 a 0,66 puntos (OpenAI frente a Anthropic).",
+   "data": {
+    "ind": "labs",
+    "path": "eci.gapLabs",
+    "from": 0.28,
+    "to": 0.66
+   },
+   "i18n": {
+    "en": {
+     "what": "Gap between the top two labs on the ECI: from 0.28 to 0.66 points (OpenAI versus Anthropic).",
+     "titular": "The gap between the top two labs on the ECI rises from 0.3 to 0.7 points",
+     "consecuencia": "GPT-6 Astra (OpenAI, 169.1) versus Claude Opus 5.5 (Anthropic, 168.4), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”."
+    }
+   },
+   "titular": "La distancia entre los dos primeros laboratorios en el ECI sube de 0,3 a 0,7 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "GPT-6 Astra (OpenAI, 169,1) frente a Claude Opus 5.5 (Anthropic, 168,4), con intervalos de confianza solapados. En AI 2027 es evidencia de «Los rivales, de 3 a 9 meses por detrás»."
+  },
+  {
    "kind": "evaluacion",
    "key": "evaluacion|openai/gpt-6.1-terra|eci",
    "published": null,
@@ -250,69 +355,6 @@
    "importancia": null,
    "ficha": "#modelos/openai/gpt-6.1-terra",
    "consecuencia": "Índice de AA 51: a 8,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 6 de 33. Precio combinado 2 $ por millón de tokens."
-  },
-  {
-   "kind": "precio",
-   "key": "precio|minimax/minimax-m3.1-flash|2026-10-30",
-   "published": null,
-   "detected": "2026-10-30",
-   "date": "2026-10-30",
-   "mag": {
-    "v": -50,
-    "unit": "%"
-   },
-   "model": "minimax/minimax-m3.1-flash",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/minimax/minimax-m3.1-flash/providers",
-    "got": "2026-10-30T20:14:30Z"
-   },
-   "what": "Minimax baja el precio de MiniMax M3.1 Flash en OpenRouter: entrada de 0,15 $ a 0,075 $ y salida de 0,6 $ a 0,3 $ por millón de tokens.",
-   "data": {
-    "basis": "laboratorio",
-    "sub": "precio",
-    "provider": "Minimax",
-    "from": {
-     "in": 0.15,
-     "out": 0.6
-    },
-    "to": {
-     "in": 0.075,
-     "out": 0.3
-    },
-    "pct": -50,
-    "tiersFrom": [
-     [
-      0.15,
-      0.6
-     ]
-    ],
-    "tiersTo": [
-     [
-      0.075,
-      0.3
-     ]
-    ],
-    "since": "2026-10-29",
-    "rankAA": 18,
-    "of": 33
-   },
-   "i18n": {
-    "en": {
-     "what": "Minimax cuts the price of MiniMax M3.1 Flash on OpenRouter: input from $0.15 to $0.075 and output from $0.6 to $0.3 per million tokens.",
-     "titular": "Minimax halves the price of MiniMax M3.1 Flash",
-     "porque": "the lab itself cuts its blended price by 50% (threshold: +50% or −33%)",
-     "consecuencia": "Its blended price on OpenRouter goes from $0.262 to $0.131 per million tokens. Of the 5 models with a similar AA index (±2 points of its 28.9), none costs less."
-    }
-   },
-   "titular": "Minimax reduce a la mitad el precio de MiniMax M3.1 Flash",
-   "importancia": {
-    "tier": 5,
-    "w": 50,
-    "porque": "el propio laboratorio baja su precio combinado un 50 % (umbral: +50 % o −33 %)"
-   },
-   "ficha": "#modelos/minimax/minimax-m3.1-flash",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,262 $ a 0,131 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 28,9), ninguno cuesta menos."
   },
   {
    "kind": "evaluacion",
@@ -1581,6 +1623,46 @@
    },
    "ficha": "#carrera/agentes",
    "consecuencia": "Antes, 77,4 %. Reimplementar programas enteros a partir de su comportamiento, tareas que a un ingeniero le llevarían semanas; ejecuciones de Epoch. En AI 2027 es evidencia de «Horizonte de unas tres semanas de trabajo» y «Programador sobrehumano»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|eci|2026-10-31",
+   "published": "2026-09-03",
+   "detected": "2026-10-31",
+   "date": "2026-09-03",
+   "mag": {
+    "v": 0.14,
+    "pct": 0.1,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-10-31T03:54:09Z"
+   },
+   "what": "Mejor modelo en el ECI de Epoch: de 168,92 a 169,06 puntos (GPT-6 Astra).",
+   "data": {
+    "ind": "eci",
+    "path": "eci.frontier",
+    "from": 168.92,
+    "to": 169.06
+   },
+   "i18n": {
+    "en": {
+     "what": "Best model on Epoch’s ECI: from 168.92 to 169.06 points (GPT-6 Astra).",
+     "titular": "GPT-6 Astra becomes the best model on Epoch’s ECI",
+     "porque": "the best model on Epoch’s ECI changes",
+     "consecuencia": "GPT-6 Astra, from OpenAI, with 169.1 points."
+    }
+   },
+   "titular": "GPT-6 Astra pasa a ser el mejor modelo según el ECI de Epoch",
+   "importancia": {
+    "tier": 6,
+    "w": 100,
+    "porque": "cambia el mejor modelo según el ECI de Epoch"
+   },
+   "ficha": "#carrera",
+   "consecuencia": "GPT-6 Astra, de OpenAI, con 169,1 puntos."
   },
   {
    "kind": "indicador",
