@@ -218,6 +218,112 @@
  "events": [
   {
    "kind": "indicador",
+   "key": "indicador|dcMW|2026-11-01",
+   "published": null,
+   "detected": "2026-11-01",
+   "date": "2026-11-01",
+   "mag": {
+    "v": 168,
+    "pct": 1.2,
+    "unit": "MW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-11-01T03:54:32Z"
+   },
+   "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.544 a 14.712 MW.",
+   "data": {
+    "ind": "dcMW",
+    "path": "dc.now",
+    "from": 14544,
+    "to": 14712
+   },
+   "i18n": {
+    "en": {
+     "what": "IT power in service at the data centres Epoch tracks: from 14,544 to 14,712 MW.",
+     "titular": "The power in service at the data centres Epoch tracks rises to 14,712 MW",
+     "consecuencia": "96 data centres. Power of the equipment, without cooling; it is not the world total. In AI 2027 it is evidence for “40 million H100e available”."
+    }
+   },
+   "titular": "La potencia en servicio de los centros que sigue Epoch sube a 14.712 MW",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "96 centros. Potencia de los equipos, sin refrigeración; no es el total mundial. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|capexB|2026-11-01",
+   "published": null,
+   "detected": "2026-11-01",
+   "date": "2026-11-01",
+   "mag": {
+    "v": 6.3,
+    "pct": 1.1,
+    "unit": "mil millones de $"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-11-01T03:54:32Z"
+   },
+   "what": "Coste de capital de los centros que sigue Epoch: de 551 a 557 mil millones de $.",
+   "data": {
+    "ind": "capexB",
+    "path": "dc.capex",
+    "from": 551,
+    "to": 557.3
+   },
+   "i18n": {
+    "en": {
+     "what": "Capital cost of the data centres Epoch tracks: from 551 to 557 billion dollars.",
+     "titular": "Capital cost of the data centres Epoch tracks: from 551 to 557 billion dollars."
+    }
+   },
+   "titular": "Coste de capital de los centros que sigue Epoch: de 551 a 557 mil millones de $.",
+   "importancia": null,
+   "ficha": "#carrera/economia",
+   "consecuencia": null
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|openai/gpt-5.6-luna-20260709|2026-11-01",
+   "published": "2026-10-31",
+   "detected": "2026-11-01",
+   "date": "2026-10-31",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "openai/gpt-5.6-luna",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-01T03:54:32Z"
+   },
+   "what": "GPT-5.6 Luna entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2,1 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "openai/gpt-5.6-luna-20260709",
+    "rank": 10,
+    "share": 2.1,
+    "tokens": 4000571963845,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "GPT-5.6 Luna enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2.1% of tokens.",
+     "titular": "GPT-5.6 Luna enters OpenRouter’s top 10 by usage",
+     "consecuencia": "2.1% of OpenRouter’s tokens from 2026-10-25 to 2026-10-31. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "GPT-5.6 Luna entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-5.6-luna",
+   "consecuencia": "2,1 % de los tokens de OpenRouter del 2026-10-25 al 2026-10-31. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
+   "kind": "indicador",
    "key": "indicador|usCn|2026-10-31",
    "published": null,
    "detected": "2026-10-31",
