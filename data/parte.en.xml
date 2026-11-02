@@ -6,7 +6,14 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Sun, 01 Nov 2026 03:54:32 GMT</lastBuildDate>
+  <lastBuildDate>Mon, 02 Nov 2026 03:54:04 GMT</lastBuildDate>
+  <item>
+    <title>AI 2027: “Horizon of about three weeks of work” cannot be assessed yet</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#ai2027/horizonte3s</link>
+    <guid isPermaLink="false">valoracion|horizonte3s|observatorio|2026-11-02</guid>
+    <pubDate>Mon, 02 Nov 2026 03:54:04 GMT</pubDate>
+    <description>“Horizon of about three weeks of work”: the observatory’s assessment goes from “ahead” to “not yet assessable”. The authors frame it with METR’s 80% horizon, which does not measure reliably above 16 hours, and the last model it has measured was published on 7 Apr 2026. The observatory checks it against MirrorCode, from Epoch and METR: reimplementing whole programs from their behaviour, with tasks that would take an engineer weeks. Best result to date: 78.9%, from Claude Opus 5.5 (high), published on 22 Sept 2026. Rule (the observatory’s reading): “consistent” if, when the deadline expires, the best result reaches 80%. MirrorCode only covers programming and its score is not the success rate on three-week tasks. Before: “ahead”. Scenario deadline: late 2026. It is in the briefing because the observatory’s assessment of an AI 2027 milestone changes. Detected on 2026-11-02. Source: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
+  </item>
   <item>
     <title>GPT-6 Astra becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
@@ -36,7 +43,7 @@
     <description>Best model on Epoch’s ECI: from 168.83 to 168.92 points (GPT-6 Astra). GPT-6 Astra, from OpenAI, with 168.9 points. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-09-03; detected on 2026-10-30. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
-    <title>Claude Sonnet 5.5 (max) sets a new MirrorCode record: 97.8%</title>
+    <title>Claude Opus 5.5 (high) sets a new MirrorCode record: 97.8%</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera/agentes</link>
     <guid isPermaLink="false">indicador|mirror|2026-10-30</guid>
     <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
@@ -62,13 +69,6 @@
     <guid isPermaLink="false">version|5</guid>
     <pubDate>Wed, 28 Oct 2026 03:54:19 GMT</pubDate>
     <description>Artificial Analysis moves its Intelligence Index from version 4.3 to 5: scores from the two versions are not comparable. Scores from one version and the other are not comparable: the daily evolution of the leaders starts over with this version. It is in the briefing because Artificial Analysis changes the version of its index. Detected on 2026-10-28. Source: Artificial Analysis (https://artificialanalysis.ai/leaderboards/models). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
-    <title>GPT-6.1 Terra (OpenAI) arrives on OpenRouter: rank 6 on the AA index</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.1-terra</link>
-    <guid isPermaLink="false">nuevo|openai/gpt-6.1-terra</guid>
-    <pubDate>Mon, 26 Oct 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.1 Terra (OpenAI) appears in the OpenRouter catalogue. AA index 51: 8.4 points behind the best closed model (Gemini 4 Carbon). Rank 6 of 33. Blended price $1 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 6 of 33). Published on 2026-10-26; detected on 2026-10-26. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.1-terra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Kimi K3.1 Pro becomes the best open-weight model on the AA index</title>
