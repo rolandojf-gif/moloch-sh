@@ -217,6 +217,43 @@
  ],
  "events": [
   {
+   "kind": "uso",
+   "key": "uso|entra|openai/gpt-6.1-sol-20260929|2026-11-03",
+   "published": "2026-11-02",
+   "detected": "2026-11-03",
+   "date": "2026-11-02",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "openai/gpt-6.1-sol",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-03T03:54:24Z"
+   },
+   "what": "GPT-6.1 Sol entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "openai/gpt-6.1-sol-20260929",
+    "rank": 10,
+    "share": 2,
+    "tokens": 3928843590781,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "GPT-6.1 Sol enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
+     "titular": "GPT-6.1 Sol enters OpenRouter’s top 10 by usage",
+     "consecuencia": "2% of OpenRouter’s tokens from 2026-10-27 to 2026-11-02. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "GPT-6.1 Sol entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-6.1-sol",
+   "consecuencia": "2 % de los tokens de OpenRouter del 2026-10-27 al 2026-11-02. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
    "kind": "indicador",
    "key": "indicador|dcMW|2026-11-02",
    "published": null,

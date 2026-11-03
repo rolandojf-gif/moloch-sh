@@ -1,14 +1,22 @@
 {
- "generated": "2026-11-02T03:54:04Z",
+ "generated": "2026-11-03T03:54:24Z",
  "window": 7,
- "since": "2026-10-27",
- "base": "2026-11-01",
+ "since": "2026-10-28",
+ "base": "2026-11-02",
  "parte": {
-  "fecha": "2026-11-02",
-  "noticias": [
-   "valoracion|horizonte3s|observatorio|2026-11-02"
-  ],
-  "ultima": null,
+  "fecha": "2026-11-03",
+  "noticias": [],
+  "ultima": {
+   "key": "valoracion|horizonte3s|observatorio|2026-11-02",
+   "fecha": "2026-11-02",
+   "titular": "AI 2027: «Horizonte de unas tres semanas de trabajo» aún no se puede evaluar",
+   "ficha": "#ai2027/horizonte3s",
+   "i18n": {
+    "en": {
+     "titular": "AI 2027: “Horizon of about three weeks of work” cannot be assessed yet"
+    }
+   }
+  },
   "reglas": [
    "Cambia el mejor modelo abierto o cerrado del índice de Artificial Analysis, con la misma versión del índice y al menos 1 punto de margen.",
    "Artificial Analysis cambia la versión de su índice.",
@@ -37,6 +45,40 @@
  "items": [
   {
    "kind": "nuevo",
+   "key": "nuevo|z-ai/glm-5.3-flashx-legal",
+   "model": "z-ai/glm-5.3-flashx-legal",
+   "published": "2026-11-02",
+   "detected": "2026-11-03",
+   "date": "2026-11-02",
+   "mag": null,
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/z-ai/glm-5.3-flashx-legal",
+    "got": "2026-11-03T03:54:24Z"
+   },
+   "what": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) aparece en el catálogo de OpenRouter.",
+   "data": {
+    "weights": "cerrados",
+    "in": 0.37,
+    "out": 1.25,
+    "ii": null,
+    "eci": null,
+    "identity": "confirmada"
+   },
+   "i18n": {
+    "en": {
+     "what": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) appears in the OpenRouter catalogue.",
+     "titular": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) arrives on OpenRouter",
+     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Blended price $0.59 per million tokens."
+    }
+   },
+   "titular": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) llega a OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/z-ai/glm-5.3-flashx-legal",
+   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 0,59 $ por millón de tokens."
+  },
+  {
+   "kind": "nuevo",
    "key": "sinapi|google/gemini-4-carbon",
    "model": "google/gemini-4-carbon",
    "published": "2026-10-28",
@@ -46,7 +88,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gemini-4-carbon",
-    "got": "2026-11-02T03:54:04Z"
+    "got": "2026-11-03T03:54:24Z"
    },
    "what": "Gemini 4 Carbon (Google) aparece puntuado en Artificial Analysis con 59,4 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -76,6 +118,43 @@
    },
    "ficha": "#modelos/google/gemini-4-carbon",
    "consecuencia": "Índice de AA 59,4: supera en 1 puntos al mejor cerrado anterior (Claude Opus 5.5). Puesto 1 de 33. Aún no está en OpenRouter: sin API pública ni precio."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|openai/gpt-6.1-sol-20260929|2026-11-03",
+   "published": "2026-11-02",
+   "detected": "2026-11-03",
+   "date": "2026-11-02",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "openai/gpt-6.1-sol",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-03T03:54:24Z"
+   },
+   "what": "GPT-6.1 Sol entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "openai/gpt-6.1-sol-20260929",
+    "rank": 10,
+    "share": 2,
+    "tokens": 3928843590781,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "GPT-6.1 Sol enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
+     "titular": "GPT-6.1 Sol enters OpenRouter’s top 10 by usage",
+     "consecuencia": "2% of OpenRouter’s tokens from 2026-10-27 to 2026-11-02. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "GPT-6.1 Sol entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-6.1-sol",
+   "consecuencia": "2 % de los tokens de OpenRouter del 2026-10-27 al 2026-11-02. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "indicador",
