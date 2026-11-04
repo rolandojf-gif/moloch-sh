@@ -6,7 +6,21 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.xml" rel="self" type="application/rss+xml"/>
   <description>Las noticias de la carrera por la IA que detecta cada día el observatorio, elegidas con una regla fija. Cifras de OpenRouter, Artificial Analysis, Epoch AI, Hugging Face y METR, con su fuente.</description>
   <language>es</language>
-  <lastBuildDate>Tue, 03 Nov 2026 03:54:24 GMT</lastBuildDate>
+  <lastBuildDate>Wed, 04 Nov 2026 03:54:36 GMT</lastBuildDate>
+  <item>
+    <title>GPT-6 Sol entra en el índice de AA en el puesto 10</title>
+    <link>https://moloch-sh.netlify.app/#modelos/openai/gpt-6-sol</link>
+    <guid isPermaLink="false">evaluacion|openai/gpt-6-sol|ii</guid>
+    <pubDate>Wed, 04 Nov 2026 03:54:36 GMT</pubDate>
+    <description>GPT-6 Sol: primera puntuación en el índice de inteligencia de Artificial Analysis (44.2, v5). Índice de AA 44,2: a 15,8 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 10 de 35. Precio combinado 2 $ por millón de tokens. Está en el parte porque recibe su primera puntuación de AA y entra en el top 20 del índice de AA (puesto 10 de 35). Detectado el 2026-11-04. Fuente: Artificial Analysis (https://artificialanalysis.ai/models/gpt-6-sol). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+  </item>
+  <item>
+    <title>GPT-5.6 Terra entra en el índice de AA en el puesto 16</title>
+    <link>https://moloch-sh.netlify.app/#modelos/openai/gpt-5.6-terra</link>
+    <guid isPermaLink="false">evaluacion|openai/gpt-5.6-terra|ii</guid>
+    <pubDate>Wed, 04 Nov 2026 03:54:36 GMT</pubDate>
+    <description>GPT-5.6 Terra: primera puntuación en el índice de inteligencia de Artificial Analysis (32.3, v5). Índice de AA 32,3: a 27,7 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 16 de 35. Precio combinado 2,25 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 32,3), 3 cuestan menos; el más barato es DeepSeek V4.1 Flash 1017, a 0,525 $. Está en el parte porque recibe su primera puntuación de AA y entra en el top 20 del índice de AA (puesto 16 de 35). Detectado el 2026-11-04. Fuente: Artificial Analysis (https://artificialanalysis.ai/models/gpt-5-6-terra). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
+  </item>
   <item>
     <title>AI 2027: «Horizonte de unas tres semanas de trabajo» aún no se puede evaluar</title>
     <link>https://moloch-sh.netlify.app/#ai2027/horizonte3s</link>
@@ -55,13 +69,6 @@
     <guid isPermaLink="false">lider|closed|google/gemini-4-carbon|2026-10-29</guid>
     <pubDate>Thu, 29 Oct 2026 15:05:11 GMT</pubDate>
     <description>Gemini 4 Carbon pasa a ser el mejor modelo cerrado del catálogo en el índice de inteligencia de Artificial Analysis v5: 59,4 puntos, 1 más que Claude Opus 5.5 (58,4). Aún no tiene API pública: no está en OpenRouter. La distancia entre el mejor cerrado y el mejor abierto en el índice de AA queda en 13,4 puntos (12,4 el día anterior). No equivale a meses de retraso. Está en el parte porque cambia el mejor modelo cerrado con la misma versión del índice de AA y 1 puntos de margen (mínimo 1). Detectado el 2026-10-29. Fuente: Artificial Analysis (https://artificialanalysis.ai/models/gemini-4-carbon). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
-  </item>
-  <item>
-    <title>Gemini 4 Carbon (Google) entra en el índice de AA en el puesto 1, aún sin API pública</title>
-    <link>https://moloch-sh.netlify.app/#modelos/google/gemini-4-carbon</link>
-    <guid isPermaLink="false">sinapi|google/gemini-4-carbon</guid>
-    <pubDate>Thu, 29 Oct 2026 05:00:00 GMT</pubDate>
-    <description>Gemini 4 Carbon (Google) aparece puntuado en Artificial Analysis con 59,4 puntos, aún sin API pública: no está en OpenRouter. Índice de AA 59,4: supera en 1 puntos al mejor cerrado anterior (Claude Opus 5.5). Puesto 1 de 33. Aún no está en OpenRouter: sin API pública ni precio. Está en el parte porque es un modelo nuevo y entra en el top 20 del índice de AA (puesto 1 de 33). Publicado el 2026-10-28; detectado el 2026-10-29. Fuente: Artificial Analysis (https://artificialanalysis.ai/models/gemini-4-carbon). Datos de Artificial Analysis (https://artificialanalysis.ai), publicados con su permiso.</description>
   </item>
   <item>
     <title>Artificial Analysis estrena la versión 5 de su índice de inteligencia</title>
