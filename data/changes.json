@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-05T11:00:02Z",
+ "generated": "2026-11-05T13:29:51Z",
  "window": 7,
  "since": "2026-10-30",
  "base": "2026-11-04",
@@ -48,7 +48,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Hy4 (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -82,7 +82,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/z-ai/glm-5.3-flashx-legal",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -116,7 +116,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/tencent-hy4",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Tencent Hy4 (Tencent) aparece puntuado en Artificial Analysis con 34,6 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -161,7 +161,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/grok-4-6-xhigh",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Grok 4.6: primera puntuación en el índice de inteligencia de Artificial Analysis (31, v5).",
    "data": {
@@ -201,7 +201,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/claude-opus-5",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Claude Opus 5: primera puntuación en el índice de inteligencia de Artificial Analysis (44.2, v5).",
    "data": {
@@ -241,7 +241,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gpt-5-6-luna",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "GPT-5.6 Luna: primera puntuación en el índice de inteligencia de Artificial Analysis (23.8, v5).",
    "data": {
@@ -276,7 +276,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gemini-3-1-flash-lite-preview",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Gemini 3.1 Flash Lite: primera puntuación en el índice de inteligencia de Artificial Analysis (6.2, v5).",
    "data": {
@@ -311,7 +311,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/mistral-medium-3-5",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Mistral Medium 3.5: primera puntuación en el índice de inteligencia de Artificial Analysis (4.6, v5).",
    "data": {
@@ -346,7 +346,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gemma-4-31b",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Gemma 4 31B: primera puntuación en el índice de inteligencia de Artificial Analysis (4.4, v5).",
    "data": {
@@ -359,13 +359,13 @@
     "en": {
      "what": "Gemma 4 31B: first score on the Artificial Analysis Intelligence Index (4.4, v5).",
      "titular": "Gemma 4 31B enters the AA index at rank 42",
-     "consecuencia": "AA index 4.4: 42.1 points behind the best open-weight model (Kimi K3.1 Pro). Rank 42 of 43. Blended price $0.14 per million tokens. Of the 6 models with a similar AA index (±2 points of its 4.4), 1 costs less; the cheapest is Nemotron 3.5 Lightning, at $0.049."
+     "consecuencia": "AA index 4.4: 42.1 points behind the best open-weight model (Kimi K3.1 Pro). Rank 42 of 43. Blended price $0.139 per million tokens. Of the 6 models with a similar AA index (±2 points of its 4.4), 1 costs less; the cheapest is Nemotron 3.5 Lightning, at $0.049."
     }
    },
    "titular": "Gemma 4 31B entra en el índice de AA en el puesto 42",
    "importancia": null,
    "ficha": "#modelos/google/gemma-4-31b-it",
-   "consecuencia": "Índice de AA 4,4: a 42,1 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 42 de 43. Precio combinado 0,14 $ por millón de tokens. De los 6 modelos con un índice de AA parecido (±2 puntos de su 4,4), 1 cuesta menos; el más barato es Nemotron 3.5 Lightning, a 0,049 $."
+   "consecuencia": "Índice de AA 4,4: a 42,1 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 42 de 43. Precio combinado 0,139 $ por millón de tokens. De los 6 modelos con un índice de AA parecido (±2 puntos de su 4,4), 1 cuesta menos; el más barato es Nemotron 3.5 Lightning, a 0,049 $."
   },
   {
    "kind": "evaluacion",
@@ -381,7 +381,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gemini-3-1-flash-lite-preview",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Gemini 3.1 Flash Lite Preview: primera puntuación en el índice de inteligencia de Artificial Analysis (6.2, v5).",
    "data": {
@@ -403,6 +403,93 @@
    "consecuencia": "Índice de AA 6,2: a 53,8 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 39 de 43. Precio combinado 0,281 $ por millón de tokens. De los 6 modelos con un índice de AA parecido (±2 puntos de su 6,2), 3 cuestan menos; el más barato es Nemotron 3.5 Lightning, a 0,049 $."
   },
   {
+   "kind": "retirada",
+   "key": "retirada|minimax/minimax-m2-her|2026-11-05",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": null,
+   "model": "minimax/minimax-m2-her",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-05T13:29:51Z"
+   },
+   "what": "MiniMax M2-her deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "MiniMax M2-her"
+   },
+   "i18n": {
+    "en": {
+     "what": "MiniMax M2-her is no longer listed in the OpenRouter catalogue.",
+     "titular": "MiniMax M2-her is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "MiniMax M2-her deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|minimax/minimax-m2.1|2026-11-05",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": null,
+   "model": "minimax/minimax-m2.1",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-05T13:29:51Z"
+   },
+   "what": "MiniMax M2.1 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "MiniMax M2.1"
+   },
+   "i18n": {
+    "en": {
+     "what": "MiniMax M2.1 is no longer listed in the OpenRouter catalogue.",
+     "titular": "MiniMax M2.1 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "MiniMax M2.1 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|minimax/minimax-m2|2026-11-05",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": null,
+   "model": "minimax/minimax-m2",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-05T13:29:51Z"
+   },
+   "what": "MiniMax M2 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "MiniMax M2"
+   },
+   "i18n": {
+    "en": {
+     "what": "MiniMax M2 is no longer listed in the OpenRouter catalogue.",
+     "titular": "MiniMax M2 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "MiniMax M2 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
    "kind": "indicador",
    "key": "indicador|usCn|2026-11-05",
    "published": null,
@@ -416,7 +503,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Distancia EE. UU. − China en el ECI: de 10,23 a 9,76 puntos (GPT-6 Astra frente a DeepSeek V4.1 Flash 1017).",
    "data": {
@@ -451,7 +538,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Distancia cerrados − abiertos en el ECI: de 10,23 a 9,76 puntos (GPT-6 Astra frente a DeepSeek V4.1 Flash 1017).",
    "data": {
@@ -486,7 +573,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Distancia entre los dos primeros laboratorios en el ECI: de 0,66 a 0,71 puntos (OpenAI frente a Anthropic).",
    "data": {
@@ -521,7 +608,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 15.078 a 15.138 MW.",
    "data": {
@@ -556,7 +643,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Avance de la frontera del ECI en 12 meses: de 18,3 a 17,9 puntos.",
    "data": {
@@ -590,7 +677,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Coste de capital de los centros que sigue Epoch: de 571 a 574 mil millones de $.",
    "data": {
@@ -803,7 +890,7 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/moonshotai/Kimi-K3.1-Pro",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Kimi K3.1 Pro: pesos descargables en Hugging Face (licencia kimi-k3.1-pro).",
    "data": {
@@ -1873,7 +1960,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-05T11:00:02Z"
+    "got": "2026-11-05T13:29:51Z"
    },
    "what": "Mejor modelo en el ECI de Epoch: de 169,06 a 169,07 puntos (GPT-6 Astra).",
    "data": {

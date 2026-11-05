@@ -6,40 +6,40 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Thu, 05 Nov 2026 11:00:02 GMT</lastBuildDate>
+  <lastBuildDate>Thu, 05 Nov 2026 13:29:51 GMT</lastBuildDate>
   <item>
     <title>Claude Opus 5 enters the AA index at rank 11</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/anthropic/claude-opus-5</link>
     <guid isPermaLink="false">evaluacion|anthropic/claude-opus-5|ii</guid>
-    <pubDate>Thu, 05 Nov 2026 11:00:02 GMT</pubDate>
+    <pubDate>Thu, 05 Nov 2026 13:29:51 GMT</pubDate>
     <description>Claude Opus 5: first score on the Artificial Analysis Intelligence Index (44.2, v5). AA index 44.2: 15.8 points behind the best closed model (Gemini 4 Carbon). Rank 11 of 43. Blended price $10 per million tokens. It is in the briefing because it receives its first AA score and enters the top 20 of the AA index (rank 11 of 43). Detected on 2026-11-05. Source: Artificial Analysis (https://artificialanalysis.ai/models/claude-opus-5). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Tencent Hy4 (Tencent) enters the AA index at rank 16, still without a public API</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/tencent/tencent-hy4</link>
     <guid isPermaLink="false">sinapi|tencent/tencent-hy4</guid>
-    <pubDate>Thu, 05 Nov 2026 11:00:02 GMT</pubDate>
+    <pubDate>Thu, 05 Nov 2026 13:29:51 GMT</pubDate>
     <description>Tencent Hy4 (Tencent) appears scored on Artificial Analysis with 34.6 points, still without a public API: it is not on OpenRouter. AA index 34.6: 25.4 points behind the best closed model (Gemini 4 Carbon). Rank 16 of 43. It is not on OpenRouter yet: no public API and no price. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 16 of 43). Published on 2026-11-03; detected on 2026-11-05. Source: Artificial Analysis (https://artificialanalysis.ai/models/tencent-hy4). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Grok 4.6 enters the AA index at rank 20</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/x-ai/grok-4.6</link>
     <guid isPermaLink="false">evaluacion|x-ai/grok-4.6|ii</guid>
-    <pubDate>Thu, 05 Nov 2026 11:00:02 GMT</pubDate>
+    <pubDate>Thu, 05 Nov 2026 13:29:51 GMT</pubDate>
     <description>Grok 4.6: first score on the Artificial Analysis Intelligence Index (31, v5). AA index 31: 29 points behind the best closed model (Gemini 4 Carbon). Rank 20 of 43. Blended price $3 per million tokens. Of the 6 models with a similar AA index (±2 points of its 31), 6 cost less; the cheapest is MiniMax M3.1 Flash, at $0.262. It is in the briefing because it receives its first AA score and enters the top 20 of the AA index (rank 20 of 43). Detected on 2026-11-05. Source: Artificial Analysis (https://artificialanalysis.ai/models/grok-4-6-xhigh). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Open weights for Kimi K3.1 Pro, rank 9 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/moonshotai/kimi-k3.1-pro</link>
     <guid isPermaLink="false">pesos|moonshotai/kimi-k3.1-pro</guid>
-    <pubDate>Thu, 05 Nov 2026 11:00:02 GMT</pubDate>
+    <pubDate>Thu, 05 Nov 2026 13:29:51 GMT</pubDate>
     <description>Kimi K3.1 Pro: downloadable weights on Hugging Face (licence kimi-k3.1-pro). It can be downloaded and served outside the lab’s API. Licence: kimi-k3.1-pro. AA index 46.5: 13.9 points above the previous best open-weight model (DeepSeek V4.1 Flash 1017). Rank 9 of 43. It is in the briefing because a top-20 model on the AA index publishes open weights (rank 9). Published on 2026-11-02; detected on 2026-11-05. Source: Hugging Face (https://huggingface.co/moonshotai/Kimi-K3.1-Pro). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>GPT-6 Astra becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-11-05</guid>
-    <pubDate>Thu, 05 Nov 2026 11:00:02 GMT</pubDate>
+    <pubDate>Thu, 05 Nov 2026 13:29:51 GMT</pubDate>
     <description>Best model on Epoch’s ECI: from 169.06 to 169.07 points (GPT-6 Astra). GPT-6 Astra, from OpenAI, with 169.1 points. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-09-03; detected on 2026-11-05. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
