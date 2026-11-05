@@ -218,6 +218,400 @@
  "events": [
   {
    "kind": "evaluacion",
+   "key": "evaluacion|tencent/hy4-preview|ii",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": 34.6,
+    "unit": "puntos AA"
+   },
+   "model": "tencent/hy4-preview",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/hunyuan-dev1030-aa",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Hy4 preview: primera puntuación en el índice de inteligencia de Artificial Analysis (34.6, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 34.6,
+    "rankAA": 17,
+    "of": 43
+   },
+   "i18n": {
+    "en": {
+     "what": "Hy4 preview: first score on the Artificial Analysis Intelligence Index (34.6, v5).",
+     "titular": "Hy4 preview enters the AA index at rank 17",
+     "porque": "it receives its first AA score and enters the top 20 of the AA index (rank 17 of 43)",
+     "consecuencia": "AA index 34.6: 11.9 points behind the best open-weight model (Kimi K3.1 Pro). Rank 17 of 43. Blended price $1.25 per million tokens. Of the 5 models with a similar AA index (±2 points of its 34.6), 3 cost less; the cheapest is Claude Haiku 5.5, at $0.2."
+    }
+   },
+   "titular": "Hy4 preview entra en el índice de AA en el puesto 17",
+   "importancia": {
+    "tier": 3,
+    "w": 4,
+    "porque": "recibe su primera puntuación de AA y entra en el top 20 del índice de AA (puesto 17 de 43)"
+   },
+   "ficha": "#modelos/tencent/hy4-preview",
+   "consecuencia": "Índice de AA 34,6: a 11,9 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 17 de 43. Precio combinado 1,25 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 34,6), 3 cuestan menos; el más barato es Claude Haiku 5.5, a 0,2 $."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|x-ai/grok-4.6|ii",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": 31,
+    "unit": "puntos AA"
+   },
+   "model": "x-ai/grok-4.6",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/grok-4-6-xhigh",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Grok 4.6: primera puntuación en el índice de inteligencia de Artificial Analysis (31, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 31,
+    "rankAA": 21,
+    "of": 43
+   },
+   "i18n": {
+    "en": {
+     "what": "Grok 4.6: first score on the Artificial Analysis Intelligence Index (31, v5).",
+     "titular": "Grok 4.6 enters the AA index at rank 21",
+     "consecuencia": "AA index 31: 29 points behind the best closed model (Gemini 4 Carbon). Rank 21 of 43. Blended price $3 per million tokens. Of the 6 models with a similar AA index (±2 points of its 31), 6 cost less; the cheapest is MiniMax M3.1 Flash, at $0.262."
+    }
+   },
+   "titular": "Grok 4.6 entra en el índice de AA en el puesto 21",
+   "importancia": null,
+   "ficha": "#modelos/x-ai/grok-4.6",
+   "consecuencia": "Índice de AA 31: a 29 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 21 de 43. Precio combinado 3 $ por millón de tokens. De los 6 modelos con un índice de AA parecido (±2 puntos de su 31), 6 cuestan menos; el más barato es MiniMax M3.1 Flash, a 0,262 $."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|anthropic/claude-opus-5|ii",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": 44.2,
+    "unit": "puntos AA"
+   },
+   "model": "anthropic/claude-opus-5",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/claude-opus-5",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Claude Opus 5: primera puntuación en el índice de inteligencia de Artificial Analysis (44.2, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 44.2,
+    "rankAA": 11,
+    "of": 43
+   },
+   "i18n": {
+    "en": {
+     "what": "Claude Opus 5: first score on the Artificial Analysis Intelligence Index (44.2, v5).",
+     "titular": "Claude Opus 5 enters the AA index at rank 11",
+     "porque": "it receives its first AA score and enters the top 20 of the AA index (rank 11 of 43)",
+     "consecuencia": "AA index 44.2: 15.8 points behind the best closed model (Gemini 4 Carbon). Rank 11 of 43. Blended price $10 per million tokens."
+    }
+   },
+   "titular": "Claude Opus 5 entra en el índice de AA en el puesto 11",
+   "importancia": {
+    "tier": 3,
+    "w": 10,
+    "porque": "recibe su primera puntuación de AA y entra en el top 20 del índice de AA (puesto 11 de 43)"
+   },
+   "ficha": "#modelos/anthropic/claude-opus-5",
+   "consecuencia": "Índice de AA 44,2: a 15,8 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 11 de 43. Precio combinado 10 $ por millón de tokens."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|openai/gpt-5.6-luna|ii",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": 23.8,
+    "unit": "puntos AA"
+   },
+   "model": "openai/gpt-5.6-luna",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/gpt-5-6-luna",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "GPT-5.6 Luna: primera puntuación en el índice de inteligencia de Artificial Analysis (23.8, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 23.8,
+    "rankAA": 31,
+    "of": 43
+   },
+   "i18n": {
+    "en": {
+     "what": "GPT-5.6 Luna: first score on the Artificial Analysis Intelligence Index (23.8, v5).",
+     "titular": "GPT-5.6 Luna enters the AA index at rank 31",
+     "consecuencia": "AA index 23.8: 36.2 points behind the best closed model (Gemini 4 Carbon). Rank 31 of 43. Blended price $0.225 per million tokens."
+    }
+   },
+   "titular": "GPT-5.6 Luna entra en el índice de AA en el puesto 31",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-5.6-luna",
+   "consecuencia": "Índice de AA 23,8: a 36,2 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 31 de 43. Precio combinado 0,225 $ por millón de tokens."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|google/gemini-3.1-flash-lite|ii",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": 6.2,
+    "unit": "puntos AA"
+   },
+   "model": "google/gemini-3.1-flash-lite",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/gemini-3-1-flash-lite-preview",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Gemini 3.1 Flash Lite: primera puntuación en el índice de inteligencia de Artificial Analysis (6.2, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 6.2,
+    "rankAA": 39,
+    "of": 43
+   },
+   "i18n": {
+    "en": {
+     "what": "Gemini 3.1 Flash Lite: first score on the Artificial Analysis Intelligence Index (6.2, v5).",
+     "titular": "Gemini 3.1 Flash Lite enters the AA index at rank 39",
+     "consecuencia": "AA index 6.2: 53.8 points behind the best closed model (Gemini 4 Carbon). Rank 39 of 43. Blended price $0.281 per million tokens. Of the 5 models with a similar AA index (±2 points of its 6.2), 2 cost less; the cheapest is Nemotron 3.5 Lightning, at $0.049."
+    }
+   },
+   "titular": "Gemini 3.1 Flash Lite entra en el índice de AA en el puesto 39",
+   "importancia": null,
+   "ficha": "#modelos/google/gemini-3.1-flash-lite",
+   "consecuencia": "Índice de AA 6,2: a 53,8 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 39 de 43. Precio combinado 0,281 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 6,2), 2 cuestan menos; el más barato es Nemotron 3.5 Lightning, a 0,049 $."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|mistralai/mistral-medium-3-5|ii",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": 4.6,
+    "unit": "puntos AA"
+   },
+   "model": "mistralai/mistral-medium-3-5",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/mistral-medium-3-5",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Mistral Medium 3.5: primera puntuación en el índice de inteligencia de Artificial Analysis (4.6, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 4.6,
+    "rankAA": 42,
+    "of": 43
+   },
+   "i18n": {
+    "en": {
+     "what": "Mistral Medium 3.5: first score on the Artificial Analysis Intelligence Index (4.6, v5).",
+     "titular": "Mistral Medium 3.5 enters the AA index at rank 42",
+     "consecuencia": "AA index 4.6: 41.9 points behind the best open-weight model (Kimi K3.1 Pro). Rank 42 of 43. Blended price $3 per million tokens. Of the 5 models with a similar AA index (±2 points of its 4.6), 5 cost less; the cheapest is Nemotron 3.5 Lightning, at $0.049."
+    }
+   },
+   "titular": "Mistral Medium 3.5 entra en el índice de AA en el puesto 42",
+   "importancia": null,
+   "ficha": "#modelos/mistralai/mistral-medium-3-5",
+   "consecuencia": "Índice de AA 4,6: a 41,9 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 42 de 43. Precio combinado 3 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 4,6), 5 cuestan menos; el más barato es Nemotron 3.5 Lightning, a 0,049 $."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|google/gemini-3.1-flash-lite-preview|ii",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": 6.2,
+    "unit": "puntos AA"
+   },
+   "model": "google/gemini-3.1-flash-lite-preview",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/gemini-3-1-flash-lite-preview",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Gemini 3.1 Flash Lite Preview: primera puntuación en el índice de inteligencia de Artificial Analysis (6.2, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 6.2,
+    "rankAA": 40,
+    "of": 43
+   },
+   "i18n": {
+    "en": {
+     "what": "Gemini 3.1 Flash Lite Preview: first score on the Artificial Analysis Intelligence Index (6.2, v5).",
+     "titular": "Gemini 3.1 Flash Lite Preview enters the AA index at rank 40",
+     "consecuencia": "AA index 6.2: 53.8 points behind the best closed model (Gemini 4 Carbon). Rank 40 of 43. Blended price $0.281 per million tokens. Of the 5 models with a similar AA index (±2 points of its 6.2), 2 cost less; the cheapest is Nemotron 3.5 Lightning, at $0.049."
+    }
+   },
+   "titular": "Gemini 3.1 Flash Lite Preview entra en el índice de AA en el puesto 40",
+   "importancia": null,
+   "ficha": "#modelos/google/gemini-3.1-flash-lite-preview",
+   "consecuencia": "Índice de AA 6,2: a 53,8 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 40 de 43. Precio combinado 0,281 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 6,2), 2 cuestan menos; el más barato es Nemotron 3.5 Lightning, a 0,049 $."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|usCn|2026-11-05",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": -0.47,
+    "pct": -4.6,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Distancia EE. UU. − China en el ECI: de 10,23 a 9,76 puntos (GPT-6 Astra frente a DeepSeek V4.1 Flash 1017).",
+   "data": {
+    "ind": "usCn",
+    "path": "eci.gapUsCn",
+    "from": 10.23,
+    "to": 9.76
+   },
+   "i18n": {
+    "en": {
+     "what": "US − China gap on the ECI: from 10.23 to 9.76 points (GPT-6 Astra versus DeepSeek V4.1 Flash 1017).",
+     "titular": "The US − China gap on the ECI falls from 10.2 to 9.8 points",
+     "consecuencia": "GPT-6 Astra (OpenAI, 169.1) versus DeepSeek V4.1 Flash 1017 (DeepSeek, 159.3). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”."
+    }
+   },
+   "titular": "La distancia EE. UU. − China en el ECI baja de 10,2 a 9,8 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "GPT-6 Astra (OpenAI, 169,1) frente a DeepSeek V4.1 Flash 1017 (DeepSeek, 159,3). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «China, unos seis meses por detrás con el 12 % del cómputo»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|closedOpen|2026-11-05",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": -0.47,
+    "pct": -4.6,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Distancia cerrados − abiertos en el ECI: de 10,23 a 9,76 puntos (GPT-6 Astra frente a DeepSeek V4.1 Flash 1017).",
+   "data": {
+    "ind": "closedOpen",
+    "path": "eci.gapClosedOpen",
+    "from": 10.23,
+    "to": 9.76
+   },
+   "i18n": {
+    "en": {
+     "what": "Closed − open gap on the ECI: from 10.23 to 9.76 points (GPT-6 Astra versus DeepSeek V4.1 Flash 1017).",
+     "titular": "The closed − open gap on the ECI falls from 10.2 to 9.8 points",
+     "consecuencia": "GPT-6 Astra (OpenAI, 169.1) versus DeepSeek V4.1 Flash 1017 (DeepSeek, 159.3). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”."
+    }
+   },
+   "titular": "La distancia cerrados − abiertos en el ECI baja de 10,2 a 9,8 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "GPT-6 Astra (OpenAI, 169,1) frente a DeepSeek V4.1 Flash 1017 (DeepSeek, 159,3). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «Un modelo de pesos abiertos iguala a Agent-0»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|labs|2026-11-05",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": 0.05,
+    "pct": 7.6,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Distancia entre los dos primeros laboratorios en el ECI: de 0,66 a 0,71 puntos (OpenAI frente a Anthropic).",
+   "data": {
+    "ind": "labs",
+    "path": "eci.gapLabs",
+    "from": 0.66,
+    "to": 0.71
+   },
+   "i18n": {
+    "en": {
+     "what": "Gap between the top two labs on the ECI: from 0.66 to 0.71 points (OpenAI versus Anthropic).",
+     "titular": "The gap between the top two labs on the ECI rises from 0.7 to 0.7 points",
+     "consecuencia": "GPT-6 Astra (OpenAI, 169.1) versus Claude Opus 5.5 (Anthropic, 168.4), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”."
+    }
+   },
+   "titular": "La distancia entre los dos primeros laboratorios en el ECI sube de 0,7 a 0,7 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "GPT-6 Astra (OpenAI, 169,1) frente a Claude Opus 5.5 (Anthropic, 168,4), con intervalos de confianza solapados. En AI 2027 es evidencia de «Los rivales, de 3 a 9 meses por detrás»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|rate12m|2026-11-05",
+   "published": null,
+   "detected": "2026-11-05",
+   "date": "2026-11-05",
+   "mag": {
+    "v": -0.4,
+    "pct": -2.2,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Avance de la frontera del ECI en 12 meses: de 18,3 a 17,9 puntos.",
+   "data": {
+    "ind": "rate12m",
+    "path": "eci.rate12m",
+    "from": 18.3,
+    "to": 17.9
+   },
+   "i18n": {
+    "en": {
+     "what": "Frontier gain on the ECI over 12 months: from 18.3 to 17.9 points.",
+     "titular": "Frontier gain on the ECI over 12 months: from 18.3 to 17.9 points."
+    }
+   },
+   "titular": "Avance de la frontera del ECI en 12 meses: de 18,3 a 17,9 puntos.",
+   "importancia": null,
+   "ficha": "#carrera/evaluacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "evaluacion",
    "key": "evaluacion|openai/gpt-6-sol|ii",
    "published": null,
    "detected": "2026-11-04",
@@ -397,6 +791,43 @@
    "importancia": null,
    "ficha": "#carrera/coordinacion",
    "consecuencia": null
+  },
+  {
+   "kind": "pesos",
+   "key": "pesos|moonshotai/kimi-k3.1-pro",
+   "published": "2026-11-02",
+   "detected": "2026-11-05",
+   "date": "2026-11-02",
+   "mag": null,
+   "model": "moonshotai/kimi-k3.1-pro",
+   "src": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co/moonshotai/Kimi-K3.1-Pro",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Kimi K3.1 Pro: pesos descargables en Hugging Face (licencia kimi-k3.1-pro).",
+   "data": {
+    "license": "kimi-k3.1-pro",
+    "weightsSrc": "hf",
+    "rankAA": 9,
+    "of": 43
+   },
+   "i18n": {
+    "en": {
+     "what": "Kimi K3.1 Pro: downloadable weights on Hugging Face (licence kimi-k3.1-pro).",
+     "titular": "Open weights for Kimi K3.1 Pro, rank 9 on the AA index",
+     "porque": "a top-20 model on the AA index publishes open weights (rank 9)",
+     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: kimi-k3.1-pro. AA index 46.5: 11.9 points above the previous best open-weight model (Hy4 preview). Rank 9 of 43."
+    }
+   },
+   "titular": "Pesos abiertos de Kimi K3.1 Pro, puesto 9 del índice de AA",
+   "importancia": {
+    "tier": 4,
+    "w": 12,
+    "porque": "publica pesos abiertos un modelo del top 20 del índice de AA (puesto 9)"
+   },
+   "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: kimi-k3.1-pro. Índice de AA 46,5: supera en 11,9 puntos al mejor abierto anterior (Hy4 preview). Puesto 9 de 43."
   },
   {
    "kind": "uso",
@@ -2124,6 +2555,46 @@
    "importancia": null,
    "ficha": "#carrera/agentes",
    "consecuencia": "Antes, 97,8 %. Reimplementar programas enteros a partir de su comportamiento, tareas que a un ingeniero le llevarían semanas; ejecuciones de Epoch. En AI 2027 es evidencia de «Horizonte de unas tres semanas de trabajo» y «Programador sobrehumano»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|eci|2026-11-05",
+   "published": "2026-09-03",
+   "detected": "2026-11-05",
+   "date": "2026-09-03",
+   "mag": {
+    "v": 0.01,
+    "pct": 0,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-05T03:54:11Z"
+   },
+   "what": "Mejor modelo en el ECI de Epoch: de 169,06 a 169,07 puntos (GPT-6 Astra).",
+   "data": {
+    "ind": "eci",
+    "path": "eci.frontier",
+    "from": 169.06,
+    "to": 169.07
+   },
+   "i18n": {
+    "en": {
+     "what": "Best model on Epoch’s ECI: from 169.06 to 169.07 points (GPT-6 Astra).",
+     "titular": "GPT-6 Astra becomes the best model on Epoch’s ECI",
+     "porque": "the best model on Epoch’s ECI changes",
+     "consecuencia": "GPT-6 Astra, from OpenAI, with 169.1 points."
+    }
+   },
+   "titular": "GPT-6 Astra pasa a ser el mejor modelo según el ECI de Epoch",
+   "importancia": {
+    "tier": 6,
+    "w": 100,
+    "porque": "cambia el mejor modelo según el ECI de Epoch"
+   },
+   "ficha": "#carrera",
+   "consecuencia": "GPT-6 Astra, de OpenAI, con 169,1 puntos."
   },
   {
    "kind": "indicador",
