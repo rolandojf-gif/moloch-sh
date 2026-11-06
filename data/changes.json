@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-06T10:58:46Z",
+ "generated": "2026-11-06T13:14:51Z",
  "window": 7,
  "since": "2026-10-31",
  "base": "2026-11-05",
@@ -54,7 +54,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.2-flash",
-    "got": "2026-11-06T10:58:46Z"
+    "got": "2026-11-06T13:14:51Z"
    },
    "what": "Gemini Omni 1.2 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -88,7 +88,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.1-flash",
-    "got": "2026-11-06T10:58:46Z"
+    "got": "2026-11-06T13:14:51Z"
    },
    "what": "Gemini Omni 1.1 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -122,7 +122,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4",
-    "got": "2026-11-06T10:58:46Z"
+    "got": "2026-11-06T13:14:51Z"
    },
    "what": "Hy4 (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -156,7 +156,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/z-ai/glm-5.3-flashx-legal",
-    "got": "2026-11-06T10:58:46Z"
+    "got": "2026-11-06T13:14:51Z"
    },
    "what": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -190,7 +190,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/tencent-hy4",
-    "got": "2026-11-06T10:58:46Z"
+    "got": "2026-11-06T13:14:51Z"
    },
    "what": "Tencent Hy4 (Tencent) aparece puntuado en Artificial Analysis con 34,6 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -235,7 +235,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/north-mini-code",
-    "got": "2026-11-06T10:58:46Z"
+    "got": "2026-11-06T13:14:51Z"
    },
    "what": "North Mini Code: primera puntuación en el índice de inteligencia de Artificial Analysis (3.4, v5).",
    "data": {
@@ -270,7 +270,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-06T10:58:46Z"
+    "got": "2026-11-06T13:14:51Z"
    },
    "what": "Hy4 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
    "data": {
