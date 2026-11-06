@@ -218,6 +218,78 @@
  "events": [
   {
    "kind": "evaluacion",
+   "key": "evaluacion|cohere/north-mini-code|ii",
+   "published": null,
+   "detected": "2026-11-06",
+   "date": "2026-11-06",
+   "mag": {
+    "v": 3.4,
+    "unit": "puntos AA"
+   },
+   "model": "cohere/north-mini-code",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/north-mini-code",
+    "got": "2026-11-06T03:53:47Z"
+   },
+   "what": "North Mini Code: primera puntuación en el índice de inteligencia de Artificial Analysis (3.4, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 3.4,
+    "rankAA": 44,
+    "of": 44
+   },
+   "i18n": {
+    "en": {
+     "what": "North Mini Code: first score on the Artificial Analysis Intelligence Index (3.4, v5).",
+     "titular": "North Mini Code enters the AA index at rank 44",
+     "consecuencia": "AA index 3.4: 43.1 points behind the best open-weight model (Kimi K3.1 Pro). Rank 44 of 44. Free on OpenRouter at the time of the check."
+    }
+   },
+   "titular": "North Mini Code entra en el índice de AA en el puesto 44",
+   "importancia": null,
+   "ficha": "#modelos/cohere/north-mini-code",
+   "consecuencia": "Índice de AA 3,4: a 43,1 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 44 de 44. Gratis en OpenRouter en el momento de la consulta."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|tencent/hy4-20261104|2026-11-06",
+   "published": "2026-11-05",
+   "detected": "2026-11-06",
+   "date": "2026-11-05",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "tencent/hy4",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-06T03:53:47Z"
+   },
+   "what": "Hy4 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "tencent/hy4-20261104",
+    "rank": 10,
+    "share": 2,
+    "tokens": 4009020957603,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "Hy4 enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
+     "titular": "Hy4 enters OpenRouter’s top 10 by usage",
+     "consecuencia": "2% of OpenRouter’s tokens from 2026-10-30 to 2026-11-05. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "Hy4 entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/tencent/hy4",
+   "consecuencia": "2 % de los tokens de OpenRouter del 2026-10-30 al 2026-11-05. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
+   "kind": "evaluacion",
    "key": "evaluacion|x-ai/grok-4.6|ii",
    "published": null,
    "detected": "2026-11-05",
