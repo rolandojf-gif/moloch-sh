@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-07T03:54:31Z",
+ "generated": "2026-11-07T10:17:41Z",
  "window": 7,
  "since": "2026-11-01",
  "base": "2026-11-06",
@@ -46,7 +46,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.2-flash",
-    "got": "2026-11-07T03:54:31Z"
+    "got": "2026-11-07T10:17:41Z"
    },
    "what": "Gemini Omni 1.2 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -80,7 +80,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.1-flash",
-    "got": "2026-11-07T03:54:31Z"
+    "got": "2026-11-07T10:17:41Z"
    },
    "what": "Gemini Omni 1.1 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -114,7 +114,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4",
-    "got": "2026-11-07T03:54:31Z"
+    "got": "2026-11-07T10:17:41Z"
    },
    "what": "Hy4 (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -148,7 +148,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/z-ai/glm-5.3-flashx-legal",
-    "got": "2026-11-07T03:54:31Z"
+    "got": "2026-11-07T10:17:41Z"
    },
    "what": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -182,7 +182,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/tencent-hy4",
-    "got": "2026-11-07T03:54:31Z"
+    "got": "2026-11-07T10:17:41Z"
    },
    "what": "Tencent Hy4 (Tencent) aparece puntuado en Artificial Analysis con 34,6 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -227,7 +227,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-11-07T03:54:31Z"
+    "got": "2026-11-07T10:17:41Z"
    },
    "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 15.138 a 15.122 MW.",
    "data": {
@@ -262,7 +262,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
-    "got": "2026-11-07T03:54:31Z"
+    "got": "2026-11-07T10:17:41Z"
    },
    "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.979 a 22.087 MW.",
    "data": {
@@ -297,7 +297,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-11-07T03:54:31Z"
+    "got": "2026-11-07T10:17:41Z"
    },
    "what": "Coste de capital de los centros que sigue Epoch: de 574 a 573 mil millones de $.",
    "data": {
@@ -1419,7 +1419,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://www.ft.com/content/314e17df-e7af-4814-b208-70a0557cb452?syn-25a6b1a6=1",
-    "got": "2026-11-07T03:54:31Z"
+    "got": "2026-11-07T10:17:41Z"
    },
    "what": "Mayores ingresos anualizados: de 65 a 81 mil millones de $ (Anthropic).",
    "data": {
