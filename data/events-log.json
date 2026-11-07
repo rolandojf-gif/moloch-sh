@@ -217,6 +217,110 @@
  ],
  "events": [
   {
+   "kind": "indicador",
+   "key": "indicador|dcMW|2026-11-07",
+   "published": null,
+   "detected": "2026-11-07",
+   "date": "2026-11-07",
+   "mag": {
+    "v": -16,
+    "pct": -0.1,
+    "unit": "MW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-11-07T03:54:31Z"
+   },
+   "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 15.138 a 15.122 MW.",
+   "data": {
+    "ind": "dcMW",
+    "path": "dc.now",
+    "from": 15138,
+    "to": 15122
+   },
+   "i18n": {
+    "en": {
+     "what": "IT power in service at the data centres Epoch tracks: from 15,138 to 15,122 MW.",
+     "titular": "The power in service at the data centres Epoch tracks falls to 15,122 MW",
+     "consecuencia": "96 data centres. Power of the equipment, without cooling; it is not the world total. In AI 2027 it is evidence for “40 million H100e available”."
+    }
+   },
+   "titular": "La potencia en servicio de los centros que sigue Epoch baja a 15.122 MW",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "96 centros. Potencia de los equipos, sin refrigeración; no es el total mundial. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|dcPlan26|2026-11-07",
+   "published": null,
+   "detected": "2026-11-07",
+   "date": "2026-11-07",
+   "mag": {
+    "v": 108,
+    "pct": 0.5,
+    "unit": "MW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
+    "got": "2026-11-07T03:54:31Z"
+   },
+   "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.979 a 22.087 MW.",
+   "data": {
+    "ind": "dcPlan26",
+    "path": "dc.plan",
+    "from": 21979,
+    "to": 22087
+   },
+   "i18n": {
+    "en": {
+     "what": "Power planned for the end of 2026 in Epoch’s schedule: from 21,979 to 22,087 MW.",
+     "titular": "Power planned for the end of 2026 in Epoch’s schedule: from 21,979 to 22,087 MW.",
+     "consecuencia": "In AI 2027 it is evidence for “AI power in 2026”."
+    }
+   },
+   "titular": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.979 a 22.087 MW.",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "En AI 2027 es evidencia de «Potencia de la IA en 2026»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|capexB|2026-11-07",
+   "published": null,
+   "detected": "2026-11-07",
+   "date": "2026-11-07",
+   "mag": {
+    "v": -0.6,
+    "pct": -0.1,
+    "unit": "mil millones de $"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-11-07T03:54:31Z"
+   },
+   "what": "Coste de capital de los centros que sigue Epoch: de 574 a 573 mil millones de $.",
+   "data": {
+    "ind": "capexB",
+    "path": "dc.capex",
+    "from": 573.5,
+    "to": 572.9
+   },
+   "i18n": {
+    "en": {
+     "what": "Capital cost of the data centres Epoch tracks: from 574 to 573 billion dollars.",
+     "titular": "Capital cost of the data centres Epoch tracks: from 574 to 573 billion dollars."
+    }
+   },
+   "titular": "Coste de capital de los centros que sigue Epoch: de 574 a 573 mil millones de $.",
+   "importancia": null,
+   "ficha": "#carrera/economia",
+   "consecuencia": null
+  },
+  {
    "kind": "evaluacion",
    "key": "evaluacion|cohere/north-mini-code|ii",
    "published": null,
@@ -1303,6 +1407,46 @@
    "importancia": null,
    "ficha": "#carrera/economia",
    "consecuencia": null
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|revLeader|2026-11-07",
+   "published": "2026-10-31",
+   "detected": "2026-11-07",
+   "date": "2026-10-31",
+   "mag": {
+    "v": 16000000000,
+    "pct": 24.6,
+    "unit": "$"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://www.ft.com/content/314e17df-e7af-4814-b208-70a0557cb452?syn-25a6b1a6=1",
+    "got": "2026-11-07T03:54:31Z"
+   },
+   "what": "Mayores ingresos anualizados: de 65 a 81 mil millones de $ (Anthropic).",
+   "data": {
+    "ind": "revLeader",
+    "path": "companies.leader",
+    "from": 65000000000,
+    "to": 81000000000
+   },
+   "i18n": {
+    "en": {
+     "what": "Highest annualised revenue: from 65 to 81 billion dollars (Anthropic).",
+     "titular": "Anthropic: $81 billion in annualised revenue",
+     "porque": "the figure changes by 25% (threshold: 10%)",
+     "consecuencia": "Anthropic, Annualized run rate, Epoch confidence: Likely. In AI 2027 it is evidence for “OpenBrain revenue in 2026” and “$55 billion annualised and $2.5 trillion valuation”."
+    }
+   },
+   "titular": "Anthropic: 81 mil millones de $ de ingresos anualizados",
+   "importancia": {
+    "tier": 6,
+    "w": 24.615384615384617,
+    "porque": "la cifra cambia un 25 % (umbral: 10 %)"
+   },
+   "ficha": "#carrera/economia",
+   "consecuencia": "Anthropic, Annualized run rate, confianza de Epoch: Likely. En AI 2027 es evidencia de «Ingresos de OpenBrain en 2026» y «55.000 millones anualizados y 2,5 billones de valoración»."
   },
   {
    "kind": "uso",

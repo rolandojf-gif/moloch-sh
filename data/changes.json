@@ -1,22 +1,14 @@
 {
- "generated": "2026-11-06T13:14:51Z",
+ "generated": "2026-11-07T03:54:31Z",
  "window": 7,
- "since": "2026-10-31",
- "base": "2026-11-05",
+ "since": "2026-11-01",
+ "base": "2026-11-06",
  "parte": {
-  "fecha": "2026-11-06",
-  "noticias": [],
-  "ultima": {
-   "key": "evaluacion|anthropic/claude-opus-5|ii",
-   "fecha": "2026-11-05",
-   "titular": "Claude Opus 5 entra en el índice de AA en el puesto 11",
-   "ficha": "#modelos/anthropic/claude-opus-5",
-   "i18n": {
-    "en": {
-     "titular": "Claude Opus 5 enters the AA index at rank 11"
-    }
-   }
-  },
+  "fecha": "2026-11-07",
+  "noticias": [
+   "indicador|revLeader|2026-11-07"
+  ],
+  "ultima": null,
   "reglas": [
    "Cambia el mejor modelo abierto o cerrado del índice de Artificial Analysis, con la misma versión del índice y al menos 1 punto de margen.",
    "Artificial Analysis cambia la versión de su índice.",
@@ -54,7 +46,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.2-flash",
-    "got": "2026-11-06T13:14:51Z"
+    "got": "2026-11-07T03:54:31Z"
    },
    "what": "Gemini Omni 1.2 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -88,7 +80,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.1-flash",
-    "got": "2026-11-06T13:14:51Z"
+    "got": "2026-11-07T03:54:31Z"
    },
    "what": "Gemini Omni 1.1 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -122,7 +114,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4",
-    "got": "2026-11-06T13:14:51Z"
+    "got": "2026-11-07T03:54:31Z"
    },
    "what": "Hy4 (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -156,7 +148,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/z-ai/glm-5.3-flashx-legal",
-    "got": "2026-11-06T13:14:51Z"
+    "got": "2026-11-07T03:54:31Z"
    },
    "what": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -190,7 +182,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/tencent-hy4",
-    "got": "2026-11-06T13:14:51Z"
+    "got": "2026-11-07T03:54:31Z"
    },
    "what": "Tencent Hy4 (Tencent) aparece puntuado en Artificial Analysis con 34,6 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -220,6 +212,110 @@
    },
    "ficha": "#modelos/tencent/tencent-hy4",
    "consecuencia": "Índice de AA 34,6: a 25,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 16 de 44. Aún no está en OpenRouter: sin API pública ni precio."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|dcMW|2026-11-07",
+   "published": null,
+   "detected": "2026-11-07",
+   "date": "2026-11-07",
+   "mag": {
+    "v": -16,
+    "pct": -0.1,
+    "unit": "MW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-11-07T03:54:31Z"
+   },
+   "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 15.138 a 15.122 MW.",
+   "data": {
+    "ind": "dcMW",
+    "path": "dc.now",
+    "from": 15138,
+    "to": 15122
+   },
+   "i18n": {
+    "en": {
+     "what": "IT power in service at the data centres Epoch tracks: from 15,138 to 15,122 MW.",
+     "titular": "The power in service at the data centres Epoch tracks falls to 15,122 MW",
+     "consecuencia": "96 data centres. Power of the equipment, without cooling; it is not the world total. In AI 2027 it is evidence for “40 million H100e available”."
+    }
+   },
+   "titular": "La potencia en servicio de los centros que sigue Epoch baja a 15.122 MW",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "96 centros. Potencia de los equipos, sin refrigeración; no es el total mundial. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|dcPlan26|2026-11-07",
+   "published": null,
+   "detected": "2026-11-07",
+   "date": "2026-11-07",
+   "mag": {
+    "v": 108,
+    "pct": 0.5,
+    "unit": "MW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
+    "got": "2026-11-07T03:54:31Z"
+   },
+   "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.979 a 22.087 MW.",
+   "data": {
+    "ind": "dcPlan26",
+    "path": "dc.plan",
+    "from": 21979,
+    "to": 22087
+   },
+   "i18n": {
+    "en": {
+     "what": "Power planned for the end of 2026 in Epoch’s schedule: from 21,979 to 22,087 MW.",
+     "titular": "Power planned for the end of 2026 in Epoch’s schedule: from 21,979 to 22,087 MW.",
+     "consecuencia": "In AI 2027 it is evidence for “AI power in 2026”."
+    }
+   },
+   "titular": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.979 a 22.087 MW.",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "En AI 2027 es evidencia de «Potencia de la IA en 2026»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|capexB|2026-11-07",
+   "published": null,
+   "detected": "2026-11-07",
+   "date": "2026-11-07",
+   "mag": {
+    "v": -0.6,
+    "pct": -0.1,
+    "unit": "mil millones de $"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-11-07T03:54:31Z"
+   },
+   "what": "Coste de capital de los centros que sigue Epoch: de 574 a 573 mil millones de $.",
+   "data": {
+    "ind": "capexB",
+    "path": "dc.capex",
+    "from": 573.5,
+    "to": 572.9
+   },
+   "i18n": {
+    "en": {
+     "what": "Capital cost of the data centres Epoch tracks: from 574 to 573 billion dollars.",
+     "titular": "Capital cost of the data centres Epoch tracks: from 574 to 573 billion dollars."
+    }
+   },
+   "titular": "Coste de capital de los centros que sigue Epoch: de 574 a 573 mil millones de $.",
+   "importancia": null,
+   "ficha": "#carrera/economia",
+   "consecuencia": null
   },
   {
    "kind": "evaluacion",
@@ -1310,6 +1406,46 @@
    "consecuencia": null
   },
   {
+   "kind": "indicador",
+   "key": "indicador|revLeader|2026-11-07",
+   "published": "2026-10-31",
+   "detected": "2026-11-07",
+   "date": "2026-10-31",
+   "mag": {
+    "v": 16000000000,
+    "pct": 24.6,
+    "unit": "$"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://www.ft.com/content/314e17df-e7af-4814-b208-70a0557cb452?syn-25a6b1a6=1",
+    "got": "2026-11-07T03:54:31Z"
+   },
+   "what": "Mayores ingresos anualizados: de 65 a 81 mil millones de $ (Anthropic).",
+   "data": {
+    "ind": "revLeader",
+    "path": "companies.leader",
+    "from": 65000000000,
+    "to": 81000000000
+   },
+   "i18n": {
+    "en": {
+     "what": "Highest annualised revenue: from 65 to 81 billion dollars (Anthropic).",
+     "titular": "Anthropic: $81 billion in annualised revenue",
+     "porque": "the figure changes by 25% (threshold: 10%)",
+     "consecuencia": "Anthropic, Annualized run rate, Epoch confidence: Likely. In AI 2027 it is evidence for “OpenBrain revenue in 2026” and “$55 billion annualised and $2.5 trillion valuation”."
+    }
+   },
+   "titular": "Anthropic: 81 mil millones de $ de ingresos anualizados",
+   "importancia": {
+    "tier": 6,
+    "w": 24.615384615384617,
+    "porque": "la cifra cambia un 25 % (umbral: 10 %)"
+   },
+   "ficha": "#carrera/economia",
+   "consecuencia": "Anthropic, Annualized run rate, confianza de Epoch: Likely. En AI 2027 es evidencia de «Ingresos de OpenBrain en 2026» y «55.000 millones anualizados y 2,5 billones de valoración»."
+  },
+  {
    "kind": "uso",
    "key": "uso|entra|openai/gpt-5.6-luna-20260709|2026-11-01",
    "published": "2026-10-31",
@@ -1345,111 +1481,6 @@
    "importancia": null,
    "ficha": "#modelos/openai/gpt-5.6-luna",
    "consecuencia": "2,1 % de los tokens de OpenRouter del 2026-10-25 al 2026-10-31. Es el uso en OpenRouter, no en todo el mercado."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|usCn|2026-10-31",
-   "published": null,
-   "detected": "2026-10-31",
-   "date": "2026-10-31",
-   "mag": {
-    "v": -0.04,
-    "pct": -0.4,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-31T03:54:09Z"
-   },
-   "what": "Distancia EE. UU. − China en el ECI: de 10,27 a 10,23 puntos (GPT-6 Astra frente a DeepSeek V4.1 Flash 1017).",
-   "data": {
-    "ind": "usCn",
-    "path": "eci.gapUsCn",
-    "from": 10.27,
-    "to": 10.23
-   },
-   "i18n": {
-    "en": {
-     "what": "US − China gap on the ECI: from 10.27 to 10.23 points (GPT-6 Astra versus DeepSeek V4.1 Flash 1017).",
-     "titular": "The US − China gap on the ECI falls from 10.3 to 10.2 points",
-     "consecuencia": "GPT-6 Astra (OpenAI, 169.1) versus DeepSeek V4.1 Flash 1017 (DeepSeek, 158.8). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”."
-    }
-   },
-   "titular": "La distancia EE. UU. − China en el ECI baja de 10,3 a 10,2 puntos",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": "GPT-6 Astra (OpenAI, 169,1) frente a DeepSeek V4.1 Flash 1017 (DeepSeek, 158,8). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «China, unos seis meses por detrás con el 12 % del cómputo»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|closedOpen|2026-10-31",
-   "published": null,
-   "detected": "2026-10-31",
-   "date": "2026-10-31",
-   "mag": {
-    "v": -0.04,
-    "pct": -0.4,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-31T03:54:09Z"
-   },
-   "what": "Distancia cerrados − abiertos en el ECI: de 10,27 a 10,23 puntos (GPT-6 Astra frente a DeepSeek V4.1 Flash 1017).",
-   "data": {
-    "ind": "closedOpen",
-    "path": "eci.gapClosedOpen",
-    "from": 10.27,
-    "to": 10.23
-   },
-   "i18n": {
-    "en": {
-     "what": "Closed − open gap on the ECI: from 10.27 to 10.23 points (GPT-6 Astra versus DeepSeek V4.1 Flash 1017).",
-     "titular": "The closed − open gap on the ECI falls from 10.3 to 10.2 points",
-     "consecuencia": "GPT-6 Astra (OpenAI, 169.1) versus DeepSeek V4.1 Flash 1017 (DeepSeek, 158.8). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”."
-    }
-   },
-   "titular": "La distancia cerrados − abiertos en el ECI baja de 10,3 a 10,2 puntos",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": "GPT-6 Astra (OpenAI, 169,1) frente a DeepSeek V4.1 Flash 1017 (DeepSeek, 158,8). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «Un modelo de pesos abiertos iguala a Agent-0»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|labs|2026-10-31",
-   "published": null,
-   "detected": "2026-10-31",
-   "date": "2026-10-31",
-   "mag": {
-    "v": 0.38,
-    "pct": 135.7,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-31T03:54:09Z"
-   },
-   "what": "Distancia entre los dos primeros laboratorios en el ECI: de 0,28 a 0,66 puntos (OpenAI frente a Anthropic).",
-   "data": {
-    "ind": "labs",
-    "path": "eci.gapLabs",
-    "from": 0.28,
-    "to": 0.66
-   },
-   "i18n": {
-    "en": {
-     "what": "Gap between the top two labs on the ECI: from 0.28 to 0.66 points (OpenAI versus Anthropic).",
-     "titular": "The gap between the top two labs on the ECI rises from 0.3 to 0.7 points",
-     "consecuencia": "GPT-6 Astra (OpenAI, 169.1) versus Claude Opus 5.5 (Anthropic, 168.4), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”."
-    }
-   },
-   "titular": "La distancia entre los dos primeros laboratorios en el ECI sube de 0,3 a 0,7 puntos",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": "GPT-6 Astra (OpenAI, 169,1) frente a Claude Opus 5.5 (Anthropic, 168,4), con intervalos de confianza solapados. En AI 2027 es evidencia de «Los rivales, de 3 a 9 meses por detrás»."
   },
   {
    "kind": "indicador",
@@ -1512,46 +1543,6 @@
    "i18n": {
     "en": {
      "what": "Best model on Epoch’s ECI: from 169.06 to 169.07 points (GPT-6 Astra).",
-     "titular": "GPT-6 Astra becomes the best model on Epoch’s ECI",
-     "porque": "the best model on Epoch’s ECI changes",
-     "consecuencia": "GPT-6 Astra, from OpenAI, with 169.1 points."
-    }
-   },
-   "titular": "GPT-6 Astra pasa a ser el mejor modelo según el ECI de Epoch",
-   "importancia": {
-    "tier": 6,
-    "w": 100,
-    "porque": "cambia el mejor modelo según el ECI de Epoch"
-   },
-   "ficha": "#carrera",
-   "consecuencia": "GPT-6 Astra, de OpenAI, con 169,1 puntos."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|eci|2026-10-31",
-   "published": "2026-09-03",
-   "detected": "2026-10-31",
-   "date": "2026-09-03",
-   "mag": {
-    "v": 0.14,
-    "pct": 0.1,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-10-31T03:54:09Z"
-   },
-   "what": "Mejor modelo en el ECI de Epoch: de 168,92 a 169,06 puntos (GPT-6 Astra).",
-   "data": {
-    "ind": "eci",
-    "path": "eci.frontier",
-    "from": 168.92,
-    "to": 169.06
-   },
-   "i18n": {
-    "en": {
-     "what": "Best model on Epoch’s ECI: from 168.92 to 169.06 points (GPT-6 Astra).",
      "titular": "GPT-6 Astra becomes the best model on Epoch’s ECI",
      "porque": "the best model on Epoch’s ECI changes",
      "consecuencia": "GPT-6 Astra, from OpenAI, with 169.1 points."
