@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-08T10:27:45Z",
+ "generated": "2026-11-08T12:12:54Z",
  "window": 7,
  "since": "2026-11-02",
  "base": "2026-11-07",
@@ -54,7 +54,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.2-flash",
-    "got": "2026-11-08T10:27:45Z"
+    "got": "2026-11-08T12:12:54Z"
    },
    "what": "Gemini Omni 1.2 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -88,7 +88,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.1-flash",
-    "got": "2026-11-08T10:27:45Z"
+    "got": "2026-11-08T12:12:54Z"
    },
    "what": "Gemini Omni 1.1 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -122,7 +122,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4",
-    "got": "2026-11-08T10:27:45Z"
+    "got": "2026-11-08T12:12:54Z"
    },
    "what": "Hy4 (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -156,7 +156,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/z-ai/glm-5.3-flashx-legal",
-    "got": "2026-11-08T10:27:45Z"
+    "got": "2026-11-08T12:12:54Z"
    },
    "what": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -190,7 +190,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/tencent-hy4",
-    "got": "2026-11-08T10:27:45Z"
+    "got": "2026-11-08T12:12:54Z"
    },
    "what": "Tencent Hy4 (Tencent) aparece puntuado en Artificial Analysis con 34,6 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -235,7 +235,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-08T10:27:45Z"
+    "got": "2026-11-08T12:12:54Z"
    },
    "what": "Kimi K3.1 Pro entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
    "data": {
