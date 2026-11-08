@@ -1,14 +1,22 @@
 {
- "generated": "2026-11-07T11:56:14Z",
+ "generated": "2026-11-08T03:54:02Z",
  "window": 7,
- "since": "2026-11-01",
- "base": "2026-11-06",
+ "since": "2026-11-02",
+ "base": "2026-11-07",
  "parte": {
-  "fecha": "2026-11-07",
-  "noticias": [
-   "indicador|revLeader|2026-11-07"
-  ],
-  "ultima": null,
+  "fecha": "2026-11-08",
+  "noticias": [],
+  "ultima": {
+   "key": "indicador|revLeader|2026-11-07",
+   "fecha": "2026-11-07",
+   "titular": "Anthropic: 81 mil millones de $ de ingresos anualizados",
+   "ficha": "#carrera/economia",
+   "i18n": {
+    "en": {
+     "titular": "Anthropic: $81 billion in annualised revenue"
+    }
+   }
+  },
   "reglas": [
    "Cambia el mejor modelo abierto o cerrado del índice de Artificial Analysis, con la misma versión del índice y al menos 1 punto de margen.",
    "Artificial Analysis cambia la versión de su índice.",
@@ -46,7 +54,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.2-flash",
-    "got": "2026-11-07T11:56:14Z"
+    "got": "2026-11-08T03:54:02Z"
    },
    "what": "Gemini Omni 1.2 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -80,7 +88,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.1-flash",
-    "got": "2026-11-07T11:56:14Z"
+    "got": "2026-11-08T03:54:02Z"
    },
    "what": "Gemini Omni 1.1 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -114,7 +122,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4",
-    "got": "2026-11-07T11:56:14Z"
+    "got": "2026-11-08T03:54:02Z"
    },
    "what": "Hy4 (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -148,7 +156,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/z-ai/glm-5.3-flashx-legal",
-    "got": "2026-11-07T11:56:14Z"
+    "got": "2026-11-08T03:54:02Z"
    },
    "what": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -182,7 +190,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/tencent-hy4",
-    "got": "2026-11-07T11:56:14Z"
+    "got": "2026-11-08T03:54:02Z"
    },
    "what": "Tencent Hy4 (Tencent) aparece puntuado en Artificial Analysis con 34,6 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -212,6 +220,43 @@
    },
    "ficha": "#modelos/tencent/tencent-hy4",
    "consecuencia": "Índice de AA 34,6: a 25,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 16 de 44. Aún no está en OpenRouter: sin API pública ni precio."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|moonshotai/kimi-k3.1-pro-20261023|2026-11-08",
+   "published": "2026-11-07",
+   "detected": "2026-11-08",
+   "date": "2026-11-07",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "moonshotai/kimi-k3.1-pro",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-08T03:54:02Z"
+   },
+   "what": "Kimi K3.1 Pro entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "moonshotai/kimi-k3.1-pro-20261023",
+    "rank": 10,
+    "share": 2,
+    "tokens": 4115975604625,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "Kimi K3.1 Pro enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
+     "titular": "Kimi K3.1 Pro enters OpenRouter’s top 10 by usage",
+     "consecuencia": "2% of OpenRouter’s tokens from 2026-11-01 to 2026-11-07. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "Kimi K3.1 Pro entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
+   "consecuencia": "2 % de los tokens de OpenRouter del 2026-11-01 al 2026-11-07. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "indicador",
@@ -1338,75 +1383,6 @@
   },
   {
    "kind": "indicador",
-   "key": "indicador|dcMW|2026-11-01",
-   "published": null,
-   "detected": "2026-11-01",
-   "date": "2026-11-01",
-   "mag": {
-    "v": 168,
-    "pct": 1.2,
-    "unit": "MW"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-11-01T03:54:32Z"
-   },
-   "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.544 a 14.712 MW.",
-   "data": {
-    "ind": "dcMW",
-    "path": "dc.now",
-    "from": 14544,
-    "to": 14712
-   },
-   "i18n": {
-    "en": {
-     "what": "IT power in service at the data centres Epoch tracks: from 14,544 to 14,712 MW.",
-     "titular": "The power in service at the data centres Epoch tracks rises to 14,712 MW",
-     "consecuencia": "96 data centres. Power of the equipment, without cooling; it is not the world total. In AI 2027 it is evidence for “40 million H100e available”."
-    }
-   },
-   "titular": "La potencia en servicio de los centros que sigue Epoch sube a 14.712 MW",
-   "importancia": null,
-   "ficha": "#carrera/computo",
-   "consecuencia": "96 centros. Potencia de los equipos, sin refrigeración; no es el total mundial. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|capexB|2026-11-01",
-   "published": null,
-   "detected": "2026-11-01",
-   "date": "2026-11-01",
-   "mag": {
-    "v": 6.3,
-    "pct": 1.1,
-    "unit": "mil millones de $"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-11-01T03:54:32Z"
-   },
-   "what": "Coste de capital de los centros que sigue Epoch: de 551 a 557 mil millones de $.",
-   "data": {
-    "ind": "capexB",
-    "path": "dc.capex",
-    "from": 551,
-    "to": 557.3
-   },
-   "i18n": {
-    "en": {
-     "what": "Capital cost of the data centres Epoch tracks: from 551 to 557 billion dollars.",
-     "titular": "Capital cost of the data centres Epoch tracks: from 551 to 557 billion dollars."
-    }
-   },
-   "titular": "Coste de capital de los centros que sigue Epoch: de 551 a 557 mil millones de $.",
-   "importancia": null,
-   "ficha": "#carrera/economia",
-   "consecuencia": null
-  },
-  {
-   "kind": "indicador",
    "key": "indicador|revLeader|2026-11-07",
    "published": "2026-10-31",
    "detected": "2026-11-07",
@@ -1444,43 +1420,6 @@
    },
    "ficha": "#carrera/economia",
    "consecuencia": "Anthropic, Annualized run rate, confianza de Epoch: Likely. En AI 2027 es evidencia de «Ingresos de OpenBrain en 2026» y «55.000 millones anualizados y 2,5 billones de valoración»."
-  },
-  {
-   "kind": "uso",
-   "key": "uso|entra|openai/gpt-5.6-luna-20260709|2026-11-01",
-   "published": "2026-10-31",
-   "detected": "2026-11-01",
-   "date": "2026-10-31",
-   "mag": {
-    "v": 10,
-    "unit": "puesto"
-   },
-   "model": "openai/gpt-5.6-luna",
-   "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-01T03:54:32Z"
-   },
-   "what": "GPT-5.6 Luna entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2,1 % de los tokens.",
-   "data": {
-    "sub": "entra",
-    "slug": "openai/gpt-5.6-luna-20260709",
-    "rank": 10,
-    "share": 2.1,
-    "tokens": 4000571963845,
-    "window": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "GPT-5.6 Luna enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2.1% of tokens.",
-     "titular": "GPT-5.6 Luna enters OpenRouter’s top 10 by usage",
-     "consecuencia": "2.1% of OpenRouter’s tokens from 2026-10-25 to 2026-10-31. This is usage on OpenRouter, not across the whole market."
-    }
-   },
-   "titular": "GPT-5.6 Luna entra en el top 10 de uso de OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/openai/gpt-5.6-luna",
-   "consecuencia": "2,1 % de los tokens de OpenRouter del 2026-10-25 al 2026-10-31. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "indicador",
