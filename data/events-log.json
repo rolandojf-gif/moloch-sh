@@ -217,6 +217,221 @@
  ],
  "events": [
   {
+   "kind": "retirada",
+   "key": "retirada|minimax/minimax-m1|2026-11-09",
+   "published": null,
+   "detected": "2026-11-09",
+   "date": "2026-11-09",
+   "mag": null,
+   "model": "minimax/minimax-m1",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-09T21:20:46Z"
+   },
+   "what": "MiniMax M1 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "MiniMax M1"
+   },
+   "i18n": {
+    "en": {
+     "what": "MiniMax M1 is no longer listed in the OpenRouter catalogue.",
+     "titular": "MiniMax M1 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "MiniMax M1 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "lider",
+   "key": "lider|closed|anthropic/claude-fable-5.2|2026-11-09",
+   "published": null,
+   "detected": "2026-11-09",
+   "date": "2026-11-09",
+   "mag": {
+    "v": 4.6,
+    "unit": "puntos AA"
+   },
+   "model": "anthropic/claude-fable-5.2",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
+    "got": "2026-11-09T21:20:46Z"
+   },
+   "what": "Claude Fable 5.2 pasa a ser el mejor modelo cerrado del catálogo en el índice de inteligencia de Artificial Analysis v5: 64,6 puntos, 4,6 más que Gemini 4 Carbon (60).",
+   "data": {
+    "block": "cerrados",
+    "version": "5",
+    "from": {
+     "id": "google/gemini-4-carbon",
+     "n": "Gemini 4 Carbon",
+     "ii": 60,
+     "iiNow": 60
+    },
+    "to": {
+     "id": "anthropic/claude-fable-5.2",
+     "n": "Claude Fable 5.2",
+     "ii": 64.6
+    },
+    "margin": 4.6
+   },
+   "i18n": {
+    "en": {
+     "what": "Claude Fable 5.2 becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v5: 64.6 points, 4.6 more than Gemini 4 Carbon (60).",
+     "titular": "Claude Fable 5.2 becomes the best closed model on the AA index",
+     "porque": "the best closed model changes with the same AA index version and a margin of 4.6 points (minimum 1)",
+     "consecuencia": "The gap between the best closed and the best open-weight model on the AA index stands at 18.1 points (13.5 the day before). It does not equate to months of lag."
+    }
+   },
+   "titular": "Claude Fable 5.2 pasa a ser el mejor modelo cerrado del índice de AA",
+   "importancia": {
+    "tier": 0,
+    "w": 4.6,
+    "porque": "cambia el mejor modelo cerrado con la misma versión del índice de AA y 4,6 puntos de margen (mínimo 1)"
+   },
+   "ficha": "#modelos/anthropic/claude-fable-5.2",
+   "consecuencia": "La distancia entre el mejor cerrado y el mejor abierto en el índice de AA queda en 18,1 puntos (13,5 el día anterior). No equivale a meses de retraso."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaUsCn|2026-11-09",
+   "published": null,
+   "detected": "2026-11-09",
+   "date": "2026-11-09",
+   "mag": {
+    "v": 4.6,
+    "pct": 34.1,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-11-09T21:20:46Z"
+   },
+   "what": "Distancia EE. UU. − China en el índice de AA: de 13,5 a 18,1 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "aaUsCn",
+    "path": "aa.gapUsCn",
+    "from": 13.5,
+    "to": 18.1
+   },
+   "i18n": {
+    "en": {
+     "what": "US − China gap on the AA index: from 13.5 to 18.1 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "US − China gap on the AA index: from 13.5 to 18.1 points (Claude Fable 5.2 versus Kimi K3.1 Pro)."
+    }
+   },
+   "titular": "Distancia EE. UU. − China en el índice de AA: de 13,5 a 18,1 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaClosedOpen|2026-11-09",
+   "published": null,
+   "detected": "2026-11-09",
+   "date": "2026-11-09",
+   "mag": {
+    "v": 4.6,
+    "pct": 34.1,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-11-09T21:20:46Z"
+   },
+   "what": "Distancia cerrados − abiertos en el índice de AA: de 13,5 a 18,1 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "aaClosedOpen",
+    "path": "aa.gapClosedOpen",
+    "from": 13.5,
+    "to": 18.1
+   },
+   "i18n": {
+    "en": {
+     "what": "Closed − open gap on the AA index: from 13.5 to 18.1 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "Closed − open gap on the AA index: from 13.5 to 18.1 points (Claude Fable 5.2 versus Kimi K3.1 Pro)."
+    }
+   },
+   "titular": "Distancia cerrados − abiertos en el índice de AA: de 13,5 a 18,1 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaLabs|2026-11-09",
+   "published": null,
+   "detected": "2026-11-09",
+   "date": "2026-11-09",
+   "mag": {
+    "v": 3.7,
+    "pct": 411.1,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-11-09T21:20:46Z"
+   },
+   "what": "Distancia entre los dos primeros laboratorios en el índice de AA: de 0,9 a 4,6 puntos (Anthropic frente a Google).",
+   "data": {
+    "ind": "aaLabs",
+    "path": "aa.gapLabs",
+    "from": 0.9,
+    "to": 4.6
+   },
+   "i18n": {
+    "en": {
+     "what": "Gap between the top two labs on the AA index: from 0.9 to 4.6 points (Anthropic versus Google).",
+     "titular": "Gap between the top two labs on the AA index: from 0.9 to 4.6 points (Anthropic versus Google)."
+    }
+   },
+   "titular": "Distancia entre los dos primeros laboratorios en el índice de AA: de 0,9 a 4,6 puntos (Anthropic frente a Google).",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|saturated|2026-11-09",
+   "published": null,
+   "detected": "2026-11-09",
+   "date": "2026-11-09",
+   "mag": {
+    "v": 4,
+    "pct": 57.1,
+    "unit": "evaluaciones"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks",
+    "got": "2026-11-09T21:20:46Z"
+   },
+   "what": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %): de 7 a 11 evaluaciones (de 21).",
+   "data": {
+    "ind": "saturated",
+    "path": "bench.saturated",
+    "from": 7,
+    "to": 11
+   },
+   "i18n": {
+    "en": {
+     "what": "Epoch evaluations saturated (best result of at least 90%): from 7 to 11 evaluations (of 21).",
+     "titular": "Epoch evaluations saturated (best result of at least 90%): from 7 to 11 evaluations (of 21)."
+    }
+   },
+   "titular": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %): de 7 a 11 evaluaciones (de 21).",
+   "importancia": null,
+   "ficha": "#carrera/evaluacion",
+   "consecuencia": null
+  },
+  {
    "kind": "uso",
    "key": "uso|entra|stealth/crouton-alpha|2026-11-09",
    "published": "2026-11-08",
@@ -230,7 +445,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-09T14:23:06Z"
+    "got": "2026-11-09T21:20:46Z"
    },
    "what": "Crouton Alpha entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
    "data": {

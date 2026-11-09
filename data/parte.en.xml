@@ -6,7 +6,28 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Mon, 09 Nov 2026 14:23:06 GMT</lastBuildDate>
+  <lastBuildDate>Mon, 09 Nov 2026 21:20:46 GMT</lastBuildDate>
+  <item>
+    <title>Claude Fable 5.2 becomes the best closed model on the AA index</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/anthropic/claude-fable-5.2</link>
+    <guid isPermaLink="false">lider|closed|anthropic/claude-fable-5.2|2026-11-09</guid>
+    <pubDate>Mon, 09 Nov 2026 21:20:46 GMT</pubDate>
+    <description>Claude Fable 5.2 becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v5: 64.6 points, 4.6 more than Gemini 4 Carbon (60). The gap between the best closed and the best open-weight model on the AA index stands at 18.1 points (13.5 the day before). It does not equate to months of lag. It is in the briefing because the best closed model changes with the same AA index version and a margin of 4.6 points (minimum 1). Detected on 2026-11-09. Source: Artificial Analysis (https://artificialanalysis.ai/models/claude-fable-5-2). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
+  <item>
+    <title>Claude Fable 5.2 (Anthropic) arrives on OpenRouter: rank 1 on the AA index</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/anthropic/claude-fable-5.2</link>
+    <guid isPermaLink="false">nuevo|anthropic/claude-fable-5.2</guid>
+    <pubDate>Mon, 09 Nov 2026 21:20:46 GMT</pubDate>
+    <description>Claude Fable 5.2 (Anthropic) appears in the OpenRouter catalogue. AA index 64.6: 4.6 points above the previous best closed model (Gemini 4 Carbon). Rank 1 of 46. Blended price $16 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 1 of 46). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/anthropic/claude-fable-5.2). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
+  <item>
+    <title>Muse Ember (Meta) arrives on OpenRouter: rank 16 on the AA index</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/meta/muse-ember</link>
+    <guid isPermaLink="false">nuevo|meta/muse-ember</guid>
+    <pubDate>Mon, 09 Nov 2026 21:20:46 GMT</pubDate>
+    <description>Muse Ember (Meta) appears in the OpenRouter catalogue. AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 16 of 46. Blended price $0.2 per million tokens. Of the 3 models with a similar AA index (±2 points of its 36), none costs less. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 16 of 46). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/meta/muse-ember). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
   <item>
     <title>Anthropic: $81 billion in annualised revenue</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera/economia</link>
@@ -22,11 +43,11 @@
     <description>Claude Opus 5: first score on the Artificial Analysis Intelligence Index (44.2, v5). AA index 44.2: 15.8 points behind the best closed model (Gemini 4 Carbon). Rank 11 of 43. Blended price $10 per million tokens. It is in the briefing because it receives its first AA score and enters the top 20 of the AA index (rank 11 of 43). Detected on 2026-11-05. Source: Artificial Analysis (https://artificialanalysis.ai/models/claude-opus-5). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>Tencent Hy4 (Tencent) enters the AA index at rank 16, still without a public API</title>
+    <title>Tencent Hy4 (Tencent) enters the AA index at rank 18, still without a public API</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/tencent/tencent-hy4</link>
     <guid isPermaLink="false">sinapi|tencent/tencent-hy4</guid>
     <pubDate>Thu, 05 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Tencent Hy4 (Tencent) appears scored on Artificial Analysis with 34.6 points, still without a public API: it is not on OpenRouter. AA index 34.6: 25.4 points behind the best closed model (Gemini 4 Carbon). Rank 16 of 44. It is not on OpenRouter yet: no public API and no price. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 16 of 44). Published on 2026-11-03; detected on 2026-11-05. Source: Artificial Analysis (https://artificialanalysis.ai/models/tencent-hy4). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>Tencent Hy4 (Tencent) appears scored on Artificial Analysis with 34.6 points, still without a public API: it is not on OpenRouter. AA index 34.6: 30 points behind the best closed model (Claude Fable 5.2). Rank 18 of 46. It is not on OpenRouter yet: no public API and no price. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 18 of 46). Published on 2026-11-03; detected on 2026-11-05. Source: Artificial Analysis (https://artificialanalysis.ai/models/tencent-hy4). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Grok 4.6 enters the AA index at rank 20</title>
