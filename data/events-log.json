@@ -218,6 +218,43 @@
  "events": [
   {
    "kind": "uso",
+   "key": "uso|entra|stealth/crouton-alpha|2026-11-09",
+   "published": "2026-11-08",
+   "detected": "2026-11-09",
+   "date": "2026-11-08",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "stealth/crouton-alpha",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-09T03:54:42Z"
+   },
+   "what": "Crouton Alpha entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "stealth/crouton-alpha",
+    "rank": 10,
+    "share": 2,
+    "tokens": 4240206752861,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "Crouton Alpha enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
+     "titular": "stealth/crouton-alpha enters OpenRouter’s top 10 by usage",
+     "consecuencia": "2% of OpenRouter’s tokens from 2026-11-02 to 2026-11-08. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "stealth/crouton-alpha entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "2 % de los tokens de OpenRouter del 2026-11-02 al 2026-11-08. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
+   "kind": "uso",
    "key": "uso|entra|moonshotai/kimi-k3.1-pro-20261023|2026-11-08",
    "published": "2026-11-07",
    "detected": "2026-11-08",

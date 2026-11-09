@@ -1,10 +1,10 @@
 {
- "generated": "2026-11-08T12:12:54Z",
+ "generated": "2026-11-09T03:54:42Z",
  "window": 7,
- "since": "2026-11-02",
- "base": "2026-11-07",
+ "since": "2026-11-03",
+ "base": "2026-11-08",
  "parte": {
-  "fecha": "2026-11-08",
+  "fecha": "2026-11-09",
   "noticias": [],
   "ultima": {
    "key": "indicador|revLeader|2026-11-07",
@@ -54,7 +54,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.2-flash",
-    "got": "2026-11-08T12:12:54Z"
+    "got": "2026-11-09T03:54:42Z"
    },
    "what": "Gemini Omni 1.2 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -88,7 +88,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.1-flash",
-    "got": "2026-11-08T12:12:54Z"
+    "got": "2026-11-09T03:54:42Z"
    },
    "what": "Gemini Omni 1.1 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -122,7 +122,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4",
-    "got": "2026-11-08T12:12:54Z"
+    "got": "2026-11-09T03:54:42Z"
    },
    "what": "Hy4 (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -147,40 +147,6 @@
   },
   {
    "kind": "nuevo",
-   "key": "nuevo|z-ai/glm-5.3-flashx-legal",
-   "model": "z-ai/glm-5.3-flashx-legal",
-   "published": "2026-11-02",
-   "detected": "2026-11-03",
-   "date": "2026-11-02",
-   "mag": null,
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/z-ai/glm-5.3-flashx-legal",
-    "got": "2026-11-08T12:12:54Z"
-   },
-   "what": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) aparece en el catálogo de OpenRouter.",
-   "data": {
-    "weights": "cerrados",
-    "in": 0.37,
-    "out": 1.25,
-    "ii": null,
-    "eci": null,
-    "identity": "confirmada"
-   },
-   "i18n": {
-    "en": {
-     "what": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) appears in the OpenRouter catalogue.",
-     "titular": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) arrives on OpenRouter",
-     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Blended price $0.59 per million tokens."
-    }
-   },
-   "titular": "GLM 5.3 FlashX Legal (Z.ai (Zhipu)) llega a OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/z-ai/glm-5.3-flashx-legal",
-   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 0,59 $ por millón de tokens."
-  },
-  {
-   "kind": "nuevo",
    "key": "sinapi|tencent/tencent-hy4",
    "model": "tencent/tencent-hy4",
    "published": "2026-11-03",
@@ -190,7 +156,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/tencent-hy4",
-    "got": "2026-11-08T12:12:54Z"
+    "got": "2026-11-09T03:54:42Z"
    },
    "what": "Tencent Hy4 (Tencent) aparece puntuado en Artificial Analysis con 34,6 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -220,6 +186,43 @@
    },
    "ficha": "#modelos/tencent/tencent-hy4",
    "consecuencia": "Índice de AA 34,6: a 25,4 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 16 de 44. Aún no está en OpenRouter: sin API pública ni precio."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|stealth/crouton-alpha|2026-11-09",
+   "published": "2026-11-08",
+   "detected": "2026-11-09",
+   "date": "2026-11-08",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "stealth/crouton-alpha",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-09T03:54:42Z"
+   },
+   "what": "Crouton Alpha entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "stealth/crouton-alpha",
+    "rank": 10,
+    "share": 2,
+    "tokens": 4240206752861,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "Crouton Alpha enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
+     "titular": "stealth/crouton-alpha enters OpenRouter’s top 10 by usage",
+     "consecuencia": "2% of OpenRouter’s tokens from 2026-11-02 to 2026-11-08. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "stealth/crouton-alpha entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "2 % de los tokens de OpenRouter del 2026-11-02 al 2026-11-08. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "uso",
@@ -1242,147 +1245,6 @@
   },
   {
    "kind": "indicador",
-   "key": "indicador|dcMW|2026-11-02",
-   "published": null,
-   "detected": "2026-11-02",
-   "date": "2026-11-02",
-   "mag": {
-    "v": 366,
-    "pct": 2.5,
-    "unit": "MW"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-11-02T03:54:04Z"
-   },
-   "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 14.712 a 15.078 MW.",
-   "data": {
-    "ind": "dcMW",
-    "path": "dc.now",
-    "from": 14712,
-    "to": 15078
-   },
-   "i18n": {
-    "en": {
-     "what": "IT power in service at the data centres Epoch tracks: from 14,712 to 15,078 MW.",
-     "titular": "The power in service at the data centres Epoch tracks rises to 15,078 MW",
-     "consecuencia": "96 data centres. Power of the equipment, without cooling; it is not the world total. In AI 2027 it is evidence for “40 million H100e available”."
-    }
-   },
-   "titular": "La potencia en servicio de los centros que sigue Epoch sube a 15.078 MW",
-   "importancia": null,
-   "ficha": "#carrera/computo",
-   "consecuencia": "96 centros. Potencia de los equipos, sin refrigeración; no es el total mundial. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|capexB|2026-11-02",
-   "published": null,
-   "detected": "2026-11-02",
-   "date": "2026-11-02",
-   "mag": {
-    "v": 13.9,
-    "pct": 2.5,
-    "unit": "mil millones de $"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-11-02T03:54:04Z"
-   },
-   "what": "Coste de capital de los centros que sigue Epoch: de 557 a 571 mil millones de $.",
-   "data": {
-    "ind": "capexB",
-    "path": "dc.capex",
-    "from": 557.3,
-    "to": 571.2
-   },
-   "i18n": {
-    "en": {
-     "what": "Capital cost of the data centres Epoch tracks: from 557 to 571 billion dollars.",
-     "titular": "Capital cost of the data centres Epoch tracks: from 557 to 571 billion dollars."
-    }
-   },
-   "titular": "Coste de capital de los centros que sigue Epoch: de 557 a 571 mil millones de $.",
-   "importancia": null,
-   "ficha": "#carrera/economia",
-   "consecuencia": null
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|saturated|2026-11-02",
-   "published": null,
-   "detected": "2026-11-02",
-   "date": "2026-11-02",
-   "mag": {
-    "v": -1,
-    "pct": -12.5,
-    "unit": "evaluaciones"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks",
-    "got": "2026-11-02T03:54:04Z"
-   },
-   "what": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %): de 8 a 7 evaluaciones (de 21).",
-   "data": {
-    "ind": "saturated",
-    "path": "bench.saturated",
-    "from": 8,
-    "to": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "Epoch evaluations saturated (best result of at least 90%): from 8 to 7 evaluations (of 21).",
-     "titular": "Epoch evaluations saturated (best result of at least 90%): from 8 to 7 evaluations (of 21)."
-    }
-   },
-   "titular": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %): de 8 a 7 evaluaciones (de 21).",
-   "importancia": null,
-   "ficha": "#carrera/evaluacion",
-   "consecuencia": null
-  },
-  {
-   "kind": "valoracion",
-   "key": "valoracion|horizonte3s|observatorio|2026-11-02",
-   "published": null,
-   "detected": "2026-11-02",
-   "date": "2026-11-02",
-   "mag": null,
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/mirrorcode",
-    "got": "2026-11-02T03:54:04Z"
-   },
-   "what": "«Horizonte de unas tres semanas de trabajo»: la valoración del observatorio pasa de «adelantado» a «todavía no evaluable».",
-   "data": {
-    "hito": "horizonte3s",
-    "which": "observatorio",
-    "from": "adelantado",
-    "to": "todavía no evaluable",
-    "plazo": "2026-12-31",
-    "ficha": "#ai2027/horizonte3s"
-   },
-   "i18n": {
-    "en": {
-     "what": "“Horizon of about three weeks of work”: the observatory’s assessment goes from “ahead” to “not yet assessable”.",
-     "titular": "AI 2027: “Horizon of about three weeks of work” cannot be assessed yet",
-     "porque": "the observatory’s assessment of an AI 2027 milestone changes",
-     "consecuencia": "The authors frame it with METR’s 80% horizon, which does not measure reliably above 16 hours, and the last model it has measured was published on 7 Apr 2026. The observatory checks it against MirrorCode, from Epoch and METR: reimplementing whole programs from their behaviour, with tasks that would take an engineer weeks. Best result to date: 78.9%, from Claude Opus 5.5 (high), published on 22 Sept 2026. Rule (the observatory’s reading): “consistent” if, when the deadline expires, the best result reaches 80%. MirrorCode only covers programming and its score is not the success rate on three-week tasks. Before: “ahead”. Scenario deadline: late 2026."
-    }
-   },
-   "titular": "AI 2027: «Horizonte de unas tres semanas de trabajo» aún no se puede evaluar",
-   "importancia": {
-    "tier": 2,
-    "w": 0,
-    "porque": "cambia la valoración del observatorio de un hito de AI 2027"
-   },
-   "ficha": "#ai2027/horizonte3s",
-   "consecuencia": "Los autores lo plantean con el horizonte al 80 % de METR, que no mide con fiabilidad por encima de 16 horas, y el último modelo que ha medido se publicó el 7 abr 2026. El observatorio lo contrasta con MirrorCode, de Epoch y METR: reimplementar programas enteros a partir de su comportamiento, con tareas que a un ingeniero le llevarían semanas. Mejor resultado hasta hoy: 78,9 %, de Claude Opus 5.5 (high), publicado el 22 sept 2026. Regla (lectura del observatorio): «compatible» si al vencer el plazo el mejor resultado llega al 80 %. MirrorCode sólo cubre programación y su puntuación no es el porcentaje de éxito en tareas de tres semanas. Antes: «adelantado». Plazo del escenario: finales de 2026."
-  },
-  {
-   "kind": "indicador",
    "key": "indicador|revLeader|2026-11-07",
    "published": "2026-10-31",
    "detected": "2026-11-07",
@@ -1420,41 +1282,6 @@
    },
    "ficha": "#carrera/economia",
    "consecuencia": "Anthropic, Annualized run rate, confianza de Epoch: Likely. En AI 2027 es evidencia de «Ingresos de OpenBrain en 2026» y «55.000 millones anualizados y 2,5 billones de valoración»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|mirror|2026-11-02",
-   "published": "2026-09-22",
-   "detected": "2026-11-02",
-   "date": "2026-09-22",
-   "mag": {
-    "v": -18.9,
-    "pct": -19.3,
-    "unit": "%"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/mirrorcode",
-    "got": "2026-11-02T03:54:04Z"
-   },
-   "what": "Mejor resultado en MirrorCode (ejecuciones de Epoch): de 97,8 a 78,9 % (Claude Opus 5.5 (high)).",
-   "data": {
-    "ind": "mirror",
-    "path": "bench.mirror",
-    "from": 97.8,
-    "to": 78.9
-   },
-   "i18n": {
-    "en": {
-     "what": "Best MirrorCode result (Epoch runs): from 97.8 to 78.9% (Claude Opus 5.5 (high)).",
-     "titular": "Claude Opus 5.5 (high) sets a new MirrorCode record: 78.9%",
-     "consecuencia": "Before, 97.8%. Reimplementing whole programs from their behaviour, tasks that would take an engineer weeks; Epoch runs. In AI 2027 it is evidence for “Horizon of about three weeks of work” and “Superhuman coder”."
-    }
-   },
-   "titular": "Claude Opus 5.5 (high) marca un nuevo récord en MirrorCode: 78,9 %",
-   "importancia": null,
-   "ficha": "#carrera/agentes",
-   "consecuencia": "Antes, 97,8 %. Reimplementar programas enteros a partir de su comportamiento, tareas que a un ingeniero le llevarían semanas; ejecuciones de Epoch. En AI 2027 es evidencia de «Horizonte de unas tres semanas de trabajo» y «Programador sobrehumano»."
   },
   {
    "kind": "indicador",
