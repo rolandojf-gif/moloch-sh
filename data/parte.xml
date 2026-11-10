@@ -6,33 +6,33 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.xml" rel="self" type="application/rss+xml"/>
   <description>Las noticias de la carrera por la IA que detecta cada día el observatorio, elegidas con una regla fija. Cifras de OpenRouter, Artificial Analysis, Epoch AI, Hugging Face y METR, con su fuente.</description>
   <language>es</language>
-  <lastBuildDate>Tue, 10 Nov 2026 11:17:58 GMT</lastBuildDate>
+  <lastBuildDate>Tue, 10 Nov 2026 13:47:13 GMT</lastBuildDate>
   <item>
     <title>Claude Fable 5.2 pasa a ser el mejor modelo según el ECI de Epoch</title>
     <link>https://moloch-sh.netlify.app/#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 11:17:58 GMT</pubDate>
+    <pubDate>Tue, 10 Nov 2026 13:47:13 GMT</pubDate>
     <description>Mejor modelo en el ECI de Epoch: de 169,07 a 174,24 puntos (Claude Fable 5.2). Claude Fable 5.2, de Anthropic, con 174,2 puntos. Está en el parte porque cambia el mejor modelo según el ECI de Epoch. Publicado el 2026-11-09; detectado el 2026-11-10. Fuente: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
     <title>La distancia entre los dos primeros laboratorios en el ECI sube de 0,7 a 5,1 puntos</title>
     <link>https://moloch-sh.netlify.app/#carrera/coordinacion</link>
     <guid isPermaLink="false">indicador|labs|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 11:17:58 GMT</pubDate>
+    <pubDate>Tue, 10 Nov 2026 13:47:13 GMT</pubDate>
     <description>Distancia entre los dos primeros laboratorios en el ECI: de 0,71 a 5,08 puntos (Anthropic frente a OpenAI). Claude Fable 5.2 (Anthropic, 174,2) frente a GPT-6 Astra (OpenAI, 169,2), con intervalos de confianza solapados. En AI 2027 es evidencia de «Los rivales, de 3 a 9 meses por detrás». Está en el parte porque la distancia entre los dos primeros laboratorios cambia al menos 1 punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad. Detectado el 2026-11-10. Fuente: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
     <title>La distancia EE. UU. − China en el ECI sube de 9,8 a 12,2 puntos</title>
     <link>https://moloch-sh.netlify.app/#carrera/coordinacion</link>
     <guid isPermaLink="false">indicador|usCn|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 11:17:58 GMT</pubDate>
+    <pubDate>Tue, 10 Nov 2026 13:47:13 GMT</pubDate>
     <description>Distancia EE. UU. − China en el ECI: de 9,76 a 12,22 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro). Claude Fable 5.2 (Anthropic, 174,2) frente a Kimi K3.1 Pro (Moonshot, 162). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «China, unos seis meses por detrás con el 12 % del cómputo». Está en el parte porque la distancia EE. UU. − China cambia al menos 1 punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad. Detectado el 2026-11-10. Fuente: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
     <title>La distancia cerrados − abiertos en el ECI sube de 9,8 a 12,2 puntos</title>
     <link>https://moloch-sh.netlify.app/#carrera/coordinacion</link>
     <guid isPermaLink="false">indicador|closedOpen|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 11:17:58 GMT</pubDate>
+    <pubDate>Tue, 10 Nov 2026 13:47:13 GMT</pubDate>
     <description>Distancia cerrados − abiertos en el ECI: de 9,76 a 12,22 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro). Claude Fable 5.2 (Anthropic, 174,2) frente a Kimi K3.1 Pro (Moonshot, 162). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «Un modelo de pesos abiertos iguala a Agent-0». Está en el parte porque la distancia cerrados − abiertos cambia al menos 1 punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad. Detectado el 2026-11-10. Fuente: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
