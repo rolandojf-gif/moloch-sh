@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fmtDate, fmtDateTime, num, usd, aaRace, aaCoverage } from '../js/fmt.js';
 import { resolve } from '../js/valoracion.js';
-import { importancia } from '../scripts/parte.mjs';
+import { importancia, enrich, parte, rss } from '../scripts/parte.mjs';
 import { unzip, raceOf, ediBlock, collectIndicators } from '../scripts/indicadores.mjs';
 import { sameModelName, aaOnlyCandidates, matchCatalogAA } from '../scripts/emparejar.mjs';
 import { labPrices, vaiven } from '../scripts/cambios.mjs';
@@ -304,3 +304,34 @@ test('raceOf: récords por laboratorio, sin interpolar, solo los que llegaron a 
   assert.equal(a.c, 'US');
   assert.deepEqual(race[0].steps.map(s => [s.d, s.v, s.w]), [['2023-02-01', 110, 'o'], ['2024-02-01', 135, 'o']]);
 });
+
+test('parte y rss: deduplicación causal agrupa récord y distancias del ECI en una única noticia', () => {
+  const D = '2026-11-10', NOW_ISO = '2026-11-10T13:47:13Z';
+  const src = { name: 'Epoch AI', url: 'https://epoch.ai/benchmarks/eci', got: NOW_ISO };
+  const items = [
+    { kind: 'indicador', key: `indicador|eci|${D}`, detected: D, published: '2026-11-09', src, what: 'Mejor modelo en el ECI', data: { ind: 'eci', path: 'eci.frontier', from: 169.07, to: 174.24 }, i18n: { en: { what: 'Best model on ECI' } } },
+    { kind: 'indicador', key: `indicador|labs|${D}`, detected: D, published: null, src, what: 'Distancia laboratorios', data: { ind: 'labs', path: 'eci.gapLabs', from: 0.71, to: 5.08 }, i18n: { en: { what: 'Labs gap' } } },
+    { kind: 'indicador', key: `indicador|usCn|${D}`, detected: D, published: null, src, what: 'Distancia EE. UU. − China', data: { ind: 'usCn', path: 'eci.gapUsCn', from: 9.76, to: 12.22 }, i18n: { en: { what: 'US − China gap' } } },
+    { kind: 'indicador', key: `indicador|closedOpen|${D}`, detected: D, published: null, src, what: 'Distancia cerrados − abiertos', data: { ind: 'closedOpen', path: 'eci.gapClosedOpen', from: 9.76, to: 12.22 }, i18n: { en: { what: 'Closed − open gap' } } },
+    { kind: 'indicador', key: `indicador|dcMW|${D}`, detected: D, published: null, src, what: 'Potencia en servicio', data: { ind: 'dcMW', path: 'dc.now', from: 10000, to: 12000 }, i18n: { en: { what: 'IT power' } } },
+    { kind: 'uso', key: `uso|primero|deepseek/v4|${D}`, detected: D, published: null, src: { name: 'OpenRouter · uso', url: 'https://openrouter.ai/rankings', got: NOW_ISO }, what: 'Más usado', data: { sub: 'primero', slug: 'deepseek/v4', share: 25, prev: 'otro/m' }, i18n: { en: { what: 'Most used' } } }
+  ];
+  const C = {
+    byId: new Map(), models: [], hitos: new Map(), carrera: { frentes: [] },
+    uso: { from: '2026-11-03', to: '2026-11-09' },
+    base: { ind: { eci: 169.07, labs: 0.71, usCn: 9.76, closedOpen: 9.76 } },
+    ind: { eci: { frontier: { v: 174.24, model: 'Claude Fable 5.2', org: 'Anthropic' }, gapLabs: { v: 5.08 }, gapUsCn: { v: 12.22 }, gapClosedOpen: { v: 12.22 } } }
+  };
+  enrich(items, C, D);
+  const p = parte(items, D, items);
+  assert.deepEqual(p.noticias, [`indicador|eci|${D}`, `indicador|dcMW|${D}`, `uso|primero|deepseek/v4|${D}`]);
+  assert.match(items[0].consecuencia, /Distancias en el ECI: EE\. UU\. − China, de 9,8 a 12,2 puntos; cerrados − abiertos, de 9,8 a 12,2; entre los dos primeros laboratorios, de 0,7 a 5,1\./);
+  assert.match(items[0].i18n.en.consecuencia, /ECI gaps: US − China, from 9\.8 to 12\.2 points; closed − open, from 9\.8 to 12\.2; between the top two labs, from 0\.7 to 5\.1\./);
+
+  const feedEs = rss(items, { NOW_ISO, TODAY: D }, 'es');
+  const feedEn = rss(items, { NOW_ISO, TODAY: D }, 'en');
+  const guids = xml => [...xml.matchAll(/<guid[^>]*>([^<]*)<\/guid>/g)].map(m => m[1]);
+  assert.deepEqual(guids(feedEs), [`indicador|eci|${D}`, `indicador|dcMW|${D}`, `uso|primero|deepseek/v4|${D}`]);
+  assert.deepEqual(guids(feedEn), guids(feedEs));
+});
+

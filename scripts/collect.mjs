@@ -1141,7 +1141,7 @@ async function main() {
   // Un cambio entra por su fecha o por la de su detección (unos pesos publicados hace semanas pero detectados hoy).
   const hoyItems = novedades.concat(evLog.events.filter(e => e.date >= hoyFrom || e.detected >= hoyFrom));
   const brief = parte(hoyItems, TODAY, novedades.concat(evLog.events));
-  await writeFile(path.join(DATA, 'changes.json'), JSON.stringify({ generated: NOW_ISO, window: HOY_DAYS, since: hoyFrom, base: baseDate, parte: brief, items: hoyItems }, null, 1) + '\n');
+  await writeFile(path.join(DATA, 'changes.json'), JSON.stringify({ schema: 2, generated: NOW_ISO, window: HOY_DAYS, since: hoyFrom, base: baseDate, parte: brief, items: hoyItems }, null, 1) + '\n');
   await writeFile(path.join(DATA, 'parte.xml'), rss(novedades.concat(evLog.events), { NOW_ISO, TODAY }));
   await writeFile(path.join(DATA, 'parte.en.xml'), rss(novedades.concat(evLog.events), { NOW_ISO, TODAY }, 'en'));
   // Textos que no han salido en inglés: aviso identificable (::warning:: en GitHub Actions); la recogida sigue.

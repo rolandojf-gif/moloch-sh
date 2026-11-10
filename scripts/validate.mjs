@@ -2,6 +2,7 @@
 /* Comprueba que los datos generados y curados respetan las reglas de procedencia antes de publicarlos. */
 import { readFile } from 'node:fs/promises';
 import { sameModelName, aaBase } from './emparejar.mjs';
+import { causa } from './parte.mjs';
 
 const read = async p => JSON.parse(await readFile(new URL(`../${p}`, import.meta.url), 'utf8'));
 const readOpt = p => read(p).catch(e => (e.code === 'ENOENT' ? null : Promise.reject(e)));
@@ -226,7 +227,7 @@ if (chg?.parte) {
   if (!DAY.test(p.fecha || '')) errors.push('parte: sin fecha');
   if (!Array.isArray(p.noticias) || p.noticias.length > 3) errors.push('parte: más de tres noticias');
   if (!p.reglas?.length) errors.push('parte: sin la regla publicada');
-  const quien = new Set();
+  const quien = new Set(), causas = new Set();
   for (const k of p.noticias || []) {
     const e = byKey.get(k);
     if (!e) { errors.push(`parte: ${k} no está en la lista de cambios`); continue; }
@@ -234,6 +235,12 @@ if (chg?.parte) {
     const q = e.model || e.data?.hito || e.key;
     if (quien.has(q)) errors.push(`parte: ${q} sale dos veces`);
     quien.add(q);
+    const ck = causa(e);
+    if (causas.has(ck)) {
+      const msg = `parte: causa repetida «${ck}» (${k})`;
+      if ((chg.schema || 0) >= 2) errors.push(msg); else warnings.push(`changes anterior a schema 2: ${msg}`);
+    }
+    causas.add(ck);
   }
   if (p.noticias?.length && p.ultima) errors.push('parte: con noticias no lleva «la última anterior»');
 }
