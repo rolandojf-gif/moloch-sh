@@ -7,7 +7,7 @@ import { fmtDate, fmtDateTime, num, usd, aaRace, aaCoverage } from '../js/fmt.js
 import { resolve } from '../js/valoracion.js';
 import { importancia } from '../scripts/parte.mjs';
 import { unzip, raceOf } from '../scripts/indicadores.mjs';
-import { sameModelName, aaOnlyCandidates } from '../scripts/emparejar.mjs';
+import { sameModelName, aaOnlyCandidates, matchCatalogAA } from '../scripts/emparejar.mjs';
 import { labPrices, vaiven } from '../scripts/cambios.mjs';
 
 const fixture = name => new URL(`./fixtures/${name}`, import.meta.url);
@@ -139,6 +139,50 @@ test('modelos de AA sin OpenRouter: sólo los nuevos, sin duplicar los que ya es
   assert.deepEqual(aaOnlyCandidates(rows, models, labs, creators, {}, { 'gemini-4-carbon': null }, '2026-09-01'), [], 'overrides.aaSolo lo descarta');
   // Uno que ya constaba sin API pública sigue aunque salga de la ventana.
   assert.deepEqual(aaOnlyCandidates(rows, models, labs, creators, {}, {}, '2026-11-01', new Set(['gemini-4-carbon'])).map(c => c.id), ['google/gemini-4-carbon']);
+});
+
+test('matchCatalogAA y aaOnlyCandidates: prefijo de laboratorio y unicidad de aa.slug sin colisiones', () => {
+  const labs = {
+    tencent: { name: 'Tencent', aa_creator: 'tencent' },
+    google: { name: 'Google', aa_creator: 'google' },
+    openai: { name: 'OpenAI', aa_creator: 'openai' },
+    deepseek: { name: 'DeepSeek', aa_creator: 'deepseek' }
+  };
+  const creators = { tencent: 'c-t', google: 'c-g', openai: 'c-o', deepseek: 'c-d' };
+  const row = (slug, name, cid, ii, date) => ({ slug, name, model_creator: { id: cid }, release_date: date, evaluations: { artificial_analysis_intelligence_index: ii } });
+  const aaRows = [
+    row('tencent-hy4', 'Tencent Hy4', 'c-t', 34.6, '2026-11-03'),
+    row('hy3-preview', 'Hy3-preview (Reasoning)', 'c-t', null, '2026-04-23'),
+    row('gemini-3-1-flash-lite-preview', 'Gemini 3.1 Flash-Lite', 'c-g', 6.2, '2026-03-03'),
+    row('gpt-5-2', 'GPT-5.2 (Xhigh)', 'c-o', null, '2025-12-11'),
+    row('deepseek-v3-2-0925', 'DeepSeek V3.2 Exp (Non-reasoning)', 'c-d', null, '2025-09-29')
+  ];
+  const orModels = [
+    { id: 'tencent/hy4', name: 'Hy4', orCreated: { v: '2026-11-04' } },
+    { id: 'tencent/hy4-preview', name: 'Hy4 preview', orCreated: { v: '2026-08-28' } },
+    { id: 'tencent/hy3', name: 'Hy3', orCreated: { v: '2026-07-06' } },
+    { id: 'tencent/hy3-preview', name: 'Hy3 preview', orCreated: { v: '2026-04-22' } },
+    { id: 'google/gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite', orCreated: { v: '2026-05-07' } },
+    { id: 'google/gemini-3.1-flash-lite-preview', name: 'Gemini 3.1 Flash Lite Preview', orCreated: { v: '2026-03-03' } },
+    { id: 'openai/gpt-5.2', name: 'GPT-5.2', orCreated: { v: '2025-12-10' } },
+    { id: 'openai/gpt-5.2-chat', name: 'GPT-5.2 Chat', orCreated: { v: '2025-12-10' } },
+    { id: 'deepseek/deepseek-v3.2', name: 'DeepSeek V3.2', orCreated: { v: '2025-12-01' } },
+    { id: 'deepseek/deepseek-v3.2-exp', name: 'DeepSeek V3.2 Exp', orCreated: { v: '2025-09-29' } }
+  ];
+  const matched = matchCatalogAA(orModels, labs, aaRows, {}, creators);
+  assert.equal(matched.get('tencent/hy4')?.row.slug, 'tencent-hy4', 'Tencent Hy4 casa con Hy4');
+  assert.equal(matched.get('tencent/hy4-preview'), null, 'no se duplica en Hy4 preview');
+  assert.equal(matched.get('tencent/hy3-preview')?.row.slug, 'hy3-preview');
+  assert.equal(matched.get('tencent/hy3'), null);
+  assert.equal(matched.get('google/gemini-3.1-flash-lite-preview')?.row.slug, 'gemini-3-1-flash-lite-preview');
+  assert.equal(matched.get('google/gemini-3.1-flash-lite'), null);
+  assert.equal(matched.get('openai/gpt-5.2')?.row.slug, 'gpt-5-2');
+  assert.equal(matched.get('openai/gpt-5.2-chat'), null);
+  assert.equal(matched.get('deepseek/deepseek-v3.2-exp')?.row.slug, 'deepseek-v3-2-0925');
+  assert.equal(matched.get('deepseek/deepseek-v3.2'), null);
+
+  const built = orModels.map(m => ({ ...m, aa: matched.get(m.id) ? { slug: matched.get(m.id).row.slug } : null }));
+  assert.deepEqual(aaOnlyCandidates(aaRows, built, labs, creators, {}, {}, '2026-10-01'), [], 'Tencent Hy4 no entra como aaOnly');
 });
 
 test('vaivén de precios: el que vuelve a uno reciente no es un cambio; el nuevo sí', () => {

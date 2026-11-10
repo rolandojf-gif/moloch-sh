@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 /* Comprueba que los datos generados y curados respetan las reglas de procedencia antes de publicarlos. */
 import { readFile } from 'node:fs/promises';
+import { sameModelName, aaBase } from './emparejar.mjs';
 
 const read = async p => JSON.parse(await readFile(new URL(`../${p}`, import.meta.url), 'utf8'));
 const readOpt = p => read(p).catch(e => (e.code === 'ENOENT' ? null : Promise.reject(e)));
 const c = await read('data/catalog.json');
+const [ovCur, labsCur] = await Promise.all([readOpt('data/curated/overrides.json'), readOpt('data/curated/labs.json')]);
 const errors = [], warnings = [];
 let legacyStale = 0;
 const staleFail = msg => ((c.schema || 0) >= 3 ? errors.push(msg) : legacyStale++);
+const matchFail = msg => ((c.schema || 0) >= 4 ? errors.push(msg) : warnings.push(`catálogo anterior a schema 4: ${msg}`));
 function catSourceOk(src, where) {
   const st = c.status?.[src];
   if (!st?.ok) return false;
@@ -26,10 +29,20 @@ function checkFact(f, where, sources = c.sources, srcOk = catSourceOk) {
   if (typeof f.v === 'number' && (!Number.isFinite(f.v) || (f.v < 0 && !f.signed))) errors.push(`${where}: valor numérico inválido ${f.v}`);
 }
 if (!Array.isArray(c.models) || !c.models.length) errors.push('catálogo vacío');
-const ids = new Set();
+const ids = new Set(), aaSlugs = new Map();
+const orByLab = new Map();
+for (const m of c.models || []) if (!m.aaOnly && m.lab?.name) {
+  if (!orByLab.has(m.lab.name)) orByLab.set(m.lab.name, []);
+  orByLab.get(m.lab.name).push(m);
+}
 for (const m of c.models || []) {
   const w = m.id;
   if (ids.has(w)) errors.push(`${w}: duplicado`); ids.add(w);
+  if (m.aa?.slug && !Object.prototype.hasOwnProperty.call(ovCur?.aa || {}, w)) {
+    const prev = aaSlugs.get(m.aa.slug);
+    if (prev) matchFail(`${w}: comparte aa.slug «${m.aa.slug}» con ${prev}`);
+    else aaSlugs.set(m.aa.slug, w);
+  }
   for (const k of ['weights', 'license', 'orCreated', 'ctx', 'reasoning', 'caching']) checkFact(m[k], `${w}.${k}`);
   for (const k of ['in', 'out', 'cacheRead', 'cacheWrite']) checkFact(m.price?.[k], `${w}.price.${k}`);
   if (![null, 'abiertos', 'cerrados'].includes(m.weights?.v)) errors.push(`${w}: pesos con valor no permitido ${m.weights?.v}`);
@@ -50,6 +63,9 @@ for (const m of c.models || []) {
     if (m.aaOnly.v !== true || !/^\d{4}-\d{2}-\d{2}$/.test(m.aaOnly.since || '')) errors.push(`${w}: aaOnly mal formado`);
     if (m.aa?.intelligence?.v == null) errors.push(`${w}: sin API pública y sin índice de AA`);
     if (m.price?.basis !== 'sin-api' || m.price.in.v !== null || m.price.out.v !== null || m.orCreated.v !== null) errors.push(`${w}: sin API pública pero con precio o alta en OpenRouter`);
+    const labObj = { ...(labsCur?.[m.lab?.id] || m.lab || {}), id: m.lab?.id };
+    const dup = (orByLab.get(m.lab?.name) || []).find(o => sameModelName(aaBase(m.aa || m), o.name, labObj));
+    if (dup) matchFail(`${w}: modelo aaOnly duplicado con ${dup.id} («${dup.name}») ya presente en OpenRouter`);
   } else if (m.price?.basis === 'sin-api') errors.push(`${w}: precio «sin-api» en un modelo de OpenRouter`);
 }
 // Lo que queda fuera del catálogo: tipo conocido y nunca a la vez dentro y fuera.
