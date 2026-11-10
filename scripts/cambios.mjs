@@ -110,9 +110,11 @@ export function detectChanges(ctx) {
     return e;
   };
   const rank = rankAA(models);
+  const repaired = ctx.repairedAA || null;
   const rk = id => rank.has(id) ? { rankAA: rank.get(id), of: rank.of } : {};
+  const rkNov = id => (!repaired?.has(id) && rank.has(id)) ? { rankAA: rank.get(id), of: rank.of } : {};
   const out = [];
-  if (!base) return { items: out, novedades: novedades(models, ctx, rk) };
+  if (!base) return { items: out, novedades: novedades(models, ctx, rkNov) };
 
   /* ── Modelos: precio del laboratorio, pesos, primeras puntuaciones y retiradas ── */
   const prev = base.models || {};
@@ -292,7 +294,7 @@ export function detectChanges(ctx) {
       }));
     }
   }
-  return { items: out, novedades: novedades(models, ctx, rk) };
+  return { items: out, novedades: novedades(models, ctx, rkNov) };
 }
 
 /* Modelos dados de alta en OpenRouter en la ventana de «Hoy»: publicados el día del alta, detectados en la primera recogida que los vio.
