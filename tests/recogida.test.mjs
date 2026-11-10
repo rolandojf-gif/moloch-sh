@@ -67,3 +67,60 @@ test('recogida con respuestas grabadas, validación y parte', { timeout: 300000 
   assert.equal(read(`data/history/${cat.generated.slice(0, 10)}.json`).models['google/gemini-4-carbon'].ao, 1, 'la instantánea lo marca para no darlo por retirado');
   assert.ok(Object.values(read('data/indicadores.json').checks || {}).every(k => k.i18n?.en?.texto), 'las comprobaciones de AI 2027 llevan su inglés');
 });
+
+test('reutilización de AA: conserva puntuaciones sin stale, limpia stale heredado y validate bloquea incoherencias', { timeout: 300000 }, t => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'moloch-aa-reuse-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  for (const d of ['scripts', 'js', 'data']) cpSync(path.join(ROOT, d), path.join(dir, d), { recursive: true });
+  const fx = path.join(dir, 'fixtures');
+  cpSync(path.join(ROOT, 'tests/fixtures/recogida'), fx, { recursive: true });
+  const aaFx = path.join(fx, 'artificialanalysis_ai_api_v2_language_models_free_page_1.json'), aa = JSON.parse(readFileSync(aaFx, 'utf8'));
+  const ayer = new Date(Date.now() - 86400e3).toISOString().slice(0, 10);
+  for (const r of aa.data) if (/^gemini-4-carbon/.test(r.slug)) r.release_date = ayer;
+  writeFileSync(aaFx, JSON.stringify(aa));
+  const baseEnv = { ...process.env, FIXTURES: fx, WINDOW_DAYS: '100000', AA_API_KEY: '', OPENROUTER_API_KEY: '', GITHUB_REF: 'refs/heads/main' };
+  const run = (script, extra = {}) => spawnSync(process.execPath, [script], { cwd: dir, env: { ...baseEnv, ...extra }, encoding: 'utf8' });
+
+  // 1. Primera recogida fresca para fijar el catálogo con status.aa.got reciente.
+  assert.equal(run('scripts/collect.mjs').status, 0);
+  // Sembrar stale heredado en modelos de OpenRouter y aaOnly (como ocurría en schema 2) y quitar el fixture de AA.
+  const catPath = path.join(dir, 'data/catalog.json');
+  const prev = JSON.parse(readFileSync(catPath, 'utf8'));
+  for (const m of prev.models) {
+    if (m.aa) { m.aa.stale = true; m.aa.intelligence.stale = true; }
+    if (m.aaOnly) { m.aaOnly.stale = true; m.orCreated.stale = true; m.price.in.stale = true; }
+  }
+  writeFileSync(catPath, JSON.stringify(prev));
+  rmSync(aaFx);
+
+  // 2. Segunda recogida con AA_TEST_REUSE=1: reutiliza AA sin consultar el fixture borrado y limpia todo stale de AA.
+  const c2 = run('scripts/collect.mjs', { AA_TEST_REUSE: '1' });
+  assert.equal(c2.status, 0, `la recogida con reutilización termina bien\n${c2.stdout}\n${c2.stderr}`);
+  const v2 = run('scripts/validate.mjs');
+  assert.equal(v2.status, 0, `la validación tras reutilizar pasa\n${v2.stdout}\n${v2.stderr}`);
+
+  const reused = JSON.parse(readFileSync(catPath, 'utf8'));
+  assert.ok(reused.schema >= 3);
+  assert.equal(reused.status.aa.ok, true);
+  assert.equal(reused.status.aa.reused, true);
+  for (const m of reused.models) {
+    if (m.aa) {
+      assert.equal(m.aa.stale, undefined, `${m.id}.aa sin stale`);
+      assert.equal(m.aa.intelligence.stale, undefined, `${m.id}.aa.intelligence sin stale`);
+    }
+    if (m.aaOnly) {
+      assert.equal(m.aaOnly.stale, undefined, `${m.id}.aaOnly sin stale`);
+      assert.equal(m.orCreated.stale, undefined, `${m.id}.orCreated sin stale`);
+      assert.equal(m.price.in.stale, undefined, `${m.id}.price.in sin stale`);
+    }
+  }
+
+  // 3. Si un hecho de AA queda marcado stale estando status.aa.ok === true, validate.mjs falla.
+  const broken = structuredClone(reused);
+  broken.models.find(m => m.aa).aa.intelligence.stale = true;
+  writeFileSync(catPath, JSON.stringify(broken));
+  const vBad = run('scripts/validate.mjs');
+  assert.notEqual(vBad.status, 0, 'validate rechaza hechos stale cuya fuente figura ok');
+  assert.match(vBad.stderr, /marcado stale aunque su fuente \(aa\) figura ok/);
+});
+

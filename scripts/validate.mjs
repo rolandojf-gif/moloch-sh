@@ -6,9 +6,19 @@ const read = async p => JSON.parse(await readFile(new URL(`../${p}`, import.meta
 const readOpt = p => read(p).catch(e => (e.code === 'ENOENT' ? null : Promise.reject(e)));
 const c = await read('data/catalog.json');
 const errors = [], warnings = [];
+let legacyStale = 0;
+const staleFail = msg => ((c.schema || 0) >= 3 ? errors.push(msg) : legacyStale++);
+function catSourceOk(src, where) {
+  const st = c.status?.[src];
+  if (!st?.ok) return false;
+  if (src === 'hf' && st.failed > 0) return false;
+  if (src === 'epoch' && st.note && /\.epoch\.swe$/.test(where)) return false;
+  return true;
+}
 const isFact = f => f && typeof f === 'object' && 'v' in f;
-function checkFact(f, where, sources = c.sources) {
+function checkFact(f, where, sources = c.sources, srcOk = catSourceOk) {
   if (!isFact(f)) return errors.push(`${where}: no es un hecho con procedencia`);
+  if (f.stale && srcOk?.(f.src, where)) staleFail(`${where}: marcado stale aunque su fuente (${f.src}) figura ok`);
   if (f.v === null) return;
   if (!f.src || !sources[f.src]) errors.push(`${where}: fuente desconocida (${f.src})`);
   if (!f.got || !/^\d{4}-\d{2}-\d{2}T/.test(f.got)) errors.push(`${where}: falta fecha de consulta`);
@@ -26,7 +36,10 @@ for (const m of c.models || []) {
   if (m.identity !== 'confirmada' && m.lab?.country) errors.push(`${w}: identidad sin confirmar con país asignado`);
   if (m.epoch) for (const k of ['eci', 'release', 'access', 'swe']) checkFact(m.epoch[k], `${w}.epoch.${k}`);
   if (m.epochPub) checkFact(m.epochPub, `${w}.epochPub`);
-  if (m.aa) for (const k of ['intelligence', 'coding', 'agentic', 'tps', 'ttft', 'release']) if (m.aa[k] !== undefined) checkFact(m.aa[k], `${w}.aa.${k}`);
+  if (m.aa) {
+    if (m.aa.stale && c.status?.aa?.ok) staleFail(`${w}.aa: marcado stale aunque status.aa figura ok`);
+    for (const k of ['intelligence', 'coding', 'agentic', 'tps', 'ttft', 'ttfa', 'release', 'blended']) if (m.aa[k] !== undefined) checkFact(m.aa[k], `${w}.aa.${k}`);
+  }
   if (m.aa && !c.sources?.aa?.permiso) errors.push(`${w}: datos de Artificial Analysis sin permiso registrado en data/curated/permisos.json`);
   if (m.price?.in?.v > 1000 || m.price?.out?.v > 1000) errors.push(`${w}: precio fuera de rango`);
   if (!['laboratorio', 'proveedor', 'referencia', 'sin-api'].includes(m.price?.basis)) errors.push(`${w}: criterio de precio no permitido ${m.price?.basis}`);
@@ -55,16 +68,26 @@ for (const e of c.curatedEvents || []) {
   if (!['lectura directa', 'buscador'].includes(e.verificacion)) errors.push(`${w}: verificación no válida`);
 }
 
+if (c.status?.uso?.ok) {
+  if (c.uso?.stale) staleFail('catalog.uso: marcado stale aunque status.uso figura ok');
+  if (c.usoMes?.stale) staleFail('catalog.usoMes: marcado stale aunque status.uso figura ok');
+}
 /* Indicadores: todo objeto con forma de hecho ({v, src}) debe llevar fuente conocida y fechas. */
 const ind = await readOpt('data/indicadores.json');
 if (ind) {
-  const walk = (o, where) => {
-    if (!o || typeof o !== 'object') return;
-    if ('v' in o && 'src' in o) checkFact(o, where, ind.sources);
-    for (const [k, v] of Object.entries(o)) if (v && typeof v === 'object') walk(v, `${where}.${k}`);
+  const IND_ST = {
+    eci: ind.status?.epoch, bench: ind.status?.epoch, edi: ind.status?.epoch_eci, dc: ind.status?.epoch_dc,
+    chips: ind.status?.epoch_chips, companies: ind.status?.epoch_companies, metr: ind.status?.metr,
+    training: ind.status?.epoch_models, aa: c.status?.aa
   };
-  walk(ind.ind, 'indicadores');
+  const walk = (o, where, blockOk) => {
+    if (!o || typeof o !== 'object') return;
+    if ('v' in o && 'src' in o) checkFact(o, where, ind.sources, () => !!blockOk);
+    for (const [k, v] of Object.entries(o)) if (v && typeof v !== 'object') continue; else if (v) walk(v, `${where}.${k}`, blockOk);
+  };
+  for (const [k, v] of Object.entries(ind.ind || {})) if (v && typeof v === 'object') walk(v, `indicadores.${k}`, IND_ST[k]?.ok);
 }
+if (legacyStale) warnings.push(`catálogo anterior a schema 3: ${legacyStale} marca(s) stale incoherentes con status ok (se limpiarán en la próxima recogida)`);
 
 /* Datos curados de «La carrera» y «AI 2027». */
 const DAY = /^\d{4}-\d{2}-\d{2}$/, DAYMONTH = /^\d{4}-\d{2}(-\d{2})?$/, URL_RE = /^https:\/\/\S+$/;

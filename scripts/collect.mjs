@@ -532,7 +532,10 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv, pesosOv) 
   const epsMeta = endpoints ? { src: 'openrouter', url: orUrl + '/providers', asOf: TODAY, got: NOW_ISO } : (prev && prev.endpointsMeta ? { ...prev.endpointsMeta, stale: true } : null);
 
   let aa = null;
-  if (aaMatch === 'keep') {
+  if (aaMatch === 'reuse') {
+    aa = prev && prev.aa ? cleanAA(prev.aa) : null;
+  }
+  else if (aaMatch === 'keep') {
     aa = prev && prev.aa ? { ...prev.aa, stale: true } : null;
     if (aa) for (const k of Object.keys(aa)) if (aa[k] && typeof aa[k] === 'object' && 'v' in aa[k]) aa[k] = { ...aa[k], stale: true };
   }
@@ -618,8 +621,36 @@ function asAAOnly(m, prev) {
   }
   return m;
 }
-/* Copia de la recogida anterior cuando AA no se ha consultado: cifras marcadas como no actualizadas. */
-const staleCopy = p => JSON.parse(JSON.stringify(p, (k, v) => (v && typeof v === 'object' && 'v' in v && 'src' in v) ? { ...v, stale: true } : v));
+/* Copia limpia de un bloque AA o de un modelo sin API pública cuando se reutiliza una consulta reciente (< AA_REUSE_H). */
+function cleanAA(prevAA) {
+  const out = structuredClone(prevAA);
+  delete out.stale;
+  for (const v of Object.values(out)) if (v && typeof v === 'object' && 'v' in v) delete v.stale;
+  return out;
+}
+function freshAAOnly(p, epKeep) {
+  return JSON.parse(JSON.stringify(p, (k, v) => {
+    if (!v || typeof v !== 'object') return v;
+    if (k === 'aa' && 'slug' in v) return cleanAA(v);
+    if ('v' in v && 'src' in v && (v.v === null || v.src === 'aa' || v.src === 'openrouter' || (v.src === 'epoch' && !epKeep))) {
+      const { stale, ...rest } = v;
+      return rest;
+    }
+    return v;
+  }));
+}
+/* Copia de la recogida anterior cuando AA falla: sólo se marcan como antiguos los hechos no nulos de fuentes fallidas. */
+function staleCopy(p, epKeep = false) {
+  return JSON.parse(JSON.stringify(p, (k, v) => {
+    if (!v || typeof v !== 'object') return v;
+    if (k === 'aa' && 'slug' in v) return { ...v, stale: true };
+    if ('v' in v && 'src' in v) {
+      const { stale, ...rest } = v;
+      return rest.v !== null && (rest.src === 'aa' || (rest.src === 'epoch' && epKeep) || stale) ? { ...rest, stale: true } : rest;
+    }
+    return v;
+  }));
+}
 
 /* Líderes abierto y cerrado por índice de AA (vistas de modelos) y por ECI de Epoch (referencia histórica). */
 function leaders(models, version) {
@@ -707,12 +738,12 @@ async function main() {
 
   const aaPrevGot = prevCatalog?.status?.aa?.ok ? prevCatalog.status.aa.got : null;
   // AA_FRESH (entrada «aa_fresca» de la ejecución manual) obliga a consultar AA aunque haya una consulta reciente.
-  const aaReuse = !FIXTURES && !process.env.AA_FRESH && aaPrevGot && (NOW - new Date(aaPrevGot)) / 3600e3 < AA_REUSE_H && prevCatalog?.models?.some(m => m.aa);
+  const aaReuse = (!FIXTURES || process.env.AA_TEST_REUSE === '1') && !process.env.AA_FRESH && aaPrevGot && (NOW - new Date(aaPrevGot)) / 3600e3 < AA_REUSE_H && prevCatalog?.models?.some(m => m.aa);
   if (aaReuse) log(`Artificial Analysis: se reutiliza la consulta de ${aaPrevGot} (menos de ${AA_REUSE_H} h) para no gastar el cupo diario`);
   const aaRes = aaReuse ? undefined : await loadAA(permisos.aa);
   const usoRes = await loadUso(orModels.names);
   const aaRows = aaRes ? aaRes.rows : aaRes;
-  const aaVersion = aaRes ? aaRes.version : (aaRes === undefined ? prevCatalog?.aaIndexVersion ?? null : null);
+  const aaVersion = aaRes ? aaRes.version : ((aaReuse || aaRes === undefined) ? prevCatalog?.aaIndexVersion ?? null : null);
   let ep;
   try { ep = await loadEpoch(); } catch (e) { log(`Epoch falló: ${e.message}`); ep = 'keep'; }
   const epochOv = ovFile.epoch || {};
@@ -752,8 +783,8 @@ async function main() {
     ]);
     if (hf && !hf.ok && !hf.notFound) status.hf.failed++;
     if (hf && hf.notFound && m._hfOverride) log(`override HF sin repositorio: ${m.id} → ${m._hfOverride}`);
-    const aaMatch = aaRows === undefined ? 'keep' : matchAA(m, lab, aaRows, overrides, aaCreators);
-    if (aaMatch && aaMatch !== 'keep') aaMatch.version = aaVersion;
+    const aaMatch = aaReuse ? 'reuse' : aaRows === undefined ? 'keep' : matchAA(m, lab, aaRows, overrides, aaCreators);
+    if (aaMatch && aaMatch !== 'keep' && aaMatch !== 'reuse') aaMatch.version = aaVersion;
     models.push(buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv, ovFile.pesos || {}));
   }
   // Modelos que AA ya puntúa sin estar en OpenRouter (scripts/emparejar.mjs, aaOnlyCandidates). Si AA no se ha consultado
@@ -771,9 +802,12 @@ async function main() {
       const m = buildModel(pseudo, lab, null, hf, { row: c.row, how: c.variants > 1 ? `configuración de mayor índice entre ${c.variants}` : 'sin pareja en OpenRouter', variants: c.variants, version: aaVersion }, prev, ep, epochOv, ovFile.pesos || {});
       aaOnly.push(asAAOnly(m, prev));
     }
+  } else if (aaReuse) {
+    const now = new Set(models.map(m => m.id));
+    for (const p of prevCatalog?.models || []) if (p.aaOnly && !now.has(p.id)) aaOnly.push(freshAAOnly(p, ep === 'keep'));
   } else if (aaRows === undefined) {
     const now = new Set(models.map(m => m.id));
-    for (const p of prevCatalog?.models || []) if (p.aaOnly && !now.has(p.id)) aaOnly.push(staleCopy(p));
+    for (const p of prevCatalog?.models || []) if (p.aaOnly && !now.has(p.id)) aaOnly.push(staleCopy(p, ep === 'keep'));
   }
   // Los que llegan a OpenRouter conservan desde cuándo constaban sin API pública (preApi): con el mismo id, por el id; con
   // otro, por su fila de AA (slug o nombre base del mismo laboratorio).
@@ -888,7 +922,7 @@ async function main() {
   const baseDate = base ? base.date : null;
 
   const catalog = {
-    schema: 2,
+    schema: 3,
     generated: NOW_ISO,
     sources: SOURCES,
     status,
