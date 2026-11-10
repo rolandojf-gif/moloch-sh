@@ -29,8 +29,8 @@ const reglas = F => [
   F.t(`Publica pesos abiertos un modelo del top ${TOP} del índice de AA.`, `A top-${TOP} model on the AA index publishes open weights.`),
   F.t(`El propio laboratorio cambia su precio en OpenRouter al menos un +${SUBE} % o un ${String(BAJA).replace('-', '−')} % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa, ni un precio que va y vuelve: el nuevo ya visto en los 14 días anteriores o el anterior que vuelve en los 14 siguientes.`,
     `The lab itself changes its price on OpenRouter by at least +${SUBE}% or ${String(BAJA).replace('-', '−')}% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count, nor a price that comes and goes: a new one already seen in the previous 14 days or an old one that returns within the next 14.`),
-  F.t(`La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos ${DIST} punto ECI, o potencia, chips o ingresos que cambian al menos un ${CIFRA} %.`,
-    `The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least ${DIST} ECI point, or power, chips or revenue that change by at least ${CIFRA}%.`),
+  F.t(`La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos ${DIST} punto ECI, o potencia, chips o ingresos que cambian al menos un ${CIFRA} %. El récord y las distancias del ECI de una misma recogida cuentan como una sola noticia.`,
+    `The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least ${DIST} ECI point, or power, chips or revenue that change by at least ${CIFRA}%. The ECI record and gaps from the same check count as a single news item.`),
   F.t('Cambia el modelo más usado en OpenRouter en los últimos 7 días.', 'The most used model on OpenRouter over the last 7 days changes.')
 ];
 export const REGLAS = reglas(globalF.es), REGLAS_EN = reglas(globalF.en);
@@ -147,7 +147,7 @@ function posicion(m, C, F) {
   if (s === null) return m.epoch?.eci?.v != null ? F.t(`Sin puntuación todavía en Artificial Analysis; ECI ${es(m.epoch.eci.v, 1)} en Epoch AI.`, `No score yet on Artificial Analysis; ECI ${F.n(m.epoch.eci.v, 1)} on Epoch AI.`)
     : F.t('Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI.', 'No independent score yet on Artificial Analysis or Epoch AI.');
   const block = m.weights.v, a = adj(F, block);
-  const lead = scored(C).filter(x => x.id !== m.id && x.weights.v === block).sort((a, b) => ii(b) - ii(a))[0];
+  const lead = (block === 'abiertos' || block === 'cerrados') ? scored(C).filter(x => x.id !== m.id && x.weights.v === block).sort((a, b) => ii(b) - ii(a))[0] : null;
   const all = scored(C).sort((a, b) => ii(b) - ii(a)), rank = all.findIndex(x => x.id === m.id) + 1;
   const diff = lead ? Math.round((s - ii(lead)) * 10) / 10 : null;
   const head = F.t(`Índice de AA ${es(s, 1)}`, `AA index ${F.n(s, 1)}`);
@@ -201,8 +201,27 @@ export function consecuencia(e, C, F = globalF.es) {
       const f = at(C.ind, d.path) || {};
       const who = x => x ? `${x.model} (${x.org}, ${F.n(x.eci, 1)})` : '';
       const vs = F.t('frente a', 'versus'), lag = F.t('Unos puntos ECI no equivalen a meses de retraso.', 'A few ECI points do not equate to months of lag.');
+      const eciGaps = () => {
+        const prev = C.base?.ind, cur = C.ind?.eci;
+        if (!prev || !cur) return '';
+        const defs = [
+          ['usCn', 'gapUsCn', 'EE. UU. − China', 'US − China'],
+          ['closedOpen', 'gapClosedOpen', 'cerrados − abiertos', 'closed − open'],
+          ['labs', 'gapLabs', 'entre los dos primeros laboratorios', 'between the top two labs']
+        ];
+        const moved = [];
+        for (const [bk, fk, lEs, lEn] of defs) {
+          const gf = cur[fk], a = prev[bk], b = gf?.v;
+          if (a == null || b == null || gf.stale || gf.detenida || gf.incompleto) continue;
+          if (Math.abs(b - a) >= DIST) moved.push([lEs, lEn, a, b]);
+        }
+        if (!moved.length) return '';
+        const pEs = moved.map(([lEs, , a, b], i) => `${lEs}, de ${es(a, 1)} a ${es(b, 1)}${i === 0 ? ' puntos' : ''}`).join('; ');
+        const pEn = moved.map(([, lEn, a, b], i) => `${lEn}, from ${F.n(a, 1)} to ${F.n(b, 1)}${i === 0 ? ' points' : ''}`).join('; ');
+        return F.t(` Distancias en el ECI: ${pEs}. ${lag}`, ` ECI gaps: ${pEn}. ${lag}`);
+      };
       const ctx = {
-        eci: f.model ? F.t(`${f.model}${f.org ? `, de ${f.org}` : ''}, con ${es(f.v, 1)} puntos.`, `${f.model}${f.org ? `, from ${f.org}` : ''}, with ${F.n(f.v, 1)} points.`) : '',
+        eci: (f.model ? F.t(`${f.model}${f.org ? `, de ${f.org}` : ''}, con ${es(f.v, 1)} puntos.`, `${f.model}${f.org ? `, from ${f.org}` : ''}, with ${F.n(f.v, 1)} points.`) : '') + eciGaps(),
         usCn: f.us && f.cn ? `${who(f.us)} ${vs} ${who(f.cn)}. ${lag}` : '',
         closedOpen: f.closed && f.open ? `${who(f.closed)} ${vs} ${who(f.open)}. ${lag}` : '',
         labs: f.first && f.second ? `${who(f.first)} ${vs} ${who(f.second)}${f.overlap ? F.t(', con intervalos de confianza solapados', ', with overlapping confidence intervals') : ''}.` : '',
@@ -253,7 +272,16 @@ export function enrich(items, C, TODAY) {
 }
 
 const order = (a, b) => a.importancia.tier - b.importancia.tier || b.importancia.w - a.importancia.w;
-const oneEach = list => { const seen = new Set(); return list.filter(e => { const k = e.model || e.data?.hito || e.key; return !seen.has(k) && seen.add(k); }); };
+const ECI_CAUSA = new Set(['eci', 'usCn', 'closedOpen', 'labs']);
+/* Clave causal para no dedicar dos plazas del parte o del RSS del mismo día al mismo modelo, hito o vuelco del ECI. */
+export function causa(e) {
+  if (e.model) return e.model;
+  if (e.kind === 'uso' && e.data?.slug) return `uso|${e.data.slug}`;
+  if (e.data?.hito) return `hito|${e.data.hito}`;
+  if (e.kind === 'indicador' && ECI_CAUSA.has(e.data?.ind)) return 'indicador|eci';
+  return e.key;
+}
+const oneEach = list => { const seen = new Set(); return list.filter(e => { const k = causa(e); return !seen.has(k) && seen.add(k); }); };
 
 /* El parte: hasta tres noticias de la última recogida (claves de «items»); si no hay ninguna, la última noticia
    anterior, buscada en todo el registro («all») y copiada entera porque puede caer fuera de la ventana de Hoy. */
@@ -270,7 +298,10 @@ const x = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').repl
 export function rss(items, { NOW_ISO, TODAY }, lang = 'es') {
   const F = globalF[lang], en = lang === 'en';
   const from = new Date(Date.parse(TODAY) - RSS_DIAS * 86400e3).toISOString().slice(0, 10);
-  const list = items.filter(e => e.importancia && e.detected >= from).sort((a, b) => b.detected.localeCompare(a.detected) || order(a, b));
+  const seenDay = new Set();
+  const list = items.filter(e => e.importancia && e.detected >= from)
+    .sort((a, b) => b.detected.localeCompare(a.detected) || order(a, b))
+    .filter(e => { const k = `${e.detected}|${causa(e)}`; return !seenDay.has(k) && seenDay.add(k); });
   const when = e => new Date((e.src?.got || '').slice(0, 10) === e.detected ? e.src.got : `${e.detected}T05:00:00Z`).toUTCString();
   const home = en ? `${SITE}?lang=en` : SITE;
   // Los campos de cada noticia en el idioma de la fuente.

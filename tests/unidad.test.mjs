@@ -5,9 +5,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fmtDate, fmtDateTime, num, usd, aaRace, aaCoverage } from '../js/fmt.js';
 import { resolve } from '../js/valoracion.js';
-import { importancia } from '../scripts/parte.mjs';
-import { unzip, raceOf } from '../scripts/indicadores.mjs';
-import { sameModelName, aaOnlyCandidates } from '../scripts/emparejar.mjs';
+import { importancia, enrich, parte, rss } from '../scripts/parte.mjs';
+import { unzip, raceOf, ediBlock, collectIndicators } from '../scripts/indicadores.mjs';
+import { sameModelName, aaOnlyCandidates, matchCatalogAA } from '../scripts/emparejar.mjs';
 import { labPrices, vaiven } from '../scripts/cambios.mjs';
 
 const fixture = name => new URL(`./fixtures/${name}`, import.meta.url);
@@ -83,6 +83,87 @@ test('lector de zip: entradas guardadas y comprimidas', () => {
   assert.throws(() => unzip(Buffer.from('esto no es un zip, aunque tenga más de veintidós bytes')), /directorio central/);
 });
 
+function makeStoredZip(entries) {
+  const locals = [], centrals = [];
+  let offset = 0;
+  for (const [name, content] of Object.entries(entries)) {
+    const nb = Buffer.from(name, 'utf8'), db = Buffer.from(content, 'utf8');
+    const lh = Buffer.alloc(30);
+    lh.writeUInt32LE(0x04034b50, 0); lh.writeUInt32LE(db.length, 18); lh.writeUInt32LE(db.length, 22); lh.writeUInt16LE(nb.length, 26);
+    locals.push(lh, nb, db);
+    const ch = Buffer.alloc(46);
+    ch.writeUInt32LE(0x02014b50, 0); ch.writeUInt32LE(db.length, 20); ch.writeUInt32LE(db.length, 24); ch.writeUInt16LE(nb.length, 28); ch.writeUInt32LE(offset, 42);
+    centrals.push(ch, nb);
+    offset += 30 + nb.length + db.length;
+  }
+  const cdSize = centrals.reduce((s, b) => s + b.length, 0), count = Object.keys(entries).length;
+  const eocd = Buffer.alloc(22);
+  eocd.writeUInt32LE(0x06054b50, 0); eocd.writeUInt16LE(count, 8); eocd.writeUInt16LE(count, 10); eocd.writeUInt32LE(cdSize, 12); eocd.writeUInt32LE(offset, 16);
+  return Buffer.concat([...locals, ...centrals, eocd]);
+}
+
+test('ediBlock: lee benchmark_data.zip con el esquema vigente de Epoch y preserva lastOk si falla', async () => {
+  const parseCSV = t => {
+    const [head, ...lines] = t.trim().split('\n').map(l => l.split(','));
+    return lines.map(r => Object.fromEntries(head.map((h, i) => [h.trim(), (r[i] ?? '').trim()])));
+  };
+  // 20 réplicas: dos modelos punteros con intervalo estrecho (mediana de desviación < 0,1) y uno antiguo con intervalo ancho
+  // (36 puntos) cuya submuestra desvía ~2,4 puntos en la cola sin superar el margen muestral (15 % del ancho).
+  const samples = Array.from({ length: 20 }, (_, i) => [
+    170 + (i / 19) * 6,        // TopUS: cuantiles 5 % / 95 % ≈ 170,3 / 175,7
+    158 + (i / 19) * 6,        // OpenCN: cuantiles 5 % / 95 % ≈ 158,3 / 163,7
+    37 + (i / 19) * 39         // OldBase: intervalo publicado 39,4–76,0 (ancho 36,6); cola 5 % en 38,95 (desv. ~0,45–2,4 admitida)
+  ]);
+  const D = 'epoch_capabilities_index/';
+  const zip = makeStoredZip({
+    [`${D}eci_scores.csv`]: [
+      'Model,Display name,eci,eci_ci_low,eci_ci_high,date,Organization,Country (of organization),Model accessibility,Accessibility group,model_versions',
+      'TopUS,Top US,173.0,170.3,175.7,2026-11-09,LabUS,United States of America,API access,Closed weights,',
+      'OpenCN,Open CN,161.0,158.3,163.7,2026-10-23,LabCN,China,Open weights (unrestricted),Open weights,',
+      'OldBase,Old Base,59.1,41.3,76.0,2023-05-04,,,Unknown,Other,'
+    ].join('\n'),
+    [`${D}edi_scores.csv`]: [
+      'benchmark_name,is_anchor,benchmark_release_date,edi,estimated_slope_scaled',
+      'EasyBench,False,2025-01-10,150.0,0.12',
+      'HardBench,False,2026-06-01,180.0,0.10'
+    ].join('\n'),
+    [`${D}processed_data_for_eci.csv`]: [
+      'Model,benchmark,performance',
+      'TopUS,EasyBench,0.92',
+      'TopUS,HardBench,0.34'
+    ].join('\n'),
+    [`${D}eci_bootstraps.json`]: JSON.stringify({
+      num_samples: 20, eci_scaled: true, ci_level: 0.9,
+      model: { ids: [0, 1, 2], names: ['TopUS', 'OpenCN', 'OldBase'], capability_samples: samples },
+      benchmark: { names: ['EasyBench', 'HardBench'], difficulty_samples: samples.map((_, i) => [149 + i * 0.1, 179 + i * 0.1]) }
+    })
+  });
+  const ctx = { parseCSV, fact: (v, src, url, asOf, ex) => ({ v, src, url, asOf, got: '2026-11-10T05:00:00Z', ...ex }), log: () => {}, NOW_ISO: '2026-11-10T05:00:00Z', TODAY: '2026-11-10' };
+  const edi = ediBlock(zip, ctx);
+  assert.equal(edi.open.v, 1);
+  assert.deepEqual(edi.open.names, ['HardBench']);
+  assert.equal(edi.map.v.length, 2);
+  assert.equal(edi.prob.usCn.v, 100);
+  assert.equal(edi.prob.closedOpen.v, 100);
+
+  // Si las réplicas vienen en otra escala, ediBlock sigue rechazándolas y collectIndicators conserva lastOk.
+  const badZip = makeStoredZip({
+    [`${D}eci_scores.csv`]: 'Model,Display name,eci,eci_ci_low,eci_ci_high,date,Organization,Country (of organization),Accessibility group\nTopUS,Top US,173,170,176,2026-11-09,LabUS,United States of America,Closed weights',
+    [`${D}edi_scores.csv`]: 'benchmark_name,benchmark_release_date,edi,estimated_slope_scaled\nB,2025-01-01,150,0.1',
+    [`${D}processed_data_for_eci.csv`]: 'Model,benchmark,performance\nTopUS,B,0.5',
+    [`${D}eci_bootstraps.json`]: JSON.stringify({ eci_scaled: true, ci_level: 0.9, model: { names: ['TopUS'], capability_samples: [[1], [2], [3]] }, benchmark: { names: [], difficulty_samples: [] } })
+  });
+  assert.throws(() => ediBlock(badZip, ctx), /no reproducen los intervalos/);
+  const res = await collectIndicators(
+    { ...ctx, getText: async () => { throw new Error('sin red'); }, getBuf: async () => badZip },
+    'keep',
+    { status: { epoch_eci: { ok: true, got: '2026-11-04T03:54:36Z' } }, ind: { edi } }
+  );
+  assert.equal(res.status.epoch_eci.ok, false);
+  assert.equal(res.status.epoch_eci.lastOk, '2026-11-04T03:54:36Z');
+  assert.equal(res.ind.edi.open.stale, true);
+});
+
 test('aaCoverage: tramos sin el mejor modelo según Epoch, sin rellenar nada', () => {
   const cat = {
     ...catalog([
@@ -141,6 +222,50 @@ test('modelos de AA sin OpenRouter: sólo los nuevos, sin duplicar los que ya es
   assert.deepEqual(aaOnlyCandidates(rows, models, labs, creators, {}, {}, '2026-11-01', new Set(['gemini-4-carbon'])).map(c => c.id), ['google/gemini-4-carbon']);
 });
 
+test('matchCatalogAA y aaOnlyCandidates: prefijo de laboratorio y unicidad de aa.slug sin colisiones', () => {
+  const labs = {
+    tencent: { name: 'Tencent', aa_creator: 'tencent' },
+    google: { name: 'Google', aa_creator: 'google' },
+    openai: { name: 'OpenAI', aa_creator: 'openai' },
+    deepseek: { name: 'DeepSeek', aa_creator: 'deepseek' }
+  };
+  const creators = { tencent: 'c-t', google: 'c-g', openai: 'c-o', deepseek: 'c-d' };
+  const row = (slug, name, cid, ii, date) => ({ slug, name, model_creator: { id: cid }, release_date: date, evaluations: { artificial_analysis_intelligence_index: ii } });
+  const aaRows = [
+    row('tencent-hy4', 'Tencent Hy4', 'c-t', 34.6, '2026-11-03'),
+    row('hy3-preview', 'Hy3-preview (Reasoning)', 'c-t', null, '2026-04-23'),
+    row('gemini-3-1-flash-lite-preview', 'Gemini 3.1 Flash-Lite', 'c-g', 6.2, '2026-03-03'),
+    row('gpt-5-2', 'GPT-5.2 (Xhigh)', 'c-o', null, '2025-12-11'),
+    row('deepseek-v3-2-0925', 'DeepSeek V3.2 Exp (Non-reasoning)', 'c-d', null, '2025-09-29')
+  ];
+  const orModels = [
+    { id: 'tencent/hy4', name: 'Hy4', orCreated: { v: '2026-11-04' } },
+    { id: 'tencent/hy4-preview', name: 'Hy4 preview', orCreated: { v: '2026-08-28' } },
+    { id: 'tencent/hy3', name: 'Hy3', orCreated: { v: '2026-07-06' } },
+    { id: 'tencent/hy3-preview', name: 'Hy3 preview', orCreated: { v: '2026-04-22' } },
+    { id: 'google/gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite', orCreated: { v: '2026-05-07' } },
+    { id: 'google/gemini-3.1-flash-lite-preview', name: 'Gemini 3.1 Flash Lite Preview', orCreated: { v: '2026-03-03' } },
+    { id: 'openai/gpt-5.2', name: 'GPT-5.2', orCreated: { v: '2025-12-10' } },
+    { id: 'openai/gpt-5.2-chat', name: 'GPT-5.2 Chat', orCreated: { v: '2025-12-10' } },
+    { id: 'deepseek/deepseek-v3.2', name: 'DeepSeek V3.2', orCreated: { v: '2025-12-01' } },
+    { id: 'deepseek/deepseek-v3.2-exp', name: 'DeepSeek V3.2 Exp', orCreated: { v: '2025-09-29' } }
+  ];
+  const matched = matchCatalogAA(orModels, labs, aaRows, {}, creators);
+  assert.equal(matched.get('tencent/hy4')?.row.slug, 'tencent-hy4', 'Tencent Hy4 casa con Hy4');
+  assert.equal(matched.get('tencent/hy4-preview'), null, 'no se duplica en Hy4 preview');
+  assert.equal(matched.get('tencent/hy3-preview')?.row.slug, 'hy3-preview');
+  assert.equal(matched.get('tencent/hy3'), null);
+  assert.equal(matched.get('google/gemini-3.1-flash-lite-preview')?.row.slug, 'gemini-3-1-flash-lite-preview');
+  assert.equal(matched.get('google/gemini-3.1-flash-lite'), null);
+  assert.equal(matched.get('openai/gpt-5.2')?.row.slug, 'gpt-5-2');
+  assert.equal(matched.get('openai/gpt-5.2-chat'), null);
+  assert.equal(matched.get('deepseek/deepseek-v3.2-exp')?.row.slug, 'deepseek-v3-2-0925');
+  assert.equal(matched.get('deepseek/deepseek-v3.2'), null);
+
+  const built = orModels.map(m => ({ ...m, aa: matched.get(m.id) ? { slug: matched.get(m.id).row.slug } : null }));
+  assert.deepEqual(aaOnlyCandidates(aaRows, built, labs, creators, {}, {}, '2026-10-01'), [], 'Tencent Hy4 no entra como aaOnly');
+});
+
 test('vaivén de precios: el que vuelve a uno reciente no es un cambio; el nuevo sí', () => {
   const snap = (date, x) => ({ date, models: { 'deepseek/flash': { pb: 'laboratorio', ...x } } });
   const seen = labPrices([
@@ -179,3 +304,34 @@ test('raceOf: récords por laboratorio, sin interpolar, solo los que llegaron a 
   assert.equal(a.c, 'US');
   assert.deepEqual(race[0].steps.map(s => [s.d, s.v, s.w]), [['2023-02-01', 110, 'o'], ['2024-02-01', 135, 'o']]);
 });
+
+test('parte y rss: deduplicación causal agrupa récord y distancias del ECI en una única noticia', () => {
+  const D = '2026-11-10', NOW_ISO = '2026-11-10T13:47:13Z';
+  const src = { name: 'Epoch AI', url: 'https://epoch.ai/benchmarks/eci', got: NOW_ISO };
+  const items = [
+    { kind: 'indicador', key: `indicador|eci|${D}`, detected: D, published: '2026-11-09', src, what: 'Mejor modelo en el ECI', data: { ind: 'eci', path: 'eci.frontier', from: 169.07, to: 174.24 }, i18n: { en: { what: 'Best model on ECI' } } },
+    { kind: 'indicador', key: `indicador|labs|${D}`, detected: D, published: null, src, what: 'Distancia laboratorios', data: { ind: 'labs', path: 'eci.gapLabs', from: 0.71, to: 5.08 }, i18n: { en: { what: 'Labs gap' } } },
+    { kind: 'indicador', key: `indicador|usCn|${D}`, detected: D, published: null, src, what: 'Distancia EE. UU. − China', data: { ind: 'usCn', path: 'eci.gapUsCn', from: 9.76, to: 12.22 }, i18n: { en: { what: 'US − China gap' } } },
+    { kind: 'indicador', key: `indicador|closedOpen|${D}`, detected: D, published: null, src, what: 'Distancia cerrados − abiertos', data: { ind: 'closedOpen', path: 'eci.gapClosedOpen', from: 9.76, to: 12.22 }, i18n: { en: { what: 'Closed − open gap' } } },
+    { kind: 'indicador', key: `indicador|dcMW|${D}`, detected: D, published: null, src, what: 'Potencia en servicio', data: { ind: 'dcMW', path: 'dc.now', from: 10000, to: 12000 }, i18n: { en: { what: 'IT power' } } },
+    { kind: 'uso', key: `uso|primero|deepseek/v4|${D}`, detected: D, published: null, src: { name: 'OpenRouter · uso', url: 'https://openrouter.ai/rankings', got: NOW_ISO }, what: 'Más usado', data: { sub: 'primero', slug: 'deepseek/v4', share: 25, prev: 'otro/m' }, i18n: { en: { what: 'Most used' } } }
+  ];
+  const C = {
+    byId: new Map(), models: [], hitos: new Map(), carrera: { frentes: [] },
+    uso: { from: '2026-11-03', to: '2026-11-09' },
+    base: { ind: { eci: 169.07, labs: 0.71, usCn: 9.76, closedOpen: 9.76 } },
+    ind: { eci: { frontier: { v: 174.24, model: 'Claude Fable 5.2', org: 'Anthropic' }, gapLabs: { v: 5.08 }, gapUsCn: { v: 12.22 }, gapClosedOpen: { v: 12.22 } } }
+  };
+  enrich(items, C, D);
+  const p = parte(items, D, items);
+  assert.deepEqual(p.noticias, [`indicador|eci|${D}`, `indicador|dcMW|${D}`, `uso|primero|deepseek/v4|${D}`]);
+  assert.match(items[0].consecuencia, /Distancias en el ECI: EE\. UU\. − China, de 9,8 a 12,2 puntos; cerrados − abiertos, de 9,8 a 12,2; entre los dos primeros laboratorios, de 0,7 a 5,1\./);
+  assert.match(items[0].i18n.en.consecuencia, /ECI gaps: US − China, from 9\.8 to 12\.2 points; closed − open, from 9\.8 to 12\.2; between the top two labs, from 0\.7 to 5\.1\./);
+
+  const feedEs = rss(items, { NOW_ISO, TODAY: D }, 'es');
+  const feedEn = rss(items, { NOW_ISO, TODAY: D }, 'en');
+  const guids = xml => [...xml.matchAll(/<guid[^>]*>([^<]*)<\/guid>/g)].map(m => m[1]);
+  assert.deepEqual(guids(feedEs), [`indicador|eci|${D}`, `indicador|dcMW|${D}`, `uso|primero|deepseek/v4|${D}`]);
+  assert.deepEqual(guids(feedEn), guids(feedEs));
+});
+

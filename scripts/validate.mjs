@@ -1,14 +1,28 @@
 #!/usr/bin/env node
 /* Comprueba que los datos generados y curados respetan las reglas de procedencia antes de publicarlos. */
 import { readFile } from 'node:fs/promises';
+import { sameModelName, aaBase } from './emparejar.mjs';
+import { causa } from './parte.mjs';
 
 const read = async p => JSON.parse(await readFile(new URL(`../${p}`, import.meta.url), 'utf8'));
 const readOpt = p => read(p).catch(e => (e.code === 'ENOENT' ? null : Promise.reject(e)));
 const c = await read('data/catalog.json');
+const [ovCur, labsCur] = await Promise.all([readOpt('data/curated/overrides.json'), readOpt('data/curated/labs.json')]);
 const errors = [], warnings = [];
+let legacyStale = 0;
+const staleFail = msg => ((c.schema || 0) >= 3 ? errors.push(msg) : legacyStale++);
+const matchFail = msg => ((c.schema || 0) >= 4 ? errors.push(msg) : warnings.push(`catálogo anterior a schema 4: ${msg}`));
+function catSourceOk(src, where) {
+  const st = c.status?.[src];
+  if (!st?.ok) return false;
+  if (src === 'hf' && st.failed > 0) return false;
+  if (src === 'epoch' && st.note && /\.epoch\.swe$/.test(where)) return false;
+  return true;
+}
 const isFact = f => f && typeof f === 'object' && 'v' in f;
-function checkFact(f, where, sources = c.sources) {
+function checkFact(f, where, sources = c.sources, srcOk = catSourceOk) {
   if (!isFact(f)) return errors.push(`${where}: no es un hecho con procedencia`);
+  if (f.stale && srcOk?.(f.src, where)) staleFail(`${where}: marcado stale aunque su fuente (${f.src}) figura ok`);
   if (f.v === null) return;
   if (!f.src || !sources[f.src]) errors.push(`${where}: fuente desconocida (${f.src})`);
   if (!f.got || !/^\d{4}-\d{2}-\d{2}T/.test(f.got)) errors.push(`${where}: falta fecha de consulta`);
@@ -16,17 +30,30 @@ function checkFact(f, where, sources = c.sources) {
   if (typeof f.v === 'number' && (!Number.isFinite(f.v) || (f.v < 0 && !f.signed))) errors.push(`${where}: valor numérico inválido ${f.v}`);
 }
 if (!Array.isArray(c.models) || !c.models.length) errors.push('catálogo vacío');
-const ids = new Set();
+const ids = new Set(), aaSlugs = new Map();
+const orByLab = new Map();
+for (const m of c.models || []) if (!m.aaOnly && m.lab?.name) {
+  if (!orByLab.has(m.lab.name)) orByLab.set(m.lab.name, []);
+  orByLab.get(m.lab.name).push(m);
+}
 for (const m of c.models || []) {
   const w = m.id;
   if (ids.has(w)) errors.push(`${w}: duplicado`); ids.add(w);
+  if (m.aa?.slug && !Object.prototype.hasOwnProperty.call(ovCur?.aa || {}, w)) {
+    const prev = aaSlugs.get(m.aa.slug);
+    if (prev) matchFail(`${w}: comparte aa.slug «${m.aa.slug}» con ${prev}`);
+    else aaSlugs.set(m.aa.slug, w);
+  }
   for (const k of ['weights', 'license', 'orCreated', 'ctx', 'reasoning', 'caching']) checkFact(m[k], `${w}.${k}`);
   for (const k of ['in', 'out', 'cacheRead', 'cacheWrite']) checkFact(m.price?.[k], `${w}.price.${k}`);
   if (![null, 'abiertos', 'cerrados'].includes(m.weights?.v)) errors.push(`${w}: pesos con valor no permitido ${m.weights?.v}`);
   if (m.identity !== 'confirmada' && m.lab?.country) errors.push(`${w}: identidad sin confirmar con país asignado`);
   if (m.epoch) for (const k of ['eci', 'release', 'access', 'swe']) checkFact(m.epoch[k], `${w}.epoch.${k}`);
   if (m.epochPub) checkFact(m.epochPub, `${w}.epochPub`);
-  if (m.aa) for (const k of ['intelligence', 'coding', 'agentic', 'tps', 'ttft', 'release']) if (m.aa[k] !== undefined) checkFact(m.aa[k], `${w}.aa.${k}`);
+  if (m.aa) {
+    if (m.aa.stale && c.status?.aa?.ok) staleFail(`${w}.aa: marcado stale aunque status.aa figura ok`);
+    for (const k of ['intelligence', 'coding', 'agentic', 'tps', 'ttft', 'ttfa', 'release', 'blended']) if (m.aa[k] !== undefined) checkFact(m.aa[k], `${w}.aa.${k}`);
+  }
   if (m.aa && !c.sources?.aa?.permiso) errors.push(`${w}: datos de Artificial Analysis sin permiso registrado en data/curated/permisos.json`);
   if (m.price?.in?.v > 1000 || m.price?.out?.v > 1000) errors.push(`${w}: precio fuera de rango`);
   if (!['laboratorio', 'proveedor', 'referencia', 'sin-api'].includes(m.price?.basis)) errors.push(`${w}: criterio de precio no permitido ${m.price?.basis}`);
@@ -37,6 +64,9 @@ for (const m of c.models || []) {
     if (m.aaOnly.v !== true || !/^\d{4}-\d{2}-\d{2}$/.test(m.aaOnly.since || '')) errors.push(`${w}: aaOnly mal formado`);
     if (m.aa?.intelligence?.v == null) errors.push(`${w}: sin API pública y sin índice de AA`);
     if (m.price?.basis !== 'sin-api' || m.price.in.v !== null || m.price.out.v !== null || m.orCreated.v !== null) errors.push(`${w}: sin API pública pero con precio o alta en OpenRouter`);
+    const labObj = { ...(labsCur?.[m.lab?.id] || m.lab || {}), id: m.lab?.id };
+    const dup = (orByLab.get(m.lab?.name) || []).find(o => sameModelName(aaBase(m.aa || m), o.name, labObj));
+    if (dup) matchFail(`${w}: modelo aaOnly duplicado con ${dup.id} («${dup.name}») ya presente en OpenRouter`);
   } else if (m.price?.basis === 'sin-api') errors.push(`${w}: precio «sin-api» en un modelo de OpenRouter`);
 }
 // Lo que queda fuera del catálogo: tipo conocido y nunca a la vez dentro y fuera.
@@ -55,16 +85,26 @@ for (const e of c.curatedEvents || []) {
   if (!['lectura directa', 'buscador'].includes(e.verificacion)) errors.push(`${w}: verificación no válida`);
 }
 
+if (c.status?.uso?.ok) {
+  if (c.uso?.stale) staleFail('catalog.uso: marcado stale aunque status.uso figura ok');
+  if (c.usoMes?.stale) staleFail('catalog.usoMes: marcado stale aunque status.uso figura ok');
+}
 /* Indicadores: todo objeto con forma de hecho ({v, src}) debe llevar fuente conocida y fechas. */
 const ind = await readOpt('data/indicadores.json');
 if (ind) {
-  const walk = (o, where) => {
-    if (!o || typeof o !== 'object') return;
-    if ('v' in o && 'src' in o) checkFact(o, where, ind.sources);
-    for (const [k, v] of Object.entries(o)) if (v && typeof v === 'object') walk(v, `${where}.${k}`);
+  const IND_ST = {
+    eci: ind.status?.epoch, bench: ind.status?.epoch, edi: ind.status?.epoch_eci, dc: ind.status?.epoch_dc,
+    chips: ind.status?.epoch_chips, companies: ind.status?.epoch_companies, metr: ind.status?.metr,
+    training: ind.status?.epoch_models, aa: c.status?.aa
   };
-  walk(ind.ind, 'indicadores');
+  const walk = (o, where, blockOk) => {
+    if (!o || typeof o !== 'object') return;
+    if ('v' in o && 'src' in o) checkFact(o, where, ind.sources, () => !!blockOk);
+    for (const [k, v] of Object.entries(o)) if (v && typeof v !== 'object') continue; else if (v) walk(v, `${where}.${k}`, blockOk);
+  };
+  for (const [k, v] of Object.entries(ind.ind || {})) if (v && typeof v === 'object') walk(v, `indicadores.${k}`, IND_ST[k]?.ok);
 }
+if (legacyStale) warnings.push(`catálogo anterior a schema 3: ${legacyStale} marca(s) stale incoherentes con status ok (se limpiarán en la próxima recogida)`);
 
 /* Datos curados de «La carrera» y «AI 2027». */
 const DAY = /^\d{4}-\d{2}-\d{2}$/, DAYMONTH = /^\d{4}-\d{2}(-\d{2})?$/, URL_RE = /^https:\/\/\S+$/;
@@ -187,7 +227,7 @@ if (chg?.parte) {
   if (!DAY.test(p.fecha || '')) errors.push('parte: sin fecha');
   if (!Array.isArray(p.noticias) || p.noticias.length > 3) errors.push('parte: más de tres noticias');
   if (!p.reglas?.length) errors.push('parte: sin la regla publicada');
-  const quien = new Set();
+  const quien = new Set(), causas = new Set();
   for (const k of p.noticias || []) {
     const e = byKey.get(k);
     if (!e) { errors.push(`parte: ${k} no está en la lista de cambios`); continue; }
@@ -195,6 +235,12 @@ if (chg?.parte) {
     const q = e.model || e.data?.hito || e.key;
     if (quien.has(q)) errors.push(`parte: ${q} sale dos veces`);
     quien.add(q);
+    const ck = causa(e);
+    if (causas.has(ck)) {
+      const msg = `parte: causa repetida «${ck}» (${k})`;
+      if ((chg.schema || 0) >= 2) errors.push(msg); else warnings.push(`changes anterior a schema 2: ${msg}`);
+    }
+    causas.add(ck);
   }
   if (p.noticias?.length && p.ultima) errors.push('parte: con noticias no lleva «la última anterior»');
 }

@@ -34,7 +34,7 @@ import { aaRace, aaCoverage } from '../js/fmt.js';
 import { detectChanges, mergeLog, snapshotExtras, indSnapshot, vigilados, labPrices, vaiven, PRICE_BACK_DAYS } from './cambios.mjs';
 import { enrich, parte, rss } from './parte.mjs';
 import { AVISOS, failedStatus } from './textos.mjs';
-import { norm, matchAA, aaBase, aaOnlyCandidates } from './emparejar.mjs';
+import { norm, matchCatalogAA, aaBase, aaOnlyCandidates } from './emparejar.mjs';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DATA = path.join(ROOT, 'data');
@@ -532,7 +532,13 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv, pesosOv) 
   const epsMeta = endpoints ? { src: 'openrouter', url: orUrl + '/providers', asOf: TODAY, got: NOW_ISO } : (prev && prev.endpointsMeta ? { ...prev.endpointsMeta, stale: true } : null);
 
   let aa = null;
-  if (aaMatch === 'keep') {
+  if (aaMatch?.prebuilt) {
+    aa = cleanAA(aaMatch.prebuilt);
+  }
+  else if (aaMatch === 'reuse') {
+    aa = prev && prev.aa ? cleanAA(prev.aa) : null;
+  }
+  else if (aaMatch === 'keep') {
     aa = prev && prev.aa ? { ...prev.aa, stale: true } : null;
     if (aa) for (const k of Object.keys(aa)) if (aa[k] && typeof aa[k] === 'object' && 'v' in aa[k]) aa[k] = { ...aa[k], stale: true };
   }
@@ -618,9 +624,163 @@ function asAAOnly(m, prev) {
   }
   return m;
 }
-/* Copia de la recogida anterior cuando AA no se ha consultado: cifras marcadas como no actualizadas. */
-const staleCopy = p => JSON.parse(JSON.stringify(p, (k, v) => (v && typeof v === 'object' && 'v' in v && 'src' in v) ? { ...v, stale: true } : v));
+/* Copia limpia de un bloque AA o de un modelo sin API pública cuando se reutiliza una consulta reciente (< AA_REUSE_H). */
+function cleanAA(prevAA) {
+  const out = structuredClone(prevAA);
+  delete out.stale;
+  for (const v of Object.values(out)) if (v && typeof v === 'object' && 'v' in v) delete v.stale;
+  return out;
+}
+function freshAAOnly(p, epKeep) {
+  return JSON.parse(JSON.stringify(p, (k, v) => {
+    if (!v || typeof v !== 'object') return v;
+    if (k === 'aa' && 'slug' in v) return cleanAA(v);
+    if ('v' in v && 'src' in v && (v.v === null || v.src === 'aa' || v.src === 'openrouter' || (v.src === 'epoch' && !epKeep))) {
+      const { stale, ...rest } = v;
+      return rest;
+    }
+    return v;
+  }));
+}
+/* Copia de la recogida anterior cuando AA falla: sólo se marcan como antiguos los hechos no nulos de fuentes fallidas. */
+function staleCopy(p, epKeep = false) {
+  return JSON.parse(JSON.stringify(p, (k, v) => {
+    if (!v || typeof v !== 'object') return v;
+    if (k === 'aa' && 'slug' in v) return { ...v, stale: true };
+    if ('v' in v && 'src' in v) {
+      const { stale, ...rest } = v;
+      return rest.v !== null && (rest.src === 'aa' || (rest.src === 'epoch' && epKeep) || stale) ? { ...rest, stale: true } : rest;
+    }
+    return v;
+  }));
+}
 
+/* Filas sintéticas de AA a partir de un catálogo previo, para reemparejar sin consultar la API cuando cambia el esquema. */
+function rowsFromCatalog(catModels, labs, aaCreators) {
+  const bySlug = new Map();
+  for (const p of catModels || []) {
+    if (!p?.aa?.slug) continue;
+    const author = p.id.split('/')[0];
+    const cSlug = labs[author]?.aa_creator;
+    const cid = cSlug ? aaCreators[cSlug] : null;
+    if (!cid) continue;
+    if (!bySlug.has(p.aa.slug) || (bySlug.get(p.aa.slug).evaluations.artificial_analysis_intelligence_index == null && p.aa.intelligence?.v != null)) {
+      bySlug.set(p.aa.slug, {
+        slug: p.aa.slug,
+        name: p.aa.name,
+        release_date: p.aa.release?.v || null,
+        model_creator: { id: cid, slug: cSlug },
+        evaluations: { artificial_analysis_intelligence_index: p.aa.intelligence?.v ?? null },
+        _aaObj: cleanAA(p.aa)
+      });
+    }
+  }
+  return [...bySlug.values()];
+}
+
+/* Normaliza en memoria una instantánea previa anterior a schema 4 con las reglas actuales de emparejamiento AA,
+   sin tocar data/history/<fecha>.json en disco, para que corregir colisiones o duplicados aaOnly no genere noticias falsas. */
+function normalizeBaseAA(base, currentModels, prevCatModels, labs, aaCreators, overrides, aaSolo, epFront) {
+  if (!base?.models || (base.schema || 0) >= 4) return { base, repairedAA: new Set() };
+  const out = structuredClone(base);
+  const repairedAA = new Set();
+  const bySlug = new Map();
+  const prevModelById = new Map([...(prevCatModels || []), ...(currentModels || [])].map(m => [m.id, m]));
+  for (const m of [...(prevCatModels || []), ...(currentModels || [])]) {
+    if (!m?.aa?.slug) continue;
+    const author = m.id.split('/')[0];
+    const cSlug = labs[author]?.aa_creator;
+    if (!cSlug || !aaCreators[cSlug]) continue;
+    if (!bySlug.has(m.aa.slug)) {
+      bySlug.set(m.aa.slug, {
+        slug: m.aa.slug,
+        name: m.aa.name,
+        release_date: m.aa.release?.v || null,
+        model_creator: { id: aaCreators[cSlug], slug: cSlug },
+        evaluations: { artificial_analysis_intelligence_index: m.aa.intelligence?.v ?? null },
+        _holders: new Set()
+      });
+    }
+    bySlug.get(m.aa.slug)._holders.add(m.id);
+  }
+  for (const [id, sm] of Object.entries(base.models)) {
+    if (!sm.ao) continue;
+    const author = id.split('/')[0];
+    const cSlug = labs[author]?.aa_creator;
+    const slug = prevModelById.get(id)?.aa?.slug || id.split('/').slice(1).join('/');
+    if (cSlug && aaCreators[cSlug] && !bySlug.has(slug)) {
+      bySlug.set(slug, {
+        slug, name: sm.n || slug, release_date: base.date,
+        model_creator: { id: aaCreators[cSlug], slug: cSlug },
+        evaluations: { artificial_analysis_intelligence_index: sm.ii ?? null },
+        _holders: new Set([id])
+      });
+    } else if (bySlug.has(slug)) {
+      bySlug.get(slug)._holders.add(id);
+    }
+  }
+  const aaList = [...bySlug.values()];
+  const baseOr = Object.entries(base.models).filter(([, sm]) => !sm.ao).map(([id, sm]) => ({
+    id,
+    name: sm.n || prevModelById.get(id)?.name || id,
+    orCreated: { v: prevModelById.get(id)?.orCreated?.v || null }
+  }));
+  const matched = matchCatalogAA(baseOr, labs, aaList, overrides, aaCreators);
+  const slugBaseII = new Map();
+  for (const [slug, row] of bySlug) {
+    for (const hId of row._holders) {
+      const bii = base.models[hId]?.ii;
+      if (bii !== null && bii !== undefined) { slugBaseII.set(slug, bii); break; }
+    }
+  }
+  let changed = false;
+  for (const [id, sm] of Object.entries(out.models)) {
+    if (sm.ao) continue;
+    const hit = matched.get(id);
+    if (!hit && sm.ii !== null && sm.ii !== undefined) {
+      sm.ii = null;
+      changed = true;
+    } else if (hit && (sm.ii === null || sm.ii === undefined) && slugBaseII.has(hit.row.slug)) {
+      sm.ii = slugBaseII.get(hit.row.slug);
+      repairedAA.add(id);
+      changed = true;
+    }
+  }
+  const builtBase = baseOr.map(m => ({ ...m, aa: matched.get(m.id) ? { slug: matched.get(m.id).row.slug } : null }));
+  const validAOSlugs = new Set(aaOnlyCandidates(aaList, builtBase, labs, aaCreators, overrides, aaSolo || {}, '0000-00-00', new Set(bySlug.keys())).map(c => c.row.slug));
+  for (const [id, sm] of Object.entries(out.models)) {
+    if (!sm.ao) continue;
+    const slug = prevModelById.get(id)?.aa?.slug || id.split('/').slice(1).join('/');
+    if (!validAOSlugs.has(slug)) {
+      delete out.models[id];
+      changed = true;
+    }
+  }
+  if (changed) {
+    const baseCatModels = Object.entries(out.models).map(([id, sm]) => {
+      const author = id.split('/')[0], labObj = labs[author] || {}, meta = prevModelById.get(id);
+      const hit = matched.get(id);
+      const rel = hit?.row.release_date || meta?.aa?.release?.v || meta?.orCreated?.v || out.date;
+      return {
+        id,
+        name: sm.n || meta?.name || id,
+        identity: labObj.stealth ? 'sin confirmar' : 'confirmada',
+        lab: { id: author, name: labObj.name || author, country: labObj.country || null },
+        weights: { v: sm.w === 'o' || sm.w === 'a' ? 'abiertos' : sm.w === 'c' ? 'cerrados' : null, ...(sm.w === 'a' ? { announced: true } : {}) },
+        orCreated: { v: meta?.orCreated?.v || null },
+        epochPub: meta?.epochPub || null,
+        epoch: meta?.epoch || null,
+        aa: sm.ii !== null && sm.ii !== undefined ? { version: out.aaIndexVersion ?? null, intelligence: { v: sm.ii }, release: { v: rel } } : null
+      };
+    });
+    if (out.leaders?.aa) out.leaders = { ...out.leaders, aa: leaders(baseCatModels, out.aaIndexVersion).aa };
+    if (out.ind) {
+      const baseAAInd = indSnapshot({ aa: aaIndicators(baseCatModels, out.aaIndexVersion, { ok: true, got: out.got || `${out.date}T00:00:00Z` }, epFront) });
+      for (const k of ['aaUsCn', 'aaClosedOpen', 'aaLabs', 'aaRate12m']) if (k in out.ind) out.ind[k] = baseAAInd[k];
+    }
+  }
+  return { base: out, repairedAA };
+}
 /* Líderes abierto y cerrado por índice de AA (vistas de modelos) y por ECI de Epoch (referencia histórica). */
 function leaders(models, version) {
   const pick = (val) => {
@@ -707,12 +867,12 @@ async function main() {
 
   const aaPrevGot = prevCatalog?.status?.aa?.ok ? prevCatalog.status.aa.got : null;
   // AA_FRESH (entrada «aa_fresca» de la ejecución manual) obliga a consultar AA aunque haya una consulta reciente.
-  const aaReuse = !FIXTURES && !process.env.AA_FRESH && aaPrevGot && (NOW - new Date(aaPrevGot)) / 3600e3 < AA_REUSE_H && prevCatalog?.models?.some(m => m.aa);
+  const aaReuse = (!FIXTURES || process.env.AA_TEST_REUSE === '1') && !process.env.AA_FRESH && aaPrevGot && (NOW - new Date(aaPrevGot)) / 3600e3 < AA_REUSE_H && prevCatalog?.models?.some(m => m.aa);
   if (aaReuse) log(`Artificial Analysis: se reutiliza la consulta de ${aaPrevGot} (menos de ${AA_REUSE_H} h) para no gastar el cupo diario`);
   const aaRes = aaReuse ? undefined : await loadAA(permisos.aa);
   const usoRes = await loadUso(orModels.names);
   const aaRows = aaRes ? aaRes.rows : aaRes;
-  const aaVersion = aaRes ? aaRes.version : (aaRes === undefined ? prevCatalog?.aaIndexVersion ?? null : null);
+  const aaVersion = aaRes ? aaRes.version : ((aaReuse || aaRes === undefined) ? prevCatalog?.aaIndexVersion ?? null : null);
   let ep;
   try { ep = await loadEpoch(); } catch (e) { log(`Epoch falló: ${e.message}`); ep = 'keep'; }
   const epochOv = ovFile.epoch || {};
@@ -735,6 +895,13 @@ async function main() {
   }
   const hfFound = [];
 
+  const reuseRematch = aaReuse && (prevCatalog?.schema || 0) < 4;
+  const reuseRows = reuseRematch ? rowsFromCatalog(prevCatalog?.models, labs, aaCreators) : null;
+  const aaMatched = aaRows
+    ? matchCatalogAA(orModels, labs, aaRows, overrides, aaCreators)
+    : reuseRematch
+    ? matchCatalogAA(orModels, labs, reuseRows, overrides, aaCreators)
+    : null;
   const models = [];
   for (const m of orModels) {
     const author = m.id.split('/')[0];
@@ -752,8 +919,18 @@ async function main() {
     ]);
     if (hf && !hf.ok && !hf.notFound) status.hf.failed++;
     if (hf && hf.notFound && m._hfOverride) log(`override HF sin repositorio: ${m.id} → ${m._hfOverride}`);
-    const aaMatch = aaRows === undefined ? 'keep' : matchAA(m, lab, aaRows, overrides, aaCreators);
-    if (aaMatch && aaMatch !== 'keep') aaMatch.version = aaVersion;
+    let aaMatch = null;
+    if (aaRows) {
+      aaMatch = aaMatched.get(m.id) || null;
+      if (aaMatch) aaMatch.version = aaVersion;
+    } else if (reuseRematch) {
+      const hit = aaMatched.get(m.id);
+      aaMatch = hit ? { prebuilt: { ...hit.row._aaObj, how: hit.how } } : null;
+    } else if (aaReuse) {
+      aaMatch = 'reuse';
+    } else if (aaRows === undefined) {
+      aaMatch = 'keep';
+    }
     models.push(buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv, ovFile.pesos || {}));
   }
   // Modelos que AA ya puntúa sin estar en OpenRouter (scripts/emparejar.mjs, aaOnlyCandidates). Si AA no se ha consultado
@@ -771,17 +948,26 @@ async function main() {
       const m = buildModel(pseudo, lab, null, hf, { row: c.row, how: c.variants > 1 ? `configuración de mayor índice entre ${c.variants}` : 'sin pareja en OpenRouter', variants: c.variants, version: aaVersion }, prev, ep, epochOv, ovFile.pesos || {});
       aaOnly.push(asAAOnly(m, prev));
     }
+  } else if (reuseRematch) {
+    const now = new Set(models.map(m => m.id));
+    const keep = new Set(prevAO.map(p => p.aa.slug));
+    const valid = new Set(aaOnlyCandidates(reuseRows, models, labs, aaCreators, overrides, ovFile.aaSolo || {}, '0000-00-00', keep).map(c => c.row.slug));
+    for (const p of prevAO) if (valid.has(p.aa.slug) && !now.has(p.id)) aaOnly.push(freshAAOnly(p, ep === 'keep'));
+  } else if (aaReuse) {
+    const now = new Set(models.map(m => m.id));
+    for (const p of prevCatalog?.models || []) if (p.aaOnly && !now.has(p.id)) aaOnly.push(freshAAOnly(p, ep === 'keep'));
   } else if (aaRows === undefined) {
     const now = new Set(models.map(m => m.id));
-    for (const p of prevCatalog?.models || []) if (p.aaOnly && !now.has(p.id)) aaOnly.push(staleCopy(p));
+    for (const p of prevCatalog?.models || []) if (p.aaOnly && !now.has(p.id)) aaOnly.push(staleCopy(p, ep === 'keep'));
   }
   // Los que llegan a OpenRouter conservan desde cuándo constaban sin API pública (preApi): con el mismo id, por el id; con
-  // otro, por su fila de AA (slug o nombre base del mismo laboratorio).
-  const aoKey = (lab, name) => `${lab}|${norm(name)}`;
+  // otro, por su fila de AA (slug o nombre base del mismo laboratorio), sólo si no estaban ya antes en OpenRouter.
+  const aoKey = (lab, name) => `${lab}|${norm(name, labs[lab])}`;
   const aoBySlug = new Map(prevAO.map(p => [p.aa.slug, p])), aoByName = new Map(prevAO.map(p => [aoKey(p.lab.id, aaBase(p.aa)), p]));
   for (const m of models) {
     const prev = prevMap.get(m.id);
-    const was = prev?.aaOnly ? prev : m.aa && !m.aa.stale ? aoBySlug.get(m.aa.slug) || aoByName.get(aoKey(m.lab.id, aaBase(m.aa))) : null;
+    const cand = prev?.aaOnly ? prev : (!prev && m.aa && !m.aa.stale ? aoBySlug.get(m.aa.slug) || aoByName.get(aoKey(m.lab.id, aaBase(m.aa))) : null);
+    const was = cand && !(m.orCreated.v && cand.aaOnly?.since && m.orCreated.v <= cand.aaOnly.since) ? cand : null;
     const link = prev?.preApi || (was ? { id: was.id, since: was.aaOnly.since } : null);
     if (link) { m.preApi = link; if (!prev?.preApi) log(`llega a OpenRouter sin API pública hasta ahora: ${link.id} → ${m.id}`); }
   }
@@ -850,6 +1036,7 @@ async function main() {
   const usoNow = usoRes ? usoRes.semana : null;
 
   const snap = {
+    schema: 4,
     date: TODAY, got: NOW_ISO,
     aaIndexVersion: aaVersion ?? curated.aaIndexVersion ?? null,
     leaders: leaders(models, aaVersion),
@@ -881,14 +1068,15 @@ async function main() {
   // es del mismo día que la base, se sacan de sus proveedores.
   const prevSameDay = base && prevCatalog?.generated?.slice(0, 10) === base.date;
   const prevTiers = id => base?.models?.[id]?.lp ?? (prevSameDay && prevMap.get(id) ? labTiers(prevMap.get(id).endpoints, new Set(labs[id.split('/')[0]]?.or_provider || [])) : null);
+  const { base: baseForDiff, repairedAA } = normalizeBaseAA(base, models, prevCatalog?.models, labs, aaCreators, overrides, ovFile.aaSolo, epFront);
   const { items: changeItems, novedades } = detectChanges({
-    models, base, listed: orModels.listed, leaders: snap.leaders, ind: indicators.ind, checks: indicators.checks, ai2027,
+    models, base: baseForDiff, repairedAA, listed: orModels.listed, leaders: snap.leaders, ind: indicators.ind, checks: indicators.checks, ai2027,
     uso: usoNow, usoPrev, prevTiers, firstSeen, hoyFrom, TODAY, NOW_ISO
   });
-  const baseDate = base ? base.date : null;
+  const baseDate = baseForDiff ? baseForDiff.date : null;
 
   const catalog = {
-    schema: 2,
+    schema: 4,
     generated: NOW_ISO,
     sources: SOURCES,
     status,
@@ -929,6 +1117,10 @@ async function main() {
   // Lo que se ha sacado del catálogo (imagen, audio, enrutadores, seguridad) tampoco cuenta como acontecimiento.
   const exclIds = new Set((orModels.excluded || []).map(e => e.id));
   evLog.events = evLog.events.filter(e => !exclIds.has(e.model));
+  if (status.aa.ok) {
+    const withoutAA = new Set(models.filter(m => !m.aa).map(m => m.id));
+    evLog.events = evLog.events.filter(e => !(e.kind === 'evaluacion' && e.data?.field === 'ii' && withoutAA.has(e.model)));
+  }
   evLog.events = mergeLog(evLog.events, changeItems, TODAY);
   // Precios que van y vuelven (según la hora a la que se recoge): no son cambios. También retira los ya registrados.
   const seenPrices = labPrices(snaps), vaivenes = evLog.events.filter(e => vaiven(e, seenPrices));
@@ -939,7 +1131,7 @@ async function main() {
   // Parte diario: titular, importancia según la regla fija y consecuencia de cada cambio (scripts/parte.mjs).
   const carrera = await readJSON(path.join(DATA, 'curated/carrera.json'));
   const P = {
-    byId: new Map(models.map(m => [m.id, m])), models, base, leaders: snap.leaders, ind: indicators.ind, checks: indicators.checks, ai2027, carrera,
+    byId: new Map(models.map(m => [m.id, m])), models, base: baseForDiff, leaders: snap.leaders, ind: indicators.ind, checks: indicators.checks, ai2027, carrera,
     hitos: new Map((ai2027?.lineas || []).flatMap(l => (l.hitos || []).map(h => [h.id, h]))), uso: usoNow || catalog.uso
   };
   enrich(evLog.events, P, TODAY);
@@ -949,7 +1141,7 @@ async function main() {
   // Un cambio entra por su fecha o por la de su detección (unos pesos publicados hace semanas pero detectados hoy).
   const hoyItems = novedades.concat(evLog.events.filter(e => e.date >= hoyFrom || e.detected >= hoyFrom));
   const brief = parte(hoyItems, TODAY, novedades.concat(evLog.events));
-  await writeFile(path.join(DATA, 'changes.json'), JSON.stringify({ generated: NOW_ISO, window: HOY_DAYS, since: hoyFrom, base: baseDate, parte: brief, items: hoyItems }, null, 1) + '\n');
+  await writeFile(path.join(DATA, 'changes.json'), JSON.stringify({ schema: 2, generated: NOW_ISO, window: HOY_DAYS, since: hoyFrom, base: baseDate, parte: brief, items: hoyItems }, null, 1) + '\n');
   await writeFile(path.join(DATA, 'parte.xml'), rss(novedades.concat(evLog.events), { NOW_ISO, TODAY }));
   await writeFile(path.join(DATA, 'parte.en.xml'), rss(novedades.concat(evLog.events), { NOW_ISO, TODAY }, 'en'));
   // Textos que no han salido en inglés: aviso identificable (::warning:: en GitHub Actions); la recogida sigue.
