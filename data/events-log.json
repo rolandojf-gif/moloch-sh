@@ -231,7 +231,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Claude Fable 5.2: primera puntuación en el índice ECI de Epoch AI (174.24).",
    "data": {
@@ -266,7 +266,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Kimi K3.1 Pro: primera puntuación en el índice ECI de Epoch AI (162.02).",
    "data": {
@@ -301,7 +301,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gpt-oss-120b",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "gpt-oss-120b: primera puntuación en el índice de inteligencia de Artificial Analysis (3.8, v5).",
    "data": {
@@ -336,7 +336,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Distancia EE. UU. − China en el ECI: de 9,76 a 12,22 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
    "data": {
@@ -376,7 +376,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Distancia cerrados − abiertos en el ECI: de 9,76 a 12,22 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
    "data": {
@@ -416,7 +416,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Distancia entre los dos primeros laboratorios en el ECI: de 0,71 a 5,08 puntos (Anthropic frente a OpenAI).",
    "data": {
@@ -456,7 +456,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Avance de la frontera del ECI en 12 meses: de 17,9 a 23,1 puntos.",
    "data": {
@@ -490,7 +490,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Mejor modelo en el ECI de Epoch: de 169,07 a 174,24 puntos (Claude Fable 5.2).",
    "data": {

@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-10T03:53:59Z",
+ "generated": "2026-11-10T11:17:58Z",
  "window": 7,
  "since": "2026-11-04",
  "base": "2026-11-09",
@@ -48,7 +48,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/anthropic/claude-fable-5.2",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Claude Fable 5.2 (Anthropic) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -89,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/meta/muse-ember",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Muse Ember (Meta) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -130,7 +130,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.2-flash",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Gemini Omni 1.2 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -164,7 +164,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.1-flash",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Gemini Omni 1.1 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -198,7 +198,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Hy4 (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -235,7 +235,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Claude Fable 5.2: primera puntuación en el índice ECI de Epoch AI (174.24).",
    "data": {
@@ -270,7 +270,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Kimi K3.1 Pro: primera puntuación en el índice ECI de Epoch AI (162.02).",
    "data": {
@@ -305,7 +305,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/gpt-oss-120b",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "gpt-oss-120b: primera puntuación en el índice de inteligencia de Artificial Analysis (3.8, v5).",
    "data": {
@@ -340,7 +340,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Distancia EE. UU. − China en el ECI: de 9,76 a 12,22 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
    "data": {
@@ -380,7 +380,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Distancia cerrados − abiertos en el ECI: de 9,76 a 12,22 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
    "data": {
@@ -420,7 +420,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Distancia entre los dos primeros laboratorios en el ECI: de 0,71 a 5,08 puntos (Anthropic frente a OpenAI).",
    "data": {
@@ -460,7 +460,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Avance de la frontera del ECI en 12 meses: de 17,9 a 23,1 puntos.",
    "data": {
@@ -494,7 +494,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-10T03:53:59Z"
+    "got": "2026-11-10T11:17:58Z"
    },
    "what": "Mejor modelo en el ECI de Epoch: de 169,07 a 174,24 puntos (Claude Fable 5.2).",
    "data": {

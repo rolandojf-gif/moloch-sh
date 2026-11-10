@@ -6,33 +6,33 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Tue, 10 Nov 2026 03:53:59 GMT</lastBuildDate>
+  <lastBuildDate>Tue, 10 Nov 2026 11:17:58 GMT</lastBuildDate>
   <item>
     <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 03:53:59 GMT</pubDate>
+    <pubDate>Tue, 10 Nov 2026 11:17:58 GMT</pubDate>
     <description>Best model on Epoch’s ECI: from 169.07 to 174.24 points (Claude Fable 5.2). Claude Fable 5.2, from Anthropic, with 174.2 points. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-11-09; detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
     <title>The gap between the top two labs on the ECI rises from 0.7 to 5.1 points</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
     <guid isPermaLink="false">indicador|labs|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 03:53:59 GMT</pubDate>
+    <pubDate>Tue, 10 Nov 2026 11:17:58 GMT</pubDate>
     <description>Gap between the top two labs on the ECI: from 0.71 to 5.08 points (Anthropic versus OpenAI). Claude Fable 5.2 (Anthropic, 174.2) versus GPT-6 Astra (OpenAI, 169.2), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”. It is in the briefing because the gap between the top two labs changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
     <title>The US − China gap on the ECI rises from 9.8 to 12.2 points</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
     <guid isPermaLink="false">indicador|usCn|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 03:53:59 GMT</pubDate>
+    <pubDate>Tue, 10 Nov 2026 11:17:58 GMT</pubDate>
     <description>US − China gap on the ECI: from 9.76 to 12.22 points (Claude Fable 5.2 versus Kimi K3.1 Pro). Claude Fable 5.2 (Anthropic, 174.2) versus Kimi K3.1 Pro (Moonshot, 162). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”. It is in the briefing because the US − China gap changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
     <title>The closed − open gap on the ECI rises from 9.8 to 12.2 points</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
     <guid isPermaLink="false">indicador|closedOpen|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 03:53:59 GMT</pubDate>
+    <pubDate>Tue, 10 Nov 2026 11:17:58 GMT</pubDate>
     <description>Closed − open gap on the ECI: from 9.76 to 12.22 points (Claude Fable 5.2 versus Kimi K3.1 Pro). Claude Fable 5.2 (Anthropic, 174.2) versus Kimi K3.1 Pro (Moonshot, 162). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”. It is in the briefing because the closed − open gap changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
