@@ -1,13 +1,14 @@
 {
- "generated": "2026-11-09T21:20:46Z",
+ "generated": "2026-11-10T03:53:59Z",
  "window": 7,
- "since": "2026-11-03",
- "base": "2026-11-08",
+ "since": "2026-11-04",
+ "base": "2026-11-09",
  "parte": {
-  "fecha": "2026-11-09",
+  "fecha": "2026-11-10",
   "noticias": [
-   "lider|closed|anthropic/claude-fable-5.2|2026-11-09",
-   "nuevo|meta/muse-ember"
+   "indicador|eci|2026-11-10",
+   "indicador|labs|2026-11-10",
+   "indicador|usCn|2026-11-10"
   ],
   "ultima": null,
   "reglas": [
@@ -47,7 +48,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/anthropic/claude-fable-5.2",
-    "got": "2026-11-09T21:20:46Z"
+    "got": "2026-11-10T03:53:59Z"
    },
    "what": "Claude Fable 5.2 (Anthropic) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -55,27 +56,27 @@
     "in": 8,
     "out": 40,
     "ii": 64.6,
-    "eci": null,
+    "eci": 174.24,
     "identity": "confirmada",
     "rankAA": 1,
-    "of": 46
+    "of": 47
    },
    "i18n": {
     "en": {
      "what": "Claude Fable 5.2 (Anthropic) appears in the OpenRouter catalogue.",
      "titular": "Claude Fable 5.2 (Anthropic) arrives on OpenRouter: rank 1 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 1 of 46)",
-     "consecuencia": "AA index 64.6: 4.6 points above the previous best closed model (Gemini 4 Carbon). Rank 1 of 46. Blended price $16 per million tokens."
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 1 of 47)",
+     "consecuencia": "AA index 64.6: 4.6 points above the previous best closed model (Gemini 4 Carbon). Rank 1 of 47. Blended price $16 per million tokens."
     }
    },
    "titular": "Claude Fable 5.2 (Anthropic) llega a OpenRouter: puesto 1 del índice de AA",
    "importancia": {
     "tier": 3,
     "w": 20,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 1 de 46)"
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 1 de 47)"
    },
    "ficha": "#modelos/anthropic/claude-fable-5.2",
-   "consecuencia": "Índice de AA 64,6: supera en 4,6 puntos al mejor cerrado anterior (Gemini 4 Carbon). Puesto 1 de 46. Precio combinado 16 $ por millón de tokens."
+   "consecuencia": "Índice de AA 64,6: supera en 4,6 puntos al mejor cerrado anterior (Gemini 4 Carbon). Puesto 1 de 47. Precio combinado 16 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -88,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/meta/muse-ember",
-    "got": "2026-11-09T21:20:46Z"
+    "got": "2026-11-10T03:53:59Z"
    },
    "what": "Muse Ember (Meta) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -99,24 +100,24 @@
     "eci": null,
     "identity": "confirmada",
     "rankAA": 16,
-    "of": 46
+    "of": 47
    },
    "i18n": {
     "en": {
      "what": "Muse Ember (Meta) appears in the OpenRouter catalogue.",
      "titular": "Muse Ember (Meta) arrives on OpenRouter: rank 16 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 16 of 46)",
-     "consecuencia": "AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 16 of 46. Blended price $0.2 per million tokens. Of the 3 models with a similar AA index (±2 points of its 36), none costs less."
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 16 of 47)",
+     "consecuencia": "AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 16 of 47. Blended price $0.2 per million tokens. Of the 3 models with a similar AA index (±2 points of its 36), none costs less."
     }
    },
    "titular": "Muse Ember (Meta) llega a OpenRouter: puesto 16 del índice de AA",
    "importancia": {
     "tier": 3,
     "w": 5,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 16 de 46)"
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 16 de 47)"
    },
    "ficha": "#modelos/meta/muse-ember",
-   "consecuencia": "Índice de AA 36: a 28,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 16 de 46. Precio combinado 0,2 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 36), ninguno cuesta menos."
+   "consecuencia": "Índice de AA 36: a 28,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 16 de 47. Precio combinado 0,2 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 36), ninguno cuesta menos."
   },
   {
    "kind": "nuevo",
@@ -129,7 +130,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.2-flash",
-    "got": "2026-11-09T21:20:46Z"
+    "got": "2026-11-10T03:53:59Z"
    },
    "what": "Gemini Omni 1.2 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -163,7 +164,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.1-flash",
-    "got": "2026-11-09T21:20:46Z"
+    "got": "2026-11-10T03:53:59Z"
    },
    "what": "Gemini Omni 1.1 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -197,7 +198,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4",
-    "got": "2026-11-09T21:20:46Z"
+    "got": "2026-11-10T03:53:59Z"
    },
    "what": "Hy4 (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -221,46 +222,303 @@
    "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 0,625 $ por millón de tokens."
   },
   {
-   "kind": "nuevo",
-   "key": "sinapi|tencent/tencent-hy4",
-   "model": "tencent/tencent-hy4",
-   "published": "2026-11-03",
-   "detected": "2026-11-05",
-   "date": "2026-11-03",
-   "mag": null,
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/models/tencent-hy4",
-    "got": "2026-11-09T21:20:46Z"
+   "kind": "evaluacion",
+   "key": "evaluacion|anthropic/claude-fable-5.2|eci",
+   "published": null,
+   "detected": "2026-11-10",
+   "date": "2026-11-10",
+   "mag": {
+    "v": 174.24,
+    "unit": "puntos ECI"
    },
-   "what": "Tencent Hy4 (Tencent) aparece puntuado en Artificial Analysis con 34,6 puntos, aún sin API pública: no está en OpenRouter.",
+   "model": "anthropic/claude-fable-5.2",
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-10T03:53:59Z"
+   },
+   "what": "Claude Fable 5.2: primera puntuación en el índice ECI de Epoch AI (174.24).",
    "data": {
-    "sub": "sin-api",
-    "weights": "cerrados",
-    "in": null,
-    "out": null,
-    "ii": 34.6,
-    "eci": null,
-    "identity": "confirmada",
-    "rankAA": 18,
-    "of": 46
+    "field": "eci",
+    "eci": 174.24,
+    "rankAA": 1,
+    "of": 47
    },
    "i18n": {
     "en": {
-     "what": "Tencent Hy4 (Tencent) appears scored on Artificial Analysis with 34.6 points, still without a public API: it is not on OpenRouter.",
-     "titular": "Tencent Hy4 (Tencent) enters the AA index at rank 18, still without a public API",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 18 of 46)",
-     "consecuencia": "AA index 34.6: 30 points behind the best closed model (Claude Fable 5.2). Rank 18 of 46. It is not on OpenRouter yet: no public API and no price."
+     "what": "Claude Fable 5.2: first score on Epoch AI’s ECI (174.24).",
+     "titular": "Epoch AI scores Claude Fable 5.2 on the ECI for the first time",
+     "consecuencia": "AA index 64.6: 4.6 points above the previous best closed model (Gemini 4 Carbon). Rank 1 of 47. Blended price $16 per million tokens."
     }
    },
-   "titular": "Tencent Hy4 (Tencent) entra en el índice de AA en el puesto 18, aún sin API pública",
-   "importancia": {
-    "tier": 3,
-    "w": 3,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 18 de 46)"
+   "titular": "Epoch AI puntúa por primera vez Claude Fable 5.2 en el ECI",
+   "importancia": null,
+   "ficha": "#modelos/anthropic/claude-fable-5.2",
+   "consecuencia": "Índice de AA 64,6: supera en 4,6 puntos al mejor cerrado anterior (Gemini 4 Carbon). Puesto 1 de 47. Precio combinado 16 $ por millón de tokens."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|moonshotai/kimi-k3.1-pro|eci",
+   "published": null,
+   "detected": "2026-11-10",
+   "date": "2026-11-10",
+   "mag": {
+    "v": 162.02,
+    "unit": "puntos ECI"
    },
-   "ficha": "#modelos/tencent/tencent-hy4",
-   "consecuencia": "Índice de AA 34,6: a 30 puntos del mejor cerrado (Claude Fable 5.2). Puesto 18 de 46. Aún no está en OpenRouter: sin API pública ni precio."
+   "model": "moonshotai/kimi-k3.1-pro",
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-10T03:53:59Z"
+   },
+   "what": "Kimi K3.1 Pro: primera puntuación en el índice ECI de Epoch AI (162.02).",
+   "data": {
+    "field": "eci",
+    "eci": 162.02,
+    "rankAA": 10,
+    "of": 47
+   },
+   "i18n": {
+    "en": {
+     "what": "Kimi K3.1 Pro: first score on Epoch AI’s ECI (162.02).",
+     "titular": "Epoch AI scores Kimi K3.1 Pro on the ECI for the first time",
+     "consecuencia": "AA index 46.5: 13.9 points above the previous best open-weight model (DeepSeek V4.1 Flash 1017). Rank 10 of 47. Blended price $4 per million tokens."
+    }
+   },
+   "titular": "Epoch AI puntúa por primera vez Kimi K3.1 Pro en el ECI",
+   "importancia": null,
+   "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
+   "consecuencia": "Índice de AA 46,5: supera en 13,9 puntos al mejor abierto anterior (DeepSeek V4.1 Flash 1017). Puesto 10 de 47. Precio combinado 4 $ por millón de tokens."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|openai/gpt-oss-120b|ii",
+   "published": null,
+   "detected": "2026-11-10",
+   "date": "2026-11-10",
+   "mag": {
+    "v": 3.8,
+    "unit": "puntos AA"
+   },
+   "model": "openai/gpt-oss-120b",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/gpt-oss-120b",
+    "got": "2026-11-10T03:53:59Z"
+   },
+   "what": "gpt-oss-120b: primera puntuación en el índice de inteligencia de Artificial Analysis (3.8, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 3.8,
+    "rankAA": 46,
+    "of": 47
+   },
+   "i18n": {
+    "en": {
+     "what": "gpt-oss-120b: first score on the Artificial Analysis Intelligence Index (3.8, v5).",
+     "titular": "gpt-oss-120b enters the AA index at rank 46",
+     "consecuencia": "AA index 3.8: 42.7 points behind the best open-weight model (Kimi K3.1 Pro). Rank 46 of 47. Blended price $0.06 per million tokens. Of the 4 models with a similar AA index (±2 points of its 3.8), 1 costs less; the cheapest is Nemotron 3.5 Lightning, at $0.049."
+    }
+   },
+   "titular": "gpt-oss-120b entra en el índice de AA en el puesto 46",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-oss-120b",
+   "consecuencia": "Índice de AA 3,8: a 42,7 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 46 de 47. Precio combinado 0,06 $ por millón de tokens. De los 4 modelos con un índice de AA parecido (±2 puntos de su 3,8), 1 cuesta menos; el más barato es Nemotron 3.5 Lightning, a 0,049 $."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|usCn|2026-11-10",
+   "published": null,
+   "detected": "2026-11-10",
+   "date": "2026-11-10",
+   "mag": {
+    "v": 2.46,
+    "pct": 25.2,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-10T03:53:59Z"
+   },
+   "what": "Distancia EE. UU. − China en el ECI: de 9,76 a 12,22 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "usCn",
+    "path": "eci.gapUsCn",
+    "from": 9.76,
+    "to": 12.22
+   },
+   "i18n": {
+    "en": {
+     "what": "US − China gap on the ECI: from 9.76 to 12.22 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The US − China gap on the ECI rises from 9.8 to 12.2 points",
+     "porque": "the US − China gap changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 174.2) versus Kimi K3.1 Pro (Moonshot, 162). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”."
+    }
+   },
+   "titular": "La distancia EE. UU. − China en el ECI sube de 9,8 a 12,2 puntos",
+   "importancia": {
+    "tier": 6,
+    "w": 52.46,
+    "porque": "la distancia EE. UU. − China cambia al menos 1 punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad"
+   },
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 174,2) frente a Kimi K3.1 Pro (Moonshot, 162). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «China, unos seis meses por detrás con el 12 % del cómputo»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|closedOpen|2026-11-10",
+   "published": null,
+   "detected": "2026-11-10",
+   "date": "2026-11-10",
+   "mag": {
+    "v": 2.46,
+    "pct": 25.2,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-10T03:53:59Z"
+   },
+   "what": "Distancia cerrados − abiertos en el ECI: de 9,76 a 12,22 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "closedOpen",
+    "path": "eci.gapClosedOpen",
+    "from": 9.76,
+    "to": 12.22
+   },
+   "i18n": {
+    "en": {
+     "what": "Closed − open gap on the ECI: from 9.76 to 12.22 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The closed − open gap on the ECI rises from 9.8 to 12.2 points",
+     "porque": "the closed − open gap changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 174.2) versus Kimi K3.1 Pro (Moonshot, 162). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”."
+    }
+   },
+   "titular": "La distancia cerrados − abiertos en el ECI sube de 9,8 a 12,2 puntos",
+   "importancia": {
+    "tier": 6,
+    "w": 52.46,
+    "porque": "la distancia cerrados − abiertos cambia al menos 1 punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad"
+   },
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 174,2) frente a Kimi K3.1 Pro (Moonshot, 162). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «Un modelo de pesos abiertos iguala a Agent-0»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|labs|2026-11-10",
+   "published": null,
+   "detected": "2026-11-10",
+   "date": "2026-11-10",
+   "mag": {
+    "v": 4.37,
+    "pct": 615.5,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-10T03:53:59Z"
+   },
+   "what": "Distancia entre los dos primeros laboratorios en el ECI: de 0,71 a 5,08 puntos (Anthropic frente a OpenAI).",
+   "data": {
+    "ind": "labs",
+    "path": "eci.gapLabs",
+    "from": 0.71,
+    "to": 5.08
+   },
+   "i18n": {
+    "en": {
+     "what": "Gap between the top two labs on the ECI: from 0.71 to 5.08 points (Anthropic versus OpenAI).",
+     "titular": "The gap between the top two labs on the ECI rises from 0.7 to 5.1 points",
+     "porque": "the gap between the top two labs changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 174.2) versus GPT-6 Astra (OpenAI, 169.2), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”."
+    }
+   },
+   "titular": "La distancia entre los dos primeros laboratorios en el ECI sube de 0,7 a 5,1 puntos",
+   "importancia": {
+    "tier": 6,
+    "w": 54.37,
+    "porque": "la distancia entre los dos primeros laboratorios cambia al menos 1 punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad"
+   },
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 174,2) frente a GPT-6 Astra (OpenAI, 169,2), con intervalos de confianza solapados. En AI 2027 es evidencia de «Los rivales, de 3 a 9 meses por detrás»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|rate12m|2026-11-10",
+   "published": null,
+   "detected": "2026-11-10",
+   "date": "2026-11-10",
+   "mag": {
+    "v": 5.2,
+    "pct": 29.1,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-10T03:53:59Z"
+   },
+   "what": "Avance de la frontera del ECI en 12 meses: de 17,9 a 23,1 puntos.",
+   "data": {
+    "ind": "rate12m",
+    "path": "eci.rate12m",
+    "from": 17.9,
+    "to": 23.1
+   },
+   "i18n": {
+    "en": {
+     "what": "Frontier gain on the ECI over 12 months: from 17.9 to 23.1 points.",
+     "titular": "Frontier gain on the ECI over 12 months: from 17.9 to 23.1 points."
+    }
+   },
+   "titular": "Avance de la frontera del ECI en 12 meses: de 17,9 a 23,1 puntos.",
+   "importancia": null,
+   "ficha": "#carrera/evaluacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|eci|2026-11-10",
+   "published": "2026-11-09",
+   "detected": "2026-11-10",
+   "date": "2026-11-09",
+   "mag": {
+    "v": 5.17,
+    "pct": 3.1,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-10T03:53:59Z"
+   },
+   "what": "Mejor modelo en el ECI de Epoch: de 169,07 a 174,24 puntos (Claude Fable 5.2).",
+   "data": {
+    "ind": "eci",
+    "path": "eci.frontier",
+    "from": 169.07,
+    "to": 174.24
+   },
+   "i18n": {
+    "en": {
+     "what": "Best model on Epoch’s ECI: from 169.07 to 174.24 points (Claude Fable 5.2).",
+     "titular": "Claude Fable 5.2 becomes the best model on Epoch’s ECI",
+     "porque": "the best model on Epoch’s ECI changes",
+     "consecuencia": "Claude Fable 5.2, from Anthropic, with 174.2 points."
+    }
+   },
+   "titular": "Claude Fable 5.2 pasa a ser el mejor modelo según el ECI de Epoch",
+   "importancia": {
+    "tier": 6,
+    "w": 100,
+    "porque": "cambia el mejor modelo según el ECI de Epoch"
+   },
+   "ficha": "#carrera",
+   "consecuencia": "Claude Fable 5.2, de Anthropic, con 174,2 puntos."
   },
   {
    "kind": "retirada",
@@ -1497,43 +1755,6 @@
    "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: kimi-k3.1-pro. Índice de AA 46,5: supera en 13,9 puntos al mejor abierto anterior (DeepSeek V4.1 Flash 1017). Puesto 9 de 43."
   },
   {
-   "kind": "uso",
-   "key": "uso|entra|openai/gpt-6.1-sol-20260929|2026-11-03",
-   "published": "2026-11-02",
-   "detected": "2026-11-03",
-   "date": "2026-11-02",
-   "mag": {
-    "v": 10,
-    "unit": "puesto"
-   },
-   "model": "openai/gpt-6.1-sol",
-   "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-03T03:54:24Z"
-   },
-   "what": "GPT-6.1 Sol entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
-   "data": {
-    "sub": "entra",
-    "slug": "openai/gpt-6.1-sol-20260929",
-    "rank": 10,
-    "share": 2,
-    "tokens": 3928843590781,
-    "window": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "GPT-6.1 Sol enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
-     "titular": "GPT-6.1 Sol enters OpenRouter’s top 10 by usage",
-     "consecuencia": "2% of OpenRouter’s tokens from 2026-10-27 to 2026-11-02. This is usage on OpenRouter, not across the whole market."
-    }
-   },
-   "titular": "GPT-6.1 Sol entra en el top 10 de uso de OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/openai/gpt-6.1-sol",
-   "consecuencia": "2 % de los tokens de OpenRouter del 2026-10-27 al 2026-11-02. Es el uso en OpenRouter, no en todo el mercado."
-  },
-  {
    "kind": "indicador",
    "key": "indicador|revLeader|2026-11-07",
    "published": "2026-10-31",
@@ -1599,12 +1820,12 @@
    "i18n": {
     "en": {
      "what": "Best model on Epoch’s ECI: from 169.06 to 169.07 points (GPT-6 Astra).",
-     "titular": "GPT-6 Astra becomes the best model on Epoch’s ECI",
+     "titular": "Claude Fable 5.2 becomes the best model on Epoch’s ECI",
      "porque": "the best model on Epoch’s ECI changes",
      "consecuencia": "GPT-6 Astra, from OpenAI, with 169.1 points."
     }
    },
-   "titular": "GPT-6 Astra pasa a ser el mejor modelo según el ECI de Epoch",
+   "titular": "Claude Fable 5.2 pasa a ser el mejor modelo según el ECI de Epoch",
    "importancia": {
     "tier": 6,
     "w": 100,

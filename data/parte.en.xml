@@ -6,7 +6,35 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Mon, 09 Nov 2026 21:20:46 GMT</lastBuildDate>
+  <lastBuildDate>Tue, 10 Nov 2026 03:53:59 GMT</lastBuildDate>
+  <item>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
+    <guid isPermaLink="false">indicador|eci|2026-11-10</guid>
+    <pubDate>Tue, 10 Nov 2026 03:53:59 GMT</pubDate>
+    <description>Best model on Epoch’s ECI: from 169.07 to 174.24 points (Claude Fable 5.2). Claude Fable 5.2, from Anthropic, with 174.2 points. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-11-09; detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
+  </item>
+  <item>
+    <title>The gap between the top two labs on the ECI rises from 0.7 to 5.1 points</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
+    <guid isPermaLink="false">indicador|labs|2026-11-10</guid>
+    <pubDate>Tue, 10 Nov 2026 03:53:59 GMT</pubDate>
+    <description>Gap between the top two labs on the ECI: from 0.71 to 5.08 points (Anthropic versus OpenAI). Claude Fable 5.2 (Anthropic, 174.2) versus GPT-6 Astra (OpenAI, 169.2), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”. It is in the briefing because the gap between the top two labs changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
+  </item>
+  <item>
+    <title>The US − China gap on the ECI rises from 9.8 to 12.2 points</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
+    <guid isPermaLink="false">indicador|usCn|2026-11-10</guid>
+    <pubDate>Tue, 10 Nov 2026 03:53:59 GMT</pubDate>
+    <description>US − China gap on the ECI: from 9.76 to 12.22 points (Claude Fable 5.2 versus Kimi K3.1 Pro). Claude Fable 5.2 (Anthropic, 174.2) versus Kimi K3.1 Pro (Moonshot, 162). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”. It is in the briefing because the US − China gap changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
+  </item>
+  <item>
+    <title>The closed − open gap on the ECI rises from 9.8 to 12.2 points</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
+    <guid isPermaLink="false">indicador|closedOpen|2026-11-10</guid>
+    <pubDate>Tue, 10 Nov 2026 03:53:59 GMT</pubDate>
+    <description>Closed − open gap on the ECI: from 9.76 to 12.22 points (Claude Fable 5.2 versus Kimi K3.1 Pro). Claude Fable 5.2 (Anthropic, 174.2) versus Kimi K3.1 Pro (Moonshot, 162). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”. It is in the briefing because the closed − open gap changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
+  </item>
   <item>
     <title>Claude Fable 5.2 becomes the best closed model on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/anthropic/claude-fable-5.2</link>
@@ -18,15 +46,15 @@
     <title>Claude Fable 5.2 (Anthropic) arrives on OpenRouter: rank 1 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/anthropic/claude-fable-5.2</link>
     <guid isPermaLink="false">nuevo|anthropic/claude-fable-5.2</guid>
-    <pubDate>Mon, 09 Nov 2026 21:20:46 GMT</pubDate>
-    <description>Claude Fable 5.2 (Anthropic) appears in the OpenRouter catalogue. AA index 64.6: 4.6 points above the previous best closed model (Gemini 4 Carbon). Rank 1 of 46. Blended price $16 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 1 of 46). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/anthropic/claude-fable-5.2). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <pubDate>Mon, 09 Nov 2026 05:00:00 GMT</pubDate>
+    <description>Claude Fable 5.2 (Anthropic) appears in the OpenRouter catalogue. AA index 64.6: 4.6 points above the previous best closed model (Gemini 4 Carbon). Rank 1 of 47. Blended price $16 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 1 of 47). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/anthropic/claude-fable-5.2). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Muse Ember (Meta) arrives on OpenRouter: rank 16 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/meta/muse-ember</link>
     <guid isPermaLink="false">nuevo|meta/muse-ember</guid>
-    <pubDate>Mon, 09 Nov 2026 21:20:46 GMT</pubDate>
-    <description>Muse Ember (Meta) appears in the OpenRouter catalogue. AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 16 of 46. Blended price $0.2 per million tokens. Of the 3 models with a similar AA index (±2 points of its 36), none costs less. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 16 of 46). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/meta/muse-ember). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <pubDate>Mon, 09 Nov 2026 05:00:00 GMT</pubDate>
+    <description>Muse Ember (Meta) appears in the OpenRouter catalogue. AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 16 of 47. Blended price $0.2 per million tokens. Of the 3 models with a similar AA index (±2 points of its 36), none costs less. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 16 of 47). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/meta/muse-ember). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Anthropic: $81 billion in annualised revenue</title>
@@ -43,13 +71,6 @@
     <description>Claude Opus 5: first score on the Artificial Analysis Intelligence Index (44.2, v5). AA index 44.2: 15.8 points behind the best closed model (Gemini 4 Carbon). Rank 11 of 43. Blended price $10 per million tokens. It is in the briefing because it receives its first AA score and enters the top 20 of the AA index (rank 11 of 43). Detected on 2026-11-05. Source: Artificial Analysis (https://artificialanalysis.ai/models/claude-opus-5). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>Tencent Hy4 (Tencent) enters the AA index at rank 18, still without a public API</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/tencent/tencent-hy4</link>
-    <guid isPermaLink="false">sinapi|tencent/tencent-hy4</guid>
-    <pubDate>Thu, 05 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Tencent Hy4 (Tencent) appears scored on Artificial Analysis with 34.6 points, still without a public API: it is not on OpenRouter. AA index 34.6: 30 points behind the best closed model (Claude Fable 5.2). Rank 18 of 46. It is not on OpenRouter yet: no public API and no price. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 18 of 46). Published on 2026-11-03; detected on 2026-11-05. Source: Artificial Analysis (https://artificialanalysis.ai/models/tencent-hy4). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
     <title>Grok 4.6 enters the AA index at rank 20</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/x-ai/grok-4.6</link>
     <guid isPermaLink="false">evaluacion|x-ai/grok-4.6|ii</guid>
@@ -64,7 +85,7 @@
     <description>Kimi K3.1 Pro: downloadable weights on Hugging Face (licence kimi-k3.1-pro). It can be downloaded and served outside the lab’s API. Licence: kimi-k3.1-pro. AA index 46.5: 13.9 points above the previous best open-weight model (DeepSeek V4.1 Flash 1017). Rank 9 of 43. It is in the briefing because a top-20 model on the AA index publishes open weights (rank 9). Published on 2026-11-02; detected on 2026-11-05. Source: Hugging Face (https://huggingface.co/moonshotai/Kimi-K3.1-Pro). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>GPT-6 Astra becomes the best model on Epoch’s ECI</title>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-11-05</guid>
     <pubDate>Thu, 05 Nov 2026 13:29:51 GMT</pubDate>
@@ -92,7 +113,7 @@
     <description>“Horizon of about three weeks of work”: the observatory’s assessment goes from “ahead” to “not yet assessable”. The authors frame it with METR’s 80% horizon, which does not measure reliably above 16 hours, and the last model it has measured was published on 7 Apr 2026. The observatory checks it against MirrorCode, from Epoch and METR: reimplementing whole programs from their behaviour, with tasks that would take an engineer weeks. Best result to date: 78.9%, from Claude Opus 5.5 (high), published on 22 Sept 2026. Rule (the observatory’s reading): “consistent” if, when the deadline expires, the best result reaches 80%. MirrorCode only covers programming and its score is not the success rate on three-week tasks. Before: “ahead”. Scenario deadline: late 2026. It is in the briefing because the observatory’s assessment of an AI 2027 milestone changes. Detected on 2026-11-02. Source: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
   </item>
   <item>
-    <title>GPT-6 Astra becomes the best model on Epoch’s ECI</title>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-10-31</guid>
     <pubDate>Sat, 31 Oct 2026 03:54:09 GMT</pubDate>
@@ -113,7 +134,7 @@
     <description>Mistral cuts the price of Mistral Large 4 on OpenRouter: input from $1.36 to $0.7 and output from $4.18 to $2.1 per million tokens. Its blended price on OpenRouter goes from $2.07 to $1.05 per million tokens. Of the 4 models with a similar AA index (±2 points of its 26), 3 cost less; the cheapest is MiMo-V2.6-Flash, at $0.175. It is in the briefing because the lab itself cuts its blended price by 49% (threshold: +50% or −33%). Detected on 2026-10-30. Source: OpenRouter (https://openrouter.ai/mistralai/mistral-large-4-0/providers). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>GPT-6 Astra becomes the best model on Epoch’s ECI</title>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-10-30</guid>
     <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
