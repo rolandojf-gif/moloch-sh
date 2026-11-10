@@ -6,34 +6,27 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Tue, 10 Nov 2026 13:47:13 GMT</lastBuildDate>
+  <lastBuildDate>Tue, 10 Nov 2026 21:48:45 GMT</lastBuildDate>
+  <item>
+    <title>AI 2027: “Horizon of about three weeks of work” is ahead of the scenario</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#ai2027/horizonte3s</link>
+    <guid isPermaLink="false">valoracion|horizonte3s|observatorio|2026-11-10</guid>
+    <pubDate>Tue, 10 Nov 2026 21:48:45 GMT</pubDate>
+    <description>“Horizon of about three weeks of work”: the observatory’s assessment goes from “not yet assessable” to “ahead”. The authors frame it with METR’s 80% horizon, which does not measure reliably above 16 hours, and the last model it has measured was published on 7 Apr 2026. The observatory checks it against MirrorCode, from Epoch and METR: reimplementing whole programs from their behaviour, with tasks that would take an engineer weeks. The first model to reach 80% is Claude Opus 5 (max), with 87.8%, published on 24 Jul 2026. Rule (the observatory’s reading): “consistent” if, when the deadline expires, the best result reaches 80%. MirrorCode only covers programming and its score is not the success rate on three-week tasks. Before: “not yet assessable”. Scenario deadline: late 2026. It is in the briefing because the observatory’s assessment of an AI 2027 milestone changes. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
+  </item>
   <item>
     <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 13:47:13 GMT</pubDate>
-    <description>Best model on Epoch’s ECI: from 169.07 to 174.24 points (Claude Fable 5.2). Claude Fable 5.2, from Anthropic, with 174.2 points. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-11-09; detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
+    <pubDate>Tue, 10 Nov 2026 21:48:45 GMT</pubDate>
+    <description>Best model on Epoch’s ECI: from 169.07 to 174.24 points (Claude Fable 5.2). Claude Fable 5.2, from Anthropic, with 174.2 points. ECI gaps: US − China, from 9.8 to 12.2 points; closed − open, from 9.8 to 12.2; between the top two labs, from 0.7 to 5.1. A few ECI points do not equate to months of lag. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-11-09; detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
-    <title>The gap between the top two labs on the ECI rises from 0.7 to 5.1 points</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
-    <guid isPermaLink="false">indicador|labs|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 13:47:13 GMT</pubDate>
-    <description>Gap between the top two labs on the ECI: from 0.71 to 5.08 points (Anthropic versus OpenAI). Claude Fable 5.2 (Anthropic, 174.2) versus GPT-6 Astra (OpenAI, 169.2), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”. It is in the briefing because the gap between the top two labs changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
-  </item>
-  <item>
-    <title>The US − China gap on the ECI rises from 9.8 to 12.2 points</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
-    <guid isPermaLink="false">indicador|usCn|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 13:47:13 GMT</pubDate>
-    <description>US − China gap on the ECI: from 9.76 to 12.22 points (Claude Fable 5.2 versus Kimi K3.1 Pro). Claude Fable 5.2 (Anthropic, 174.2) versus Kimi K3.1 Pro (Moonshot, 162). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”. It is in the briefing because the US − China gap changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
-  </item>
-  <item>
-    <title>The closed − open gap on the ECI rises from 9.8 to 12.2 points</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
-    <guid isPermaLink="false">indicador|closedOpen|2026-11-10</guid>
-    <pubDate>Tue, 10 Nov 2026 13:47:13 GMT</pubDate>
-    <description>Closed − open gap on the ECI: from 9.76 to 12.22 points (Claude Fable 5.2 versus Kimi K3.1 Pro). Claude Fable 5.2 (Anthropic, 174.2) versus Kimi K3.1 Pro (Moonshot, 162). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”. It is in the briefing because the closed − open gap changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
+    <title>Claude Sonnet 5.5 (max) sets a new MirrorCode record: 97.8%</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#carrera/agentes</link>
+    <guid isPermaLink="false">indicador|mirror|2026-11-10</guid>
+    <pubDate>Tue, 10 Nov 2026 21:48:45 GMT</pubDate>
+    <description>Best MirrorCode result (Epoch runs): from 78.9 to 97.8% (Claude Sonnet 5.5 (max)). Before, 78.9%. Reimplementing whole programs from their behaviour, tasks that would take an engineer weeks; Epoch runs. In AI 2027 it is evidence for “Horizon of about three weeks of work” and “Superhuman coder”. It is in the briefing because a new MirrorCode record, the measure of tasks lasting weeks with which the observatory replaces METR. Published on 2026-09-28; detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
   </item>
   <item>
     <title>Claude Fable 5.2 becomes the best closed model on the AA index</title>
@@ -43,18 +36,11 @@
     <description>Claude Fable 5.2 becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v5: 64.6 points, 4.6 more than Gemini 4 Carbon (60). The gap between the best closed and the best open-weight model on the AA index stands at 18.1 points (13.5 the day before). It does not equate to months of lag. It is in the briefing because the best closed model changes with the same AA index version and a margin of 4.6 points (minimum 1). Detected on 2026-11-09. Source: Artificial Analysis (https://artificialanalysis.ai/models/claude-fable-5-2). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>Claude Fable 5.2 (Anthropic) arrives on OpenRouter: rank 1 on the AA index</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/anthropic/claude-fable-5.2</link>
-    <guid isPermaLink="false">nuevo|anthropic/claude-fable-5.2</guid>
-    <pubDate>Mon, 09 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Claude Fable 5.2 (Anthropic) appears in the OpenRouter catalogue. AA index 64.6: 4.6 points above the previous best closed model (Gemini 4 Carbon). Rank 1 of 47. Blended price $16 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 1 of 47). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/anthropic/claude-fable-5.2). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
     <title>Muse Ember (Meta) arrives on OpenRouter: rank 16 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/meta/muse-ember</link>
     <guid isPermaLink="false">nuevo|meta/muse-ember</guid>
     <pubDate>Mon, 09 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Muse Ember (Meta) appears in the OpenRouter catalogue. AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 16 of 47. Blended price $0.2 per million tokens. Of the 3 models with a similar AA index (±2 points of its 36), none costs less. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 16 of 47). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/meta/muse-ember). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>Muse Ember (Meta) appears in the OpenRouter catalogue. AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 16 of 46. Blended price $0.2 per million tokens. Of the 4 models with a similar AA index (±2 points of its 36), none costs less. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 16 of 46). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/meta/muse-ember). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Anthropic: $81 billion in annualised revenue</title>
@@ -141,7 +127,7 @@
     <description>Best model on Epoch’s ECI: from 168.83 to 168.92 points (GPT-6 Astra). GPT-6 Astra, from OpenAI, with 168.9 points. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-09-03; detected on 2026-10-30. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
-    <title>Claude Opus 5.5 (high) sets a new MirrorCode record: 97.8%</title>
+    <title>Claude Sonnet 5.5 (max) sets a new MirrorCode record: 97.8%</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera/agentes</link>
     <guid isPermaLink="false">indicador|mirror|2026-10-30</guid>
     <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
