@@ -263,29 +263,44 @@ function quant(xs, q) {
    entre el azar y el techo de la prueba, y una pendiente; la nota prevista de un modelo es sigmoide(pendiente × (ECI − EDI)).
    Probabilidad de liderazgo: proporción de las réplicas bootstrap de Epoch (cada una repite el ajuste entero) en las que el
    primero sigue por delante. Las agrupaciones son las de eciBlock: país de la organización y pesos según Epoch. */
-function ediBlock(buf, ctx) {
+export function ediBlock(buf, ctx) {
   const { parseCSV, fact, TODAY } = ctx;
   const z = unzip(buf), D = 'epoch_capabilities_index/';
-  const read = name => { const f = z.get(name); if (!f) throw new Error(`falta ${name} en benchmark_data.zip`); return f().toString('utf8'); };
-  const rows = parseCSV(read(D + 'eci_scores.csv')).map(r => ({
-    model: r.Model, name: r['Display name'] || r.Model, eci: n(r.eci), lo: n(r.eci_ci_low), hi: n(r.eci_ci_high), date: r.date || null,
-    org: r.Organization || null, country: r['Country (of organization)'] || null, group: r['Accessibility group'] || null
+  const read = name => {
+    let f = z.get(D + name);
+    if (!f) {
+      const hits = [...z.keys()].filter(k => k === name || k.endsWith('/' + name));
+      if (hits.length === 1) f = z.get(hits[0]);
+    }
+    if (!f) throw new Error(`falta ${D + name} en benchmark_data.zip`);
+    return f().toString('utf8');
+  };
+  const rows = parseCSV(read('eci_scores.csv')).map(r => ({
+    model: col(r, 'Model'), name: col(r, 'Display name') || col(r, 'Model'), eci: n(col(r, 'eci')), lo: n(col(r, 'eci_ci_low')), hi: n(col(r, 'eci_ci_high')), date: col(r, 'date') || null,
+    org: col(r, 'Organization') || null, country: col(r, 'Country (of organization)') || null, group: col(r, 'Accessibility group') || null
   })).filter(r => r.model && r.eci !== null);
-  const boot = JSON.parse(read(D + 'eci_bootstraps.json'));
+  const boot = JSON.parse(read('eci_bootstraps.json'));
   const S = boot.model?.capability_samples, names = boot.model?.names || [];
-  if (!boot.eci_scaled || !S?.length || S.some(s => s.length !== names.length)) throw new Error('réplicas del ECI con una forma inesperada');
+  if (!boot.eci_scaled || !S?.length || S.some(s => s.length !== names.length || s.some(v => !Number.isFinite(v)))) throw new Error('réplicas del ECI con una forma inesperada');
   const idx = new Map(names.map((m, i) => [m, i]));
-  // Comprobación: los cuantiles de las réplicas tienen que dar los intervalos que publica Epoch.
+  // Comprobación: los cuantiles de las 500 réplicas exportadas tienen que reproducir la escala y los intervalos publicados
+  // por Epoch dentro del error muestral de Monte Carlo de los percentiles extremos, proporcional al ancho del intervalo.
   const tail = (1 - (boot.ci_level ?? 0.9)) / 2;
-  let dev = 0;
+  let dev = 0, excess = 0;
+  const devs = [];
   for (const r of rows) {
     const i = idx.get(r.model);
-    if (i === undefined || r.lo === null || r.hi === null) continue;
+    if (i === undefined || r.lo === null || r.hi === null || r.hi < r.lo) continue;
     const xs = S.map(s => s[i]);
-    dev = Math.max(dev, Math.abs(quant(xs, tail) - r.lo), Math.abs(quant(xs, 1 - tail) - r.hi));
+    const d = Math.max(Math.abs(quant(xs, tail) - r.lo), Math.abs(quant(xs, 1 - tail) - r.hi));
+    const tol = Math.max(0.5, 0.15 * (r.hi - r.lo));
+    devs.push(d);
+    dev = Math.max(dev, d);
+    if (d > tol) excess = Math.max(excess, d);
   }
-  ctx.log(`Epoch, réplicas del ECI: ${S.length} × ${names.length} modelos; desviación máxima frente a los intervalos publicados: ${r2(dev)} puntos`);
-  if (dev > 0.5) throw new Error(`las réplicas no reproducen los intervalos publicados (desviación de ${r2(dev)} puntos)`);
+  const medDev = devs.length ? quant(devs, 0.5) : 0;
+  ctx.log(`Epoch, réplicas del ECI: ${S.length} × ${names.length} modelos; desviación mediana ${r2(medDev)} puntos, máxima ${r2(dev)} puntos`);
+  if (!devs.length || medDev > 0.5 || excess > 0) throw new Error(`las réplicas no reproducen los intervalos publicados (mediana ${r2(medDev)}, máxima ${r2(dev)} puntos)`);
 
   // Líderes de hoy y probabilidad de que sigan por delante en las réplicas.
   const best = pred => rows.filter(pred).sort((a, b) => b.eci - a.eci)[0] || null;
@@ -318,13 +333,14 @@ function ediBlock(buf, ctx) {
 
   // Mapa de dificultad. Mejor resultado medido de cada evaluación, en la escala normalizada de Epoch (0 = azar, 1 = techo).
   const obs = new Map();
-  for (const r of parseCSV(read(D + 'processed_data_for_eci.csv'))) {
-    const v = n(r.performance);
-    if (v === null || !r.benchmark) continue;
-    const e = obs.get(r.benchmark) || { v: -1, model: null, models: new Set() };
-    e.models.add(r.Model);
-    if (v > e.v) Object.assign(e, { v, model: r.Model });
-    obs.set(r.benchmark, e);
+  for (const r of parseCSV(read('processed_data_for_eci.csv'))) {
+    const v = n(col(r, 'performance'));
+    const bench = col(r, 'benchmark'), model = col(r, 'Model');
+    if (v === null || !bench) continue;
+    const e = obs.get(bench) || { v: -1, model: null, models: new Set() };
+    e.models.add(model);
+    if (v > e.v) Object.assign(e, { v, model });
+    obs.set(bench, e);
   }
   const bn = boot.benchmark?.names || [], DS = boot.benchmark?.difficulty_samples || [];
   const bidx = new Map(bn.map((b, i) => [b, i]));
@@ -332,8 +348,8 @@ function ediBlock(buf, ctx) {
   const sig = x => 1 / (1 + Math.exp(-x));
   const pred = (b, m) => m ? r1(sig(b.slope * (m.eci - b.edi)) * 100) : null;
   let devEdi = 0;
-  const map = parseCSV(read(D + 'edi_scores.csv'))
-    .map(r => ({ name: r.benchmark_name, d: r.benchmark_release_date || null, edi: n(r.edi), slope: n(r.estimated_slope_scaled) }))
+  const map = parseCSV(read('edi_scores.csv'))
+    .map(r => ({ name: col(r, 'benchmark_name'), d: col(r, 'benchmark_release_date') || null, edi: n(col(r, 'edi')), slope: n(col(r, 'estimated_slope_scaled')) }))
     .filter(b => b.name && b.edi !== null && b.slope !== null)
     .map(b => {
       const i = bidx.get(b.name), xs = i === undefined || !DS.length ? null : DS.map(s => s[i]), o = obs.get(b.name);
@@ -768,7 +784,8 @@ export async function collectIndicators(ctx, ep, prev) {
     catch (e) {
       ctx.log(`indicadores ${key} falló: ${e.message}`);
       ind[key] = prevInd[key] ? staleCopy(prevInd[key]) : null;
-      status[srcKey] = failedStatus('la consulta falló; se conservan los valores anteriores', 'the check failed; previous values have been retained');
+      const lastOk = prev?.status?.[srcKey]?.got || prev?.status?.[srcKey]?.lastOk || null;
+      status[srcKey] = failedStatus('la consulta falló; se conservan los valores anteriores', 'the check failed; previous values have been retained', lastOk ? { lastOk } : {});
     }
   };
   if (ep && ep !== 'keep') {

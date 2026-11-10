@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { fmtDate, fmtDateTime, num, usd, aaRace, aaCoverage } from '../js/fmt.js';
 import { resolve } from '../js/valoracion.js';
 import { importancia } from '../scripts/parte.mjs';
-import { unzip, raceOf } from '../scripts/indicadores.mjs';
+import { unzip, raceOf, ediBlock, collectIndicators } from '../scripts/indicadores.mjs';
 import { sameModelName, aaOnlyCandidates, matchCatalogAA } from '../scripts/emparejar.mjs';
 import { labPrices, vaiven } from '../scripts/cambios.mjs';
 
@@ -81,6 +81,87 @@ test('lector de zip: entradas guardadas y comprimidas', () => {
   assert.ok(csv.startsWith('a,b\n1,2\n'));
   assert.equal(csv.split('\n').length, 202);
   assert.throws(() => unzip(Buffer.from('esto no es un zip, aunque tenga más de veintidós bytes')), /directorio central/);
+});
+
+function makeStoredZip(entries) {
+  const locals = [], centrals = [];
+  let offset = 0;
+  for (const [name, content] of Object.entries(entries)) {
+    const nb = Buffer.from(name, 'utf8'), db = Buffer.from(content, 'utf8');
+    const lh = Buffer.alloc(30);
+    lh.writeUInt32LE(0x04034b50, 0); lh.writeUInt32LE(db.length, 18); lh.writeUInt32LE(db.length, 22); lh.writeUInt16LE(nb.length, 26);
+    locals.push(lh, nb, db);
+    const ch = Buffer.alloc(46);
+    ch.writeUInt32LE(0x02014b50, 0); ch.writeUInt32LE(db.length, 20); ch.writeUInt32LE(db.length, 24); ch.writeUInt16LE(nb.length, 28); ch.writeUInt32LE(offset, 42);
+    centrals.push(ch, nb);
+    offset += 30 + nb.length + db.length;
+  }
+  const cdSize = centrals.reduce((s, b) => s + b.length, 0), count = Object.keys(entries).length;
+  const eocd = Buffer.alloc(22);
+  eocd.writeUInt32LE(0x06054b50, 0); eocd.writeUInt16LE(count, 8); eocd.writeUInt16LE(count, 10); eocd.writeUInt32LE(cdSize, 12); eocd.writeUInt32LE(offset, 16);
+  return Buffer.concat([...locals, ...centrals, eocd]);
+}
+
+test('ediBlock: lee benchmark_data.zip con el esquema vigente de Epoch y preserva lastOk si falla', async () => {
+  const parseCSV = t => {
+    const [head, ...lines] = t.trim().split('\n').map(l => l.split(','));
+    return lines.map(r => Object.fromEntries(head.map((h, i) => [h.trim(), (r[i] ?? '').trim()])));
+  };
+  // 20 réplicas: dos modelos punteros con intervalo estrecho (mediana de desviación < 0,1) y uno antiguo con intervalo ancho
+  // (36 puntos) cuya submuestra desvía ~2,4 puntos en la cola sin superar el margen muestral (15 % del ancho).
+  const samples = Array.from({ length: 20 }, (_, i) => [
+    170 + (i / 19) * 6,        // TopUS: cuantiles 5 % / 95 % ≈ 170,3 / 175,7
+    158 + (i / 19) * 6,        // OpenCN: cuantiles 5 % / 95 % ≈ 158,3 / 163,7
+    37 + (i / 19) * 39         // OldBase: intervalo publicado 39,4–76,0 (ancho 36,6); cola 5 % en 38,95 (desv. ~0,45–2,4 admitida)
+  ]);
+  const D = 'epoch_capabilities_index/';
+  const zip = makeStoredZip({
+    [`${D}eci_scores.csv`]: [
+      'Model,Display name,eci,eci_ci_low,eci_ci_high,date,Organization,Country (of organization),Model accessibility,Accessibility group,model_versions',
+      'TopUS,Top US,173.0,170.3,175.7,2026-11-09,LabUS,United States of America,API access,Closed weights,',
+      'OpenCN,Open CN,161.0,158.3,163.7,2026-10-23,LabCN,China,Open weights (unrestricted),Open weights,',
+      'OldBase,Old Base,59.1,41.3,76.0,2023-05-04,,,Unknown,Other,'
+    ].join('\n'),
+    [`${D}edi_scores.csv`]: [
+      'benchmark_name,is_anchor,benchmark_release_date,edi,estimated_slope_scaled',
+      'EasyBench,False,2025-01-10,150.0,0.12',
+      'HardBench,False,2026-06-01,180.0,0.10'
+    ].join('\n'),
+    [`${D}processed_data_for_eci.csv`]: [
+      'Model,benchmark,performance',
+      'TopUS,EasyBench,0.92',
+      'TopUS,HardBench,0.34'
+    ].join('\n'),
+    [`${D}eci_bootstraps.json`]: JSON.stringify({
+      num_samples: 20, eci_scaled: true, ci_level: 0.9,
+      model: { ids: [0, 1, 2], names: ['TopUS', 'OpenCN', 'OldBase'], capability_samples: samples },
+      benchmark: { names: ['EasyBench', 'HardBench'], difficulty_samples: samples.map((_, i) => [149 + i * 0.1, 179 + i * 0.1]) }
+    })
+  });
+  const ctx = { parseCSV, fact: (v, src, url, asOf, ex) => ({ v, src, url, asOf, got: '2026-11-10T05:00:00Z', ...ex }), log: () => {}, NOW_ISO: '2026-11-10T05:00:00Z', TODAY: '2026-11-10' };
+  const edi = ediBlock(zip, ctx);
+  assert.equal(edi.open.v, 1);
+  assert.deepEqual(edi.open.names, ['HardBench']);
+  assert.equal(edi.map.v.length, 2);
+  assert.equal(edi.prob.usCn.v, 100);
+  assert.equal(edi.prob.closedOpen.v, 100);
+
+  // Si las réplicas vienen en otra escala, ediBlock sigue rechazándolas y collectIndicators conserva lastOk.
+  const badZip = makeStoredZip({
+    [`${D}eci_scores.csv`]: 'Model,Display name,eci,eci_ci_low,eci_ci_high,date,Organization,Country (of organization),Accessibility group\nTopUS,Top US,173,170,176,2026-11-09,LabUS,United States of America,Closed weights',
+    [`${D}edi_scores.csv`]: 'benchmark_name,benchmark_release_date,edi,estimated_slope_scaled\nB,2025-01-01,150,0.1',
+    [`${D}processed_data_for_eci.csv`]: 'Model,benchmark,performance\nTopUS,B,0.5',
+    [`${D}eci_bootstraps.json`]: JSON.stringify({ eci_scaled: true, ci_level: 0.9, model: { names: ['TopUS'], capability_samples: [[1], [2], [3]] }, benchmark: { names: [], difficulty_samples: [] } })
+  });
+  assert.throws(() => ediBlock(badZip, ctx), /no reproducen los intervalos/);
+  const res = await collectIndicators(
+    { ...ctx, getText: async () => { throw new Error('sin red'); }, getBuf: async () => badZip },
+    'keep',
+    { status: { epoch_eci: { ok: true, got: '2026-11-04T03:54:36Z' } }, ind: { edi } }
+  );
+  assert.equal(res.status.epoch_eci.ok, false);
+  assert.equal(res.status.epoch_eci.lastOk, '2026-11-04T03:54:36Z');
+  assert.equal(res.ind.edi.open.stale, true);
 });
 
 test('aaCoverage: tramos sin el mejor modelo según Epoch, sin rellenar nada', () => {
