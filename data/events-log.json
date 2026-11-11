@@ -218,6 +218,84 @@
  ],
  "events": [
   {
+   "kind": "precio",
+   "key": "precio|google/gemini-4-carbon|2026-11-11",
+   "published": null,
+   "detected": "2026-11-11",
+   "date": "2026-11-11",
+   "mag": {
+    "v": -50,
+    "unit": "%"
+   },
+   "model": "google/gemini-4-carbon",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/google/gemini-4-carbon/providers",
+    "got": "2026-11-11T03:54:34Z"
+   },
+   "what": "Google AI Studio añade en OpenRouter una tarifa más barata de Gemini 4 Carbon: 1 $ de entrada y 5 $ de salida por millón de tokens. La anterior (2 $ de entrada y 10 $ de salida) sigue disponible.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "tarifa-nueva",
+    "provider": "Google AI Studio",
+    "from": {
+     "in": 2,
+     "out": 10
+    },
+    "to": {
+     "in": 1,
+     "out": 5
+    },
+    "pct": -50,
+    "tiersFrom": [
+     [
+      2,
+      10
+     ],
+     [
+      2.2,
+      11
+     ],
+     [
+      3.6,
+      18
+     ]
+    ],
+    "tiersTo": [
+     [
+      1,
+      5
+     ],
+     [
+      2,
+      10
+     ],
+     [
+      2.2,
+      11
+     ],
+     [
+      3.6,
+      18
+     ]
+    ],
+    "since": "2026-11-10",
+    "rankAA": 2,
+    "of": 46
+   },
+   "i18n": {
+    "en": {
+     "what": "Google AI Studio adds a cheaper Gemini 4 Carbon rate on OpenRouter: $1 input and $5 output per million tokens. The previous one ($2 input and $10 output) is still available.",
+     "titular": "Google AI Studio adds a cheaper Gemini 4 Carbon rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $4 to $2 per million tokens."
+    }
+   },
+   "titular": "Google AI Studio añade una tarifa más barata de Gemini 4 Carbon en OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/google/gemini-4-carbon",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 4 $ a 2 $ por millón de tokens."
+  },
+  {
    "kind": "evaluacion",
    "key": "evaluacion|anthropic/claude-fable-5.2|eci",
    "published": null,

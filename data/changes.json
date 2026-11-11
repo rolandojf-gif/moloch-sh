@@ -1,17 +1,23 @@
 {
  "schema": 2,
- "generated": "2026-11-10T21:48:45Z",
+ "generated": "2026-11-11T03:54:34Z",
  "window": 7,
- "since": "2026-11-04",
- "base": "2026-11-09",
+ "since": "2026-11-05",
+ "base": "2026-11-10",
  "parte": {
-  "fecha": "2026-11-10",
-  "noticias": [
-   "valoracion|horizonte3s|observatorio|2026-11-10",
-   "indicador|eci|2026-11-10",
-   "indicador|mirror|2026-11-10"
-  ],
-  "ultima": null,
+  "fecha": "2026-11-11",
+  "noticias": [],
+  "ultima": {
+   "key": "valoracion|horizonte3s|observatorio|2026-11-10",
+   "fecha": "2026-11-10",
+   "titular": "AI 2027: «Horizonte de unas tres semanas de trabajo» va por delante del escenario",
+   "ficha": "#ai2027/horizonte3s",
+   "i18n": {
+    "en": {
+     "titular": "AI 2027: “Horizon of about three weeks of work” is ahead of the scenario"
+    }
+   }
+  },
   "reglas": [
    "Cambia el mejor modelo abierto o cerrado del índice de Artificial Analysis, con la misma versión del índice y al menos 1 punto de margen.",
    "Artificial Analysis cambia la versión de su índice.",
@@ -49,7 +55,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-5.5-flash-preview",
-    "got": "2026-11-10T21:48:45Z"
+    "got": "2026-11-11T03:54:34Z"
    },
    "what": "ERNIE-5.5-Flash-Preview (Baidu) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -83,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-light-dt-1.0-intl",
-    "got": "2026-11-10T21:48:45Z"
+    "got": "2026-11-11T03:54:34Z"
    },
    "what": "ERNIE-Light-DT-1.0 (Baidu) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -117,15 +123,15 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-carbon",
-    "got": "2026-11-10T21:48:45Z"
+    "got": "2026-11-11T03:54:34Z"
    },
    "what": "Gemini 4 Carbon (Google) llega a OpenRouter: ya tiene API pública. Hasta ahora sólo constaba su puntuación en Artificial Analysis.",
    "data": {
     "sub": "llega-api",
     "sinApiDesde": "2026-10-29",
     "weights": "cerrados",
-    "in": 2,
-    "out": 10,
+    "in": 1,
+    "out": 5,
     "ii": 60,
     "eci": null,
     "identity": "confirmada",
@@ -136,13 +142,13 @@
     "en": {
      "what": "Gemini 4 Carbon (Google) arrives on OpenRouter: it now has a public API. Until now only its Artificial Analysis score was known.",
      "titular": "Gemini 4 Carbon (Google) arrives on OpenRouter and now has a public API: rank 2 on the AA index",
-     "consecuencia": "AA index 60: 4.6 points behind the best closed model (Claude Fable 5.2). Rank 2 of 46. Blended price $4 per million tokens."
+     "consecuencia": "AA index 60: 4.6 points behind the best closed model (Claude Fable 5.2). Rank 2 of 46. Blended price $2 per million tokens."
     }
    },
    "titular": "Gemini 4 Carbon (Google) llega a OpenRouter y ya tiene API pública: puesto 2 del índice de AA",
    "importancia": null,
    "ficha": "#modelos/google/gemini-4-carbon",
-   "consecuencia": "Índice de AA 60: a 4,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 46. Precio combinado 4 $ por millón de tokens."
+   "consecuencia": "Índice de AA 60: a 4,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 46. Precio combinado 2 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -155,7 +161,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/anthropic/claude-fable-5.2",
-    "got": "2026-11-10T21:48:45Z"
+    "got": "2026-11-11T03:54:34Z"
    },
    "what": "Claude Fable 5.2 (Anthropic) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -196,7 +202,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/meta/muse-ember",
-    "got": "2026-11-10T21:48:45Z"
+    "got": "2026-11-11T03:54:34Z"
    },
    "what": "Muse Ember (Meta) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -237,7 +243,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-omni-1.2-flash",
-    "got": "2026-11-10T21:48:45Z"
+    "got": "2026-11-11T03:54:34Z"
    },
    "what": "Gemini Omni 1.2 Flash (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -261,72 +267,82 @@
    "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 3,38 $ por millón de tokens."
   },
   {
-   "kind": "nuevo",
-   "key": "nuevo|google/gemini-omni-1.1-flash",
-   "model": "google/gemini-omni-1.1-flash",
-   "published": "2026-11-04",
-   "detected": "2026-11-06",
-   "date": "2026-11-04",
-   "mag": null,
+   "kind": "precio",
+   "key": "precio|google/gemini-4-carbon|2026-11-11",
+   "published": null,
+   "detected": "2026-11-11",
+   "date": "2026-11-11",
+   "mag": {
+    "v": -50,
+    "unit": "%"
+   },
+   "model": "google/gemini-4-carbon",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/google/gemini-omni-1.1-flash",
-    "got": "2026-11-10T21:48:45Z"
+    "url": "https://openrouter.ai/google/gemini-4-carbon/providers",
+    "got": "2026-11-11T03:54:34Z"
    },
-   "what": "Gemini Omni 1.1 Flash (Google) aparece en el catálogo de OpenRouter.",
+   "what": "Google AI Studio añade en OpenRouter una tarifa más barata de Gemini 4 Carbon: 1 $ de entrada y 5 $ de salida por millón de tokens. La anterior (2 $ de entrada y 10 $ de salida) sigue disponible.",
    "data": {
-    "weights": "cerrados",
-    "in": 1.5,
-    "out": 9,
-    "ii": null,
-    "eci": null,
-    "identity": "confirmada"
+    "basis": "laboratorio",
+    "sub": "tarifa-nueva",
+    "provider": "Google AI Studio",
+    "from": {
+     "in": 2,
+     "out": 10
+    },
+    "to": {
+     "in": 1,
+     "out": 5
+    },
+    "pct": -50,
+    "tiersFrom": [
+     [
+      2,
+      10
+     ],
+     [
+      2.2,
+      11
+     ],
+     [
+      3.6,
+      18
+     ]
+    ],
+    "tiersTo": [
+     [
+      1,
+      5
+     ],
+     [
+      2,
+      10
+     ],
+     [
+      2.2,
+      11
+     ],
+     [
+      3.6,
+      18
+     ]
+    ],
+    "since": "2026-11-10",
+    "rankAA": 2,
+    "of": 46
    },
    "i18n": {
     "en": {
-     "what": "Gemini Omni 1.1 Flash (Google) appears in the OpenRouter catalogue.",
-     "titular": "Gemini Omni 1.1 Flash (Google) arrives on OpenRouter",
-     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Blended price $3.38 per million tokens."
+     "what": "Google AI Studio adds a cheaper Gemini 4 Carbon rate on OpenRouter: $1 input and $5 output per million tokens. The previous one ($2 input and $10 output) is still available.",
+     "titular": "Google AI Studio adds a cheaper Gemini 4 Carbon rate on OpenRouter",
+     "consecuencia": "Its cheapest blended price on OpenRouter goes from $4 to $2 per million tokens."
     }
    },
-   "titular": "Gemini Omni 1.1 Flash (Google) llega a OpenRouter",
+   "titular": "Google AI Studio añade una tarifa más barata de Gemini 4 Carbon en OpenRouter",
    "importancia": null,
-   "ficha": "#modelos/google/gemini-omni-1.1-flash",
-   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 3,38 $ por millón de tokens."
-  },
-  {
-   "kind": "nuevo",
-   "key": "nuevo|tencent/hy4",
-   "model": "tencent/hy4",
-   "published": "2026-11-04",
-   "detected": "2026-11-05",
-   "date": "2026-11-04",
-   "mag": null,
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/tencent/hy4",
-    "got": "2026-11-10T21:48:45Z"
-   },
-   "what": "Hy4 (Tencent) aparece en el catálogo de OpenRouter.",
-   "data": {
-    "weights": null,
-    "in": 0.417,
-    "out": 1.2505,
-    "ii": 34.6,
-    "eci": null,
-    "identity": "confirmada"
-   },
-   "i18n": {
-    "en": {
-     "what": "Hy4 (Tencent) appears in the OpenRouter catalogue.",
-     "titular": "Hy4 (Tencent) arrives on OpenRouter",
-     "consecuencia": "AA index 34.6. Rank 18 of 46. Blended price $0.625 per million tokens. Of the 5 models with a similar AA index (±2 points of its 34.6), 3 cost less; the cheapest is Muse Ember, at $0.2."
-    }
-   },
-   "titular": "Hy4 (Tencent) llega a OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/tencent/hy4",
-   "consecuencia": "Índice de AA 34,6. Puesto 18 de 46. Precio combinado 0,625 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 34,6), 3 cuestan menos; el más barato es Muse Ember, a 0,2 $."
+   "ficha": "#modelos/google/gemini-4-carbon",
+   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 4 $ a 2 $ por millón de tokens."
   },
   {
    "kind": "evaluacion",
@@ -1711,188 +1727,6 @@
    "titular": "Coste de capital de los centros que sigue Epoch: de 571 a 574 mil millones de $.",
    "importancia": null,
    "ficha": "#carrera/economia",
-   "consecuencia": null
-  },
-  {
-   "kind": "evaluacion",
-   "key": "evaluacion|openai/gpt-6-sol|ii",
-   "published": null,
-   "detected": "2026-11-04",
-   "date": "2026-11-04",
-   "mag": {
-    "v": 44.2,
-    "unit": "puntos AA"
-   },
-   "model": "openai/gpt-6-sol",
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/models/gpt-6-sol",
-    "got": "2026-11-04T03:54:36Z"
-   },
-   "what": "GPT-6 Sol: primera puntuación en el índice de inteligencia de Artificial Analysis (44.2, v5).",
-   "data": {
-    "field": "ii",
-    "ii": 44.2,
-    "rankAA": 10,
-    "of": 35
-   },
-   "i18n": {
-    "en": {
-     "what": "GPT-6 Sol: first score on the Artificial Analysis Intelligence Index (44.2, v5).",
-     "titular": "GPT-6 Sol enters the AA index at rank 10",
-     "porque": "it receives its first AA score and enters the top 20 of the AA index (rank 10 of 35)",
-     "consecuencia": "AA index 44.2: 15.8 points behind the best closed model (Gemini 4 Carbon). Rank 10 of 35. Blended price $2 per million tokens."
-    }
-   },
-   "titular": "GPT-6 Sol entra en el índice de AA en el puesto 10",
-   "importancia": {
-    "tier": 3,
-    "w": 11,
-    "porque": "recibe su primera puntuación de AA y entra en el top 20 del índice de AA (puesto 10 de 35)"
-   },
-   "ficha": "#modelos/openai/gpt-6-sol",
-   "consecuencia": "Índice de AA 44,2: a 15,8 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 10 de 35. Precio combinado 2 $ por millón de tokens."
-  },
-  {
-   "kind": "evaluacion",
-   "key": "evaluacion|openai/gpt-5.6-terra|ii",
-   "published": null,
-   "detected": "2026-11-04",
-   "date": "2026-11-04",
-   "mag": {
-    "v": 32.3,
-    "unit": "puntos AA"
-   },
-   "model": "openai/gpt-5.6-terra",
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/models/gpt-5-6-terra",
-    "got": "2026-11-04T03:54:36Z"
-   },
-   "what": "GPT-5.6 Terra: primera puntuación en el índice de inteligencia de Artificial Analysis (32.3, v5).",
-   "data": {
-    "field": "ii",
-    "ii": 32.3,
-    "rankAA": 16,
-    "of": 35
-   },
-   "i18n": {
-    "en": {
-     "what": "GPT-5.6 Terra: first score on the Artificial Analysis Intelligence Index (32.3, v5).",
-     "titular": "GPT-5.6 Terra enters the AA index at rank 16",
-     "porque": "it receives its first AA score and enters the top 20 of the AA index (rank 16 of 35)",
-     "consecuencia": "AA index 32.3: 27.7 points behind the best closed model (Gemini 4 Carbon). Rank 16 of 35. Blended price $2.25 per million tokens. Of the 3 models with a similar AA index (±2 points of its 32.3), 3 cost less; the cheapest is DeepSeek V4.1 Flash 1017, at $0.525."
-    }
-   },
-   "titular": "GPT-5.6 Terra entra en el índice de AA en el puesto 16",
-   "importancia": {
-    "tier": 3,
-    "w": 5,
-    "porque": "recibe su primera puntuación de AA y entra en el top 20 del índice de AA (puesto 16 de 35)"
-   },
-   "ficha": "#modelos/openai/gpt-5.6-terra",
-   "consecuencia": "Índice de AA 32,3: a 27,7 puntos del mejor cerrado (Gemini 4 Carbon). Puesto 16 de 35. Precio combinado 2,25 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 32,3), 3 cuestan menos; el más barato es DeepSeek V4.1 Flash 1017, a 0,525 $."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|aaUsCn|2026-11-04",
-   "published": null,
-   "detected": "2026-11-04",
-   "date": "2026-11-04",
-   "mag": {
-    "v": 0.1,
-    "pct": 0.7,
-    "unit": "puntos AA"
-   },
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/leaderboards/models",
-    "got": "2026-11-04T03:54:36Z"
-   },
-   "what": "Distancia EE. UU. − China en el índice de AA: de 13,4 a 13,5 puntos (Gemini 4 Carbon frente a Kimi K3.1 Pro).",
-   "data": {
-    "ind": "aaUsCn",
-    "path": "aa.gapUsCn",
-    "from": 13.4,
-    "to": 13.5
-   },
-   "i18n": {
-    "en": {
-     "what": "US − China gap on the AA index: from 13.4 to 13.5 points (Gemini 4 Carbon versus Kimi K3.1 Pro).",
-     "titular": "US − China gap on the AA index: from 13.4 to 13.5 points (Gemini 4 Carbon versus Kimi K3.1 Pro)."
-    }
-   },
-   "titular": "Distancia EE. UU. − China en el índice de AA: de 13,4 a 13,5 puntos (Gemini 4 Carbon frente a Kimi K3.1 Pro).",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": null
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|aaClosedOpen|2026-11-04",
-   "published": null,
-   "detected": "2026-11-04",
-   "date": "2026-11-04",
-   "mag": {
-    "v": 0.1,
-    "pct": 0.7,
-    "unit": "puntos AA"
-   },
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/leaderboards/models",
-    "got": "2026-11-04T03:54:36Z"
-   },
-   "what": "Distancia cerrados − abiertos en el índice de AA: de 13,4 a 13,5 puntos (Gemini 4 Carbon frente a Kimi K3.1 Pro).",
-   "data": {
-    "ind": "aaClosedOpen",
-    "path": "aa.gapClosedOpen",
-    "from": 13.4,
-    "to": 13.5
-   },
-   "i18n": {
-    "en": {
-     "what": "Closed − open gap on the AA index: from 13.4 to 13.5 points (Gemini 4 Carbon versus Kimi K3.1 Pro).",
-     "titular": "Closed − open gap on the AA index: from 13.4 to 13.5 points (Gemini 4 Carbon versus Kimi K3.1 Pro)."
-    }
-   },
-   "titular": "Distancia cerrados − abiertos en el índice de AA: de 13,4 a 13,5 puntos (Gemini 4 Carbon frente a Kimi K3.1 Pro).",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": null
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|aaLabs|2026-11-04",
-   "published": null,
-   "detected": "2026-11-04",
-   "date": "2026-11-04",
-   "mag": {
-    "v": -0.1,
-    "pct": -10,
-    "unit": "puntos AA"
-   },
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/leaderboards/models",
-    "got": "2026-11-04T03:54:36Z"
-   },
-   "what": "Distancia entre los dos primeros laboratorios en el índice de AA: de 1 a 0,9 puntos (Google frente a Anthropic).",
-   "data": {
-    "ind": "aaLabs",
-    "path": "aa.gapLabs",
-    "from": 1,
-    "to": 0.9
-   },
-   "i18n": {
-    "en": {
-     "what": "Gap between the top two labs on the AA index: from 1 to 0.9 points (Google versus Anthropic).",
-     "titular": "Gap between the top two labs on the AA index: from 1 to 0.9 points (Google versus Anthropic)."
-    }
-   },
-   "titular": "Distancia entre los dos primeros laboratorios en el índice de AA: de 1 a 0,9 puntos (Google frente a Anthropic).",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
    "consecuencia": null
   },
   {
