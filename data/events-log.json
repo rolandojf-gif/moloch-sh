@@ -231,7 +231,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-5.5-flash-preview:free/providers",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Baidu ofrece ERNIE-5.5-Flash-Preview gratis en OpenRouter. Antes costaba 0,28 $ de entrada y 1,13 $ de salida por millón de tokens.",
    "data": {
@@ -292,26 +292,26 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Gemini 4 Carbon: primera puntuación en el índice ECI de Epoch AI (169.76).",
    "data": {
     "field": "eci",
     "eci": 169.76,
     "rankAA": 2,
-    "of": 47
+    "of": 48
    },
    "i18n": {
     "en": {
      "what": "Gemini 4 Carbon: first score on Epoch AI’s ECI (169.76).",
      "titular": "Epoch AI scores Gemini 4 Carbon on the ECI for the first time",
-     "consecuencia": "AA index 60: 4.6 points behind the best closed model (Claude Fable 5.2). Rank 2 of 47. Blended price $2 per million tokens."
+     "consecuencia": "AA index 60: 4.6 points behind the best closed model (Claude Fable 5.2). Rank 2 of 48. Blended price $2 per million tokens."
     }
    },
    "titular": "Epoch AI puntúa por primera vez Gemini 4 Carbon en el ECI",
    "importancia": null,
    "ficha": "#modelos/google/gemini-4-carbon",
-   "consecuencia": "Índice de AA 60: a 4,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 47. Precio combinado 2 $ por millón de tokens."
+   "consecuencia": "Índice de AA 60: a 4,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 48. Precio combinado 2 $ por millón de tokens."
   },
   {
    "kind": "evaluacion",
@@ -327,26 +327,26 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/qwen3-8-flash-next",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Qwen3.8 Flash: primera puntuación en el índice de inteligencia de Artificial Analysis (28.6, v5).",
    "data": {
     "field": "ii",
     "ii": 28.6,
-    "rankAA": 26,
-    "of": 47
+    "rankAA": 27,
+    "of": 48
    },
    "i18n": {
     "en": {
      "what": "Qwen3.8 Flash: first score on the Artificial Analysis Intelligence Index (28.6, v5).",
-     "titular": "Qwen3.8 Flash enters the AA index at rank 26",
-     "consecuencia": "AA index 28.6: 17.9 points behind the best open-weight model (Kimi K3.1 Pro). Rank 26 of 47. Blended price $0.23 per million tokens. Of the 6 models with a similar AA index (±2 points of its 28.6), 2 cost less; the cheapest is GPT-6 Luna, at $0.1."
+     "titular": "Qwen3.8 Flash enters the AA index at rank 27",
+     "consecuencia": "AA index 28.6: 17.9 points behind the best open-weight model (Kimi K3.1 Pro). Rank 27 of 48. Blended price $0.23 per million tokens. Of the 6 models with a similar AA index (±2 points of its 28.6), 3 cost less; the cheapest is GPT-6 Luna, at $0.1."
     }
    },
-   "titular": "Qwen3.8 Flash entra en el índice de AA en el puesto 26",
+   "titular": "Qwen3.8 Flash entra en el índice de AA en el puesto 27",
    "importancia": null,
    "ficha": "#modelos/qwen/qwen3.8-flash",
-   "consecuencia": "Índice de AA 28,6: a 17,9 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 26 de 47. Precio combinado 0,23 $ por millón de tokens. De los 6 modelos con un índice de AA parecido (±2 puntos de su 28,6), 2 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $."
+   "consecuencia": "Índice de AA 28,6: a 17,9 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 27 de 48. Precio combinado 0,23 $ por millón de tokens. De los 6 modelos con un índice de AA parecido (±2 puntos de su 28,6), 3 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $."
   },
   {
    "kind": "retirada",
@@ -359,7 +359,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Seed-2.0-Code deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -388,7 +388,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Seed 1.6 Flash deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -417,7 +417,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Seed 1.6 deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -449,7 +449,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Distancia EE. UU. − China en el ECI: de 12,22 a 12,07 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
    "data": {
@@ -484,7 +484,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Distancia cerrados − abiertos en el ECI: de 12,22 a 12,07 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
    "data": {
@@ -519,7 +519,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Distancia entre los dos primeros laboratorios en el ECI: de 5,08 a 3,68 puntos (Anthropic frente a Google DeepMind).",
    "data": {
@@ -559,7 +559,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Avance de la frontera del ECI en 12 meses: de 23,1 a 22,2 puntos.",
    "data": {
@@ -593,7 +593,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "GPT-6.1 Sol entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
    "data": {
@@ -995,7 +995,7 @@
    "src": {
     "name": "Epoch AI",
     "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Mejor modelo en el ECI de Epoch: de 174,24 a 173,44 puntos (Claude Fable 5.2).",
    "data": {
@@ -3931,26 +3931,26 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Nemotron 3.5 Super VL: pesos descargables en Hugging Face (licencia openmdw-1.1).",
    "data": {
     "license": "openmdw-1.1",
     "weightsSrc": "hf",
-    "rankAA": 38,
-    "of": 47
+    "rankAA": 39,
+    "of": 48
    },
    "i18n": {
     "en": {
      "what": "Nemotron 3.5 Super VL: downloadable weights on Hugging Face (licence openmdw-1.1).",
-     "titular": "Open weights for Nemotron 3.5 Super VL, rank 38 on the AA index",
-     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: openmdw-1.1. AA index 13.6: 32.9 points behind the best open-weight model (Kimi K3.1 Pro). Rank 38 of 47."
+     "titular": "Open weights for Nemotron 3.5 Super VL, rank 39 on the AA index",
+     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: openmdw-1.1. AA index 13.6: 32.9 points behind the best open-weight model (Kimi K3.1 Pro). Rank 39 of 48."
     }
    },
-   "titular": "Pesos abiertos de Nemotron 3.5 Super VL, puesto 38 del índice de AA",
+   "titular": "Pesos abiertos de Nemotron 3.5 Super VL, puesto 39 del índice de AA",
    "importancia": null,
    "ficha": "#modelos/nvidia/nemotron-3.5-super-vl",
-   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: openmdw-1.1. Índice de AA 13,6: a 32,9 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 38 de 47."
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: openmdw-1.1. Índice de AA 13,6: a 32,9 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 39 de 48."
   },
   {
    "kind": "pesos",
@@ -4230,26 +4230,26 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16",
-    "got": "2026-11-12T03:54:18Z"
+    "got": "2026-11-12T19:30:52Z"
    },
    "what": "Command A+: pesos descargables en Hugging Face (licencia apache-2.0).",
    "data": {
     "license": "apache-2.0",
     "weightsSrc": "hf",
-    "rankAA": 40,
-    "of": 47
+    "rankAA": 41,
+    "of": 48
    },
    "i18n": {
     "en": {
      "what": "Command A+: downloadable weights on Hugging Face (licence apache-2.0).",
-     "titular": "Open weights for Command A+, rank 40 on the AA index",
-     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: apache-2.0. AA index 6.2: 40.3 points behind the best open-weight model (Kimi K3.1 Pro). Rank 40 of 47."
+     "titular": "Open weights for Command A+, rank 41 on the AA index",
+     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: apache-2.0. AA index 6.2: 40.3 points behind the best open-weight model (Kimi K3.1 Pro). Rank 41 of 48."
     }
    },
-   "titular": "Pesos abiertos de Command A+, puesto 40 del índice de AA",
+   "titular": "Pesos abiertos de Command A+, puesto 41 del índice de AA",
    "importancia": null,
    "ficha": "#modelos/cohere/command-a-plus",
-   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: apache-2.0. Índice de AA 6,2: a 40,3 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 40 de 47."
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: apache-2.0. Índice de AA 6,2: a 40,3 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 41 de 48."
   }
  ]
 }
