@@ -6,7 +6,21 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Wed, 11 Nov 2026 03:54:34 GMT</lastBuildDate>
+  <lastBuildDate>Thu, 12 Nov 2026 03:54:18 GMT</lastBuildDate>
+  <item>
+    <title>Baidu makes ERNIE-5.5-Flash-Preview free on OpenRouter</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/baidu/ernie-5.5-flash-preview</link>
+    <guid isPermaLink="false">precio|baidu/ernie-5.5-flash-preview|2026-11-12</guid>
+    <pubDate>Thu, 12 Nov 2026 03:54:18 GMT</pubDate>
+    <description>Baidu now offers ERNIE-5.5-Flash-Preview for free on OpenRouter. It used to cost $0.28 input and $1.13 output per million tokens. Its blended price on OpenRouter goes from $0.493 to free. It is in the briefing because the lab itself makes it free on OpenRouter. Detected on 2026-11-12. Source: OpenRouter (https://openrouter.ai/baidu/ernie-5.5-flash-preview:free/providers).</description>
+  </item>
+  <item>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
+    <guid isPermaLink="false">indicador|eci|2026-11-12</guid>
+    <pubDate>Thu, 12 Nov 2026 03:54:18 GMT</pubDate>
+    <description>Best model on Epoch’s ECI: from 174.24 to 173.44 points (Claude Fable 5.2). Claude Fable 5.2, from Anthropic, with 173.4 points. ECI gaps: between the top two labs, from 5.1 to 3.7 points. A few ECI points do not equate to months of lag. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-11-09; detected on 2026-11-12. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
+  </item>
   <item>
     <title>AI 2027: “Horizon of about three weeks of work” is ahead of the scenario</title>
     <link>https://moloch-sh.netlify.app/?lang=en#ai2027/horizonte3s</link>
@@ -40,7 +54,7 @@
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/meta/muse-ember</link>
     <guid isPermaLink="false">nuevo|meta/muse-ember</guid>
     <pubDate>Mon, 09 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Muse Ember (Meta) appears in the OpenRouter catalogue. AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 16 of 46. Blended price $0.2 per million tokens. Of the 4 models with a similar AA index (±2 points of its 36), none costs less. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 16 of 46). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/meta/muse-ember). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>Muse Ember (Meta) appears in the OpenRouter catalogue. AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 16 of 47. Blended price $0.2 per million tokens. Of the 4 models with a similar AA index (±2 points of its 36), none costs less. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 16 of 47). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/meta/muse-ember). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Anthropic: $81 billion in annualised revenue</title>

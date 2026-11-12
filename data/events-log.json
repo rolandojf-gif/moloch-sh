@@ -219,81 +219,402 @@
  "events": [
   {
    "kind": "precio",
-   "key": "precio|google/gemini-4-carbon|2026-11-11",
+   "key": "precio|baidu/ernie-5.5-flash-preview|2026-11-12",
    "published": null,
-   "detected": "2026-11-11",
-   "date": "2026-11-11",
+   "detected": "2026-11-12",
+   "date": "2026-11-12",
    "mag": {
-    "v": -50,
+    "v": -100,
     "unit": "%"
    },
-   "model": "google/gemini-4-carbon",
+   "model": "baidu/ernie-5.5-flash-preview",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/google/gemini-4-carbon/providers",
-    "got": "2026-11-11T03:54:34Z"
+    "url": "https://openrouter.ai/baidu/ernie-5.5-flash-preview:free/providers",
+    "got": "2026-11-12T03:54:18Z"
    },
-   "what": "Google AI Studio añade en OpenRouter una tarifa más barata de Gemini 4 Carbon: 1 $ de entrada y 5 $ de salida por millón de tokens. La anterior (2 $ de entrada y 10 $ de salida) sigue disponible.",
+   "what": "Baidu ofrece ERNIE-5.5-Flash-Preview gratis en OpenRouter. Antes costaba 0,28 $ de entrada y 1,13 $ de salida por millón de tokens.",
    "data": {
     "basis": "laboratorio",
-    "sub": "tarifa-nueva",
-    "provider": "Google AI Studio",
+    "sub": "gratis",
+    "provider": "Baidu",
     "from": {
-     "in": 2,
-     "out": 10
+     "in": 0.28,
+     "out": 1.13
     },
     "to": {
-     "in": 1,
-     "out": 5
+     "in": 0,
+     "out": 0
     },
-    "pct": -50,
+    "pct": -100,
     "tiersFrom": [
      [
-      2,
-      10
-     ],
-     [
-      2.2,
-      11
-     ],
-     [
-      3.6,
-      18
+      0.28,
+      1.13
      ]
     ],
     "tiersTo": [
      [
-      1,
-      5
-     ],
-     [
-      2,
-      10
-     ],
-     [
-      2.2,
-      11
-     ],
-     [
-      3.6,
-      18
+      0,
+      0
      ]
     ],
-    "since": "2026-11-10",
-    "rankAA": 2,
-    "of": 46
+    "since": "2026-11-11"
    },
    "i18n": {
     "en": {
-     "what": "Google AI Studio adds a cheaper Gemini 4 Carbon rate on OpenRouter: $1 input and $5 output per million tokens. The previous one ($2 input and $10 output) is still available.",
-     "titular": "Google AI Studio adds a cheaper Gemini 4 Carbon rate on OpenRouter",
-     "consecuencia": "Its cheapest blended price on OpenRouter goes from $4 to $2 per million tokens."
+     "what": "Baidu now offers ERNIE-5.5-Flash-Preview for free on OpenRouter. It used to cost $0.28 input and $1.13 output per million tokens.",
+     "titular": "Baidu makes ERNIE-5.5-Flash-Preview free on OpenRouter",
+     "porque": "the lab itself makes it free on OpenRouter",
+     "consecuencia": "Its blended price on OpenRouter goes from $0.493 to free."
     }
    },
-   "titular": "Google AI Studio añade una tarifa más barata de Gemini 4 Carbon en OpenRouter",
+   "titular": "Baidu deja gratis ERNIE-5.5-Flash-Preview en OpenRouter",
+   "importancia": {
+    "tier": 5,
+    "w": 100,
+    "porque": "el propio laboratorio lo deja gratis en OpenRouter"
+   },
+   "ficha": "#modelos/baidu/ernie-5.5-flash-preview",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,493 $ a gratis."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|google/gemini-4-carbon|eci",
+   "published": null,
+   "detected": "2026-11-12",
+   "date": "2026-11-12",
+   "mag": {
+    "v": 169.76,
+    "unit": "puntos ECI"
+   },
+   "model": "google/gemini-4-carbon",
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Gemini 4 Carbon: primera puntuación en el índice ECI de Epoch AI (169.76).",
+   "data": {
+    "field": "eci",
+    "eci": 169.76,
+    "rankAA": 2,
+    "of": 47
+   },
+   "i18n": {
+    "en": {
+     "what": "Gemini 4 Carbon: first score on Epoch AI’s ECI (169.76).",
+     "titular": "Epoch AI scores Gemini 4 Carbon on the ECI for the first time",
+     "consecuencia": "AA index 60: 4.6 points behind the best closed model (Claude Fable 5.2). Rank 2 of 47. Blended price $2 per million tokens."
+    }
+   },
+   "titular": "Epoch AI puntúa por primera vez Gemini 4 Carbon en el ECI",
    "importancia": null,
    "ficha": "#modelos/google/gemini-4-carbon",
-   "consecuencia": "Su precio combinado más barato en OpenRouter pasa de 4 $ a 2 $ por millón de tokens."
+   "consecuencia": "Índice de AA 60: a 4,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 47. Precio combinado 2 $ por millón de tokens."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|qwen/qwen3.8-flash|ii",
+   "published": null,
+   "detected": "2026-11-12",
+   "date": "2026-11-12",
+   "mag": {
+    "v": 28.6,
+    "unit": "puntos AA"
+   },
+   "model": "qwen/qwen3.8-flash",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/qwen3-8-flash-next",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Qwen3.8 Flash: primera puntuación en el índice de inteligencia de Artificial Analysis (28.6, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 28.6,
+    "rankAA": 26,
+    "of": 47
+   },
+   "i18n": {
+    "en": {
+     "what": "Qwen3.8 Flash: first score on the Artificial Analysis Intelligence Index (28.6, v5).",
+     "titular": "Qwen3.8 Flash enters the AA index at rank 26",
+     "consecuencia": "AA index 28.6: 17.9 points behind the best open-weight model (Kimi K3.1 Pro). Rank 26 of 47. Blended price $0.23 per million tokens. Of the 6 models with a similar AA index (±2 points of its 28.6), 2 cost less; the cheapest is GPT-6 Luna, at $0.1."
+    }
+   },
+   "titular": "Qwen3.8 Flash entra en el índice de AA en el puesto 26",
+   "importancia": null,
+   "ficha": "#modelos/qwen/qwen3.8-flash",
+   "consecuencia": "Índice de AA 28,6: a 17,9 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 26 de 47. Precio combinado 0,23 $ por millón de tokens. De los 6 modelos con un índice de AA parecido (±2 puntos de su 28,6), 2 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|bytedance-seed/seed-2.0-code|2026-11-12",
+   "published": null,
+   "detected": "2026-11-12",
+   "date": "2026-11-12",
+   "mag": null,
+   "model": "bytedance-seed/seed-2.0-code",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Seed-2.0-Code deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Seed-2.0-Code"
+   },
+   "i18n": {
+    "en": {
+     "what": "Seed-2.0-Code is no longer listed in the OpenRouter catalogue.",
+     "titular": "Seed-2.0-Code is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Seed-2.0-Code deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|bytedance-seed/seed-1.6-flash|2026-11-12",
+   "published": null,
+   "detected": "2026-11-12",
+   "date": "2026-11-12",
+   "mag": null,
+   "model": "bytedance-seed/seed-1.6-flash",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Seed 1.6 Flash deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Seed 1.6 Flash"
+   },
+   "i18n": {
+    "en": {
+     "what": "Seed 1.6 Flash is no longer listed in the OpenRouter catalogue.",
+     "titular": "Seed 1.6 Flash is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Seed 1.6 Flash deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|bytedance-seed/seed-1.6|2026-11-12",
+   "published": null,
+   "detected": "2026-11-12",
+   "date": "2026-11-12",
+   "mag": null,
+   "model": "bytedance-seed/seed-1.6",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Seed 1.6 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Seed 1.6"
+   },
+   "i18n": {
+    "en": {
+     "what": "Seed 1.6 is no longer listed in the OpenRouter catalogue.",
+     "titular": "Seed 1.6 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Seed 1.6 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|usCn|2026-11-12",
+   "published": null,
+   "detected": "2026-11-12",
+   "date": "2026-11-12",
+   "mag": {
+    "v": -0.15,
+    "pct": -1.2,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Distancia EE. UU. − China en el ECI: de 12,22 a 12,07 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "usCn",
+    "path": "eci.gapUsCn",
+    "from": 12.22,
+    "to": 12.07
+   },
+   "i18n": {
+    "en": {
+     "what": "US − China gap on the ECI: from 12.22 to 12.07 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The US − China gap on the ECI falls from 12.2 to 12.1 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.4) versus Kimi K3.1 Pro (Moonshot, 161.4). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”."
+    }
+   },
+   "titular": "La distancia EE. UU. − China en el ECI baja de 12,2 a 12,1 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,4) frente a Kimi K3.1 Pro (Moonshot, 161,4). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «China, unos seis meses por detrás con el 12 % del cómputo»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|closedOpen|2026-11-12",
+   "published": null,
+   "detected": "2026-11-12",
+   "date": "2026-11-12",
+   "mag": {
+    "v": -0.15,
+    "pct": -1.2,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Distancia cerrados − abiertos en el ECI: de 12,22 a 12,07 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "closedOpen",
+    "path": "eci.gapClosedOpen",
+    "from": 12.22,
+    "to": 12.07
+   },
+   "i18n": {
+    "en": {
+     "what": "Closed − open gap on the ECI: from 12.22 to 12.07 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The closed − open gap on the ECI falls from 12.2 to 12.1 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.4) versus Kimi K3.1 Pro (Moonshot, 161.4). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”."
+    }
+   },
+   "titular": "La distancia cerrados − abiertos en el ECI baja de 12,2 a 12,1 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,4) frente a Kimi K3.1 Pro (Moonshot, 161,4). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «Un modelo de pesos abiertos iguala a Agent-0»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|labs|2026-11-12",
+   "published": null,
+   "detected": "2026-11-12",
+   "date": "2026-11-12",
+   "mag": {
+    "v": -1.4,
+    "pct": -27.6,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Distancia entre los dos primeros laboratorios en el ECI: de 5,08 a 3,68 puntos (Anthropic frente a Google DeepMind).",
+   "data": {
+    "ind": "labs",
+    "path": "eci.gapLabs",
+    "from": 5.08,
+    "to": 3.68
+   },
+   "i18n": {
+    "en": {
+     "what": "Gap between the top two labs on the ECI: from 5.08 to 3.68 points (Anthropic versus Google DeepMind).",
+     "titular": "The gap between the top two labs on the ECI falls from 5.1 to 3.7 points",
+     "porque": "the gap between the top two labs changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.4) versus Gemini 4 Carbon (Google DeepMind, 169.8), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”."
+    }
+   },
+   "titular": "La distancia entre los dos primeros laboratorios en el ECI baja de 5,1 a 3,7 puntos",
+   "importancia": {
+    "tier": 6,
+    "w": 51.4,
+    "porque": "la distancia entre los dos primeros laboratorios cambia al menos 1 punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad"
+   },
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,4) frente a Gemini 4 Carbon (Google DeepMind, 169,8), con intervalos de confianza solapados. En AI 2027 es evidencia de «Los rivales, de 3 a 9 meses por detrás»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|rate12m|2026-11-12",
+   "published": null,
+   "detected": "2026-11-12",
+   "date": "2026-11-12",
+   "mag": {
+    "v": -0.9,
+    "pct": -3.9,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Avance de la frontera del ECI en 12 meses: de 23,1 a 22,2 puntos.",
+   "data": {
+    "ind": "rate12m",
+    "path": "eci.rate12m",
+    "from": 23.1,
+    "to": 22.2
+   },
+   "i18n": {
+    "en": {
+     "what": "Frontier gain on the ECI over 12 months: from 23.1 to 22.2 points.",
+     "titular": "Frontier gain on the ECI over 12 months: from 23.1 to 22.2 points."
+    }
+   },
+   "titular": "Avance de la frontera del ECI en 12 meses: de 23,1 a 22,2 puntos.",
+   "importancia": null,
+   "ficha": "#carrera/evaluacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|openai/gpt-6.1-sol-20260929|2026-11-12",
+   "published": "2026-11-11",
+   "detected": "2026-11-12",
+   "date": "2026-11-11",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "openai/gpt-6.1-sol",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "GPT-6.1 Sol entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "openai/gpt-6.1-sol-20260929",
+    "rank": 10,
+    "share": 2,
+    "tokens": 4143075163424,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "GPT-6.1 Sol enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
+     "titular": "GPT-6.1 Sol enters OpenRouter’s top 10 by usage",
+     "consecuencia": "2% of OpenRouter’s tokens from 2026-11-05 to 2026-11-11. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "GPT-6.1 Sol entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-6.1-sol",
+   "consecuencia": "2 % de los tokens de OpenRouter del 2026-11-05 al 2026-11-11. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "evaluacion",
@@ -659,6 +980,46 @@
    },
    "ficha": "#ai2027/horizonte3s",
    "consecuencia": "Los autores lo plantean con el horizonte al 80 % de METR, que no mide con fiabilidad por encima de 16 horas, y el último modelo que ha medido se publicó el 7 abr 2026. El observatorio lo contrasta con MirrorCode, de Epoch y METR: reimplementar programas enteros a partir de su comportamiento, con tareas que a un ingeniero le llevarían semanas. El primer modelo que llega al 80 % es Claude Opus 5 (max), con un 87,8 %, publicado el 24 jul 2026. Regla (lectura del observatorio): «compatible» si al vencer el plazo el mejor resultado llega al 80 %. MirrorCode sólo cubre programación y su puntuación no es el porcentaje de éxito en tareas de tres semanas. Antes: «todavía no evaluable». Plazo del escenario: finales de 2026."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|eci|2026-11-12",
+   "published": "2026-11-09",
+   "detected": "2026-11-12",
+   "date": "2026-11-09",
+   "mag": {
+    "v": -0.8,
+    "pct": -0.5,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Mejor modelo en el ECI de Epoch: de 174,24 a 173,44 puntos (Claude Fable 5.2).",
+   "data": {
+    "ind": "eci",
+    "path": "eci.frontier",
+    "from": 174.24,
+    "to": 173.44
+   },
+   "i18n": {
+    "en": {
+     "what": "Best model on Epoch’s ECI: from 174.24 to 173.44 points (Claude Fable 5.2).",
+     "titular": "Claude Fable 5.2 becomes the best model on Epoch’s ECI",
+     "porque": "the best model on Epoch’s ECI changes",
+     "consecuencia": "Claude Fable 5.2, from Anthropic, with 173.4 points. ECI gaps: between the top two labs, from 5.1 to 3.7 points. A few ECI points do not equate to months of lag."
+    }
+   },
+   "titular": "Claude Fable 5.2 pasa a ser el mejor modelo según el ECI de Epoch",
+   "importancia": {
+    "tier": 6,
+    "w": 100,
+    "porque": "cambia el mejor modelo según el ECI de Epoch"
+   },
+   "ficha": "#carrera",
+   "consecuencia": "Claude Fable 5.2, de Anthropic, con 173,4 puntos. Distancias en el ECI: entre los dos primeros laboratorios, de 5,1 a 3,7 puntos. Unos puntos ECI no equivalen a meses de retraso."
   },
   {
    "kind": "indicador",
@@ -3561,6 +3922,38 @@
   },
   {
    "kind": "pesos",
+   "key": "pesos|nvidia/nemotron-3.5-super-vl",
+   "published": "2026-10-12",
+   "detected": "2026-11-12",
+   "date": "2026-10-12",
+   "mag": null,
+   "model": "nvidia/nemotron-3.5-super-vl",
+   "src": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Nemotron 3.5 Super VL: pesos descargables en Hugging Face (licencia openmdw-1.1).",
+   "data": {
+    "license": "openmdw-1.1",
+    "weightsSrc": "hf",
+    "rankAA": 38,
+    "of": 47
+   },
+   "i18n": {
+    "en": {
+     "what": "Nemotron 3.5 Super VL: downloadable weights on Hugging Face (licence openmdw-1.1).",
+     "titular": "Open weights for Nemotron 3.5 Super VL, rank 38 on the AA index",
+     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: openmdw-1.1. AA index 13.6: 32.9 points behind the best open-weight model (Kimi K3.1 Pro). Rank 38 of 47."
+    }
+   },
+   "titular": "Pesos abiertos de Nemotron 3.5 Super VL, puesto 38 del índice de AA",
+   "importancia": null,
+   "ficha": "#modelos/nvidia/nemotron-3.5-super-vl",
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: openmdw-1.1. Índice de AA 13,6: a 32,9 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 38 de 47."
+  },
+  {
+   "kind": "pesos",
    "key": "pesos|mistralai/mistral-large-4-0",
    "published": "2026-09-30",
    "detected": "2026-10-29",
@@ -3825,6 +4218,38 @@
    },
    "ficha": "#carrera",
    "consecuencia": "GPT-6 Astra, de OpenAI, con 168,9 puntos."
+  },
+  {
+   "kind": "pesos",
+   "key": "pesos|cohere/command-a-plus",
+   "published": "2026-05-11",
+   "detected": "2026-11-12",
+   "date": "2026-05-11",
+   "mag": null,
+   "model": "cohere/command-a-plus",
+   "src": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16",
+    "got": "2026-11-12T03:54:18Z"
+   },
+   "what": "Command A+: pesos descargables en Hugging Face (licencia apache-2.0).",
+   "data": {
+    "license": "apache-2.0",
+    "weightsSrc": "hf",
+    "rankAA": 40,
+    "of": 47
+   },
+   "i18n": {
+    "en": {
+     "what": "Command A+: downloadable weights on Hugging Face (licence apache-2.0).",
+     "titular": "Open weights for Command A+, rank 40 on the AA index",
+     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: apache-2.0. AA index 6.2: 40.3 points behind the best open-weight model (Kimi K3.1 Pro). Rank 40 of 47."
+    }
+   },
+   "titular": "Pesos abiertos de Command A+, puesto 40 del índice de AA",
+   "importancia": null,
+   "ficha": "#modelos/cohere/command-a-plus",
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: apache-2.0. Índice de AA 6,2: a 40,3 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 40 de 47."
   }
  ]
 }
