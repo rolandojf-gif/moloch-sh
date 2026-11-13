@@ -1,17 +1,23 @@
 {
  "schema": 2,
- "generated": "2026-11-12T19:30:52Z",
+ "generated": "2026-11-13T03:54:57Z",
  "window": 7,
- "since": "2026-11-06",
- "base": "2026-11-11",
+ "since": "2026-11-07",
+ "base": "2026-11-12",
  "parte": {
-  "fecha": "2026-11-12",
-  "noticias": [
-   "nuevo|google/gemini-4-hydrogen",
-   "precio|baidu/ernie-5.5-flash-preview|2026-11-12",
-   "indicador|eci|2026-11-12"
-  ],
-  "ultima": null,
+  "fecha": "2026-11-13",
+  "noticias": [],
+  "ultima": {
+   "key": "nuevo|google/gemini-4-hydrogen",
+   "fecha": "2026-11-12",
+   "titular": "Gemini 4 Hydrogen (Google) llega a OpenRouter: puesto 7 del índice de AA",
+   "ficha": "#modelos/google/gemini-4-hydrogen",
+   "i18n": {
+    "en": {
+     "titular": "Gemini 4 Hydrogen (Google) arrives on OpenRouter: rank 7 on the AA index"
+    }
+   }
+  },
   "reglas": [
    "Cambia el mejor modelo abierto o cerrado del índice de Artificial Analysis, con la misma versión del índice y al menos 1 punto de margen.",
    "Artificial Analysis cambia la versión de su índice.",
@@ -49,7 +55,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-hydrogen",
-    "got": "2026-11-12T19:30:52Z"
+    "got": "2026-11-13T03:54:57Z"
    },
    "what": "Gemini 4 Hydrogen (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -90,7 +96,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-5.5-flash-preview:free",
-    "got": "2026-11-12T19:30:52Z"
+    "got": "2026-11-13T03:54:57Z"
    },
    "what": "ERNIE-5.5-Flash-Preview (Baidu) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
    "data": {
@@ -124,7 +130,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-light-dt-1.0-intl",
-    "got": "2026-11-12T19:30:52Z"
+    "got": "2026-11-13T03:54:57Z"
    },
    "what": "ERNIE-Light-DT-1.0 (Baidu) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -158,7 +164,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-carbon",
-    "got": "2026-11-12T19:30:52Z"
+    "got": "2026-11-13T03:54:57Z"
    },
    "what": "Gemini 4 Carbon (Google) llega a OpenRouter: ya tiene API pública. Hasta ahora sólo constaba su puntuación en Artificial Analysis.",
    "data": {
@@ -196,7 +202,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/anthropic/claude-fable-5.2",
-    "got": "2026-11-12T19:30:52Z"
+    "got": "2026-11-13T03:54:57Z"
    },
    "what": "Claude Fable 5.2 (Anthropic) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -237,7 +243,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/meta/muse-ember",
-    "got": "2026-11-12T19:30:52Z"
+    "got": "2026-11-13T03:54:57Z"
    },
    "what": "Muse Ember (Meta) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -266,6 +272,43 @@
    },
    "ficha": "#modelos/meta/muse-ember",
    "consecuencia": "Índice de AA 36: a 28,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 17 de 48. Precio combinado 0,2 $ por millón de tokens. De los 4 modelos con un índice de AA parecido (±2 puntos de su 36), ninguno cuesta menos."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|z-ai/glm-5.3-20260816|2026-11-13",
+   "published": "2026-11-12",
+   "detected": "2026-11-13",
+   "date": "2026-11-12",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "z-ai/glm-5.3",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-13T03:54:57Z"
+   },
+   "what": "GLM 5.3 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,9 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "z-ai/glm-5.3-20260816",
+    "rank": 10,
+    "share": 1.9,
+    "tokens": 3880491297670,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "GLM 5.3 enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.9% of tokens.",
+     "titular": "GLM 5.3 enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.9% of OpenRouter’s tokens from 2026-11-06 to 2026-11-12. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "GLM 5.3 entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/z-ai/glm-5.3",
+   "consecuencia": "1,9 % de los tokens de OpenRouter del 2026-11-06 al 2026-11-12. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "precio",
@@ -1503,78 +1546,6 @@
    "importancia": null,
    "ficha": "#carrera/economia",
    "consecuencia": null
-  },
-  {
-   "kind": "evaluacion",
-   "key": "evaluacion|cohere/north-mini-code|ii",
-   "published": null,
-   "detected": "2026-11-06",
-   "date": "2026-11-06",
-   "mag": {
-    "v": 3.4,
-    "unit": "puntos AA"
-   },
-   "model": "cohere/north-mini-code",
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/models/north-mini-code",
-    "got": "2026-11-06T13:14:51Z"
-   },
-   "what": "North Mini Code: primera puntuación en el índice de inteligencia de Artificial Analysis (3.4, v5).",
-   "data": {
-    "field": "ii",
-    "ii": 3.4,
-    "rankAA": 44,
-    "of": 44
-   },
-   "i18n": {
-    "en": {
-     "what": "North Mini Code: first score on the Artificial Analysis Intelligence Index (3.4, v5).",
-     "titular": "North Mini Code enters the AA index at rank 44",
-     "consecuencia": "AA index 3.4: 43.1 points behind the best open-weight model (Kimi K3.1 Pro). Rank 44 of 44. Free on OpenRouter at the time of the check."
-    }
-   },
-   "titular": "North Mini Code entra en el índice de AA en el puesto 44",
-   "importancia": null,
-   "ficha": "#modelos/cohere/north-mini-code",
-   "consecuencia": "Índice de AA 3,4: a 43,1 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 44 de 44. Gratis en OpenRouter en el momento de la consulta."
-  },
-  {
-   "kind": "uso",
-   "key": "uso|entra|tencent/hy4-20261104|2026-11-06",
-   "published": "2026-11-05",
-   "detected": "2026-11-06",
-   "date": "2026-11-05",
-   "mag": {
-    "v": 10,
-    "unit": "puesto"
-   },
-   "model": "tencent/hy4",
-   "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-06T13:14:51Z"
-   },
-   "what": "Hy4 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
-   "data": {
-    "sub": "entra",
-    "slug": "tencent/hy4-20261104",
-    "rank": 10,
-    "share": 2,
-    "tokens": 4009020957603,
-    "window": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "Hy4 enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
-     "titular": "Hy4 enters OpenRouter’s top 10 by usage",
-     "consecuencia": "2% of OpenRouter’s tokens from 2026-10-30 to 2026-11-05. This is usage on OpenRouter, not across the whole market."
-    }
-   },
-   "titular": "Hy4 entra en el top 10 de uso de OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/tencent/hy4",
-   "consecuencia": "2 % de los tokens de OpenRouter del 2026-10-30 al 2026-11-05. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "indicador",

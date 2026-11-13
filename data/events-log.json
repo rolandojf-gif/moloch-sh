@@ -218,6 +218,43 @@
  ],
  "events": [
   {
+   "kind": "uso",
+   "key": "uso|entra|z-ai/glm-5.3-20260816|2026-11-13",
+   "published": "2026-11-12",
+   "detected": "2026-11-13",
+   "date": "2026-11-12",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "z-ai/glm-5.3",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-13T03:54:57Z"
+   },
+   "what": "GLM 5.3 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,9 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "z-ai/glm-5.3-20260816",
+    "rank": 10,
+    "share": 1.9,
+    "tokens": 3880491297670,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "GLM 5.3 enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.9% of tokens.",
+     "titular": "GLM 5.3 enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.9% of OpenRouter’s tokens from 2026-11-06 to 2026-11-12. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "GLM 5.3 entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/z-ai/glm-5.3",
+   "consecuencia": "1,9 % de los tokens de OpenRouter del 2026-11-06 al 2026-11-12. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
    "kind": "precio",
    "key": "precio|baidu/ernie-5.5-flash-preview|2026-11-12",
    "published": null,

@@ -6,12 +6,12 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Thu, 12 Nov 2026 19:30:52 GMT</lastBuildDate>
+  <lastBuildDate>Fri, 13 Nov 2026 03:54:57 GMT</lastBuildDate>
   <item>
     <title>Gemini 4 Hydrogen (Google) arrives on OpenRouter: rank 7 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/google/gemini-4-hydrogen</link>
     <guid isPermaLink="false">nuevo|google/gemini-4-hydrogen</guid>
-    <pubDate>Thu, 12 Nov 2026 19:30:52 GMT</pubDate>
+    <pubDate>Thu, 12 Nov 2026 05:00:00 GMT</pubDate>
     <description>Gemini 4 Hydrogen (Google) appears in the OpenRouter catalogue. AA index 53.9: 10.7 points behind the best closed model (Claude Fable 5.2). Rank 7 of 48. Blended price $1.5 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 7 of 48). Published on 2026-11-12; detected on 2026-11-12. Source: OpenRouter (https://openrouter.ai/google/gemini-4-hydrogen). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
