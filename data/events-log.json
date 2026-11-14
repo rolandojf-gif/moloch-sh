@@ -218,6 +218,101 @@
  ],
  "events": [
   {
+   "kind": "retirada",
+   "key": "retirada|inclusionai/ling-3.0-flash-sante|2026-11-14",
+   "published": null,
+   "detected": "2026-11-14",
+   "date": "2026-11-14",
+   "mag": null,
+   "model": "inclusionai/ling-3.0-flash-sante",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-14T03:54:19Z"
+   },
+   "what": "Ling 3.0 Flash Sante deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Ling 3.0 Flash Sante"
+   },
+   "i18n": {
+    "en": {
+     "what": "Ling 3.0 Flash Sante is no longer listed in the OpenRouter catalogue.",
+     "titular": "Ling 3.0 Flash Sante is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Ling 3.0 Flash Sante deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|inclusionai/ling-3.0-flash-fin|2026-11-14",
+   "published": null,
+   "detected": "2026-11-14",
+   "date": "2026-11-14",
+   "mag": null,
+   "model": "inclusionai/ling-3.0-flash-fin",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-14T03:54:19Z"
+   },
+   "what": "Ling 3.0 Flash Fin deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Ling 3.0 Flash Fin"
+   },
+   "i18n": {
+    "en": {
+     "what": "Ling 3.0 Flash Fin is no longer listed in the OpenRouter catalogue.",
+     "titular": "Ling 3.0 Flash Fin is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Ling 3.0 Flash Fin deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|xiaomi/mimo-v2.6-flash-20260921|2026-11-14",
+   "published": "2026-11-13",
+   "detected": "2026-11-14",
+   "date": "2026-11-13",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "xiaomi/mimo-v2.6-flash",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-14T03:54:19Z"
+   },
+   "what": "MiMo-V2.6-Flash entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,8 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "xiaomi/mimo-v2.6-flash-20260921",
+    "rank": 10,
+    "share": 1.8,
+    "tokens": 3849116642949,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "MiMo-V2.6-Flash enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.8% of tokens.",
+     "titular": "MiMo-V2.6-Flash enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.8% of OpenRouter’s tokens from 2026-11-07 to 2026-11-13. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "MiMo-V2.6-Flash entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/xiaomi/mimo-v2.6-flash",
+   "consecuencia": "1,8 % de los tokens de OpenRouter del 2026-11-07 al 2026-11-13. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
    "kind": "uso",
    "key": "uso|entra|z-ai/glm-5.3-20260816|2026-11-13",
    "published": "2026-11-12",

@@ -1,11 +1,11 @@
 {
  "schema": 2,
- "generated": "2026-11-13T03:54:57Z",
+ "generated": "2026-11-14T03:54:19Z",
  "window": 7,
- "since": "2026-11-07",
- "base": "2026-11-12",
+ "since": "2026-11-08",
+ "base": "2026-11-13",
  "parte": {
-  "fecha": "2026-11-13",
+  "fecha": "2026-11-14",
   "noticias": [],
   "ultima": {
    "key": "nuevo|google/gemini-4-hydrogen",
@@ -46,6 +46,40 @@
  "items": [
   {
    "kind": "nuevo",
+   "key": "nuevo|inclusionai/ling-3.2-flash",
+   "model": "inclusionai/ling-3.2-flash",
+   "published": "2026-11-13",
+   "detected": "2026-11-14",
+   "date": "2026-11-13",
+   "mag": null,
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/inclusionai/ling-3.2-flash:free",
+    "got": "2026-11-14T03:54:19Z"
+   },
+   "what": "Ling 3.2 Flash (Ant Group (inclusionAI)) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
+   "data": {
+    "weights": null,
+    "in": 0,
+    "out": 0,
+    "ii": null,
+    "eci": null,
+    "identity": "confirmada"
+   },
+   "i18n": {
+    "en": {
+     "what": "Ling 3.2 Flash (Ant Group (inclusionAI)) appears in the OpenRouter catalogue, for now only as the :free variant.",
+     "titular": "Ling 3.2 Flash (Ant Group (inclusionAI)) arrives on OpenRouter",
+     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Free on OpenRouter at the time of the check."
+    }
+   },
+   "titular": "Ling 3.2 Flash (Ant Group (inclusionAI)) llega a OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/inclusionai/ling-3.2-flash",
+   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Gratis en OpenRouter en el momento de la consulta."
+  },
+  {
+   "kind": "nuevo",
    "key": "nuevo|google/gemini-4-hydrogen",
    "model": "google/gemini-4-hydrogen",
    "published": "2026-11-12",
@@ -55,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-hydrogen",
-    "got": "2026-11-13T03:54:57Z"
+    "got": "2026-11-14T03:54:19Z"
    },
    "what": "Gemini 4 Hydrogen (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -96,7 +130,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-5.5-flash-preview:free",
-    "got": "2026-11-13T03:54:57Z"
+    "got": "2026-11-14T03:54:19Z"
    },
    "what": "ERNIE-5.5-Flash-Preview (Baidu) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
    "data": {
@@ -130,7 +164,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-light-dt-1.0-intl",
-    "got": "2026-11-13T03:54:57Z"
+    "got": "2026-11-14T03:54:19Z"
    },
    "what": "ERNIE-Light-DT-1.0 (Baidu) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -164,7 +198,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-carbon",
-    "got": "2026-11-13T03:54:57Z"
+    "got": "2026-11-14T03:54:19Z"
    },
    "what": "Gemini 4 Carbon (Google) llega a OpenRouter: ya tiene API pública. Hasta ahora sólo constaba su puntuación en Artificial Analysis.",
    "data": {
@@ -202,7 +236,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/anthropic/claude-fable-5.2",
-    "got": "2026-11-13T03:54:57Z"
+    "got": "2026-11-14T03:54:19Z"
    },
    "what": "Claude Fable 5.2 (Anthropic) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -243,7 +277,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/meta/muse-ember",
-    "got": "2026-11-13T03:54:57Z"
+    "got": "2026-11-14T03:54:19Z"
    },
    "what": "Muse Ember (Meta) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -272,6 +306,101 @@
    },
    "ficha": "#modelos/meta/muse-ember",
    "consecuencia": "Índice de AA 36: a 28,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 17 de 48. Precio combinado 0,2 $ por millón de tokens. De los 4 modelos con un índice de AA parecido (±2 puntos de su 36), ninguno cuesta menos."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|inclusionai/ling-3.0-flash-sante|2026-11-14",
+   "published": null,
+   "detected": "2026-11-14",
+   "date": "2026-11-14",
+   "mag": null,
+   "model": "inclusionai/ling-3.0-flash-sante",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-14T03:54:19Z"
+   },
+   "what": "Ling 3.0 Flash Sante deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Ling 3.0 Flash Sante"
+   },
+   "i18n": {
+    "en": {
+     "what": "Ling 3.0 Flash Sante is no longer listed in the OpenRouter catalogue.",
+     "titular": "Ling 3.0 Flash Sante is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Ling 3.0 Flash Sante deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|inclusionai/ling-3.0-flash-fin|2026-11-14",
+   "published": null,
+   "detected": "2026-11-14",
+   "date": "2026-11-14",
+   "mag": null,
+   "model": "inclusionai/ling-3.0-flash-fin",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-14T03:54:19Z"
+   },
+   "what": "Ling 3.0 Flash Fin deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Ling 3.0 Flash Fin"
+   },
+   "i18n": {
+    "en": {
+     "what": "Ling 3.0 Flash Fin is no longer listed in the OpenRouter catalogue.",
+     "titular": "Ling 3.0 Flash Fin is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Ling 3.0 Flash Fin deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|xiaomi/mimo-v2.6-flash-20260921|2026-11-14",
+   "published": "2026-11-13",
+   "detected": "2026-11-14",
+   "date": "2026-11-13",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "xiaomi/mimo-v2.6-flash",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-14T03:54:19Z"
+   },
+   "what": "MiMo-V2.6-Flash entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,8 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "xiaomi/mimo-v2.6-flash-20260921",
+    "rank": 10,
+    "share": 1.8,
+    "tokens": 3849116642949,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "MiMo-V2.6-Flash enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.8% of tokens.",
+     "titular": "MiMo-V2.6-Flash enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.8% of OpenRouter’s tokens from 2026-11-07 to 2026-11-13. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "MiMo-V2.6-Flash entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/xiaomi/mimo-v2.6-flash",
+   "consecuencia": "1,8 % de los tokens de OpenRouter del 2026-11-07 al 2026-11-13. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "uso",
@@ -1442,150 +1571,6 @@
    "importancia": null,
    "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
    "consecuencia": "2 % de los tokens de OpenRouter del 2026-11-01 al 2026-11-07. Es el uso en OpenRouter, no en todo el mercado."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|dcMW|2026-11-07",
-   "published": null,
-   "detected": "2026-11-07",
-   "date": "2026-11-07",
-   "mag": {
-    "v": -16,
-    "pct": -0.1,
-    "unit": "MW"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-11-07T11:56:14Z"
-   },
-   "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 15.138 a 15.122 MW.",
-   "data": {
-    "ind": "dcMW",
-    "path": "dc.now",
-    "from": 15138,
-    "to": 15122
-   },
-   "i18n": {
-    "en": {
-     "what": "IT power in service at the data centres Epoch tracks: from 15,138 to 15,122 MW.",
-     "titular": "The power in service at the data centres Epoch tracks falls to 15,122 MW",
-     "consecuencia": "96 data centres. Power of the equipment, without cooling; it is not the world total. In AI 2027 it is evidence for “40 million H100e available”."
-    }
-   },
-   "titular": "La potencia en servicio de los centros que sigue Epoch baja a 15.122 MW",
-   "importancia": null,
-   "ficha": "#carrera/computo",
-   "consecuencia": "96 centros. Potencia de los equipos, sin refrigeración; no es el total mundial. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|dcPlan26|2026-11-07",
-   "published": null,
-   "detected": "2026-11-07",
-   "date": "2026-11-07",
-   "mag": {
-    "v": 108,
-    "pct": 0.5,
-    "unit": "MW"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
-    "got": "2026-11-07T11:56:14Z"
-   },
-   "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.979 a 22.087 MW.",
-   "data": {
-    "ind": "dcPlan26",
-    "path": "dc.plan",
-    "from": 21979,
-    "to": 22087
-   },
-   "i18n": {
-    "en": {
-     "what": "Power planned for the end of 2026 in Epoch’s schedule: from 21,979 to 22,087 MW.",
-     "titular": "Power planned for the end of 2026 in Epoch’s schedule: from 21,979 to 22,087 MW.",
-     "consecuencia": "In AI 2027 it is evidence for “AI power in 2026”."
-    }
-   },
-   "titular": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 21.979 a 22.087 MW.",
-   "importancia": null,
-   "ficha": "#carrera/computo",
-   "consecuencia": "En AI 2027 es evidencia de «Potencia de la IA en 2026»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|capexB|2026-11-07",
-   "published": null,
-   "detected": "2026-11-07",
-   "date": "2026-11-07",
-   "mag": {
-    "v": -0.6,
-    "pct": -0.1,
-    "unit": "mil millones de $"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/data/data-centers",
-    "got": "2026-11-07T11:56:14Z"
-   },
-   "what": "Coste de capital de los centros que sigue Epoch: de 574 a 573 mil millones de $.",
-   "data": {
-    "ind": "capexB",
-    "path": "dc.capex",
-    "from": 573.5,
-    "to": 572.9
-   },
-   "i18n": {
-    "en": {
-     "what": "Capital cost of the data centres Epoch tracks: from 574 to 573 billion dollars.",
-     "titular": "Capital cost of the data centres Epoch tracks: from 574 to 573 billion dollars."
-    }
-   },
-   "titular": "Coste de capital de los centros que sigue Epoch: de 574 a 573 mil millones de $.",
-   "importancia": null,
-   "ficha": "#carrera/economia",
-   "consecuencia": null
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|revLeader|2026-11-07",
-   "published": "2026-10-31",
-   "detected": "2026-11-07",
-   "date": "2026-10-31",
-   "mag": {
-    "v": 16000000000,
-    "pct": 24.6,
-    "unit": "$"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://www.ft.com/content/314e17df-e7af-4814-b208-70a0557cb452?syn-25a6b1a6=1",
-    "got": "2026-11-07T11:56:14Z"
-   },
-   "what": "Mayores ingresos anualizados: de 65 a 81 mil millones de $ (Anthropic).",
-   "data": {
-    "ind": "revLeader",
-    "path": "companies.leader",
-    "from": 65000000000,
-    "to": 81000000000
-   },
-   "i18n": {
-    "en": {
-     "what": "Highest annualised revenue: from 65 to 81 billion dollars (Anthropic).",
-     "titular": "Anthropic: $81 billion in annualised revenue",
-     "porque": "the figure changes by 25% (threshold: 10%)",
-     "consecuencia": "Anthropic, Annualized run rate, Epoch confidence: Likely. In AI 2027 it is evidence for “OpenBrain revenue in 2026” and “$55 billion annualised and $2.5 trillion valuation”."
-    }
-   },
-   "titular": "Anthropic: 81 mil millones de $ de ingresos anualizados",
-   "importancia": {
-    "tier": 6,
-    "w": 24.615384615384617,
-    "porque": "la cifra cambia un 25 % (umbral: 10 %)"
-   },
-   "ficha": "#carrera/economia",
-   "consecuencia": "Anthropic, Annualized run rate, confianza de Epoch: Likely. En AI 2027 es evidencia de «Ingresos de OpenBrain en 2026» y «55.000 millones anualizados y 2,5 billones de valoración»."
   },
   {
    "kind": "pesos",
