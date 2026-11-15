@@ -1,11 +1,11 @@
 {
  "schema": 2,
- "generated": "2026-11-14T03:54:19Z",
+ "generated": "2026-11-15T03:54:23Z",
  "window": 7,
- "since": "2026-11-08",
- "base": "2026-11-13",
+ "since": "2026-11-09",
+ "base": "2026-11-14",
  "parte": {
-  "fecha": "2026-11-14",
+  "fecha": "2026-11-15",
   "noticias": [],
   "ultima": {
    "key": "nuevo|google/gemini-4-hydrogen",
@@ -55,7 +55,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/inclusionai/ling-3.2-flash:free",
-    "got": "2026-11-14T03:54:19Z"
+    "got": "2026-11-15T03:54:23Z"
    },
    "what": "Ling 3.2 Flash (Ant Group (inclusionAI)) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
    "data": {
@@ -89,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-hydrogen",
-    "got": "2026-11-14T03:54:19Z"
+    "got": "2026-11-15T03:54:23Z"
    },
    "what": "Gemini 4 Hydrogen (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -130,7 +130,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-5.5-flash-preview:free",
-    "got": "2026-11-14T03:54:19Z"
+    "got": "2026-11-15T03:54:23Z"
    },
    "what": "ERNIE-5.5-Flash-Preview (Baidu) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
    "data": {
@@ -164,7 +164,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-light-dt-1.0-intl",
-    "got": "2026-11-14T03:54:19Z"
+    "got": "2026-11-15T03:54:23Z"
    },
    "what": "ERNIE-Light-DT-1.0 (Baidu) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -198,7 +198,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-carbon",
-    "got": "2026-11-14T03:54:19Z"
+    "got": "2026-11-15T03:54:23Z"
    },
    "what": "Gemini 4 Carbon (Google) llega a OpenRouter: ya tiene API pública. Hasta ahora sólo constaba su puntuación en Artificial Analysis.",
    "data": {
@@ -236,7 +236,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/anthropic/claude-fable-5.2",
-    "got": "2026-11-14T03:54:19Z"
+    "got": "2026-11-15T03:54:23Z"
    },
    "what": "Claude Fable 5.2 (Anthropic) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -277,7 +277,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/meta/muse-ember",
-    "got": "2026-11-14T03:54:19Z"
+    "got": "2026-11-15T03:54:23Z"
    },
    "what": "Muse Ember (Meta) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -1534,43 +1534,6 @@
    "importancia": null,
    "ficha": null,
    "consecuencia": "2 % de los tokens de OpenRouter del 2026-11-02 al 2026-11-08. Es el uso en OpenRouter, no en todo el mercado."
-  },
-  {
-   "kind": "uso",
-   "key": "uso|entra|moonshotai/kimi-k3.1-pro-20261023|2026-11-08",
-   "published": "2026-11-07",
-   "detected": "2026-11-08",
-   "date": "2026-11-07",
-   "mag": {
-    "v": 10,
-    "unit": "puesto"
-   },
-   "model": "moonshotai/kimi-k3.1-pro",
-   "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-08T12:12:54Z"
-   },
-   "what": "Kimi K3.1 Pro entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
-   "data": {
-    "sub": "entra",
-    "slug": "moonshotai/kimi-k3.1-pro-20261023",
-    "rank": 10,
-    "share": 2,
-    "tokens": 4115975604625,
-    "window": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "Kimi K3.1 Pro enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
-     "titular": "Kimi K3.1 Pro enters OpenRouter’s top 10 by usage",
-     "consecuencia": "2% of OpenRouter’s tokens from 2026-11-01 to 2026-11-07. This is usage on OpenRouter, not across the whole market."
-    }
-   },
-   "titular": "Kimi K3.1 Pro entra en el top 10 de uso de OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
-   "consecuencia": "2 % de los tokens de OpenRouter del 2026-11-01 al 2026-11-07. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "pesos",
