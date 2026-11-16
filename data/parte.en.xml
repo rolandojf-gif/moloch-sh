@@ -6,13 +6,20 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Sun, 15 Nov 2026 03:54:23 GMT</lastBuildDate>
+  <lastBuildDate>Mon, 16 Nov 2026 03:54:21 GMT</lastBuildDate>
+  <item>
+    <title>Qwen4 Max (Alibaba (Qwen)) arrives on OpenRouter: rank 15 on the AA index</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/qwen/qwen4-max</link>
+    <guid isPermaLink="false">nuevo|qwen/qwen4-max</guid>
+    <pubDate>Mon, 16 Nov 2026 03:54:21 GMT</pubDate>
+    <description>Qwen4 Max (Alibaba (Qwen)) appears in the OpenRouter catalogue. AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 15 of 49. Blended price $2.25 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), 1 costs less; the cheapest is GPT-6 Sol, at $2. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 15 of 49). Published on 2026-11-16; detected on 2026-11-16. Source: OpenRouter (https://openrouter.ai/qwen/qwen4-max). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
   <item>
     <title>Gemini 4 Hydrogen (Google) arrives on OpenRouter: rank 7 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/google/gemini-4-hydrogen</link>
     <guid isPermaLink="false">nuevo|google/gemini-4-hydrogen</guid>
     <pubDate>Thu, 12 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Gemini 4 Hydrogen (Google) appears in the OpenRouter catalogue. AA index 53.9: 10.7 points behind the best closed model (Claude Fable 5.2). Rank 7 of 48. Blended price $1.5 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 7 of 48). Published on 2026-11-12; detected on 2026-11-12. Source: OpenRouter (https://openrouter.ai/google/gemini-4-hydrogen). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>Gemini 4 Hydrogen (Google) appears in the OpenRouter catalogue. AA index 53.9: 10.7 points behind the best closed model (Claude Fable 5.2). Rank 7 of 49. Blended price $1.5 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 7 of 49). Published on 2026-11-12; detected on 2026-11-12. Source: OpenRouter (https://openrouter.ai/google/gemini-4-hydrogen). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Baidu makes ERNIE-5.5-Flash-Preview free on OpenRouter</title>
@@ -55,13 +62,6 @@
     <guid isPermaLink="false">lider|closed|anthropic/claude-fable-5.2|2026-11-09</guid>
     <pubDate>Mon, 09 Nov 2026 21:20:46 GMT</pubDate>
     <description>Claude Fable 5.2 becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v5: 64.6 points, 4.6 more than Gemini 4 Carbon (60). The gap between the best closed and the best open-weight model on the AA index stands at 18.1 points (13.5 the day before). It does not equate to months of lag. It is in the briefing because the best closed model changes with the same AA index version and a margin of 4.6 points (minimum 1). Detected on 2026-11-09. Source: Artificial Analysis (https://artificialanalysis.ai/models/claude-fable-5-2). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
-    <title>Muse Ember (Meta) arrives on OpenRouter: rank 17 on the AA index</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/meta/muse-ember</link>
-    <guid isPermaLink="false">nuevo|meta/muse-ember</guid>
-    <pubDate>Mon, 09 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Muse Ember (Meta) appears in the OpenRouter catalogue. AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 17 of 48. Blended price $0.2 per million tokens. Of the 4 models with a similar AA index (±2 points of its 36), none costs less. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 17 of 48). Published on 2026-11-09; detected on 2026-11-09. Source: OpenRouter (https://openrouter.ai/meta/muse-ember). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Anthropic: $81 billion in annualised revenue</title>

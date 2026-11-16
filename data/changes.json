@@ -1,23 +1,15 @@
 {
  "schema": 2,
- "generated": "2026-11-15T03:54:23Z",
+ "generated": "2026-11-16T03:54:21Z",
  "window": 7,
- "since": "2026-11-09",
- "base": "2026-11-14",
+ "since": "2026-11-10",
+ "base": "2026-11-15",
  "parte": {
-  "fecha": "2026-11-15",
-  "noticias": [],
-  "ultima": {
-   "key": "nuevo|google/gemini-4-hydrogen",
-   "fecha": "2026-11-12",
-   "titular": "Gemini 4 Hydrogen (Google) llega a OpenRouter: puesto 7 del índice de AA",
-   "ficha": "#modelos/google/gemini-4-hydrogen",
-   "i18n": {
-    "en": {
-     "titular": "Gemini 4 Hydrogen (Google) arrives on OpenRouter: rank 7 on the AA index"
-    }
-   }
-  },
+  "fecha": "2026-11-16",
+  "noticias": [
+   "nuevo|qwen/qwen4-max"
+  ],
+  "ultima": null,
   "reglas": [
    "Cambia el mejor modelo abierto o cerrado del índice de Artificial Analysis, con la misma versión del índice y al menos 1 punto de margen.",
    "Artificial Analysis cambia la versión de su índice.",
@@ -46,6 +38,47 @@
  "items": [
   {
    "kind": "nuevo",
+   "key": "nuevo|qwen/qwen4-max",
+   "model": "qwen/qwen4-max",
+   "published": "2026-11-16",
+   "detected": "2026-11-16",
+   "date": "2026-11-16",
+   "mag": null,
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/qwen/qwen4-max",
+    "got": "2026-11-16T03:54:21Z"
+   },
+   "what": "Qwen4 Max (Alibaba (Qwen)) aparece en el catálogo de OpenRouter.",
+   "data": {
+    "weights": "cerrados",
+    "in": 1.5,
+    "out": 4.5,
+    "ii": 42.9,
+    "eci": null,
+    "identity": "confirmada",
+    "rankAA": 15,
+    "of": 49
+   },
+   "i18n": {
+    "en": {
+     "what": "Qwen4 Max (Alibaba (Qwen)) appears in the OpenRouter catalogue.",
+     "titular": "Qwen4 Max (Alibaba (Qwen)) arrives on OpenRouter: rank 15 on the AA index",
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 15 of 49)",
+     "consecuencia": "AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 15 of 49. Blended price $2.25 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), 1 costs less; the cheapest is GPT-6 Sol, at $2."
+    }
+   },
+   "titular": "Qwen4 Max (Alibaba (Qwen)) llega a OpenRouter: puesto 15 del índice de AA",
+   "importancia": {
+    "tier": 3,
+    "w": 6,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 15 de 49)"
+   },
+   "ficha": "#modelos/qwen/qwen4-max",
+   "consecuencia": "Índice de AA 42,9: a 21,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 15 de 49. Precio combinado 2,25 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 42,9), 1 cuesta menos; el más barato es GPT-6 Sol, a 2 $."
+  },
+  {
+   "kind": "nuevo",
    "key": "nuevo|inclusionai/ling-3.2-flash",
    "model": "inclusionai/ling-3.2-flash",
    "published": "2026-11-13",
@@ -55,7 +88,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/inclusionai/ling-3.2-flash:free",
-    "got": "2026-11-15T03:54:23Z"
+    "got": "2026-11-16T03:54:21Z"
    },
    "what": "Ling 3.2 Flash (Ant Group (inclusionAI)) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
    "data": {
@@ -89,7 +122,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-hydrogen",
-    "got": "2026-11-15T03:54:23Z"
+    "got": "2026-11-16T03:54:21Z"
    },
    "what": "Gemini 4 Hydrogen (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -100,24 +133,24 @@
     "eci": null,
     "identity": "confirmada",
     "rankAA": 7,
-    "of": 48
+    "of": 49
    },
    "i18n": {
     "en": {
      "what": "Gemini 4 Hydrogen (Google) appears in the OpenRouter catalogue.",
      "titular": "Gemini 4 Hydrogen (Google) arrives on OpenRouter: rank 7 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 7 of 48)",
-     "consecuencia": "AA index 53.9: 10.7 points behind the best closed model (Claude Fable 5.2). Rank 7 of 48. Blended price $1.5 per million tokens."
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 7 of 49)",
+     "consecuencia": "AA index 53.9: 10.7 points behind the best closed model (Claude Fable 5.2). Rank 7 of 49. Blended price $1.5 per million tokens."
     }
    },
    "titular": "Gemini 4 Hydrogen (Google) llega a OpenRouter: puesto 7 del índice de AA",
    "importancia": {
     "tier": 3,
     "w": 14,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 7 de 48)"
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 7 de 49)"
    },
    "ficha": "#modelos/google/gemini-4-hydrogen",
-   "consecuencia": "Índice de AA 53,9: a 10,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 7 de 48. Precio combinado 1,5 $ por millón de tokens."
+   "consecuencia": "Índice de AA 53,9: a 10,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 7 de 49. Precio combinado 1,5 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -130,7 +163,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-5.5-flash-preview:free",
-    "got": "2026-11-15T03:54:23Z"
+    "got": "2026-11-16T03:54:21Z"
    },
    "what": "ERNIE-5.5-Flash-Preview (Baidu) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
    "data": {
@@ -164,7 +197,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/baidu/ernie-light-dt-1.0-intl",
-    "got": "2026-11-15T03:54:23Z"
+    "got": "2026-11-16T03:54:21Z"
    },
    "what": "ERNIE-Light-DT-1.0 (Baidu) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -198,7 +231,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-carbon",
-    "got": "2026-11-15T03:54:23Z"
+    "got": "2026-11-16T03:54:21Z"
    },
    "what": "Gemini 4 Carbon (Google) llega a OpenRouter: ya tiene API pública. Hasta ahora sólo constaba su puntuación en Artificial Analysis.",
    "data": {
@@ -211,101 +244,143 @@
     "eci": 169.76,
     "identity": "confirmada",
     "rankAA": 2,
-    "of": 48
+    "of": 49
    },
    "i18n": {
     "en": {
      "what": "Gemini 4 Carbon (Google) arrives on OpenRouter: it now has a public API. Until now only its Artificial Analysis score was known.",
      "titular": "Gemini 4 Carbon (Google) arrives on OpenRouter and now has a public API: rank 2 on the AA index",
-     "consecuencia": "AA index 60: 4.6 points behind the best closed model (Claude Fable 5.2). Rank 2 of 48. Blended price $2 per million tokens."
+     "consecuencia": "AA index 60: 4.6 points behind the best closed model (Claude Fable 5.2). Rank 2 of 49. Blended price $2 per million tokens."
     }
    },
    "titular": "Gemini 4 Carbon (Google) llega a OpenRouter y ya tiene API pública: puesto 2 del índice de AA",
    "importancia": null,
    "ficha": "#modelos/google/gemini-4-carbon",
-   "consecuencia": "Índice de AA 60: a 4,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 48. Precio combinado 2 $ por millón de tokens."
+   "consecuencia": "Índice de AA 60: a 4,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 49. Precio combinado 2 $ por millón de tokens."
   },
   {
-   "kind": "nuevo",
-   "key": "nuevo|anthropic/claude-fable-5.2",
-   "model": "anthropic/claude-fable-5.2",
-   "published": "2026-11-09",
-   "detected": "2026-11-09",
-   "date": "2026-11-09",
+   "kind": "retirada",
+   "key": "retirada|stepfun/step-3.5-flash|2026-11-16",
+   "published": null,
+   "detected": "2026-11-16",
+   "date": "2026-11-16",
    "mag": null,
+   "model": "stepfun/step-3.5-flash",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/anthropic/claude-fable-5.2",
-    "got": "2026-11-15T03:54:23Z"
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-16T03:54:21Z"
    },
-   "what": "Claude Fable 5.2 (Anthropic) aparece en el catálogo de OpenRouter.",
+   "what": "Step 3.5 Flash deja de figurar en el catálogo de OpenRouter.",
    "data": {
-    "weights": "cerrados",
-    "in": 8,
-    "out": 40,
-    "ii": 64.6,
-    "eci": 173.44,
-    "identity": "confirmada",
-    "rankAA": 1,
-    "of": 48
+    "name": "Step 3.5 Flash"
    },
    "i18n": {
     "en": {
-     "what": "Claude Fable 5.2 (Anthropic) appears in the OpenRouter catalogue.",
-     "titular": "Claude Fable 5.2 (Anthropic) arrives on OpenRouter: rank 1 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 1 of 48)",
-     "consecuencia": "AA index 64.6: 4.6 points above the previous best closed model (Gemini 4 Carbon). Rank 1 of 48. Blended price $16 per million tokens."
+     "what": "Step 3.5 Flash is no longer listed in the OpenRouter catalogue.",
+     "titular": "Step 3.5 Flash is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
     }
    },
-   "titular": "Claude Fable 5.2 (Anthropic) llega a OpenRouter: puesto 1 del índice de AA",
-   "importancia": {
-    "tier": 3,
-    "w": 20,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 1 de 48)"
-   },
-   "ficha": "#modelos/anthropic/claude-fable-5.2",
-   "consecuencia": "Índice de AA 64,6: supera en 4,6 puntos al mejor cerrado anterior (Gemini 4 Carbon). Puesto 1 de 48. Precio combinado 16 $ por millón de tokens."
+   "titular": "Step 3.5 Flash deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
   },
   {
-   "kind": "nuevo",
-   "key": "nuevo|meta/muse-ember",
-   "model": "meta/muse-ember",
-   "published": "2026-11-09",
-   "detected": "2026-11-09",
-   "date": "2026-11-09",
+   "kind": "retirada",
+   "key": "retirada|qwen/qwen3-vl-30b-a3b-thinking|2026-11-16",
+   "published": null,
+   "detected": "2026-11-16",
+   "date": "2026-11-16",
    "mag": null,
+   "model": "qwen/qwen3-vl-30b-a3b-thinking",
    "src": {
     "name": "OpenRouter",
-    "url": "https://openrouter.ai/meta/muse-ember",
-    "got": "2026-11-15T03:54:23Z"
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-16T03:54:21Z"
    },
-   "what": "Muse Ember (Meta) aparece en el catálogo de OpenRouter.",
+   "what": "Qwen3 VL 30B A3B Thinking deja de figurar en el catálogo de OpenRouter.",
    "data": {
-    "weights": "cerrados",
-    "in": 0.1,
-    "out": 0.5,
-    "ii": 36,
-    "eci": null,
-    "identity": "confirmada",
-    "rankAA": 17,
-    "of": 48
+    "name": "Qwen3 VL 30B A3B Thinking"
    },
    "i18n": {
     "en": {
-     "what": "Muse Ember (Meta) appears in the OpenRouter catalogue.",
-     "titular": "Muse Ember (Meta) arrives on OpenRouter: rank 17 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 17 of 48)",
-     "consecuencia": "AA index 36: 28.6 points behind the best closed model (Claude Fable 5.2). Rank 17 of 48. Blended price $0.2 per million tokens. Of the 4 models with a similar AA index (±2 points of its 36), none costs less."
+     "what": "Qwen3 VL 30B A3B Thinking is no longer listed in the OpenRouter catalogue.",
+     "titular": "Qwen3 VL 30B A3B Thinking is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
     }
    },
-   "titular": "Muse Ember (Meta) llega a OpenRouter: puesto 17 del índice de AA",
-   "importancia": {
-    "tier": 3,
-    "w": 4,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 17 de 48)"
+   "titular": "Qwen3 VL 30B A3B Thinking deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|tencent/hunyuan-a13b-instruct|2026-11-16",
+   "published": null,
+   "detected": "2026-11-16",
+   "date": "2026-11-16",
+   "mag": null,
+   "model": "tencent/hunyuan-a13b-instruct",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-16T03:54:21Z"
    },
-   "ficha": "#modelos/meta/muse-ember",
-   "consecuencia": "Índice de AA 36: a 28,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 17 de 48. Precio combinado 0,2 $ por millón de tokens. De los 4 modelos con un índice de AA parecido (±2 puntos de su 36), ninguno cuesta menos."
+   "what": "Hunyuan A13B Instruct deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Hunyuan A13B Instruct"
+   },
+   "i18n": {
+    "en": {
+     "what": "Hunyuan A13B Instruct is no longer listed in the OpenRouter catalogue.",
+     "titular": "Hunyuan A13B Instruct is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Hunyuan A13B Instruct deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|z-ai/glm-5.3-20260816|2026-11-16",
+   "published": "2026-11-15",
+   "detected": "2026-11-16",
+   "date": "2026-11-15",
+   "mag": {
+    "v": 9,
+    "unit": "puesto"
+   },
+   "model": "z-ai/glm-5.3",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-16T03:54:21Z"
+   },
+   "what": "GLM 5.3 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 9, 1,8 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "z-ai/glm-5.3-20260816",
+    "rank": 9,
+    "share": 1.8,
+    "tokens": 3758045975594,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "GLM 5.3 enters the ten most used models on OpenRouter over the last 7 days: rank 9, 1.8% of tokens.",
+     "titular": "GLM 5.3 enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.8% of OpenRouter’s tokens from 2026-11-09 to 2026-11-15. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "GLM 5.3 entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/z-ai/glm-5.3",
+   "consecuencia": "1,8 % de los tokens de OpenRouter del 2026-11-09 al 2026-11-15. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "retirada",
@@ -1282,258 +1357,6 @@
    },
    "ficha": "#carrera",
    "consecuencia": "Claude Fable 5.2, de Anthropic, con 174,2 puntos. Distancias en el ECI: EE. UU. − China, de 9,8 a 12,2 puntos; cerrados − abiertos, de 9,8 a 12,2; entre los dos primeros laboratorios, de 0,7 a 5,1. Unos puntos ECI no equivalen a meses de retraso."
-  },
-  {
-   "kind": "retirada",
-   "key": "retirada|minimax/minimax-m1|2026-11-09",
-   "published": null,
-   "detected": "2026-11-09",
-   "date": "2026-11-09",
-   "mag": null,
-   "model": "minimax/minimax-m1",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-09T21:20:46Z"
-   },
-   "what": "MiniMax M1 deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "MiniMax M1"
-   },
-   "i18n": {
-    "en": {
-     "what": "MiniMax M1 is no longer listed in the OpenRouter catalogue.",
-     "titular": "MiniMax M1 is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "MiniMax M1 deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "lider",
-   "key": "lider|closed|anthropic/claude-fable-5.2|2026-11-09",
-   "published": null,
-   "detected": "2026-11-09",
-   "date": "2026-11-09",
-   "mag": {
-    "v": 4.6,
-    "unit": "puntos AA"
-   },
-   "model": "anthropic/claude-fable-5.2",
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
-    "got": "2026-11-09T21:20:46Z"
-   },
-   "what": "Claude Fable 5.2 pasa a ser el mejor modelo cerrado del catálogo en el índice de inteligencia de Artificial Analysis v5: 64,6 puntos, 4,6 más que Gemini 4 Carbon (60).",
-   "data": {
-    "block": "cerrados",
-    "version": "5",
-    "from": {
-     "id": "google/gemini-4-carbon",
-     "n": "Gemini 4 Carbon",
-     "ii": 60,
-     "iiNow": 60
-    },
-    "to": {
-     "id": "anthropic/claude-fable-5.2",
-     "n": "Claude Fable 5.2",
-     "ii": 64.6
-    },
-    "margin": 4.6
-   },
-   "i18n": {
-    "en": {
-     "what": "Claude Fable 5.2 becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v5: 64.6 points, 4.6 more than Gemini 4 Carbon (60).",
-     "titular": "Claude Fable 5.2 becomes the best closed model on the AA index",
-     "porque": "the best closed model changes with the same AA index version and a margin of 4.6 points (minimum 1)",
-     "consecuencia": "The gap between the best closed and the best open-weight model on the AA index stands at 18.1 points (13.5 the day before). It does not equate to months of lag."
-    }
-   },
-   "titular": "Claude Fable 5.2 pasa a ser el mejor modelo cerrado del índice de AA",
-   "importancia": {
-    "tier": 0,
-    "w": 4.6,
-    "porque": "cambia el mejor modelo cerrado con la misma versión del índice de AA y 4,6 puntos de margen (mínimo 1)"
-   },
-   "ficha": "#modelos/anthropic/claude-fable-5.2",
-   "consecuencia": "La distancia entre el mejor cerrado y el mejor abierto en el índice de AA queda en 18,1 puntos (13,5 el día anterior). No equivale a meses de retraso."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|aaUsCn|2026-11-09",
-   "published": null,
-   "detected": "2026-11-09",
-   "date": "2026-11-09",
-   "mag": {
-    "v": 4.6,
-    "pct": 34.1,
-    "unit": "puntos AA"
-   },
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/leaderboards/models",
-    "got": "2026-11-09T21:20:46Z"
-   },
-   "what": "Distancia EE. UU. − China en el índice de AA: de 13,5 a 18,1 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
-   "data": {
-    "ind": "aaUsCn",
-    "path": "aa.gapUsCn",
-    "from": 13.5,
-    "to": 18.1
-   },
-   "i18n": {
-    "en": {
-     "what": "US − China gap on the AA index: from 13.5 to 18.1 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
-     "titular": "US − China gap on the AA index: from 13.5 to 18.1 points (Claude Fable 5.2 versus Kimi K3.1 Pro)."
-    }
-   },
-   "titular": "Distancia EE. UU. − China en el índice de AA: de 13,5 a 18,1 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": null
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|aaClosedOpen|2026-11-09",
-   "published": null,
-   "detected": "2026-11-09",
-   "date": "2026-11-09",
-   "mag": {
-    "v": 4.6,
-    "pct": 34.1,
-    "unit": "puntos AA"
-   },
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/leaderboards/models",
-    "got": "2026-11-09T21:20:46Z"
-   },
-   "what": "Distancia cerrados − abiertos en el índice de AA: de 13,5 a 18,1 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
-   "data": {
-    "ind": "aaClosedOpen",
-    "path": "aa.gapClosedOpen",
-    "from": 13.5,
-    "to": 18.1
-   },
-   "i18n": {
-    "en": {
-     "what": "Closed − open gap on the AA index: from 13.5 to 18.1 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
-     "titular": "Closed − open gap on the AA index: from 13.5 to 18.1 points (Claude Fable 5.2 versus Kimi K3.1 Pro)."
-    }
-   },
-   "titular": "Distancia cerrados − abiertos en el índice de AA: de 13,5 a 18,1 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": null
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|aaLabs|2026-11-09",
-   "published": null,
-   "detected": "2026-11-09",
-   "date": "2026-11-09",
-   "mag": {
-    "v": 3.7,
-    "pct": 411.1,
-    "unit": "puntos AA"
-   },
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/leaderboards/models",
-    "got": "2026-11-09T21:20:46Z"
-   },
-   "what": "Distancia entre los dos primeros laboratorios en el índice de AA: de 0,9 a 4,6 puntos (Anthropic frente a Google).",
-   "data": {
-    "ind": "aaLabs",
-    "path": "aa.gapLabs",
-    "from": 0.9,
-    "to": 4.6
-   },
-   "i18n": {
-    "en": {
-     "what": "Gap between the top two labs on the AA index: from 0.9 to 4.6 points (Anthropic versus Google).",
-     "titular": "Gap between the top two labs on the AA index: from 0.9 to 4.6 points (Anthropic versus Google)."
-    }
-   },
-   "titular": "Distancia entre los dos primeros laboratorios en el índice de AA: de 0,9 a 4,6 puntos (Anthropic frente a Google).",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": null
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|saturated|2026-11-09",
-   "published": null,
-   "detected": "2026-11-09",
-   "date": "2026-11-09",
-   "mag": {
-    "v": 4,
-    "pct": 57.1,
-    "unit": "evaluaciones"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks",
-    "got": "2026-11-09T21:20:46Z"
-   },
-   "what": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %): de 7 a 11 evaluaciones (de 21).",
-   "data": {
-    "ind": "saturated",
-    "path": "bench.saturated",
-    "from": 7,
-    "to": 11
-   },
-   "i18n": {
-    "en": {
-     "what": "Epoch evaluations saturated (best result of at least 90%): from 7 to 11 evaluations (of 21).",
-     "titular": "Epoch evaluations saturated (best result of at least 90%): from 7 to 11 evaluations (of 21)."
-    }
-   },
-   "titular": "Evaluaciones de Epoch saturadas (mejor resultado de al menos un 90 %): de 7 a 11 evaluaciones (de 21).",
-   "importancia": null,
-   "ficha": "#carrera/evaluacion",
-   "consecuencia": null
-  },
-  {
-   "kind": "uso",
-   "key": "uso|entra|stealth/crouton-alpha|2026-11-09",
-   "published": "2026-11-08",
-   "detected": "2026-11-09",
-   "date": "2026-11-08",
-   "mag": {
-    "v": 10,
-    "unit": "puesto"
-   },
-   "model": "stealth/crouton-alpha",
-   "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-09T21:20:46Z"
-   },
-   "what": "Crouton Alpha entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
-   "data": {
-    "sub": "entra",
-    "slug": "stealth/crouton-alpha",
-    "rank": 10,
-    "share": 2,
-    "tokens": 4240206752861,
-    "window": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "Crouton Alpha enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
-     "titular": "stealth/crouton-alpha enters OpenRouter’s top 10 by usage",
-     "consecuencia": "2% of OpenRouter’s tokens from 2026-11-02 to 2026-11-08. This is usage on OpenRouter, not across the whole market."
-    }
-   },
-   "titular": "stealth/crouton-alpha entra en el top 10 de uso de OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "2 % de los tokens de OpenRouter del 2026-11-02 al 2026-11-08. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "pesos",

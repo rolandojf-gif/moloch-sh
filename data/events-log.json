@@ -219,6 +219,130 @@
  "events": [
   {
    "kind": "retirada",
+   "key": "retirada|stepfun/step-3.5-flash|2026-11-16",
+   "published": null,
+   "detected": "2026-11-16",
+   "date": "2026-11-16",
+   "mag": null,
+   "model": "stepfun/step-3.5-flash",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-16T03:54:21Z"
+   },
+   "what": "Step 3.5 Flash deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Step 3.5 Flash"
+   },
+   "i18n": {
+    "en": {
+     "what": "Step 3.5 Flash is no longer listed in the OpenRouter catalogue.",
+     "titular": "Step 3.5 Flash is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Step 3.5 Flash deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|qwen/qwen3-vl-30b-a3b-thinking|2026-11-16",
+   "published": null,
+   "detected": "2026-11-16",
+   "date": "2026-11-16",
+   "mag": null,
+   "model": "qwen/qwen3-vl-30b-a3b-thinking",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-16T03:54:21Z"
+   },
+   "what": "Qwen3 VL 30B A3B Thinking deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Qwen3 VL 30B A3B Thinking"
+   },
+   "i18n": {
+    "en": {
+     "what": "Qwen3 VL 30B A3B Thinking is no longer listed in the OpenRouter catalogue.",
+     "titular": "Qwen3 VL 30B A3B Thinking is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Qwen3 VL 30B A3B Thinking deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|tencent/hunyuan-a13b-instruct|2026-11-16",
+   "published": null,
+   "detected": "2026-11-16",
+   "date": "2026-11-16",
+   "mag": null,
+   "model": "tencent/hunyuan-a13b-instruct",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-16T03:54:21Z"
+   },
+   "what": "Hunyuan A13B Instruct deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Hunyuan A13B Instruct"
+   },
+   "i18n": {
+    "en": {
+     "what": "Hunyuan A13B Instruct is no longer listed in the OpenRouter catalogue.",
+     "titular": "Hunyuan A13B Instruct is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Hunyuan A13B Instruct deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|z-ai/glm-5.3-20260816|2026-11-16",
+   "published": "2026-11-15",
+   "detected": "2026-11-16",
+   "date": "2026-11-15",
+   "mag": {
+    "v": 9,
+    "unit": "puesto"
+   },
+   "model": "z-ai/glm-5.3",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-16T03:54:21Z"
+   },
+   "what": "GLM 5.3 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 9, 1,8 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "z-ai/glm-5.3-20260816",
+    "rank": 9,
+    "share": 1.8,
+    "tokens": 3758045975594,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "GLM 5.3 enters the ten most used models on OpenRouter over the last 7 days: rank 9, 1.8% of tokens.",
+     "titular": "GLM 5.3 enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.8% of OpenRouter’s tokens from 2026-11-09 to 2026-11-15. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "GLM 5.3 entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/z-ai/glm-5.3",
+   "consecuencia": "1,8 % de los tokens de OpenRouter del 2026-11-09 al 2026-11-15. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
+   "kind": "retirada",
    "key": "retirada|inclusionai/ling-3.0-flash-sante|2026-11-14",
    "published": null,
    "detected": "2026-11-14",
