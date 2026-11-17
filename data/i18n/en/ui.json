@@ -383,6 +383,7 @@
   "Cerrado": "Closed",
   "Con nombre: líderes y modelos que ninguno supera a la vez en índice y precio{p1}": "Named: leaders and models that none beats on both index and price{p1}",
   "; al acercar, también los demás que caben": "; when zoomed in, the others that fit too",
+  ", y los nuevos de los últimos 7 días": ", and new models from the last 7 days",
   "Cobertura incompleta: falta el mejor modelo según Epoch": "Incomplete coverage: the best model according to Epoch is missing",
   "Evolución del mejor modelo abierto y del mejor cerrado": "Evolution of the best open model and the best closed model",
   "Fecha de lanzamiento": "Release date",

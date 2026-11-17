@@ -65,6 +65,7 @@ function cardFor(m, curated) {
   };
 }
 
+/* El nombre de la fuente va en español: provLine lo traduce (con t() aquí se traducía dos veces y en inglés quedaba «Source» sin traducir en el informe de pruebas). */
 function eventCard(e) {
   const m = D.byId.get(e.model);
   return {
@@ -73,7 +74,7 @@ function eventCard(e) {
       <div class="rel-date">${esc(fmtDate(e.date))}</div>
       <div><span class="tag k-${esc(e.kind || e.type)}">${esc(evt(e.kind || e.type))}</span>
         <div class="extra">${esc(tr(e.what || e.title || ''))}</div>
-        ${provLine(e.src || { name: t('Fuente'), url: e.url, date: e.date })}</div>
+        ${provLine(e.src || { name: 'Fuente', url: e.url, date: e.date })}</div>
     </article>`
   };
 }
@@ -83,7 +84,7 @@ function render() {
   const cutoff = state.days ? new Date(Date.now() - state.days * 86400e3).toISOString().slice(0, 10) : '';
   // Sólo lanzamientos: los cambios de precio están en «Hoy» y las retiradas van aparte, al final.
   let cards = D.catalog.models.map(m => cardFor(m, curated));
-  cards = cards.concat(curated.filter(e => !e.model || !D.byId.has(e.model)).map(e => eventCard({ ...e, kind: e.type, what: e.title, src: { name: e.source || t('Fuente'), url: e.url, date: e.date } })));
+  cards = cards.concat(curated.filter(e => !e.model || !D.byId.has(e.model)).map(e => eventCard({ ...e, kind: e.type, what: e.title, src: { name: e.source || 'Fuente', url: e.url, date: e.date } })));
   cards = cards.filter(c => c.date && c.date >= cutoff && (state.w === 'all' || c.weights === state.w))
     .sort((a, b) => b.date.localeCompare(a.date));
   const gone = (D.evLog.events || []).filter(e => e.kind === 'retirada' && e.date >= cutoff);
