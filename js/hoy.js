@@ -193,7 +193,9 @@ function renderScatter(d, gapPts) {
   const T = Math.round((top - gapPts) * 10) / 10;
   const best = cheapestAbove(models, T, ii, blended);
   const labels = new Set([lo?.id, lc?.id, best?.id].filter(Boolean));
-  scatter(el, pts, { threshold: T, labels, yLabel: t('Índice de inteligencia (Artificial Analysis)') });
+  // Nuevos de la ventana de «Lo detectado» (changes.json), para que un lanzamiento se vea aunque no esté en la frontera.
+  const fresh = new Set((d.changes?.items || []).filter(it => it.kind === 'nuevo').map(it => /^#modelos\/(.+)$/.exec(it.ficha || '')?.[1]).filter(Boolean));
+  scatter(el, pts, { threshold: T, labels, fresh, yLabel: t('Índice de inteligencia (Artificial Analysis)') });
 
   const bits = [];
   if (lo && lc) {

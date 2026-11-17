@@ -296,9 +296,10 @@ function frame(el, wide, narrowH = wide.H, max = 640) {
 /* ── Capacidad frente a precio (Hoy) ────────────────────────────────────── */
 /* points: [{ id, x, y, cls, label, tip }]. Etiquetas fijas: las pedidas y los modelos que nadie mejora a la vez en índice y precio;
    al acercarse, también el resto de modelos visibles que quepan. */
-export function scatter(el, points, { threshold = null, labels = new Set(), yLabel = t('Índice') } = {}) {
+/* fresh: modelos nuevos de la semana; llevan nombre después de los pedidos y antes que el resto de la frontera. */
+export function scatter(el, points, { threshold = null, labels = new Set(), fresh = new Set(), yLabel = t('Índice') } = {}) {
   if (!points.length) { el.innerHTML = `<div class="chart-empty">${t('No hay modelos con índice y precio a la vez.')}</div>`; return; }
-  watchWidth(el, () => scatter(el, points, { threshold, labels, yLabel }));
+  watchWidth(el, () => scatter(el, points, { threshold, labels, fresh, yLabel }));
   const G = frame(el, { W: 860, H: 400, L: 52, R: 16, T: 16, B: 44 }, 340);
   const { W, H, L, R, T, B } = G;
   const xs = points.map(p => p.x), ys = points.map(p => p.y);
@@ -310,7 +311,7 @@ export function scatter(el, points, { threshold = null, labels = new Set(), yLab
   const pareto = new Set();
   let best = -Infinity;
   for (const p of points.slice().sort((a, b) => a.x - b.x || b.y - a.y)) if (p.y > best) { pareto.add(p.id); best = p.y; }
-  const key = p => pareto.has(p.id) || labels.has(p.id);
+  const key = p => pareto.has(p.id) || labels.has(p.id) || fresh.has(p.id);
   const draw = (v, zoomed) => {
     const X = val => L + (Math.log10(val) - v.x0) / (v.x1 - v.x0) * (W - L - R);
     const Y = val => T + (1 - (val - v.y0) / (v.y1 - v.y0)) * (H - T - B);
@@ -336,13 +337,14 @@ export function scatter(el, points, { threshold = null, labels = new Set(), yLab
     for (const [p, i] of ord) s += `<circle data-k="${i}" class="pt-${p.cls}${key(p) ? ' key' : ' faint'}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="6"/>`;
     s += '</g>';
     const targets = shown.map(p => ({ x: X(p.x), y: Y(p.y), html: p.tip || tip(p.label, []) }));
-    const cands = shown.filter(p => labels.has(p.id)).sort((a, b) => b.y - a.y)
-      .concat(shown.filter(p => pareto.has(p.id) && !labels.has(p.id)).sort((a, b) => b.y - a.y))
-      .concat(zoomed ? shown.filter(p => !key(p)).sort((a, b) => b.y - a.y) : [])
-      .map(p => ({ x: X(p.x), y: Y(p.y), text: p.label, faint: !key(p) }));
+    const cands = shown.filter(p => labels.has(p.id)).map(p => ({ p })).sort((a, b) => b.p.y - a.p.y)
+      .concat(shown.filter(p => fresh.has(p.id) && !labels.has(p.id)).sort((a, b) => b.y - a.y).map(p => ({ p, far: true })))
+      .concat(shown.filter(p => pareto.has(p.id) && !labels.has(p.id) && !fresh.has(p.id)).sort((a, b) => b.y - a.y).map(p => ({ p })))
+      .concat(zoomed ? shown.filter(p => !key(p)).sort((a, b) => b.y - a.y).map(p => ({ p })) : [])
+      .map(({ p, far }) => ({ x: X(p.x), y: Y(p.y), text: p.label, faint: !key(p), far }));
     s += labelSvg(placeLabels(cands.slice(0, zoomed ? 30 : 12), G, taken));
     s += '</svg>';
-    s += `<div class="legend"><span><i style="background:var(--open)"></i>${t('Pesos abiertos')}</span><span><i style="background:var(--closed)"></i>${t('Cerrado')}</span><span><i class="lg-key"></i>${t('Con nombre: líderes y modelos que ninguno supera a la vez en índice y precio{p1}', { p1: zoomed ? t('; al acercar, también los demás que caben') : '' })}</span>${zoomUi(zoomed)}</div>`;
+    s += `<div class="legend"><span><i style="background:var(--open)"></i>${t('Pesos abiertos')}</span><span><i style="background:var(--closed)"></i>${t('Cerrado')}</span><span><i class="lg-key"></i>${t('Con nombre: líderes y modelos que ninguno supera a la vez en índice y precio{p1}', { p1: (shown.some(p => fresh.has(p.id)) ? t(', y los nuevos de los últimos 7 días') : '') + (zoomed ? t('; al acercar, también los demás que caben') : '') })}</span>${zoomUi(zoomed)}</div>`;
     el.innerHTML = s;
     interact(el, targets);
   };
