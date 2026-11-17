@@ -46,6 +46,7 @@
   "precio de AA, mezcla 3:1 entrada/salida": "AA price, 3:1 input/output blend",
   "inferido: sin pesos enlazados": "inferred: no linked weights",
   "Epoch: Open weights (restricted use); OpenRouter no enlaza el repositorio": "Epoch: Open weights (restricted use); OpenRouter does not link the repository",
+  "Epoch: Unreleased": "Epoch: Unreleased",
   "genera imágenes": "generates images",
   "enrutador de NVIDIA: reparte las peticiones entre otros modelos": "NVIDIA router: distributes requests among other models",
   "enrutador de OpenRouter: elige otro modelo en cada petición": "OpenRouter router: picks a different model for each request",
