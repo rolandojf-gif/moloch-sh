@@ -219,6 +219,77 @@
  "events": [
   {
    "kind": "indicador",
+   "key": "indicador|rate12m|2026-11-18",
+   "published": null,
+   "detected": "2026-11-18",
+   "date": "2026-11-18",
+   "mag": {
+    "v": -1.8,
+    "pct": -7.9,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-18T03:54:04Z"
+   },
+   "what": "Avance de la frontera del ECI en 12 meses: de 22,9 a 21,1 puntos.",
+   "data": {
+    "ind": "rate12m",
+    "path": "eci.rate12m",
+    "from": 22.9,
+    "to": 21.1
+   },
+   "i18n": {
+    "en": {
+     "what": "Frontier gain on the ECI over 12 months: from 22.9 to 21.1 points.",
+     "titular": "Frontier gain on the ECI over 12 months: from 22.9 to 21.1 points."
+    }
+   },
+   "titular": "Avance de la frontera del ECI en 12 meses: de 22,9 a 21,1 puntos.",
+   "importancia": null,
+   "ficha": "#carrera/evaluacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|tencent/hy4-flash-20261116|2026-11-18",
+   "published": "2026-11-17",
+   "detected": "2026-11-18",
+   "date": "2026-11-17",
+   "mag": {
+    "v": 2,
+    "unit": "puesto"
+   },
+   "model": "tencent/hy4-flash",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-18T03:54:04Z"
+   },
+   "what": "Hy4 flash entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 2, 9,7 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "tencent/hy4-flash-20261116",
+    "rank": 2,
+    "share": 9.7,
+    "tokens": 22814277696173,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "Hy4 flash enters the ten most used models on OpenRouter over the last 7 days: rank 2, 9.7% of tokens.",
+     "titular": "Hy4 flash enters OpenRouter’s top 10 by usage",
+     "consecuencia": "9.7% of OpenRouter’s tokens from 2026-11-11 to 2026-11-17. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "Hy4 flash entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/tencent/hy4-flash",
+   "consecuencia": "9,7 % de los tokens de OpenRouter del 2026-11-11 al 2026-11-17. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
+   "kind": "indicador",
    "key": "indicador|eci|2026-11-17",
    "published": null,
    "detected": "2026-11-17",

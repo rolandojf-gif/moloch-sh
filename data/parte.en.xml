@@ -6,19 +6,19 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Tue, 17 Nov 2026 20:39:40 GMT</lastBuildDate>
+  <lastBuildDate>Wed, 18 Nov 2026 03:54:04 GMT</lastBuildDate>
   <item>
     <title>GPT-6.2 Astra (OpenAI) arrives on OpenRouter: rank 2 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.2-astra</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.2-astra</guid>
-    <pubDate>Tue, 17 Nov 2026 20:39:40 GMT</pubDate>
+    <pubDate>Tue, 17 Nov 2026 05:00:00 GMT</pubDate>
     <description>GPT-6.2 Astra (OpenAI) appears in the OpenRouter catalogue. AA index 62.1: 2.5 points behind the best closed model (Claude Fable 5.2). Rank 2 of 51. Blended price $16 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 2 of 51). Published on 2026-11-17; detected on 2026-11-17. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.2-astra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>GPT-6.2 Sol (OpenAI) arrives on OpenRouter: rank 5 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.2-sol</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.2-sol</guid>
-    <pubDate>Tue, 17 Nov 2026 20:39:40 GMT</pubDate>
+    <pubDate>Tue, 17 Nov 2026 05:00:00 GMT</pubDate>
     <description>GPT-6.2 Sol (OpenAI) appears in the OpenRouter catalogue. AA index 57.3: 7.3 points behind the best closed model (Claude Fable 5.2). Rank 5 of 51. Blended price $4 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 5 of 51). Published on 2026-11-17; detected on 2026-11-17. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.2-sol). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
