@@ -906,19 +906,11 @@
   "pts {block} ({name})": "pts {block} ({name})",
   "Ventaja": "Lead",
   "pts sobre {name}": "pts ahead of {name}",
-  "por millón de tokens": "per million tokens",
   "Puesto {r} de {n}{gap}.": "Rank {r} of {n}{gap}.",
   ", a {g} pts del líder de su bloque": ", {g} pts behind the leader of its group",
   ", líder de su bloque": ", leader of its group",
-  "{name}: puesto {r} de {n} en el índice AA": "{name}: rank {r} of {n} on the AA index",
-  "Índice AA de los {n} modelos con puntuación · verde abiertos, naranja cerrados": "AA index of the {n} scored models · green open-weight, orange closed",
-  "Dónde entra en el índice AA": "Where it enters the AA index",
   "Puesto, índice y distancia: {AA_LINK}, publicado con su permiso. Precio: OpenRouter.": "Rank, index and distance: {AA_LINK}, published with its permission. Price: OpenRouter.",
-  "A · Portada": "A · Front page",
-  "B · Banda con regla": "B · Band with ruler",
-  "C · Clasificación": "C · Ranking",
-  "Actual": "Current",
-  "Variantes del prototipo": "Prototype variants",
-  "Prototipo": "Prototype"
+  "Precio por millón de tokens": "Price per million tokens",
+  "entrada / salida": "input / output"
  }
 }

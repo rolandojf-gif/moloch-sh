@@ -3,7 +3,7 @@ import { t, tn, tr, L } from './i18n.js';
 import { esc, fact, src, usd, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote, sinApiTag } from './fmt.js';
 import { logo, logoFor } from './logos.js';
 import { scatter, daily, tip } from './charts.js';
-import { renderHero, variant, switcher } from './hoy-hero.js';
+import { renderHero } from './hoy-hero.js';
 
 const $ = s => document.querySelector(s);
 const kind = k => ({ nuevo: t('Nuevo modelo'), pesos: t('Pesos abiertos'), precio: t('Precio del laboratorio'), evaluacion: t('Evaluación independiente'), retirada: t('Retirada'),
@@ -81,9 +81,7 @@ function renderNews(d) {
       <p><span class="lbl">${t('Por qué es noticia')}</span>${esc(cap(L(it, 'porque', it.importancia?.porque)))}.</p>
       ${foot(it, [L(it, 'titular'), L(it, 'what'), L(it, 'consecuencia'), L(it, 'porque', it.importancia?.porque)])}
     </article>`;
-  const hero = top.length && variant() !== 'actual';
-  $('#hoy-news').classList.toggle('has-hero', !!hero);
-  $('#hoy-news').innerHTML = switcher() + (top.length ? (hero ? renderHero(d, top[0], { kind, toFicha, foot, cap, fichaModel }) + top.slice(1).map(card).join('') : top.map(card).join(''))
+  $('#hoy-news').innerHTML = (top.length ? renderHero(d, top[0], { kind, toFicha, foot, cap, fichaModel }) + top.slice(1).map(card).join('')
     : p ? `<div class="empty"><b>${t('Sin cambios significativos en la recogida del {fmtDate}.', { fmtDate: esc(fmtDate(p.fecha)) })}</b> ${today ? tn(today, ['{n} cambio menor, en la lista de abajo.', '{n} cambios menores, en la lista de abajo.']) : t('Ningún cambio detectado.')}${p.ultima ? ` ${t('La última noticia fue del {fmtDate}: {toFicha}.', { fmtDate: esc(fmtDate(p.ultima.fecha)), toFicha: toFicha(p.ultima.ficha, L(p.ultima, 'titular')) })}` : ''}</div>`
     : '');
   const rules = $('#hoy-reglas');

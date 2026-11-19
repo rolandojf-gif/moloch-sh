@@ -1,13 +1,8 @@
-/* Prototipo: la noticia principal del parte en grande. Tres variantes (?hero=a|b|c) para elegir; «actual» deja las tarjetas de siempre.
-   Todas las cifras salen del catálogo y del propio cambio (changes.json); el nivel de relevancia sigue una regla fija y publicada. */
+/* La noticia principal del parte, a todo el ancho: titular grande, logo y cuatro cifras (puesto, índice AA, distancia, precio).
+   Todas las cifras salen del catálogo y del propio cambio (changes.json); el nivel de relevancia sigue una regla fija. */
 import { t, L } from './i18n.js';
-import { esc, num, usd, ii, blended, weightsWord, fmtDate, AA_LINK } from './fmt.js';
+import { esc, num, usd, ii, priceBasis, fmtDate, AA_LINK } from './fmt.js';
 import { logo } from './logos.js';
-
-export const VARIANTS = ['a', 'b', 'c', 'actual'];
-export function variant() {
-  try { const v = new URLSearchParams(location.search).get('hero'); return VARIANTS.includes(v) ? v : 'a'; } catch { return 'a'; }
-}
 
 const scoredSorted = d => d.catalog.models.filter(m => ii(m) !== null && m.identity === 'confirmada').sort((a, b) => ii(b) - ii(a));
 const r1 = x => Math.round(x * 10) / 10;
@@ -23,7 +18,8 @@ export function heroData(d, it, fichaModel) {
     const block = rows.filter(r => r.weights.v === inCat.weights.v);
     const lead = block[0];
     out.rank = rank; out.of = rows.length; out.ii = ii(inCat);
-    out.price = blended(inCat);
+    const pi = inCat.price?.in?.v, po = inCat.price?.out?.v;
+    out.price = pi !== null && pi !== undefined && po !== null && po !== undefined ? { in: pi, out: po, basis: priceBasis(inCat) } : null;
     if (lead && lead.id !== inCat.id) out.ref = { kind: 'detras', m: lead, gap: r1(ii(lead) - ii(inCat)) };
     else if (block[1]) out.ref = { kind: 'delante', m: block[1], gap: r1(ii(inCat) - ii(block[1])) };
   }
@@ -44,41 +40,14 @@ function figs(h) {
     h.ref ? (h.ref.kind === 'detras'
       ? [t('Distancia al líder'), `−${num(h.ref.gap)}`, t('pts {block} ({name})', { block: blockWord(h.model), name: esc(h.ref.m.name) })]
       : [t('Ventaja'), `+${num(h.ref.gap)}`, t('pts sobre {name}', { name: esc(h.ref.m.name) })]) : null,
-    h.price !== null && h.price !== undefined ? [t('Precio combinado'), usd(h.price), t('por millón de tokens')] : [t('Precio combinado'), '—', t('sin API pública')]
+    h.price ? [t('Precio por millón de tokens'), `<span>${usd(h.price.in)}</span><span class="sep">/</span><span>${usd(h.price.out)}</span>`, `${t('entrada / salida')}${h.price.basis ? ` · ${esc(h.price.basis)}` : ''}`, 'price'] : [t('Precio por millón de tokens'), '—', t('sin API pública')]
   ].filter(Boolean);
-  return `<dl class="hero-figs">${cells.map(([k, v, s]) => `<div><dt>${k}</dt><dd><b>${v}</b>${s ? `<small>${s}</small>` : ''}</dd></div>`).join('')}</dl>`;
+  return `<dl class="hero-figs">${cells.map(([k, v, s, cls]) => `<div${cls ? ` class="${cls}"` : ''}><dt>${k}</dt><dd><b>${v}</b>${s ? `<small>${s}</small>` : ''}</dd></div>`).join('')}</dl>`;
 }
 
 const lvlWhy = h => h.rank ? t('Puesto {r} de {n}{gap}.', { r: h.rank, n: h.of, gap: h.ref?.kind === 'detras' ? t(', a {g} pts del líder de su bloque', { g: num(h.ref.gap) }) : h.ref ? t(', líder de su bloque') : '' }) : '';
 
-/* Regla: todos los modelos con índice en una línea; el de la noticia, grande; el líder de su bloque, rotulado. */
-function regla(h) {
-  if (!h.rank) return '';
-  const vals = h.rows.map(ii), max = vals[0], min = vals[vals.length - 1];
-  const x = v => ((v - min) / ((max - min) || 1) * 100).toFixed(2);
-  const ticks = h.rows.filter(r => r.id !== h.model.id).map(r => `<span class="rg-t ${r.weights.v === 'abiertos' ? 'open' : 'closed'}" style="left:${x(ii(r))}%" title="${esc(`${r.name}: ${num(ii(r))}`)}"></span>`).join('');
-  const lead = h.ref?.kind === 'detras' ? h.ref.m : null;
-  const gap = lead ? `<span class="rg-gap" style="left:${x(h.ii)}%;width:${(x(ii(lead)) - x(h.ii)).toFixed(2)}%"><i>${num(h.ref.gap)} pts</i></span>` : '';
-  return `<div class="regla" role="img" aria-label="${esc(t('{name}: puesto {r} de {n} en el índice AA', { name: h.model.name, r: h.rank, n: h.of }))}">
-    <div class="rg-track">${ticks}${gap}<span class="rg-m" style="left:${x(h.ii)}%">${logo(h.model, true)}<b>${num(h.ii)}</b></span></div>
-    <div class="rg-axis"><span>${num(min)}</span><span>${t('Índice AA de los {n} modelos con puntuación · verde abiertos, naranja cerrados', { n: h.of })}</span><span>${num(max)} · ${esc(h.rows[0].name)}</span></div>
-  </div>`;
-}
-
-/* Clasificación alrededor del puesto: los cinco primeros o, si entra más abajo, el primero y dos por encima y por debajo. */
-function clasif(h) {
-  if (!h.rank) return '';
-  const i = h.rank - 1;
-  const idx = h.rank <= 4 ? [0, 1, 2, 3, 4] : [0, null, i - 2, i - 1, i, i + 1, i + 2];
-  const max = ii(h.rows[0]), min = Math.min(...idx.filter(j => j !== null && h.rows[j]).map(j => ii(h.rows[j]))) - 3;
-  return `<div class="clasif"><div class="cl-h">${t('Dónde entra en el índice AA')}</div><ol>${idx.map(j => j === null ? '<li class="gap" aria-hidden="true">⋯</li>' : h.rows[j] ? (() => {
-    const r = h.rows[j], me = r.id === h.model.id;
-    return `<li class="${me ? 'me' : ''} ${r.weights.v === 'abiertos' ? 'open' : 'closed'}"><span class="cl-p">${j + 1}</span>${logo(r)}<span class="cl-n">${esc(r.name)}${me ? ` <span class="tag k-nuevo">${t('Noticia')}</span>` : ''}</span><span class="cl-b"><i style="width:${((ii(r) - min) / (max - min) * 100).toFixed(1)}%"></i></span><span class="cl-v">${num(ii(r))}</span></li>`;
-  })() : '').join('')}</ol></div>`;
-}
-
 export function renderHero(d, it, { kind, toFicha, foot, cap, fichaModel }) {
-  const v = variant();
   const h = heroData(d, it, fichaModel);
   const tit = L(it, 'titular') || L(it, 'what');
   const texts = [L(it, 'titular'), L(it, 'what'), L(it, 'consecuencia'), L(it, 'porque', it.importancia?.porque)];
@@ -88,14 +57,6 @@ export function renderHero(d, it, { kind, toFicha, foot, cap, fichaModel }) {
   const cambia = it.consecuencia ? `<p><span class="lbl">${t('Qué cambia')}</span>${esc(L(it, 'consecuencia'))}</p>` : '';
   const porque = `<p><span class="lbl">${t('Por qué es noticia')}</span>${esc(cap(L(it, 'porque', it.importancia?.porque)))}.</p>`;
   const credit = h.rank ? `<p class="hero-cred">${t('Puesto, índice y distancia: {AA_LINK}, publicado con su permiso. Precio: OpenRouter.', { AA_LINK })}</p>` : '';
-  if (v === 'b') return `<article class="hero hero-b lvl-${h.level}">${top}${head}${regla(h)}${figs(h)}<div class="hero-txt">${cambia || ocurrio}${porque}</div>${credit}${foot(it, texts)}</article>`;
-  if (v === 'c') return `<article class="hero hero-c lvl-${h.level}"><div class="hc-l">${top}${head}<div class="hero-txt">${ocurrio}${cambia}${porque}</div>${foot(it, texts)}</div><div class="hc-r">${clasif(h)}${credit}</div></article>`;
-  return `<article class="hero hero-a lvl-${h.level}">${top}${head}${figs(h)}<div class="hero-txt">${ocurrio}${cambia}${porque}</div>${credit}${foot(it, texts)}</article>`;
+  return `<article class="hero lvl-${h.level}">${top}${head}${figs(h)}<div class="hero-txt">${ocurrio}${cambia}${porque}</div>${credit}${foot(it, texts)}</article>`;
 }
 
-/* Barra del prototipo para cambiar de variante sin tocar la URL a mano. Se quita al elegir. */
-export function switcher() {
-  const v = variant();
-  const names = { a: t('A · Portada'), b: t('B · Banda con regla'), c: t('C · Clasificación'), actual: t('Actual') };
-  return `<nav class="hero-proto" aria-label="${t('Variantes del prototipo')}"><span>${t('Prototipo')}</span>${VARIANTS.map(k => `<a href="?hero=${k}#hoy"${k === v ? ' aria-current="true"' : ''}>${names[k]}</a>`).join('')}</nav>`;
-}
