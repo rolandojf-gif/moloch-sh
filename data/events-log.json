@@ -218,6 +218,43 @@
  ],
  "events": [
   {
+   "kind": "uso",
+   "key": "uso|entra|minimax/minimax-m3.1-flash-20261019|2026-11-19",
+   "published": "2026-11-18",
+   "detected": "2026-11-19",
+   "date": "2026-11-18",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "minimax/minimax-m3.1-flash",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-19T03:54:08Z"
+   },
+   "what": "MiniMax M3.1 Flash entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,4 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "minimax/minimax-m3.1-flash-20261019",
+    "rank": 10,
+    "share": 1.4,
+    "tokens": 3671993607902,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "MiniMax M3.1 Flash enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.4% of tokens.",
+     "titular": "MiniMax M3.1 Flash enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.4% of OpenRouter’s tokens from 2026-11-12 to 2026-11-18. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "MiniMax M3.1 Flash entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/minimax/minimax-m3.1-flash",
+   "consecuencia": "1,4 % de los tokens de OpenRouter del 2026-11-12 al 2026-11-18. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
    "kind": "indicador",
    "key": "indicador|rate12m|2026-11-18",
    "published": null,
@@ -250,6 +287,36 @@
    "importancia": null,
    "ficha": "#carrera/evaluacion",
    "consecuencia": null
+  },
+  {
+   "kind": "pesos",
+   "key": "pesos|tencent/hy4-flash",
+   "published": "2026-11-17",
+   "detected": "2026-11-19",
+   "date": "2026-11-17",
+   "mag": null,
+   "model": "tencent/hy4-flash",
+   "src": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co/tencent/Hy4-flash",
+    "got": "2026-11-19T03:54:08Z"
+   },
+   "what": "Hy4 flash: pesos descargables en Hugging Face (licencia tencent-hy-license).",
+   "data": {
+    "license": "tencent-hy-license",
+    "weightsSrc": "hf"
+   },
+   "i18n": {
+    "en": {
+     "what": "Hy4 flash: downloadable weights on Hugging Face (licence tencent-hy-license).",
+     "titular": "Open weights for Hy4 flash",
+     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: tencent-hy-license. No independent score yet on Artificial Analysis or Epoch AI."
+    }
+   },
+   "titular": "Pesos abiertos de Hy4 flash",
+   "importancia": null,
+   "ficha": "#modelos/tencent/hy4-flash",
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: tencent-hy-license. Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI."
   },
   {
    "kind": "uso",

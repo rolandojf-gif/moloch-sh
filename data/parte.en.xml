@@ -6,20 +6,27 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Wed, 18 Nov 2026 03:54:04 GMT</lastBuildDate>
+  <lastBuildDate>Thu, 19 Nov 2026 03:54:08 GMT</lastBuildDate>
+  <item>
+    <title>Gemini 4 Neon (Google) arrives on OpenRouter: rank 3 on the AA index</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/google/gemini-4-neon</link>
+    <guid isPermaLink="false">nuevo|google/gemini-4-neon</guid>
+    <pubDate>Thu, 19 Nov 2026 03:54:08 GMT</pubDate>
+    <description>Gemini 4 Neon (Google) appears in the OpenRouter catalogue. AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 52. Blended price $3 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 3 of 52). Published on 2026-11-18; detected on 2026-11-19. Source: OpenRouter (https://openrouter.ai/google/gemini-4-neon). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
   <item>
     <title>GPT-6.2 Astra (OpenAI) arrives on OpenRouter: rank 2 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.2-astra</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.2-astra</guid>
     <pubDate>Tue, 17 Nov 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.2 Astra (OpenAI) appears in the OpenRouter catalogue. AA index 62.1: 2.5 points behind the best closed model (Claude Fable 5.2). Rank 2 of 51. Blended price $16 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 2 of 51). Published on 2026-11-17; detected on 2026-11-17. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.2-astra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>GPT-6.2 Astra (OpenAI) appears in the OpenRouter catalogue. AA index 62.1: 2.5 points behind the best closed model (Claude Fable 5.2). Rank 2 of 52. Blended price $16 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 2 of 52). Published on 2026-11-17; detected on 2026-11-17. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.2-astra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>GPT-6.2 Sol (OpenAI) arrives on OpenRouter: rank 5 on the AA index</title>
+    <title>GPT-6.2 Sol (OpenAI) arrives on OpenRouter: rank 6 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.2-sol</link>
     <guid isPermaLink="false">nuevo|openai/gpt-6.2-sol</guid>
     <pubDate>Tue, 17 Nov 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.2 Sol (OpenAI) appears in the OpenRouter catalogue. AA index 57.3: 7.3 points behind the best closed model (Claude Fable 5.2). Rank 5 of 51. Blended price $4 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 5 of 51). Published on 2026-11-17; detected on 2026-11-17. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.2-sol). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>GPT-6.2 Sol (OpenAI) appears in the OpenRouter catalogue. AA index 57.3: 7.3 points behind the best closed model (Claude Fable 5.2). Rank 6 of 52. Blended price $4 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 6 of 52). Published on 2026-11-17; detected on 2026-11-17. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.2-sol). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>GPT-6.2 Astra becomes the best model on Epoch’s ECI</title>
@@ -29,18 +36,11 @@
     <description>Best model on Epoch’s ECI: from 173.44 to 174.17 points (GPT-6.2 Astra). GPT-6.2 Astra, from OpenAI, with 174.2 points. ECI gaps: between the top two labs, from 3.7 to 0.7 points. A few ECI points do not equate to months of lag. It is in the briefing because the best model on Epoch’s ECI changes. Detected on 2026-11-17. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
-    <title>Qwen4 Max (Alibaba (Qwen)) arrives on OpenRouter: rank 17 on the AA index</title>
+    <title>Qwen4 Max (Alibaba (Qwen)) arrives on OpenRouter: rank 18 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/qwen/qwen4-max</link>
     <guid isPermaLink="false">nuevo|qwen/qwen4-max</guid>
     <pubDate>Mon, 16 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Qwen4 Max (Alibaba (Qwen)) appears in the OpenRouter catalogue. AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 17 of 51. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), 1 costs less; the cheapest is GPT-6 Sol, at $2. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 17 of 51). Published on 2026-11-16; detected on 2026-11-16. Source: OpenRouter (https://openrouter.ai/qwen/qwen4-max). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
-    <title>Gemini 4 Hydrogen (Google) arrives on OpenRouter: rank 9 on the AA index</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/google/gemini-4-hydrogen</link>
-    <guid isPermaLink="false">nuevo|google/gemini-4-hydrogen</guid>
-    <pubDate>Thu, 12 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Gemini 4 Hydrogen (Google) appears in the OpenRouter catalogue. AA index 53.9: 10.7 points behind the best closed model (Claude Fable 5.2). Rank 9 of 51. Blended price $1.5 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 9 of 51). Published on 2026-11-12; detected on 2026-11-12. Source: OpenRouter (https://openrouter.ai/google/gemini-4-hydrogen). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>Qwen4 Max (Alibaba (Qwen)) appears in the OpenRouter catalogue. AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 18 of 52. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), 1 costs less; the cheapest is GPT-6 Sol, at $2. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 18 of 52). Published on 2026-11-16; detected on 2026-11-16. Source: OpenRouter (https://openrouter.ai/qwen/qwen4-max). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Baidu makes ERNIE-5.5-Flash-Preview free on OpenRouter</title>

@@ -1,23 +1,15 @@
 {
  "schema": 2,
- "generated": "2026-11-18T03:54:04Z",
+ "generated": "2026-11-19T03:54:08Z",
  "window": 7,
- "since": "2026-11-12",
- "base": "2026-11-17",
+ "since": "2026-11-13",
+ "base": "2026-11-18",
  "parte": {
-  "fecha": "2026-11-18",
-  "noticias": [],
-  "ultima": {
-   "key": "nuevo|openai/gpt-6.2-astra",
-   "fecha": "2026-11-17",
-   "titular": "GPT-6.2 Astra (OpenAI) llega a OpenRouter: puesto 2 del índice de AA",
-   "ficha": "#modelos/openai/gpt-6.2-astra",
-   "i18n": {
-    "en": {
-     "titular": "GPT-6.2 Astra (OpenAI) arrives on OpenRouter: rank 2 on the AA index"
-    }
-   }
-  },
+  "fecha": "2026-11-19",
+  "noticias": [
+   "nuevo|google/gemini-4-neon"
+  ],
+  "ultima": null,
   "reglas": [
    "Cambia el mejor modelo abierto o cerrado del índice de Artificial Analysis, con la misma versión del índice y al menos 1 punto de margen.",
    "Artificial Analysis cambia la versión de su índice.",
@@ -46,6 +38,47 @@
  "items": [
   {
    "kind": "nuevo",
+   "key": "nuevo|google/gemini-4-neon",
+   "model": "google/gemini-4-neon",
+   "published": "2026-11-18",
+   "detected": "2026-11-19",
+   "date": "2026-11-18",
+   "mag": null,
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/google/gemini-4-neon",
+    "got": "2026-11-19T03:54:08Z"
+   },
+   "what": "Gemini 4 Neon (Google) aparece en el catálogo de OpenRouter.",
+   "data": {
+    "weights": "cerrados",
+    "in": 1.5,
+    "out": 7.5,
+    "ii": 61.4,
+    "eci": null,
+    "identity": "confirmada",
+    "rankAA": 3,
+    "of": 52
+   },
+   "i18n": {
+    "en": {
+     "what": "Gemini 4 Neon (Google) appears in the OpenRouter catalogue.",
+     "titular": "Gemini 4 Neon (Google) arrives on OpenRouter: rank 3 on the AA index",
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 3 of 52)",
+     "consecuencia": "AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 52. Blended price $3 per million tokens."
+    }
+   },
+   "titular": "Gemini 4 Neon (Google) llega a OpenRouter: puesto 3 del índice de AA",
+   "importancia": {
+    "tier": 3,
+    "w": 18,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 52)"
+   },
+   "ficha": "#modelos/google/gemini-4-neon",
+   "consecuencia": "Índice de AA 61,4: a 3,2 puntos del mejor cerrado (Claude Fable 5.2). Puesto 3 de 52. Precio combinado 3 $ por millón de tokens."
+  },
+  {
+   "kind": "nuevo",
    "key": "nuevo|openai/gpt-6.2-astra-pro",
    "model": "openai/gpt-6.2-astra-pro",
    "published": "2026-11-17",
@@ -55,7 +88,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-astra-pro",
-    "got": "2026-11-18T03:54:04Z"
+    "got": "2026-11-19T03:54:08Z"
    },
    "what": "GPT-6.2 Astra Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -89,7 +122,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-astra",
-    "got": "2026-11-18T03:54:04Z"
+    "got": "2026-11-19T03:54:08Z"
    },
    "what": "GPT-6.2 Astra (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -100,24 +133,24 @@
     "eci": 174.17,
     "identity": "confirmada",
     "rankAA": 2,
-    "of": 51
+    "of": 52
    },
    "i18n": {
     "en": {
      "what": "GPT-6.2 Astra (OpenAI) appears in the OpenRouter catalogue.",
      "titular": "GPT-6.2 Astra (OpenAI) arrives on OpenRouter: rank 2 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 2 of 51)",
-     "consecuencia": "AA index 62.1: 2.5 points behind the best closed model (Claude Fable 5.2). Rank 2 of 51. Blended price $16 per million tokens."
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 2 of 52)",
+     "consecuencia": "AA index 62.1: 2.5 points behind the best closed model (Claude Fable 5.2). Rank 2 of 52. Blended price $16 per million tokens."
     }
    },
    "titular": "GPT-6.2 Astra (OpenAI) llega a OpenRouter: puesto 2 del índice de AA",
    "importancia": {
     "tier": 3,
     "w": 19,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 2 de 51)"
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 2 de 52)"
    },
    "ficha": "#modelos/openai/gpt-6.2-astra",
-   "consecuencia": "Índice de AA 62,1: a 2,5 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 51. Precio combinado 16 $ por millón de tokens."
+   "consecuencia": "Índice de AA 62,1: a 2,5 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 52. Precio combinado 16 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -130,7 +163,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-sol-pro",
-    "got": "2026-11-18T03:54:04Z"
+    "got": "2026-11-19T03:54:08Z"
    },
    "what": "GPT-6.2 Sol Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -164,7 +197,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-sol",
-    "got": "2026-11-18T03:54:04Z"
+    "got": "2026-11-19T03:54:08Z"
    },
    "what": "GPT-6.2 Sol (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -174,25 +207,25 @@
     "ii": 57.3,
     "eci": null,
     "identity": "confirmada",
-    "rankAA": 5,
-    "of": 51
+    "rankAA": 6,
+    "of": 52
    },
    "i18n": {
     "en": {
      "what": "GPT-6.2 Sol (OpenAI) appears in the OpenRouter catalogue.",
-     "titular": "GPT-6.2 Sol (OpenAI) arrives on OpenRouter: rank 5 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 5 of 51)",
-     "consecuencia": "AA index 57.3: 7.3 points behind the best closed model (Claude Fable 5.2). Rank 5 of 51. Blended price $4 per million tokens."
+     "titular": "GPT-6.2 Sol (OpenAI) arrives on OpenRouter: rank 6 on the AA index",
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 6 of 52)",
+     "consecuencia": "AA index 57.3: 7.3 points behind the best closed model (Claude Fable 5.2). Rank 6 of 52. Blended price $4 per million tokens."
     }
    },
-   "titular": "GPT-6.2 Sol (OpenAI) llega a OpenRouter: puesto 5 del índice de AA",
+   "titular": "GPT-6.2 Sol (OpenAI) llega a OpenRouter: puesto 6 del índice de AA",
    "importancia": {
     "tier": 3,
-    "w": 16,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 5 de 51)"
+    "w": 15,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 6 de 52)"
    },
    "ficha": "#modelos/openai/gpt-6.2-sol",
-   "consecuencia": "Índice de AA 57,3: a 7,3 puntos del mejor cerrado (Claude Fable 5.2). Puesto 5 de 51. Precio combinado 4 $ por millón de tokens."
+   "consecuencia": "Índice de AA 57,3: a 7,3 puntos del mejor cerrado (Claude Fable 5.2). Puesto 6 de 52. Precio combinado 4 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -205,11 +238,11 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4-flash",
-    "got": "2026-11-18T03:54:04Z"
+    "got": "2026-11-19T03:54:08Z"
    },
    "what": "Hy4 flash (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
-    "weights": "cerrados",
+    "weights": "abiertos",
     "in": 0.035,
     "out": 0.1405,
     "ii": null,
@@ -239,7 +272,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/qwen/qwen4-max",
-    "got": "2026-11-18T03:54:04Z"
+    "got": "2026-11-19T03:54:08Z"
    },
    "what": "Qwen4 Max (Alibaba (Qwen)) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -249,25 +282,25 @@
     "ii": 42.9,
     "eci": null,
     "identity": "confirmada",
-    "rankAA": 17,
-    "of": 51
+    "rankAA": 18,
+    "of": 52
    },
    "i18n": {
     "en": {
      "what": "Qwen4 Max (Alibaba (Qwen)) appears in the OpenRouter catalogue.",
-     "titular": "Qwen4 Max (Alibaba (Qwen)) arrives on OpenRouter: rank 17 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 17 of 51)",
-     "consecuencia": "AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 17 of 51. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), 1 costs less; the cheapest is GPT-6 Sol, at $2."
+     "titular": "Qwen4 Max (Alibaba (Qwen)) arrives on OpenRouter: rank 18 on the AA index",
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 18 of 52)",
+     "consecuencia": "AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 18 of 52. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), 1 costs less; the cheapest is GPT-6 Sol, at $2."
     }
    },
-   "titular": "Qwen4 Max (Alibaba (Qwen)) llega a OpenRouter: puesto 17 del índice de AA",
+   "titular": "Qwen4 Max (Alibaba (Qwen)) llega a OpenRouter: puesto 18 del índice de AA",
    "importancia": {
     "tier": 3,
-    "w": 4,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 17 de 51)"
+    "w": 3,
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 18 de 52)"
    },
    "ficha": "#modelos/qwen/qwen4-max",
-   "consecuencia": "Índice de AA 42,9: a 21,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 17 de 51. Precio combinado 2,14 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 42,9), 1 cuesta menos; el más barato es GPT-6 Sol, a 2 $."
+   "consecuencia": "Índice de AA 42,9: a 21,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 18 de 52. Precio combinado 2,14 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 42,9), 1 cuesta menos; el más barato es GPT-6 Sol, a 2 $."
   },
   {
    "kind": "nuevo",
@@ -280,7 +313,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/inclusionai/ling-3.2-flash:free",
-    "got": "2026-11-18T03:54:04Z"
+    "got": "2026-11-19T03:54:08Z"
    },
    "what": "Ling 3.2 Flash (Ant Group (inclusionAI)) aparece en el catálogo de OpenRouter, de momento sólo como variante :free.",
    "data": {
@@ -304,45 +337,41 @@
    "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Gratis en OpenRouter en el momento de la consulta."
   },
   {
-   "kind": "nuevo",
-   "key": "nuevo|google/gemini-4-hydrogen",
-   "model": "google/gemini-4-hydrogen",
-   "published": "2026-11-12",
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": null,
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/google/gemini-4-hydrogen",
-    "got": "2026-11-18T03:54:04Z"
+   "kind": "uso",
+   "key": "uso|entra|minimax/minimax-m3.1-flash-20261019|2026-11-19",
+   "published": "2026-11-18",
+   "detected": "2026-11-19",
+   "date": "2026-11-18",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
    },
-   "what": "Gemini 4 Hydrogen (Google) aparece en el catálogo de OpenRouter.",
+   "model": "minimax/minimax-m3.1-flash",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-19T03:54:08Z"
+   },
+   "what": "MiniMax M3.1 Flash entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,4 % de los tokens.",
    "data": {
-    "weights": "cerrados",
-    "in": 0.75,
-    "out": 3.75,
-    "ii": 53.9,
-    "eci": null,
-    "identity": "confirmada",
-    "rankAA": 9,
-    "of": 51
+    "sub": "entra",
+    "slug": "minimax/minimax-m3.1-flash-20261019",
+    "rank": 10,
+    "share": 1.4,
+    "tokens": 3671993607902,
+    "window": 7
    },
    "i18n": {
     "en": {
-     "what": "Gemini 4 Hydrogen (Google) appears in the OpenRouter catalogue.",
-     "titular": "Gemini 4 Hydrogen (Google) arrives on OpenRouter: rank 9 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 9 of 51)",
-     "consecuencia": "AA index 53.9: 10.7 points behind the best closed model (Claude Fable 5.2). Rank 9 of 51. Blended price $1.5 per million tokens."
+     "what": "MiniMax M3.1 Flash enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.4% of tokens.",
+     "titular": "MiniMax M3.1 Flash enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.4% of OpenRouter’s tokens from 2026-11-12 to 2026-11-18. This is usage on OpenRouter, not across the whole market."
     }
    },
-   "titular": "Gemini 4 Hydrogen (Google) llega a OpenRouter: puesto 9 del índice de AA",
-   "importancia": {
-    "tier": 3,
-    "w": 12,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 9 de 51)"
-   },
-   "ficha": "#modelos/google/gemini-4-hydrogen",
-   "consecuencia": "Índice de AA 53,9: a 10,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 9 de 51. Precio combinado 1,5 $ por millón de tokens."
+   "titular": "MiniMax M3.1 Flash entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/minimax/minimax-m3.1-flash",
+   "consecuencia": "1,4 % de los tokens de OpenRouter del 2026-11-12 al 2026-11-18. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "indicador",
@@ -377,6 +406,36 @@
    "importancia": null,
    "ficha": "#carrera/evaluacion",
    "consecuencia": null
+  },
+  {
+   "kind": "pesos",
+   "key": "pesos|tencent/hy4-flash",
+   "published": "2026-11-17",
+   "detected": "2026-11-19",
+   "date": "2026-11-17",
+   "mag": null,
+   "model": "tencent/hy4-flash",
+   "src": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co/tencent/Hy4-flash",
+    "got": "2026-11-19T03:54:08Z"
+   },
+   "what": "Hy4 flash: pesos descargables en Hugging Face (licencia tencent-hy-license).",
+   "data": {
+    "license": "tencent-hy-license",
+    "weightsSrc": "hf"
+   },
+   "i18n": {
+    "en": {
+     "what": "Hy4 flash: downloadable weights on Hugging Face (licence tencent-hy-license).",
+     "titular": "Open weights for Hy4 flash",
+     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: tencent-hy-license. No independent score yet on Artificial Analysis or Epoch AI."
+    }
+   },
+   "titular": "Pesos abiertos de Hy4 flash",
+   "importancia": null,
+   "ficha": "#modelos/tencent/hy4-flash",
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: tencent-hy-license. Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI."
   },
   {
    "kind": "uso",
@@ -922,509 +981,6 @@
    "importancia": null,
    "ficha": "#modelos/z-ai/glm-5.3",
    "consecuencia": "1,9 % de los tokens de OpenRouter del 2026-11-06 al 2026-11-12. Es el uso en OpenRouter, no en todo el mercado."
-  },
-  {
-   "kind": "precio",
-   "key": "precio|baidu/ernie-5.5-flash-preview|2026-11-12",
-   "published": null,
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": {
-    "v": -100,
-    "unit": "%"
-   },
-   "model": "baidu/ernie-5.5-flash-preview",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/baidu/ernie-5.5-flash-preview:free/providers",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Baidu ofrece ERNIE-5.5-Flash-Preview gratis en OpenRouter. Antes costaba 0,28 $ de entrada y 1,13 $ de salida por millón de tokens.",
-   "data": {
-    "basis": "laboratorio",
-    "sub": "gratis",
-    "provider": "Baidu",
-    "from": {
-     "in": 0.28,
-     "out": 1.13
-    },
-    "to": {
-     "in": 0,
-     "out": 0
-    },
-    "pct": -100,
-    "tiersFrom": [
-     [
-      0.28,
-      1.13
-     ]
-    ],
-    "tiersTo": [
-     [
-      0,
-      0
-     ]
-    ],
-    "since": "2026-11-11"
-   },
-   "i18n": {
-    "en": {
-     "what": "Baidu now offers ERNIE-5.5-Flash-Preview for free on OpenRouter. It used to cost $0.28 input and $1.13 output per million tokens.",
-     "titular": "Baidu makes ERNIE-5.5-Flash-Preview free on OpenRouter",
-     "porque": "the lab itself makes it free on OpenRouter",
-     "consecuencia": "Its blended price on OpenRouter goes from $0.493 to free."
-    }
-   },
-   "titular": "Baidu deja gratis ERNIE-5.5-Flash-Preview en OpenRouter",
-   "importancia": {
-    "tier": 5,
-    "w": 100,
-    "porque": "el propio laboratorio lo deja gratis en OpenRouter"
-   },
-   "ficha": "#modelos/baidu/ernie-5.5-flash-preview",
-   "consecuencia": "Su precio combinado en OpenRouter pasa de 0,493 $ a gratis."
-  },
-  {
-   "kind": "evaluacion",
-   "key": "evaluacion|google/gemini-4-carbon|eci",
-   "published": null,
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": {
-    "v": 169.76,
-    "unit": "puntos ECI"
-   },
-   "model": "google/gemini-4-carbon",
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Gemini 4 Carbon: primera puntuación en el índice ECI de Epoch AI (169.76).",
-   "data": {
-    "field": "eci",
-    "eci": 169.76,
-    "rankAA": 2,
-    "of": 48
-   },
-   "i18n": {
-    "en": {
-     "what": "Gemini 4 Carbon: first score on Epoch AI’s ECI (169.76).",
-     "titular": "Epoch AI scores Gemini 4 Carbon on the ECI for the first time",
-     "consecuencia": "AA index 60: 4.6 points behind the best closed model (Claude Fable 5.2). Rank 2 of 48. Blended price $2 per million tokens."
-    }
-   },
-   "titular": "Epoch AI puntúa por primera vez Gemini 4 Carbon en el ECI",
-   "importancia": null,
-   "ficha": "#modelos/google/gemini-4-carbon",
-   "consecuencia": "Índice de AA 60: a 4,6 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 48. Precio combinado 2 $ por millón de tokens."
-  },
-  {
-   "kind": "evaluacion",
-   "key": "evaluacion|qwen/qwen3.8-flash|ii",
-   "published": null,
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": {
-    "v": 28.6,
-    "unit": "puntos AA"
-   },
-   "model": "qwen/qwen3.8-flash",
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/models/qwen3-8-flash-next",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Qwen3.8 Flash: primera puntuación en el índice de inteligencia de Artificial Analysis (28.6, v5).",
-   "data": {
-    "field": "ii",
-    "ii": 28.6,
-    "rankAA": 27,
-    "of": 48
-   },
-   "i18n": {
-    "en": {
-     "what": "Qwen3.8 Flash: first score on the Artificial Analysis Intelligence Index (28.6, v5).",
-     "titular": "Qwen3.8 Flash enters the AA index at rank 27",
-     "consecuencia": "AA index 28.6: 17.9 points behind the best open-weight model (Kimi K3.1 Pro). Rank 27 of 48. Blended price $0.23 per million tokens. Of the 6 models with a similar AA index (±2 points of its 28.6), 3 cost less; the cheapest is GPT-6 Luna, at $0.1."
-    }
-   },
-   "titular": "Qwen3.8 Flash entra en el índice de AA en el puesto 27",
-   "importancia": null,
-   "ficha": "#modelos/qwen/qwen3.8-flash",
-   "consecuencia": "Índice de AA 28,6: a 17,9 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 27 de 48. Precio combinado 0,23 $ por millón de tokens. De los 6 modelos con un índice de AA parecido (±2 puntos de su 28,6), 3 cuestan menos; el más barato es GPT-6 Luna, a 0,1 $."
-  },
-  {
-   "kind": "retirada",
-   "key": "retirada|bytedance-seed/seed-2.0-code|2026-11-12",
-   "published": null,
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": null,
-   "model": "bytedance-seed/seed-2.0-code",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Seed-2.0-Code deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "Seed-2.0-Code"
-   },
-   "i18n": {
-    "en": {
-     "what": "Seed-2.0-Code is no longer listed in the OpenRouter catalogue.",
-     "titular": "Seed-2.0-Code is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "Seed-2.0-Code deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "retirada",
-   "key": "retirada|bytedance-seed/seed-1.6-flash|2026-11-12",
-   "published": null,
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": null,
-   "model": "bytedance-seed/seed-1.6-flash",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Seed 1.6 Flash deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "Seed 1.6 Flash"
-   },
-   "i18n": {
-    "en": {
-     "what": "Seed 1.6 Flash is no longer listed in the OpenRouter catalogue.",
-     "titular": "Seed 1.6 Flash is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "Seed 1.6 Flash deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "retirada",
-   "key": "retirada|bytedance-seed/seed-1.6|2026-11-12",
-   "published": null,
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": null,
-   "model": "bytedance-seed/seed-1.6",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Seed 1.6 deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "Seed 1.6"
-   },
-   "i18n": {
-    "en": {
-     "what": "Seed 1.6 is no longer listed in the OpenRouter catalogue.",
-     "titular": "Seed 1.6 is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "Seed 1.6 deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|usCn|2026-11-12",
-   "published": null,
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": {
-    "v": -0.15,
-    "pct": -1.2,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Distancia EE. UU. − China en el ECI: de 12,22 a 12,07 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
-   "data": {
-    "ind": "usCn",
-    "path": "eci.gapUsCn",
-    "from": 12.22,
-    "to": 12.07
-   },
-   "i18n": {
-    "en": {
-     "what": "US − China gap on the ECI: from 12.22 to 12.07 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
-     "titular": "The US − China gap on the ECI falls from 12.2 to 12.1 points",
-     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.4) versus Kimi K3.1 Pro (Moonshot, 161.4). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”."
-    }
-   },
-   "titular": "La distancia EE. UU. − China en el ECI baja de 12,2 a 12,1 puntos",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,4) frente a Kimi K3.1 Pro (Moonshot, 161,4). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «China, unos seis meses por detrás con el 12 % del cómputo»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|closedOpen|2026-11-12",
-   "published": null,
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": {
-    "v": -0.15,
-    "pct": -1.2,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Distancia cerrados − abiertos en el ECI: de 12,22 a 12,07 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
-   "data": {
-    "ind": "closedOpen",
-    "path": "eci.gapClosedOpen",
-    "from": 12.22,
-    "to": 12.07
-   },
-   "i18n": {
-    "en": {
-     "what": "Closed − open gap on the ECI: from 12.22 to 12.07 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
-     "titular": "The closed − open gap on the ECI falls from 12.2 to 12.1 points",
-     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.4) versus Kimi K3.1 Pro (Moonshot, 161.4). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”."
-    }
-   },
-   "titular": "La distancia cerrados − abiertos en el ECI baja de 12,2 a 12,1 puntos",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,4) frente a Kimi K3.1 Pro (Moonshot, 161,4). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «Un modelo de pesos abiertos iguala a Agent-0»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|labs|2026-11-12",
-   "published": null,
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": {
-    "v": -1.4,
-    "pct": -27.6,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Distancia entre los dos primeros laboratorios en el ECI: de 5,08 a 3,68 puntos (Anthropic frente a Google DeepMind).",
-   "data": {
-    "ind": "labs",
-    "path": "eci.gapLabs",
-    "from": 5.08,
-    "to": 3.68
-   },
-   "i18n": {
-    "en": {
-     "what": "Gap between the top two labs on the ECI: from 5.08 to 3.68 points (Anthropic versus Google DeepMind).",
-     "titular": "The gap between the top two labs on the ECI falls from 5.1 to 3.7 points",
-     "porque": "the gap between the top two labs changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability",
-     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.4) versus Gemini 4 Carbon (Google DeepMind, 169.8), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”."
-    }
-   },
-   "titular": "La distancia entre los dos primeros laboratorios en el ECI baja de 5,1 a 3,7 puntos",
-   "importancia": {
-    "tier": 6,
-    "w": 51.4,
-    "porque": "la distancia entre los dos primeros laboratorios cambia al menos 1 punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad"
-   },
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,4) frente a Gemini 4 Carbon (Google DeepMind, 169,8), con intervalos de confianza solapados. En AI 2027 es evidencia de «Los rivales, de 3 a 9 meses por detrás»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|rate12m|2026-11-12",
-   "published": null,
-   "detected": "2026-11-12",
-   "date": "2026-11-12",
-   "mag": {
-    "v": -0.9,
-    "pct": -3.9,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Avance de la frontera del ECI en 12 meses: de 23,1 a 22,2 puntos.",
-   "data": {
-    "ind": "rate12m",
-    "path": "eci.rate12m",
-    "from": 23.1,
-    "to": 22.2
-   },
-   "i18n": {
-    "en": {
-     "what": "Frontier gain on the ECI over 12 months: from 23.1 to 22.2 points.",
-     "titular": "Frontier gain on the ECI over 12 months: from 23.1 to 22.2 points."
-    }
-   },
-   "titular": "Avance de la frontera del ECI en 12 meses: de 23,1 a 22,2 puntos.",
-   "importancia": null,
-   "ficha": "#carrera/evaluacion",
-   "consecuencia": null
-  },
-  {
-   "kind": "uso",
-   "key": "uso|entra|openai/gpt-6.1-sol-20260929|2026-11-12",
-   "published": "2026-11-11",
-   "detected": "2026-11-12",
-   "date": "2026-11-11",
-   "mag": {
-    "v": 10,
-    "unit": "puesto"
-   },
-   "model": "openai/gpt-6.1-sol",
-   "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "GPT-6.1 Sol entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 2 % de los tokens.",
-   "data": {
-    "sub": "entra",
-    "slug": "openai/gpt-6.1-sol-20260929",
-    "rank": 10,
-    "share": 2,
-    "tokens": 4143075163424,
-    "window": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "GPT-6.1 Sol enters the ten most used models on OpenRouter over the last 7 days: rank 10, 2% of tokens.",
-     "titular": "GPT-6.1 Sol enters OpenRouter’s top 10 by usage",
-     "consecuencia": "2% of OpenRouter’s tokens from 2026-11-05 to 2026-11-11. This is usage on OpenRouter, not across the whole market."
-    }
-   },
-   "titular": "GPT-6.1 Sol entra en el top 10 de uso de OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/openai/gpt-6.1-sol",
-   "consecuencia": "2 % de los tokens de OpenRouter del 2026-11-05 al 2026-11-11. Es el uso en OpenRouter, no en todo el mercado."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|eci|2026-11-12",
-   "published": "2026-11-09",
-   "detected": "2026-11-12",
-   "date": "2026-11-09",
-   "mag": {
-    "v": -0.8,
-    "pct": -0.5,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Mejor modelo en el ECI de Epoch: de 174,24 a 173,44 puntos (Claude Fable 5.2).",
-   "data": {
-    "ind": "eci",
-    "path": "eci.frontier",
-    "from": 174.24,
-    "to": 173.44
-   },
-   "i18n": {
-    "en": {
-     "what": "Best model on Epoch’s ECI: from 174.24 to 173.44 points (Claude Fable 5.2).",
-     "titular": "GPT-6.2 Astra becomes the best model on Epoch’s ECI",
-     "porque": "the best model on Epoch’s ECI changes",
-     "consecuencia": "Claude Fable 5.2, from Anthropic, with 173.4 points. ECI gaps: between the top two labs, from 5.1 to 3.7 points. A few ECI points do not equate to months of lag."
-    }
-   },
-   "titular": "GPT-6.2 Astra pasa a ser el mejor modelo según el ECI de Epoch",
-   "importancia": {
-    "tier": 6,
-    "w": 100,
-    "porque": "cambia el mejor modelo según el ECI de Epoch"
-   },
-   "ficha": "#carrera",
-   "consecuencia": "Claude Fable 5.2, de Anthropic, con 173,4 puntos. Distancias en el ECI: entre los dos primeros laboratorios, de 5,1 a 3,7 puntos. Unos puntos ECI no equivalen a meses de retraso."
-  },
-  {
-   "kind": "pesos",
-   "key": "pesos|nvidia/nemotron-3.5-super-vl",
-   "published": "2026-10-12",
-   "detected": "2026-11-12",
-   "date": "2026-10-12",
-   "mag": null,
-   "model": "nvidia/nemotron-3.5-super-vl",
-   "src": {
-    "name": "Hugging Face",
-    "url": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Nemotron 3.5 Super VL: pesos descargables en Hugging Face (licencia openmdw-1.1).",
-   "data": {
-    "license": "openmdw-1.1",
-    "weightsSrc": "hf",
-    "rankAA": 39,
-    "of": 48
-   },
-   "i18n": {
-    "en": {
-     "what": "Nemotron 3.5 Super VL: downloadable weights on Hugging Face (licence openmdw-1.1).",
-     "titular": "Open weights for Nemotron 3.5 Super VL, rank 39 on the AA index",
-     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: openmdw-1.1. AA index 13.6: 32.9 points behind the best open-weight model (Kimi K3.1 Pro). Rank 39 of 48."
-    }
-   },
-   "titular": "Pesos abiertos de Nemotron 3.5 Super VL, puesto 39 del índice de AA",
-   "importancia": null,
-   "ficha": "#modelos/nvidia/nemotron-3.5-super-vl",
-   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: openmdw-1.1. Índice de AA 13,6: a 32,9 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 39 de 48."
-  },
-  {
-   "kind": "pesos",
-   "key": "pesos|cohere/command-a-plus",
-   "published": "2026-05-11",
-   "detected": "2026-11-12",
-   "date": "2026-05-11",
-   "mag": null,
-   "model": "cohere/command-a-plus",
-   "src": {
-    "name": "Hugging Face",
-    "url": "https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16",
-    "got": "2026-11-12T19:30:52Z"
-   },
-   "what": "Command A+: pesos descargables en Hugging Face (licencia apache-2.0).",
-   "data": {
-    "license": "apache-2.0",
-    "weightsSrc": "hf",
-    "rankAA": 41,
-    "of": 48
-   },
-   "i18n": {
-    "en": {
-     "what": "Command A+: downloadable weights on Hugging Face (licence apache-2.0).",
-     "titular": "Open weights for Command A+, rank 41 on the AA index",
-     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: apache-2.0. AA index 6.2: 40.3 points behind the best open-weight model (Kimi K3.1 Pro). Rank 41 of 48."
-    }
-   },
-   "titular": "Pesos abiertos de Command A+, puesto 41 del índice de AA",
-   "importancia": null,
-   "ficha": "#modelos/cohere/command-a-plus",
-   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: apache-2.0. Índice de AA 6,2: a 40,3 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 41 de 48."
   }
  ]
 }
