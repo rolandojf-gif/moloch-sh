@@ -194,6 +194,7 @@
   "other",
   "qwen-community-1.0",
   "qwen3.8-max",
-  "tencent-hunyuan-a13b"
+  "tencent-hunyuan-a13b",
+  "tencent-hy-license"
  ]
 }
