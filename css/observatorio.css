@@ -640,12 +640,17 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
 .foot summary { cursor: pointer; font: 700 12px var(--f-mono); text-transform: uppercase; }
 .foot ul { padding-left: 18px; font-size: 14px; }
 .foot-line { font: 400 12px var(--f-mono); color: var(--muted); margin-top: 14px; }
-.credits { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; margin-bottom: 18px; padding: 14px 16px; background: var(--card); border: 2px solid var(--ink); box-shadow: var(--shadow); }
-.credits-by { margin: 0; font: 400 14px var(--f-mono); text-transform: uppercase; letter-spacing: .04em; }
-.credits-by strong { font: 700 20px var(--f-head); text-transform: none; letter-spacing: 0; margin-left: 4px; }
-.bmc { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; background: var(--lime); color: #121211; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); font: 700 13px var(--f-mono); text-transform: uppercase; text-decoration: none; }
-.bmc:hover, .bmc:focus-visible { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
-.bmc-cup { font-size: 18px; line-height: 1; }
+.credits { display: flex; align-items: center; justify-content: space-between; gap: 14px 24px; flex-wrap: wrap; margin-bottom: 18px; padding: 16px 18px; background: var(--card); border: 2px solid var(--ink); box-shadow: var(--shadow); }
+.credits-id p { margin: 0; }
+.credits-by { font: 400 13px var(--f-mono); letter-spacing: .02em; }
+.credits-by strong { font: 700 19px var(--f-head); letter-spacing: 0; margin-left: 2px; white-space: nowrap; }
+.credits-tag { margin-top: 4px !important; color: var(--muted); font-size: 14px; }
+.credits-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.credits-links a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border: 1.5px solid var(--orange); border-radius: 999px; color: var(--orange-ink); background: transparent;
+  font: 600 12px/1 var(--f-mono); text-transform: uppercase; letter-spacing: .14em; text-decoration: none;
+  box-shadow: 0 0 6px rgba(255, 87, 34, .35), inset 0 0 6px rgba(255, 87, 34, .12); transition: background .15s, color .15s, box-shadow .15s; }
+.credits-links a:hover, .credits-links a:focus-visible { background: var(--orange); color: #121211; box-shadow: 0 0 14px rgba(255, 87, 34, .75), 0 0 2px var(--orange); }
+.credits-links .bmc-cup { font-size: 15px; line-height: 1; }
 
 /* ── Responsive ───────────────────────────────────────────────────────── */
 @media (max-width: 1000px) {
