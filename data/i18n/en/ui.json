@@ -911,6 +911,15 @@
   ", líder de su bloque": ", leader of its group",
   "Puesto, índice y distancia: {AA_LINK}, publicado con su permiso. Precio: OpenRouter.": "Rank, index and distance: {AA_LINK}, published with its permission. Price: OpenRouter.",
   "Precio por millón de tokens": "Price per million tokens",
-  "entrada / salida": "input / output"
+  "entrada / salida": "input / output",
+  "Y con el índice de Artificial Analysis": "And with the Artificial Analysis index",
+  "La misma carrera con el índice de AA, que puntúa los modelos a los pocos días de salir. Empieza más tarde: la versión vigente del índice sólo cubre modelos recientes.": "The same race with the AA index, which scores models within days of release. It starts later: the current version of the index only covers recent models.",
+  "La carrera del índice AA": "The AA index race",
+  "Datos: Artificial Analysis, publicados con su permiso, con las puntuaciones de hoy.": "Data: Artificial Analysis, published with its permission, with today’s scores.",
+  "Puntuación de hoy según Artificial Analysis.": "Today’s score according to Artificial Analysis.",
+  "Carrera del índice AA por laboratorio a {fecha}: {lista}.": "AA index race by lab as of {fecha}: {lista}.",
+  "{org} adelanta a {prev} con {modelo}: índice AA {eci}{dif}": "{org} overtakes {prev} with {modelo}: AA index {eci}{dif}",
+  "Lo mismo que la carrera de arriba, con el {idx}: cada barra es el mejor modelo que un laboratorio había publicado en esa fecha, con la puntuación que le da hoy AA, y sólo cambia cuando el laboratorio publica un modelo que supera su récord. Color: país del laboratorio; rayado: pesos abiertos. AA no publica intervalo de confianza para este índice, así que aquí no hay intervalos ni empates técnicos. El eje empieza en {a0} puntos.": "The same as the race above, with the {idx}: each bar is the best model a lab had released by that date, with the score AA gives it today, and it only changes when the lab releases a model that beats its record. Colour: the lab’s country; hatching: open weights. AA does not publish a confidence interval for this index, so there are no intervals or statistical ties here. The axis starts at {a0} points.",
+  "Es más corta porque esta versión del índice sólo puntúa modelos recientes: empieza el primer mes con al menos cinco laboratorios puntuados. Sólo cuentan los modelos del catálogo, los que siguen en OpenRouter y los que AA puntúa sin API pública; los retirados no aparecen.": "It is shorter because this version of the index only scores recent models: it starts in the first month with at least five labs scored. Only catalogue models count, those still on OpenRouter and those AA scores without a public API; retired models do not appear."
  }
 }

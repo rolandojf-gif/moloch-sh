@@ -3,15 +3,19 @@
    ningún dato y la cifra que se ve es siempre la de un modelo real; lo único animado es el paso de una posición a otra.
    Va en canvas para poder descargar el fotograma como imagen. */
 import { t, tn } from './i18n.js';
-import { esc, fmtDate, dateFmt, num } from './fmt.js';
+import { esc, fmtDate, dateFmt, num, ii, aaIndexName, AA_LINK } from './fmt.js';
 import { tip, showTip, hideTip } from './charts.js';
 import { logoFor } from './logos.js';
 
-const DAY = 864e5, TOP = 10, DUR = 26000, TAU = 130, SAME = 1, FLASH = 60 * DAY;
+const DAY = 864e5, TOP = 10, FLASH = 60 * DAY;
 const ECI_URL = 'https://epoch.ai/benchmarks/eci';
 const ms = d => Date.parse(`${d}T00:00:00Z`);
 const iso = x => new Date(x).toISOString().slice(0, 10);
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Cada carrera (ECI de Epoch, índice de AA) es una instancia con su estado y sus textos (K). */
+function createRace(K) {
+const { SAME, DUR } = K, TAU = 130;
 let S = null;
 
 /* ── Datos ──────────────────────────────────────────────────────────────── */
@@ -40,10 +44,10 @@ function leaders() {
 function axis() {
   let lo = Infinity, hi = -Infinity;
   for (let T = S.t0; T < S.t1 + 15 * DAY; T += 15 * DAY) for (const x of standing(Math.min(T, S.t1)).slice(0, TOP)) { lo = Math.min(lo, x.s.v); hi = Math.max(hi, x.s.hi ?? x.s.v); }
-  return { a0: Math.floor((lo - 6) / 10) * 10, a1: Math.ceil((hi + 1) / 5) * 5 };
+  return { a0: Math.max(K.min ?? -Infinity, Math.floor((lo - 6) / 10) * 10), a1: Math.ceil((hi + 1) / 5) * 5 };
 }
 function init(root, fact) {
-  S = { root, key: `${fact.got}|${fact.asOf}`, cur: 0, playing: false, raf: 0, last: 0, disp: new Map(), autoplayed: false, imgs: new Map() };
+  S = { root, fact, key: `${fact.got}|${fact.asOf}`, cur: 0, playing: false, raf: 0, last: 0, disp: new Map(), autoplayed: false, imgs: new Map() };
   S.labs = fact.v.map(l => ({ org: l.org, c: l.c, icon: logoFor({ org: l.org }) || logoFor({ name: l.steps.at(-1)?.m }), steps: l.steps.map(s => ({ ...s, t: ms(s.d) })) }));
   // Empieza en el primer modelo puntuado si es posterior al inicio pedido: antes no habría barras.
   S.t0 = Math.max(ms(`${fact.from || '2023-01'}-01`), Math.min(...S.labs.map(l => l.steps[0]?.t ?? Infinity)));
@@ -114,7 +118,7 @@ function drawFrame(ctx, G, P, k, opts = {}) {
     ctx.fillText(num(v, 0), x, G.bottom + 15);
   }
   ctx.textAlign = 'right';
-  ctx.fillText(t('puntos ECI'), G.L - 12, G.bottom + 15);
+  ctx.fillText(K.unit(), G.L - 12, G.bottom + 15);
   // Fecha grande: abajo a la derecha, detrás de las barras más cortas; en móvil, encima de las barras, para no tapar cifras.
   ctx.fillStyle = P.muted; ctx.globalAlpha = G.nw ? 0.8 : 0.42;
   ctx.font = `700 ${G.nw ? 24 : G.exp ? 50 : 46}px ${P.head}`;
@@ -178,7 +182,7 @@ function drawFrame(ctx, G, P, k, opts = {}) {
     else if (!G.nw && after + 40 < G.W) { const m = fit(ctx, s.m, G.W - after - 6); ctx.fillStyle = P.muted; ctx.fillText(m, after, cy + 4); after += ctx.measureText(m).width + 10; }
     // Primer puesto: «nuevo» durante unas semanas tras un cambio; «empate técnico» mientras saque menos de 1 punto al segundo.
     if (d.r === 0) {
-      const second = S.st?.[1], tie = second && s.v - second.s.v < SAME, fresh = flash && flash.l.org === org;
+      const second = S.st?.[1], tie = SAME > 0 && second && s.v - second.s.v < SAME, fresh = flash && flash.l.org === org;
       const tag = (fresh && tie ? t('Nuevo nº 1 · empate técnico') : fresh ? t('Nuevo nº 1') : tie ? t('Empate técnico con el nº 2') : '').toUpperCase();
       ctx.font = `700 ${G.nw ? 9.5 : 11}px ${P.mono}`;
       const tw = ctx.measureText(tag).width + 10, tx = Math.min(after, G.W - tw - 4);
@@ -199,7 +203,7 @@ function drawExport(ctx, P, k, opts) {
   drawFrame(ctx, G, P, k, opts);
   ctx.textAlign = 'left'; ctx.fillStyle = P.text;
   ctx.font = `700 28px ${P.head}`;
-  ctx.fillText(t('La carrera del ECI').toUpperCase(), 22, 42);
+  ctx.fillText(K.title().toUpperCase(), 22, 42);
   ctx.font = `500 14px ${P.body}`; ctx.fillStyle = P.muted;
   ctx.fillText(t('Mejor modelo de cada laboratorio hasta el {fecha}', { fecha: fmtDate(iso(S.cur)) }), 22, 64);
   ctx.textAlign = 'right'; ctx.font = `700 16px ${P.mono}`; ctx.fillStyle = P.text;
@@ -213,9 +217,9 @@ function drawExport(ctx, P, k, opts) {
   const sw = c => (x0, y0) => { ctx.fillStyle = c; ctx.fillRect(x0, y0, 12, 12); ctx.strokeStyle = P.ink; ctx.lineWidth = 1; ctx.strokeRect(x0 + 0.5, y0 + 0.5, 11, 11); };
   key(sw(P.us), t('EE. UU.')); key(sw(P.cn), t('China')); key(sw(P.other), t('Otros países'));
   key((x0, y0) => { sw(P.other)(x0, y0); ctx.fillStyle = opts.hatch; ctx.fillRect(x0, y0, 12, 12); }, t('Rayado: pesos abiertos'));
-  key((x0, y0) => { ctx.strokeStyle = P.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x0, y0 + 6); ctx.lineTo(x0 + 12, y0 + 6); ctx.stroke(); }, t('Intervalo del 90 %'));
+  if (K.ci) key((x0, y0) => { ctx.strokeStyle = P.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x0, y0 + 6); ctx.lineTo(x0 + 12, y0 + 6); ctx.stroke(); }, t('Intervalo del 90 %'));
   ctx.font = `500 11.5px ${P.body}`; ctx.fillStyle = P.muted;
-  ctx.fillText(t('Datos: Epoch AI, Epoch Capabilities Index (CC BY 4.0), con las puntuaciones de hoy.'), 22, 522);
+  ctx.fillText(K.credit(), 22, 522);
   ctx.textAlign = 'right'; ctx.fillText('moloch-sh.netlify.app', 960 - 22, 522);
   ctx.strokeStyle = P.ink; ctx.lineWidth = 3; ctx.strokeRect(1.5, 1.5, 957, 537);
 }
@@ -303,8 +307,8 @@ function syncList(T = S.cur) {
   if (!el) return;
   const st = standing(S.listT).slice(0, TOP), fecha = fmtDate(iso(S.listT));
   $r('.race-data summary').textContent = t('Los datos de este fotograma ({fecha})', { fecha });
-  el.innerHTML = `<table class="race-tb"><thead><tr><th>#</th><th>${t('Laboratorio')}</th><th>${t('Modelo')}</th><th>ECI</th><th>${t('Intervalo del 90 %')}</th><th>${t('Publicado')}</th></tr></thead><tbody>${st.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.l.org)}</td><td>${esc(x.s.m)}${x.s.w === 'o' ? ` <span class="w abiertos">${t('abiertos')}</span>` : ''}</td><td><b>${num(x.s.v, 1)}</b></td><td>${x.s.lo != null ? `${num(x.s.lo, 1)}–${num(x.s.hi, 1)}` : '—'}</td><td>${esc(fmtDate(x.s.d))}</td></tr>`).join('')}</tbody></table>`;
-  S.cv?.setAttribute('aria-label', t('Carrera del ECI por laboratorio a {fecha}: {lista}.', { fecha, lista: st.map((x, i) => `${i + 1}. ${x.l.org}, ${num(x.s.v, 1)}`).join('; ') }));
+  el.innerHTML = `<table class="race-tb"><thead><tr><th>#</th><th>${t('Laboratorio')}</th><th>${t('Modelo')}</th><th>${K.col()}</th>${K.ci ? `<th>${t('Intervalo del 90 %')}</th>` : ''}<th>${t('Publicado')}</th></tr></thead><tbody>${st.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.l.org)}</td><td>${esc(x.s.m)}${x.s.w === 'o' ? ` <span class="w abiertos">${t('abiertos')}</span>` : ''}</td><td><b>${num(x.s.v, 1)}</b></td>${K.ci ? `<td>${x.s.lo != null ? `${num(x.s.lo, 1)}–${num(x.s.hi, 1)}` : '—'}</td>` : ''}<td>${esc(fmtDate(x.s.d))}</td></tr>`).join('')}</tbody></table>`;
+  S.cv?.setAttribute('aria-label', K.aria({ fecha, lista: st.map((x, i) => `${i + 1}. ${x.l.org}, ${num(x.s.v, 1)}`).join('; ') }));
 }
 function rowTip(e) {
   if (!S.G || !S.st) return;
@@ -312,9 +316,9 @@ function rowTip(e) {
   const i = Math.floor((y - S.G.T) / S.G.rowH), x = S.st[i];
   if (i < 0 || i >= TOP || !x) { hideTip(); return; }
   const pais = x.l.c === 'US' ? t('EE. UU.') : x.l.c === 'CN' ? t('China') : t('Otro país');
-  showTip(e, tip(x.l.org, [[t('Modelo'), x.s.m], ['ECI', num(x.s.v, 1)], [t('Intervalo del 90 %'), x.s.lo != null ? `${num(x.s.lo, 1)}–${num(x.s.hi, 1)}` : null],
+  showTip(e, tip(x.l.org, [[t('Modelo'), x.s.m], [K.col(), num(x.s.v, 1)], [t('Intervalo del 90 %'), K.ci && x.s.lo != null ? `${num(x.s.lo, 1)}–${num(x.s.hi, 1)}` : null],
     [t('Publicado'), fmtDate(x.s.d)], [t('Pesos'), x.s.w === 'o' ? t('abiertos') : x.s.w === 'c' ? t('cerrados') : null], [t('País'), pais], [t('Puesto'), `${i + 1}`]],
-    t('Puntuación de hoy según Epoch AI.'), x.l.icon), `race:${x.l.org}:${x.s.d}:${i}`);
+    K.tipNote(), x.l.icon), `race-${K.id}:${x.l.org}:${x.s.d}:${i}`);
 }
 function download() {
   const k = 2, cv = document.createElement('canvas');
@@ -329,7 +333,7 @@ function download() {
       if (!b) return;
       const a = document.createElement('a');
       a.href = URL.createObjectURL(b);
-      a.download = `moloch-carrera-eci-${iso(S.cur)}.png`;
+      a.download = `moloch-carrera-${K.id}-${iso(S.cur)}.png`;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(a.href), 5000);
     }, 'image/png');
@@ -356,11 +360,7 @@ function build() {
   years.push(`<span class="end-r" style="left:100%">${esc(monthYear(S.t1))}</span>`);
   const ties = changes.filter(c => c.margin !== null && c.margin < SAME).length;
   const desde = { modelo: esc(first?.s.m || '—'), org: esc(first?.l.org || '—'), fecha: fmtDate(iso(S.t0)) };
-  const story = changes.length
-    ? `${t('Desde el primer modelo de la serie ({modelo}, de {org}, {fecha}), el primer puesto ha cambiado de manos {veces}: son los logos sobre la línea de tiempo, y cada uno lleva a ese momento.', { ...desde, veces: tn(changes.length, ['una vez', '{n} veces']) })} ${ties
-      ? tn(ties, ['Uno de esos cambios fue por menos de 1 punto, la distancia que Epoch trata como la misma capacidad.', '{n} de esos cambios fueron por menos de 1 punto, la distancia que Epoch trata como la misma capacidad.'])
-      : t('Ninguno fue por menos de 1 punto, la distancia que Epoch trata como la misma capacidad.')}`
-    : t('Desde el primer modelo de la serie ({modelo}, de {org}, {fecha}), nadie le ha quitado el primer puesto.', desde);
+  const story = K.story({ desde, changes, ties });
   S.root.innerHTML = `<div class="race-stage"><canvas class="race-cv" role="img"></canvas></div>
     <div class="race-ctl">
       <button type="button" class="race-play"></button>
@@ -371,9 +371,9 @@ function build() {
       </div>
       <button type="button" class="race-png">${t('Descargar imagen')}</button>
     </div>
-    <div class="legend"><span><i style="background:var(--orange)"></i>${t('EE. UU.')}</span><span><i style="background:var(--open)"></i>${t('China')}</span><span><i style="background:var(--unknown)"></i>${t('Otros países')}</span><span><i class="lg-hatch"></i>${t('Rayado: pesos abiertos')}</span><span><i class="lg-ci"></i>${t('Intervalo del 90 %')}</span><span><i class="lg-lead"></i>${t('Cambio de nº 1')}</span></div>
-    <div class="reading"><span class="lbl">${t('Cómo se lee')}</span>${t('Cada barra es el mejor modelo que un laboratorio había publicado en esa fecha, con la puntuación que le da hoy Epoch. Sólo cambia cuando el laboratorio publica un modelo que supera su récord: entre dos récords no se interpola nada, y la cifra es siempre la de un modelo real. Color: país del laboratorio; rayado: pesos abiertos, ambos según Epoch. La raya fina es el intervalo de confianza del 90 %: si dos se solapan, no puede afirmarse cuál va primero. El eje empieza en {a0} puntos, no en cero.', { a0: num(S.ax.a0, 0) })} ${t('Es una reconstrucción con las puntuaciones de hoy, no lo que se medía en cada fecha, y sólo cuentan los modelos que Epoch ha puntuado.')} ${story} ${t('Fuente:')} <a href="${ECI_URL}" target="_blank" rel="noopener">${t('Epoch AI, «Epoch Capabilities Index»')}</a>, CC BY 4.0.</div>
-    <details class="race-data"><summary></summary><div class="race-list"></div>${changes.length ? `<h4>${t('Cambios de nº 1')}</h4><ol class="race-changes">${changes.map(c => `<li><b>${esc(fmtDate(iso(c.t)))}</b> · ${t('{org} adelanta a {prev} con {modelo}: ECI {eci}{dif}', { org: esc(c.l.org), prev: esc(c.prev?.l.org || '—'), modelo: esc(c.s.m), eci: num(c.s.v, 1), dif: c.margin !== null ? `, ${tn(Math.round(c.margin * 10) / 10, ['{n} punto más', '{n} puntos más'], { n: num(c.margin, 1) })}${c.margin < SAME ? ` (${t('empate técnico')})` : ''}` : '' })}</li>`).join('')}</ol>` : ''}</details>`;
+    <div class="legend"><span><i style="background:var(--orange)"></i>${t('EE. UU.')}</span><span><i style="background:var(--open)"></i>${t('China')}</span><span><i style="background:var(--unknown)"></i>${t('Otros países')}</span><span><i class="lg-hatch"></i>${t('Rayado: pesos abiertos')}</span>${K.ci ? `<span><i class="lg-ci"></i>${t('Intervalo del 90 %')}</span>` : ''}<span><i class="lg-lead"></i>${t('Cambio de nº 1')}</span></div>
+    <div class="reading"><span class="lbl">${t('Cómo se lee')}</span>${K.reading({ a0: num(S.ax.a0, 0), story, fact: S.fact })}</div>
+    <details class="race-data"><summary></summary><div class="race-list"></div>${changes.length ? `<h4>${t('Cambios de nº 1')}</h4><ol class="race-changes">${changes.map(c => `<li><b>${esc(fmtDate(iso(c.t)))}</b> · ${K.change({ org: esc(c.l.org), prev: esc(c.prev?.l.org || '—'), modelo: esc(c.s.m), eci: num(c.s.v, 1), dif: c.margin !== null ? `, ${tn(Math.round(c.margin * 10) / 10, ['{n} punto más', '{n} puntos más'], { n: num(c.margin, 1) })}${c.margin < SAME ? ` (${t('empate técnico')})` : ''}` : '' })}</li>`).join('')}</ol>` : ''}</details>`;
   S.cv = $r('.race-cv');
   syncButton(); syncRange(); syncList(S.listT);
   $r('.race-play').addEventListener('click', () => { S.autoplayed = true; S.playing ? stopPlay() : play(); });
@@ -409,7 +409,7 @@ function watchTheme() {
   document.fonts?.ready.then(redo);
 }
 
-export function renderRace(root, fact) {
+return function renderRace(root, fact) {
   if (!root) return;
   if (!fact?.v?.length) { root.innerHTML = `<div class="chart-empty">${t('Sin datos suficientes para la carrera.')}</div>`; return; }
   if (!S || S.root !== root || S.key !== `${fact.got}|${fact.asOf}`) { if (S?.raf) cancelAnimationFrame(S.raf); init(root, fact); }
@@ -419,3 +419,66 @@ export function renderRace(root, fact) {
   paint();
   kick();
 }
+}
+
+/* ── Las dos carreras ───────────────────────────────────────────────────── */
+export const renderRace = createRace({
+  id: 'eci', SAME: 1, DUR: 26000, ci: true,
+  unit: () => t('puntos ECI'), col: () => 'ECI', title: () => t('La carrera del ECI'),
+  credit: () => t('Datos: Epoch AI, Epoch Capabilities Index (CC BY 4.0), con las puntuaciones de hoy.'),
+  tipNote: () => t('Puntuación de hoy según Epoch AI.'),
+  aria: p => t('Carrera del ECI por laboratorio a {fecha}: {lista}.', p),
+  change: p => t('{org} adelanta a {prev} con {modelo}: ECI {eci}{dif}', p),
+  story: ({ desde, changes, ties }) => changes.length
+    ? `${t('Desde el primer modelo de la serie ({modelo}, de {org}, {fecha}), el primer puesto ha cambiado de manos {veces}: son los logos sobre la línea de tiempo, y cada uno lleva a ese momento.', { ...desde, veces: tn(changes.length, ['una vez', '{n} veces']) })} ${ties
+      ? tn(ties, ['Uno de esos cambios fue por menos de 1 punto, la distancia que Epoch trata como la misma capacidad.', '{n} de esos cambios fueron por menos de 1 punto, la distancia que Epoch trata como la misma capacidad.'])
+      : t('Ninguno fue por menos de 1 punto, la distancia que Epoch trata como la misma capacidad.')}`
+    : t('Desde el primer modelo de la serie ({modelo}, de {org}, {fecha}), nadie le ha quitado el primer puesto.', desde),
+  reading: ({ a0, story }) => `${t('Cada barra es el mejor modelo que un laboratorio había publicado en esa fecha, con la puntuación que le da hoy Epoch. Sólo cambia cuando el laboratorio publica un modelo que supera su récord: entre dos récords no se interpola nada, y la cifra es siempre la de un modelo real. Color: país del laboratorio; rayado: pesos abiertos, ambos según Epoch. La raya fina es el intervalo de confianza del 90 %: si dos se solapan, no puede afirmarse cuál va primero. El eje empieza en {a0} puntos, no en cero.', { a0 })} ${t('Es una reconstrucción con las puntuaciones de hoy, no lo que se medía en cada fecha, y sólo cuentan los modelos que Epoch ha puntuado.')} ${story} ${t('Fuente:')} <a href="${ECI_URL}" target="_blank" rel="noopener">${t('Epoch AI, «Epoch Capabilities Index»')}</a>, CC BY 4.0.`
+});
+
+/* Carrera del índice de AA, calculada en el navegador con el catálogo: los récords de cada laboratorio por fecha de
+   publicación del modelo (la que da AA), sólo con la versión vigente del índice. Empieza en el primer fin de mes con al
+   menos cinco laboratorios puntuados: antes, la versión vigente apenas tiene modelos y no habría carrera que ver. */
+export function aaRaceFact(catalog, { min = 5 } = {}) {
+  const ver = catalog?.aaIndexVersion ?? null, today = (catalog?.generated || '').slice(0, 10);
+  if (!today) return null;
+  const rows = (catalog.models || []).filter(m => ii(m) !== null && m.identity === 'confirmada' && (!ver || !m.aa.version || m.aa.version === ver) && m.lab?.name)
+    .map(m => ({ d: m.aa.release?.v || m.epochPub?.v || m.orCreated?.v || null, v: ii(m), m: m.name, org: m.lab.name, c: m.lab.country || null,
+      w: m.weights?.v === 'abiertos' ? 'o' : m.weights?.v === 'cerrados' ? 'c' : null }))
+    .filter(r => r.d && r.d <= today).sort((a, b) => a.d.localeCompare(b.d) || b.v - a.v);
+  const labs = new Map();
+  for (const r of rows) {
+    const l = labs.get(r.org) || { org: r.org, c: r.c, steps: [] }, last = l.steps.at(-1);
+    if (!last || r.v > last.v) l.steps.push({ d: r.d, v: r.v, lo: null, hi: null, m: r.m, w: r.w });
+    labs.set(r.org, l);
+  }
+  const ends = [];
+  for (let t = new Date(`${rows[0]?.d || today}T00:00:00Z`); ; t = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 1))) {
+    const e = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 0)).toISOString().slice(0, 10);
+    ends.push(e < today ? e : today);
+    if (e >= today) break;
+  }
+  const at = (l, d) => { let s = null; for (const x of l.steps) { if (x.d > d) break; s = x; } return s; };
+  const startEnd = ends.find(d => [...labs.values()].filter(l => at(l, d)).length >= min);
+  if (!startEnd) return null;
+  const from = startEnd.slice(0, 7), keep = new Set();
+  for (const d of ends.filter(e => e >= startEnd)) [...labs.values()].map(l => [l, at(l, d)]).filter(([, x]) => x).sort((a, b) => b[1].v - a[1].v).slice(0, TOP).forEach(([l]) => keep.add(l));
+  const start = `${from}-01`;
+  const v = [...keep].map(l => { const i = l.steps.findIndex(x => x.d >= start); return { org: l.org, c: l.c, steps: i < 0 ? l.steps.slice(-1) : l.steps.slice(Math.max(0, i - 1)) }; })
+    .sort((a, b) => b.steps.at(-1).v - a.steps.at(-1).v);
+  return { v, got: catalog.generated, asOf: today, from, ver };
+}
+
+export const renderRaceAA = createRace({
+  id: 'aa', SAME: 0, DUR: 16000, ci: false, min: 0,
+  unit: () => t('puntos AA'), col: () => t('Índice AA'), title: () => t('La carrera del índice AA'),
+  credit: () => t('Datos: Artificial Analysis, publicados con su permiso, con las puntuaciones de hoy.'),
+  tipNote: () => t('Puntuación de hoy según Artificial Analysis.'),
+  aria: p => t('Carrera del índice AA por laboratorio a {fecha}: {lista}.', p),
+  change: p => t('{org} adelanta a {prev} con {modelo}: índice AA {eci}{dif}', p),
+  story: ({ desde, changes }) => changes.length
+    ? t('Desde el primer modelo de la serie ({modelo}, de {org}, {fecha}), el primer puesto ha cambiado de manos {veces}: son los logos sobre la línea de tiempo, y cada uno lleva a ese momento.', { ...desde, veces: tn(changes.length, ['una vez', '{n} veces']) })
+    : t('Desde el primer modelo de la serie ({modelo}, de {org}, {fecha}), nadie le ha quitado el primer puesto.', desde),
+  reading: ({ a0, story, fact }) => `${t('Lo mismo que la carrera de arriba, con el {idx}: cada barra es el mejor modelo que un laboratorio había publicado en esa fecha, con la puntuación que le da hoy AA, y sólo cambia cuando el laboratorio publica un modelo que supera su récord. Color: país del laboratorio; rayado: pesos abiertos. AA no publica intervalo de confianza para este índice, así que aquí no hay intervalos ni empates técnicos. El eje empieza en {a0} puntos.', { idx: esc(aaIndexName(fact.ver)), a0 })} ${t('Es más corta porque esta versión del índice sólo puntúa modelos recientes: empieza el primer mes con al menos cinco laboratorios puntuados. Sólo cuentan los modelos del catálogo, los que siguen en OpenRouter y los que AA puntúa sin API pública; los retirados no aparecen.')} ${story} ${t('Datos de {AA_LINK}, publicados con su permiso.', { AA_LINK })}`
+});
