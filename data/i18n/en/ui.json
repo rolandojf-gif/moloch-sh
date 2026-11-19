@@ -894,6 +894,23 @@
    "{n} point ahead",
    "{n} points ahead"
   ],
-  "Cómo se lee": "How to read it"
+  "Cómo se lee": "How to read it",
+  "Relevancia alta": "High relevance",
+  "Relevancia media": "Medium relevance",
+  "Relevancia normal": "Normal relevance",
+  "del mejor abierto": "behind the best open-weight model",
+  "del mejor cerrado": "behind the best closed model",
+  "Puesto en el índice AA": "Rank on the AA index",
+  "de {n}": "of {n}",
+  "Distancia al líder": "Distance to the leader",
+  "pts {block} ({name})": "pts {block} ({name})",
+  "Ventaja": "Lead",
+  "pts sobre {name}": "pts ahead of {name}",
+  "Puesto {r} de {n}{gap}.": "Rank {r} of {n}{gap}.",
+  ", a {g} pts del líder de su bloque": ", {g} pts behind the leader of its group",
+  ", líder de su bloque": ", leader of its group",
+  "Puesto, índice y distancia: {AA_LINK}, publicado con su permiso. Precio: OpenRouter.": "Rank, index and distance: {AA_LINK}, published with its permission. Price: OpenRouter.",
+  "Precio por millón de tokens": "Price per million tokens",
+  "entrada / salida": "input / output"
  }
 }
