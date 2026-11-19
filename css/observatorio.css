@@ -737,6 +737,8 @@ blockquote { margin: 8px 0; padding: 6px 12px; border-left: 4px solid var(--line
 
 /* La carrera, en movimiento (canvas en js/carrera-anim.js) */
 .sec-lede { color: var(--muted); font-size: 15px; max-width: 72ch; margin: -6px 0 14px; }
+h3.sub-sec + .sec-lede { margin-top: 8px; }
+h3.race-sub { margin-top: 34px; }
 .race-stage { position: relative; }
 .race-cv { display: block; width: 100%; touch-action: pan-y; }
 .race-ctl { display: flex; align-items: flex-end; gap: 14px; margin-top: 12px; }
