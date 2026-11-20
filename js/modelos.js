@@ -1,13 +1,13 @@
-/* Vista «Modelos»: comparador, ficha desplegable (con su posición frente a otros modelos), comparación de hasta tres y
-   evolución de la frontera. */
+/* Vista «Modelos»: comparador, ficha desplegable (con su posición frente a otros modelos), comparación de hasta tres,
+   evolución de la frontera y caída del coste por capacidad. */
 import { t, tn, tr, L } from './i18n.js';
 import { esc, fact, src, weightsTag, usd, num, tokens, fmtDate, country, ord, weightsWord, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, aaRace, aaCoverage, coverageText, speed, priceBasis, nd, AA_LINK, sinApiTag, sinApiText } from './fmt.js';
 import { logo, logoUrl } from './logos.js';
-import { frontier, hbars, tip } from './charts.js';
+import { frontier, costCurve, hbars, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const state = { w: 'all', lab: null, sort: 'ii', dir: -1, q: '', open: new Set(), cmp: [], all: false };
+const state = { w: 'all', lab: null, region: 'all', scored: false, recent: false, reasoning: false, pareto: false, sort: 'ii', dir: -1, q: '', open: new Set(), cmp: [], all: false, evoTab: 'aa', usoTab: '7d' };
 /* Sentido por defecto de cada criterio: el precio, de más barato a más caro; el resto, de mayor a menor. */
 const DIR0 = { ii: -1, eci: -1, tps: -1, price: 1, date: -1 };
 const PAGE = 40;
@@ -16,22 +16,49 @@ let D;
 const yesNo = v => v === true ? t('sí') : v === false ? t('no') : null;
 const weightsBadge = m => `${weightsTag(m)}${src(m.weights)}`;
 
+/* Modelos que OpenRouter sólo ofrece como variante gratuita: su «0 $» no es un precio. */
+const freeOnly = m => !!m.orVariant && /:free$/.test(m.orVariant) && !m.price.in.v && !m.price.out.v;
+const modelDate = m => m.orCreated.v || m.aa?.release?.v || null;
+
+/* Frontera calidad-precio (Pareto): ordenados de más barato a más caro, los modelos cuyo índice AA supera a todos los más baratos. */
+function paretoSet() {
+  const out = new Set();
+  let best = -Infinity;
+  const cands = D.catalog.models.filter(m => m.identity === 'confirmada' && ii(m) !== null && !freeOnly(m) && blended(m) > 0)
+    .sort((a, b) => blended(a) - blended(b) || ii(b) - ii(a));
+  for (const m of cands) if (ii(m) > best) { out.add(m.id); best = ii(m); }
+  return out;
+}
+
 function sortKey(m) {
   switch (state.sort) {
     case 'ii': return ii(m);
     case 'eci': return eci(m);
     case 'price': return freeOnly(m) ? null : blended(m);
     case 'tps': return speed(m)?.tps ?? null;
-    case 'date': { const d = m.orCreated.v || m.aa?.release?.v; return d ? new Date(d).getTime() : null; }
+    case 'date': { const d = modelDate(m); return d ? new Date(d).getTime() : null; }
   }
   return null;
 }
 
-function rows() {
+function matchRegion(m) {
+  if (state.region === 'all') return true;
+  const c = m.lab.country;
+  if (state.region === 'US' || state.region === 'CN') return c === state.region;
+  return !!c && c !== 'US' && c !== 'CN';
+}
+
+function rows(pareto = paretoSet()) {
   const q = state.q.trim().toLowerCase();
+  const cutoff30 = new Date(Date.parse(D.catalog.generated) - 30 * 86400e3).toISOString().slice(0, 10);
   return D.catalog.models
     .filter(m => state.w === 'all' || m.weights.v === state.w)
     .filter(m => !state.lab || m.lab.name === state.lab)
+    .filter(matchRegion)
+    .filter(m => !state.scored || ii(m) !== null || eci(m) !== null)
+    .filter(m => !state.recent || (modelDate(m) && modelDate(m) >= cutoff30))
+    .filter(m => !state.reasoning || m.reasoning?.v === true)
+    .filter(m => !state.pareto || pareto.has(m.id))
     .filter(m => !q || `${m.name} ${m.lab.name} ${m.id}`.toLowerCase().includes(q))
     .sort((a, b) => {
       const ka = sortKey(a), kb = sortKey(b);
@@ -41,9 +68,6 @@ function rows() {
       return state.dir * (ka - kb);
     });
 }
-
-/* Modelos que OpenRouter sólo ofrece como variante gratuita: su «0 $» no es un precio. */
-const freeOnly = m => !!m.orVariant && /:free$/.test(m.orVariant) && !m.price.in.v && !m.price.out.v;
 
 function speedCell(m) {
   const s = speed(m);
@@ -104,6 +128,8 @@ function race(m) {
 function detail(m) {
   const eps = (m.endpoints || []);
   const aa = m.aa;
+  const hasCoding = D.catalog.models.some(x => coding(x) !== null);
+  const hasAgentic = D.catalog.models.some(x => agentic(x) !== null);
   const lic = m.license.v ? esc(tr(m.license.v)) + src(m.license) : nd() + src(m.license);
   const dl = [
     [t('Laboratorio'), `${esc(m.lab.name)} · ${esc(country(m.lab.country))} <a class="src" href="${esc(m.lab.url)}" target="_blank" rel="noopener" title="${t('Sede del laboratorio, dato curado')}">CUR</a>`],
@@ -117,8 +143,8 @@ function detail(m) {
     [t('Alta en OpenRouter'), m.aaOnly ? t('aún no está en OpenRouter') + src(m.aaOnly) : fact(m.orCreated, v => fmtDate(v)) + (m.preApi ? `<span class="m-sub">${t('antes, puntuado por AA sin API pública desde el {fecha}', { fecha: esc(fmtDate(m.preApi.since)) })}</span>` : '')],
     [t('Repositorio de pesos'), m.hfCreated ? fact(m.hfCreated, v => fmtDate(v)) : nd()],
     [t('Inteligencia (Artificial Analysis)'), aa ? `${fact(aa.intelligence, v => num(v))}<span class="m-sub">${t('{aaIndexName} · como', { aaIndexName: esc(aaIndexName(aa.version)) })} <a href="${esc(aa.url)}" target="_blank" rel="noopener">«${esc(aa.name)}»</a> ${t('en AA{how}', { how: aa.how && aa.how !== 'nombre exacto' ? ` (${esc(tr(aa.how))})` : '' })}</span>` : t('sin puntuación en Artificial Analysis todavía')],
-    [t('Programación (AA)'), aa ? fact(aa.coding, v => num(v)) + '<span class="m-sub">Artificial Analysis Coding Index</span>' : nd()],
-    [t('Agentes (AA)'), aa ? fact(aa.agentic, v => num(v)) + '<span class="m-sub">Artificial Analysis Agentic Index</span>' : nd()],
+    ...(hasCoding || coding(m) !== null ? [[t('Programación (AA)'), aa?.coding ? fact(aa.coding, v => num(v)) + '<span class="m-sub">Artificial Analysis Coding Index</span>' : nd()]] : []),
+    ...(hasAgentic || agentic(m) !== null ? [[t('Agentes (AA)'), aa?.agentic ? fact(aa.agentic, v => num(v)) + '<span class="m-sub">Artificial Analysis Agentic Index</span>' : nd()]] : []),
     [t('Fecha del modelo (AA)'), aa ? fact(aa.release, v => fmtDate(v)) : nd()],
     [t('Capacidad (ECI)'), m.epoch ? `${fact(m.epoch.eci, v => num(v))}<span class="m-sub">${t('intervalo {lo}–{hi} · como «{name}» en Epoch{how}', { lo: num(m.epoch.eci.ci?.[0]), hi: num(m.epoch.eci.ci?.[1]), name: esc(m.epoch.name), how: m.epoch.how && m.epoch.how !== 'nombre' ? ` (${esc(tr(m.epoch.how))})` : '' })}</span>` : t('sin puntuación en Epoch AI todavía')],
     [t('Fecha del modelo (Epoch)'), m.epoch ? fact(m.epoch.release, v => fmtDate(v)) : nd()],
@@ -126,18 +152,19 @@ function detail(m) {
     [t('SWE-bench Verified'), m.epoch ? fact(m.epoch.swe, v => num(v) + ' %') + (m.epoch.swe.note ? `<span class="m-sub">${esc(tr(m.epoch.swe.note))}</span>` : '') : nd()]
   ];
   const sd = t('sin datos');
+  const hasTps = eps.some(e => e.tps != null), hasTtft = eps.some(e => e.ttft != null);
   const provTable = eps.length ? `
     <table class="subt"><caption class="sr-only">${t('Proveedores en OpenRouter')}</caption>
-      <thead><tr><th>${t('Proveedor (OpenRouter)')}</th><th>${t('Cuantización')}</th><th class="num">${t('Entrada')}</th><th class="num">${t('Salida')}</th><th class="num">${t('Contexto')}</th><th class="num">${t('tok/s p50')}</th><th class="num">${t('Primer token p50')}</th><th class="num">${t('Disponibilidad 30 min')}</th></tr></thead>
+      <thead><tr><th>${t('Proveedor (OpenRouter)')}</th><th>${t('Cuantización')}</th><th class="num">${t('Entrada')}</th><th class="num">${t('Salida')}</th><th class="num">${t('Contexto')}</th>${hasTps ? `<th class="num">${t('tok/s p50')}</th>` : ''}${hasTtft ? `<th class="num">${t('Primer token p50')}</th>` : ''}<th class="num">${t('Disponibilidad 30 min')}</th></tr></thead>
       <tbody>${eps.map(e => `<tr>
-        <td>${esc(e.provider || '—')}</td><td>${esc(e.quant || sd)}</td>
+        <td>${esc(e.provider || '—')}${e.tier ? ` <span class="tier-badge">${esc(e.tier)}</span>` : ''}</td><td>${e.quant && e.quant !== 'unknown' ? esc(e.quant) : '—'}</td>
         <td class="num">${e.in !== null ? usd(e.in) : sd}</td><td class="num">${e.out !== null ? usd(e.out) : sd}</td>
         <td class="num">${e.ctx ? tokens(e.ctx) : sd}</td>
-        <td class="num">${e.tps ? num(e.tps, 0) : sd}</td><td class="num">${e.ttft !== null && e.ttft !== undefined ? num(e.ttft, 2) + ' s' : sd}</td>
+        ${hasTps ? `<td class="num">${e.tps ? num(e.tps, 0) : sd}</td>` : ''}${hasTtft ? `<td class="num">${e.ttft !== null && e.ttft !== undefined ? num(e.ttft, 2) + ' s' : sd}</td>` : ''}
         <td class="num">${e.uptime !== null && e.uptime !== undefined ? num(e.uptime, 1) + ' %' : sd}</td></tr>`).join('')}</tbody>
     </table>
     <div class="prov">${t('Proveedores: {src} {consulta}. Velocidad y espera dependen de quién sirve el modelo.', { src: src(m.endpointsMeta), consulta: m.endpointsMeta ? t('consulta {fecha}', { fecha: esc(m.endpointsMeta.got.slice(0, 10)) }) : '' })}</div>` : `<p class="note">${m.aaOnly ? t('Aún no está en OpenRouter: sin proveedores ni precio públicos.') : t('Sin datos de proveedores.')}</p>`;
-  return `<p class="m-link"><a href="#modelos/${esc(m.id)}" title="${t('Dirección propia de esta ficha, para volver a ella o compartirla')}">${t('Enlace a esta ficha')}</a></p><dl class="dgrid">${dl.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${race(m)}${provTable}`;
+  return `<div class="m-link"><a href="#modelos/${esc(m.id)}" title="${t('Dirección propia de esta ficha, para volver a ella o compartirla')}">${t('Enlace a esta ficha')}</a><button type="button" class="copy-btn" data-copy-hash="#modelos/${esc(m.id)}">${t('Copiar enlace')}</button></div><dl class="dgrid">${dl.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${race(m)}${provTable}`;
 }
 
 function syncHeads() {
@@ -149,10 +176,25 @@ function syncHeads() {
   }
 }
 
+function renderQuickFilters() {
+  const el = $('#mx-qfilters');
+  if (!el) return;
+  const regs = [['all', t('Todas las regiones')], ['US', t('EE. UU.')], ['CN', t('China')], ['other', t('Europa y otros')]];
+  const flags = [
+    ['scored', t('Solo puntuados')],
+    ['recent', t('Nuevos (30 d)')],
+    ['reasoning', t('Con razonamiento')],
+    ['pareto', t('Frontera calidad-precio')]
+  ];
+  el.innerHTML = `<div class="seg qf-reg" role="group" aria-label="${t('Región')}">${regs.map(([k, lbl]) => `<button type="button" class="seg-btn" data-reg="${k}" aria-pressed="${state.region === k}">${lbl}</button>`).join('')}</div>`
+    + `<div class="qf-chips">${flags.map(([k, lbl]) => `<button type="button" class="qf-chip" data-qf="${k}" aria-pressed="${Boolean(state[k])}">${lbl}</button>`).join('')}</div>`;
+}
+
 function renderTable() {
   syncHeads();
-  const list = rows();
-  $('#mx-caption').innerHTML = t('{n} modelos{page} · precios en USD por millón de tokens (OpenRouter) · inteligencia: {idx}, configuración de mayor índice, datos de {AA_LINK} · ECI: Epoch Capabilities Index (Epoch AI, CC BY 4.0); las dos escalas no son comparables · pulsa una fila para ver contexto, licencia, caché, programación, agentes y proveedores.',
+  const pareto = paretoSet();
+  const list = rows(pareto);
+  $('#mx-caption').innerHTML = t('{n} modelos{page} · precios en USD por millón de tokens (OpenRouter) · inteligencia: {idx}, configuración de mayor índice, datos de {AA_LINK} · ECI: Epoch Capabilities Index (Epoch AI, CC BY 4.0); las dos escalas no son comparables · pulsa una fila para ver contexto, licencia, caché y proveedores.',
     { n: list.length, page: !state.all && !state.q && list.length > PAGE ? ` ${t('(se muestran {PAGE})', { PAGE })}` : '', idx: esc(aaIndexName(D.catalog.aaIndexVersion)), AA_LINK });
   const ex = D.catalog.excluded || [];
   const TIPO = { imagen: t('de imagen'), audio: t('de audio'), enrutador: t('enrutadores'), seguridad: t('clasificadores de seguridad') };
@@ -171,31 +213,36 @@ function renderTable() {
     const open = state.open.has(m.id);
     const checked = state.cmp.includes(m.id);
     const dis = !checked && state.cmp.length >= 3;
+    const isPareto = pareto.has(m.id);
+    const bPrice = blended(m);
     return `<tr class="row" data-id="${esc(m.id)}" aria-expanded="${open}" tabindex="0">
       <td class="c-sel" data-label="${t('Comparar')}"><input type="checkbox" aria-label="${t('Comparar {name}', { name: esc(m.name) })}" data-cmp="${esc(m.id)}"${checked ? ' checked' : ''}${dis ? ' disabled' : ''}></td>
-      <td class="c-name"><div class="m-id">${logo(m)}<div><div class="m-name">${esc(m.name)}${sinApiTag(m)}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></div></div></td>
+      <td class="c-name"><div class="m-id">${logo(m)}<div><div class="m-name">${esc(m.name)}${sinApiTag(m)}${isPareto ? ` <span class="pareto-badge" title="${t('En la frontera calidad-precio: ningún modelo más barato obtiene mayor índice AA')}">${t('Frontera')}</span>` : ''}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></div></div></td>
       <td data-label="${t('Pesos')}">${weightsBadge(m)}${m.license.v && m.weights.v === 'abiertos' ? `<span class="m-sub">${esc(tr(m.license.v))}</span>` : ''}</td>
       <td class="num" data-label="${t('Inteligencia (AA)')}">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfigShort(m) ? `<span class="m-sub" title="${t('Configuración de AA con mayor índice: {aaConfig}', { aaConfig: esc(aaConfig(m)) })}">${esc(aaConfigShort(m))}</span>` : ''}` : nd()}</td>
       <td class="num" data-label="${t('ECI (Epoch)')}">${m.epoch ? `<span class="big">${fact(m.epoch.eci, v => num(v))}</span>` : nd()}</td>
       <td class="num" data-label="${t('Velocidad')}">${speedCell(m)}</td>
-      <td class="num" data-label="${t('Entrada / salida')}">${m.aaOnly ? `<span class="big">${nd()}</span><span class="m-sub">${t('sin API pública')}</span>` : freeOnly(m) ? `<span class="big">${t('gratis')}</span>${src(m.price.in)}<span class="m-sub">${t('solo variante {p1}; sin precio de pago todavía', { p1: esc(m.orVariant.slice(m.orVariant.lastIndexOf(':'))) })}</span>` : `<span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">${t('salida {fact}', { fact: fact(m.price.out, usd) })}</span>`}${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}${t(', el más barato')}` : ''}</span>` : ''}</td>
+      <td class="num" data-label="${t('Entrada / salida')}">${m.aaOnly ? `<span class="big">${nd()}</span><span class="m-sub">${t('sin API pública')}</span>` : freeOnly(m) ? `<span class="big">${t('gratis')}</span>${src(m.price.in)}<span class="m-sub">${t('solo variante {p1}; sin precio de pago todavía', { p1: esc(m.orVariant.slice(m.orVariant.lastIndexOf(':'))) })}</span>` : `<span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">${t('salida {fact}', { fact: fact(m.price.out, usd) })}${bPrice !== null ? ` · 3:1 ${usd(bPrice)}` : ''}</span>`}${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.tier ? ` (${esc(m.price.tier)})` : ''}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}${t(', el más barato')}` : ''}</span>` : ''}</td>
     </tr>${open ? `<tr class="detail"><td colspan="7">${detail(m)}</td></tr>` : ''}`;
   }).join('');
 }
 
 function renderCompare() {
   const el = $('#mx-compare');
+  const bar = $('#mx-cmp-bar');
   const ms = state.cmp.map(id => D.byId.get(id)).filter(Boolean);
-  if (!ms.length) { el.hidden = true; return; }
+  if (!ms.length) { el.hidden = true; if (bar) bar.hidden = true; return; }
   el.hidden = false;
   const sp = ms.map(speed);
+  const hasCoding = D.catalog.models.some(x => coding(x) !== null) || ms.some(x => coding(x) !== null);
+  const hasAgentic = D.catalog.models.some(x => agentic(x) !== null) || ms.some(x => agentic(x) !== null);
   const rowsDef = [
     [t('Pesos'), m => weightsBadge(m)],
     [t('Licencia'), m => fact(m.license, v => esc(tr(v)))],
     [t('País del laboratorio'), m => esc(country(m.lab.country))],
     [t('Inteligencia (AA)'), m => m.aa ? fact(m.aa.intelligence, v => num(v)) : nd(), m => ii(m), 'max'],
-    [t('Programación (AA)'), m => m.aa ? fact(m.aa.coding, v => num(v)) : nd(), m => coding(m), 'max'],
-    [t('Agentes (AA)'), m => m.aa ? fact(m.aa.agentic, v => num(v)) : nd(), m => agentic(m), 'max'],
+    ...(hasCoding ? [[t('Programación (AA)'), m => m.aa?.coding ? fact(m.aa.coding, v => num(v)) : nd(), m => coding(m), 'max']] : []),
+    ...(hasAgentic ? [[t('Agentes (AA)'), m => m.aa?.agentic ? fact(m.aa.agentic, v => num(v)) : nd(), m => agentic(m), 'max']] : []),
     [t('Capacidad (ECI)'), m => m.epoch ? `${fact(m.epoch.eci, v => num(v))}${m.epoch.how && m.epoch.how !== 'nombre' ? `<span class="m-sub">${esc(tr(m.epoch.how))}</span>` : ''}` : nd(), m => eci(m), 'max'],
     [t('SWE-bench Verified'), m => m.epoch ? fact(m.epoch.swe, v => num(v) + ' %') : nd(), m => swe(m), 'max'],
     [t('Velocidad (tok/s)'), (m, i) => sp[i] ? `${num(sp[i].tps, 0)}${src(sp[i].f)} <span class="m-sub">${esc(sp[i].provider)}</span>` : nd(), (m, i) => sp[i]?.tps ?? null, 'max'],
@@ -208,7 +255,8 @@ function renderCompare() {
     [t('Razonamiento'), m => fact(m.reasoning, yesNo)]
   ];
   const cols = ms.length;
-  let html = `<div class="compare-head"><span>${t('Comparación ({cols} de 3)', { cols })}</span><a href="#modelos/comparar/${ms.map(m => esc(m.id)).join(',')}" title="${t('Dirección propia de esta comparación, para compartirla')}">${t('Enlace a esta comparación')}</a><button type="button" id="cmp-clear">${t('Vaciar')}</button></div>`;
+  const cmpHash = `#modelos/comparar/${ms.map(m => esc(m.id)).join(',')}`;
+  let html = `<div class="compare-head"><span>${t('Comparación ({cols} de 3)', { cols })}</span><a href="${cmpHash}" title="${t('Dirección propia de esta comparación, para compartirla')}">${t('Enlace a esta comparación')}</a><button type="button" class="copy-btn" data-copy-hash="${cmpHash}">${t('Copiar enlace')}</button><button type="button" id="cmp-clear">${t('Vaciar')}</button></div>`;
   html += `<div class="cmp-grid" style="grid-template-columns: minmax(110px, .8fr) repeat(${cols}, minmax(140px, 1fr))"><div class="rh ch"></div>${ms.map(m => `<div class="ch"><div class="m-id">${logo(m)}<div>${esc(m.name)}<span class="m-sub">${esc(m.lab.name)}</span></div></div></div>`).join('')}`;
   for (const [label, show, val, better, free] of rowsDef) {
     let bestIdx = -1;
@@ -222,6 +270,13 @@ function renderCompare() {
   html += '</div>';
   el.innerHTML = html;
   $('#cmp-clear').addEventListener('click', () => { state.cmp = []; renderCompare(); renderTable(); });
+  if (bar) {
+    bar.hidden = false;
+    bar.innerHTML = `<span class="cmp-bar-info"><b>${t('Comparación ({cols} de 3)', { cols })}</b><span>${ms.map(m => esc(m.name)).join(' · ')}</span></span>
+      <span class="cmp-bar-acts"><button type="button" class="cmp-go" id="cmp-bar-go">${t('Ver comparación ↑')}</button><button type="button" class="copy-btn" data-copy-hash="${cmpHash}">${t('Copiar enlace')}</button><button type="button" id="cmp-bar-clear">${t('Vaciar')}</button></span>`;
+    $('#cmp-bar-go').addEventListener('click', () => $('#mx-compare')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    $('#cmp-bar-clear').addEventListener('click', () => { state.cmp = []; renderCompare(); renderTable(); });
+  }
 }
 
 /* La misma frontera con el índice de AA: recoge los modelos nuevos en cuanto AA los puntúa, también los que Epoch no mide. */
@@ -237,7 +292,11 @@ function renderFrontierAA() {
   const last = r.points[r.points.length - 1];
   const gap = last && last.open && last.closed ? Math.round((last.closed.v - last.open.v) * 10) / 10 : null;
   const anun = r.models.filter(m => m.anun && top10.includes(m)).map(m => m.n);
-  $('#mx-frontier-aa-note').innerHTML = `<span class="lbl">${t('Cómo leerlo')}</span>${t('Cada línea es el mejor {idx} de un modelo con pesos abiertos y de uno cerrado publicado hasta esa fecha; los puntos claros son el resto. Con nombre, el líder de cada grupo y los mayores saltos.', { idx: esc(aaIndexName(r.ver)) })}${nuevos.length ? ` ${t('En punto lleno y con nombre si cabe, lo publicado en los últimos 14 días que está entre los diez primeros ({p1}).', { p1: esc(nuevos.map(m => m.n).join(', ')) })}` : ''} ${t('Cada modelo va en su fecha según AA, con su índice de hoy. Es una reconstrucción hecha hoy, no una serie medida en cada fecha: sólo cuentan los {n} modelos puntuados del catálogo (los que siguen en OpenRouter y los que AA ya puntúa sin API pública), así que los retirados faltan y los meses antiguos pueden quedar por debajo de lo que hubo.', { n: r.n })}${esc(coverageText(cov))} ${t('«Abiertos» incluye los que su descripción en OpenRouter presenta como de pesos abiertos aunque aún no se puedan descargar')}${anun.length ? ` ${t('(entre los diez primeros: {p1})', { p1: esc(anun.join(', ')) })}` : ''}.${gap !== null ? ` ${t('Distancia actual: {num} puntos ({name} frente a {p3}).', { num: num(gap), name: esc(last.closed.name), p3: esc(last.open.name) })}` : ''} ${t('Datos de {AA_LINK}, publicados con su permiso.', { AA_LINK })}`;
+  const shortLine = gap !== null
+    ? t('Distancia actual: {num} puntos ({name} frente a {p3}). Datos de {AA_LINK}, publicados con su permiso.', { num: num(gap), name: esc(last.closed.name), p3: esc(last.open.name), AA_LINK })
+    : t('Datos de {AA_LINK}, publicados con su permiso.', { AA_LINK });
+  $('#mx-frontier-aa-note').innerHTML = `<span class="lbl">${t('Cómo leerlo')}</span>${shortLine}
+    <details class="method-note"><summary>${t('Detalle y metodología')}</summary><p>${t('Cada línea es el mejor {idx} de un modelo con pesos abiertos y de uno cerrado publicado hasta esa fecha; los puntos claros son el resto. Con nombre, el líder de cada grupo y los mayores saltos.', { idx: esc(aaIndexName(r.ver)) })}${nuevos.length ? ` ${t('En punto lleno y con nombre si cabe, lo publicado en los últimos 14 días que está entre los diez primeros ({p1}).', { p1: esc(nuevos.map(m => m.n).join(', ')) })}` : ''} ${t('Cada modelo va en su fecha según AA, con su índice de hoy. Es una reconstrucción hecha hoy, no una serie medida en cada fecha: sólo cuentan los {n} modelos puntuados del catálogo (los que siguen en OpenRouter y los que AA ya puntúa sin API pública), así que los retirados faltan y los meses antiguos pueden quedar por debajo de lo que hubo.', { n: r.n })}${esc(coverageText(cov))} ${t('«Abiertos» incluye los que su descripción en OpenRouter presenta como de pesos abiertos aunque aún no se puedan descargar')}${anun.length ? ` ${t('(entre los diez primeros: {p1})', { p1: esc(anun.join(', ')) })}` : ''}.</p></details>`;
 }
 
 function renderFrontier() {
@@ -251,10 +310,37 @@ function renderFrontier() {
   }
   const last = series[series.length - 1];
   const gap = last && last.open && last.closed ? Math.round((last.closed.v - last.open.v) * 10) / 10 : null;
-  $('#mx-frontier-note').innerHTML = `<span class="lbl">${t('Cómo leerlo')}</span>${t('Cada línea es el mejor ECI alcanzado hasta esa fecha por un modelo con pesos abiertos y por uno cerrado; los puntos claros son el resto de modelos. Con nombre, el líder actual de cada grupo y los mayores saltos. Al pasar el cursor por un punto aparece su ficha. Datos de los {p1} modelos que puntúa Epoch AI (incluidos los que no están en OpenRouter); Epoch tarda en puntuar los modelos nuevos y no mide todos los laboratorios, por eso el gráfico con el índice AA, arriba, los recoge antes. Fuente:', { p1: f?.n ?? t('sin datos') })} <a href="${esc(f?.url || 'https://epoch.ai/benchmarks/eci')}" target="_blank" rel="noopener">${t('Epoch AI')}</a>${t(', CC BY 4.0, consulta {fecha}.', { fecha: esc((f?.got || '').slice(0, 10)) })}${gap !== null ? ` ${t('Distancia actual: {num} puntos ECI ({closedName} frente a {openName}).', { num: num(gap), closedName: esc(last.closedName), openName: esc(last.openName) })}` : ''} ${t('Unos puntos de diferencia no equivalen a meses de retraso.')}`;
+  const shortLine = `${gap !== null ? `${t('Distancia actual: {num} puntos ECI ({closedName} frente a {openName}).', { num: num(gap), closedName: esc(last.closedName), openName: esc(last.openName) })} ` : ''}${t('Unos puntos de diferencia no equivalen a meses de retraso.')} ${t('Fuente:')} <a href="${esc(f?.url || 'https://epoch.ai/benchmarks/eci')}" target="_blank" rel="noopener">${t('Epoch AI')}</a>, CC BY 4.0.`;
+  $('#mx-frontier-note').innerHTML = `<span class="lbl">${t('Cómo leerlo')}</span>${shortLine}
+    <details class="method-note"><summary>${t('Detalle y metodología')}</summary><p>${t('Cada línea es el mejor ECI alcanzado hasta esa fecha por un modelo con pesos abiertos y por uno cerrado; los puntos claros son el resto de modelos. Con nombre, el líder actual de cada grupo y los mayores saltos. Al pasar el cursor por un punto aparece su ficha. Datos de los {p1} modelos que puntúa Epoch AI (incluidos los que no están en OpenRouter); Epoch tarda en puntuar los modelos nuevos y no mide todos los laboratorios, por eso el gráfico con el índice AA los recoge antes. Consulta {fecha}.', { p1: f?.n ?? t('sin datos'), fecha: esc((f?.got || '').slice(0, 10)) })}</p></details>`;
 }
 
-/* Ranking de uso de OpenRouter (conjunto de datos «rankings-daily», CC BY 4.0): diez primeros por tokens en los últimos 7 días. */
+/* Caída del coste por nivel fijo de capacidad (ECI): precio combinado mínimo histórico para superar ECI 155, 160 y 165. */
+function renderCostCurve() {
+  const el = $('#mx-cost-curve');
+  if (!el) return;
+  const scored = D.catalog.models.filter(m => eci(m) !== null && !freeOnly(m) && blended(m) > 0 && (m.epoch?.release?.v || m.orCreated?.v));
+  const tiers = [[155, 'ln-c155'], [160, 'ln-c160'], [165, 'ln-c165']];
+  const series = tiers.map(([thr, cls]) => {
+    const cands = scored.filter(m => eci(m) >= thr)
+      .map(m => ({ d: m.epoch?.release?.v || m.orCreated.v, p: blended(m), n: m.name, org: m.lab.name, v: eci(m), id: m.id }))
+      .sort((a, b) => a.d.localeCompare(b.d) || a.p - b.p);
+    const pts = [];
+    let best = Infinity;
+    for (const c of cands) if (c.p < best) { best = c.p; pts.push(c); }
+    return { cls, name: `ECI ≥ ${thr}`, thr, pts };
+  }).filter(sr => sr.pts.length >= 2);
+  costCurve(el, series, { today: D.catalog.generated.slice(0, 10) });
+  const drops = series.map(sr => {
+    const a = sr.pts[0], b = sr.pts[sr.pts.length - 1];
+    const ratio = a.p / b.p;
+    return `${sr.name}: ${t('de {a} ({na}) a {b} ({nb}, ÷{r})', { a: usd(a.p), na: esc(a.n), b: usd(b.p), nb: esc(b.n), r: num(ratio, ratio >= 10 ? 0 : 1) })}`;
+  });
+  $('#mx-cost-note').innerHTML = `<span class="lbl">${t('Cómo leerlo')}</span>${drops.length ? `${drops.join(' · ')}.` : t('Sin datos suficientes para la curva de costes.')}
+    <details class="method-note"><summary>${t('Detalle y metodología')}</summary><p>${t('Escala logarítmica en dólares por millón de tokens (precio combinado 3:1 vigente hoy en OpenRouter). Cada escalón muestra el modelo más barato publicado hasta esa fecha que alcanza o supera un umbral fijo del Epoch Capabilities Index (ECI). Como usa precios actuales sobre modelos que siguen activos en OpenRouter, refleja la caída por nuevos modelos más eficientes, no bajadas pasadas de modelos retirados. Pulsa cualquier punto para abrir su ficha.')}</p></details>`;
+}
+
+/* Ranking de uso de OpenRouter (conjunto de datos «rankings-daily», CC BY 4.0): diez primeros por tokens en los últimos 7 o 30 días. */
 const tokB = v => `${num(v / 1e12, v < 1e12 ? 2 : 1)} ${t('B')}`;
 const tokES = v => v >= 1e12 ? t('{n} billones', { n: num(v / 1e12, 1) }) : v >= 1e9 ? t('{n} mil millones', { n: num(v / 1e9, 0) }) : t('{n} millones', { n: num(v / 1e6, 0) });
 /* Nombre para el ranking: el de OpenRouter; si ya no lo lista (p. ej. un modelo anónimo retirado), el del identificador. */
@@ -270,7 +356,23 @@ function renderUso(u, el, note, dias) {
     label: `${r.rank}. ${usoName(r)}${/:free$/.test(r.slug) ? ' :free' : ''}`, v: r.tokens, icon: logoUrl((r.id || r.slug).split('/')[0], usoName(r)), value: `${tokB(r.tokens)}${r.share != null ? ` (${num(r.share, 0)} %)` : ''}`,
     tip: tip(usoName(r), [[t('Tokens en {dias} días', { dias }), t('{tokens} (entrada + salida)', { tokens: tokES(r.tokens) })], [t('Cuota del total de OpenRouter'), r.share != null ? `${num(r.share, 1)} %` : null], [t('Identificador'), r.slug], [t('Variante'), /:free$/.test(r.slug) ? t('gratuita: OpenRouter la cuenta aparte de la de pago') : null], [t('En la tabla de arriba'), r.id && inCat.has(r.id) ? t('sí') : r.id ? t('no (laboratorio no seguido o fuera de la ventana)') : t('no: OpenRouter ya no lo lista')]], '', logoUrl((r.id || r.slug).split('/')[0], usoName(r)))
   })), { aria: t('Modelos más usados en OpenRouter en los últimos {dias} días', { dias }), right: 130 });
-  note.innerHTML = `<span class="lbl">${t('Cómo leerlo')}</span>${t('B = billones de tokens (un billón es un millón de millones); entre paréntesis, la cuota. Tokens de entrada más salida procesados en OpenRouter del {fmtDate} al {p2} (días UTC completos), sumando el ranking diario. Es el uso en OpenRouter, no en todo el mercado: no cuenta lo que se consume en la API propia de cada laboratorio ni en sus aplicaciones, y los modelos gratuitos o en promoción suben mucho. La cuota es sobre todo el tráfico de OpenRouter esos días. Puede diferir un poco de las páginas de OpenRouter, que usan su propia ventana. Fuente: OpenRouter (', { fmtDate: esc(fmtDate(u.from)), p2: esc(fmtDate(u.to)) })}<a href="${esc(u.url)}" target="_blank" rel="noopener">${t('openrouter.ai/rankings')}</a>${t('), datos hasta el {fmtDate}, CC BY 4.0; consulta {p2}{p3}.', { fmtDate: esc(fmtDate(u.asOf)), p2: esc((u.got || '').slice(0, 10)), p3: u.stale ? t(' (la última consulta falló: se muestra el ranking anterior)') : '' })}`;
+  note.innerHTML = `<span class="lbl">${t('Cómo leerlo')}</span>${t('Del {fmtDate} al {p2} en OpenRouter (B = billones de tokens; entre paréntesis, cuota). Uso en OpenRouter, no en todo el mercado.', { fmtDate: esc(fmtDate(u.from)), p2: esc(fmtDate(u.to)) })}
+    <details class="method-note"><summary>${t('Detalle y metodología')}</summary><p>${t('Tokens de entrada más salida procesados en OpenRouter del {fmtDate} al {p2} (días UTC completos), sumando el ranking diario. No cuenta lo que se consume en la API propia de cada laboratorio ni en sus aplicaciones, y los modelos gratuitos o en promoción suben mucho. La cuota es sobre todo el tráfico de OpenRouter esos días. Puede diferir un poco de las páginas de OpenRouter, que usan su propia ventana. Fuente: OpenRouter (', { fmtDate: esc(fmtDate(u.from)), p2: esc(fmtDate(u.to)) })}<a href="${esc(u.url)}" target="_blank" rel="noopener">${t('openrouter.ai/rankings')}</a>${t('), datos hasta el {fmtDate}, CC BY 4.0; consulta {p2}{p3}.', { fmtDate: esc(fmtDate(u.asOf)), p2: esc((u.got || '').slice(0, 10)), p3: u.stale ? t(' (la última consulta falló: se muestra el ranking anterior)') : '' })}</p></details>`;
+}
+
+function syncTabs() {
+  for (const b of $$('#mx-evo-tabs [data-tab]')) {
+    const on = b.dataset.tab === state.evoTab;
+    b.setAttribute('aria-selected', String(on));
+    b.setAttribute('aria-pressed', String(on));
+  }
+  for (const p of $$('[data-evo-pane]')) p.hidden = p.dataset.evoPane !== state.evoTab;
+  for (const b of $$('#mx-uso-tabs [data-tab]')) {
+    const on = b.dataset.tab === state.usoTab;
+    b.setAttribute('aria-selected', String(on));
+    b.setAttribute('aria-pressed', String(on));
+  }
+  for (const p of $$('[data-uso-pane]')) p.hidden = p.dataset.usoPane !== state.usoTab;
 }
 
 /* Dirección propia de cada modelo: #modelos/<id de OpenRouter> (también vale sólo la parte tras «/» si no es ambigua)
@@ -305,6 +407,7 @@ export function showModelPath(sub) {
   if (state.lab && m.lab.name !== state.lab) { state.lab = null; renderLabs(); }
   if (state.w !== 'all' && m.weights.v !== state.w) { state.w = 'all'; $$('#mx-weights [data-w]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.w === 'all'))); }
   if (state.q && !`${m.name} ${m.lab.name} ${m.id}`.toLowerCase().includes(state.q.trim().toLowerCase())) { state.q = ''; $('#mx-q').value = ''; }
+  if (!rows().some(x => x.id === id)) { state.region = 'all'; state.scored = false; state.recent = false; state.reasoning = false; state.pareto = false; renderQuickFilters(); }
   if (rows().findIndex(x => x.id === id) >= PAGE) state.all = true;
   state.open.add(id);
   renderTable();
@@ -336,17 +439,20 @@ function renderLabs() {
 }
 
 /* Los escuchadores se enlazan una sola vez; renderModelos() puede volver a llamarse al cambiar de idioma y vuelve a dibujar
-   todo desde el mismo estado (filtros, orden, comparación y fichas abiertas). */
+   todo desde el mismo estado (filtros, orden, comparación, pestañas y fichas abiertas). */
 let bound = false;
 export function renderModelos(d) {
   D = d;
   if (!bound) { bound = true; initModelos(d); }
+  renderQuickFilters();
   renderLabs();
   renderTable();
   renderCompare();
   drawNotFound();
+  syncTabs();
   renderFrontierAA();
   renderFrontier();
+  renderCostCurve();
   renderUso(d.catalog.uso, $('#mx-uso'), $('#mx-uso-note'), 7);
   renderUso(d.catalog.usoMes, $('#mx-uso-mes'), $('#mx-uso-mes-note'), 30);
 }
@@ -361,11 +467,32 @@ function initModelos(d) {
     $$('#mx-weights [data-w]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
     renderTable();
   });
+  $('#mx-qfilters')?.addEventListener('click', e => {
+    const rb = e.target.closest('[data-reg]');
+    if (rb) { state.region = rb.dataset.reg; state.all = false; renderQuickFilters(); renderTable(); return; }
+    const qb = e.target.closest('[data-qf]');
+    if (qb) { const k = qb.dataset.qf; state[k] = !state[k]; state.all = false; renderQuickFilters(); renderTable(); }
+  });
   $('#mx-labs').addEventListener('click', e => {
     const b = e.target.closest('[data-lab]'); if (!b) return;
     state.lab = b.dataset.lab && b.dataset.lab !== state.lab ? b.dataset.lab : null;
     state.all = false;
     renderLabs(); renderTable();
+  });
+  $('#mx-evo-tabs')?.addEventListener('click', e => {
+    const b = e.target.closest('[data-tab]'); if (!b || b.dataset.tab === state.evoTab) return;
+    state.evoTab = b.dataset.tab;
+    syncTabs();
+    if (state.evoTab === 'aa') renderFrontierAA();
+    else if (state.evoTab === 'eci') renderFrontier();
+    else if (state.evoTab === 'cost') renderCostCurve();
+  });
+  $('#mx-uso-tabs')?.addEventListener('click', e => {
+    const b = e.target.closest('[data-tab]'); if (!b || b.dataset.tab === state.usoTab) return;
+    state.usoTab = b.dataset.tab;
+    syncTabs();
+    if (state.usoTab === '7d') renderUso(D.catalog.uso, $('#mx-uso'), $('#mx-uso-note'), 7);
+    else renderUso(D.catalog.usoMes, $('#mx-uso-mes'), $('#mx-uso-mes-note'), 30);
   });
   $('#mx-sort').addEventListener('change', e => { state.sort = e.target.value; state.dir = DIR0[state.sort]; renderTable(); });
   // Flechas en las cabeceras: pulsar la columna activa invierte el orden; otra columna empieza en su sentido por defecto.
@@ -391,7 +518,7 @@ function initModelos(d) {
     renderTable();
   };
   body.addEventListener('click', e => {
-    if (e.target.closest('a, input, label')) return;
+    if (e.target.closest('a, input, label, button')) return;
     const row = e.target.closest('tr.row'); if (row) toggle(row);
   });
   body.addEventListener('keydown', e => {

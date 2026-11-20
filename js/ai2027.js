@@ -60,13 +60,15 @@ function evidence(e, ind) {
 /* Predicción por partes: lectura del observatorio que separa las afirmaciones de una misma predicción. */
 function partes(h, checks, today) {
   if (!h.partes?.length) return '';
+  const items = h.partes.map(pt => ({ pt, v: resolve(pt.valoracion, checks), due: (pt.plazo || h.plazo) < today }));
+  const chips = items.map(({ pt, v, due }) => `<li><span class="chip ${cls(v?.v)}" aria-hidden="true"></span><span><b>${esc(plain(v, due))}</b>${pt.plazo ? ` (${esc(tr(pt.plazo_texto))})` : ''}</span></li>`).join('');
   return `<div class="partes"><span class="lbl">${t('La predicción, por partes')}</span>
-    <p class="m-sub">${t('Lectura del observatorio: el escenario lo dice todo junto y aquí se separa para valorar cada afirmación. La predicción completa y la cita, sin cambios, en «Texto original».')}</p>
-    <ol>${h.partes.map(pt => {
-      const v = resolve(pt.valoracion, checks), due = (pt.plazo || h.plazo) < today;
-      return `<li><span class="chip ${cls(v?.v)}" aria-hidden="true"></span><div><p class="pt-t">${esc(tr(pt.texto))}${pt.plazo ? ` <span class="pt-when">${t('Para {plazo_texto}.', { plazo_texto: esc(tr(pt.plazo_texto)) })}</span>` : ''}</p>
-        <p><b>${esc(plain(v, due))}.</b> ${esc(v?.texto ? L(v, 'texto') : '')}${v?.fuentes?.length ? ` ${v.fuentes.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(tr(f.texto))}</a>`).join(' · ')}` : ''}</p></div></li>`;
-    }).join('')}</ol></div>`;
+    <ul class="partes-chips">${chips}</ul>
+    <details class="partes-det"><summary>${t('Ver desglose por partes ({n})', { n: h.partes.length })}</summary>
+      <p class="m-sub">${t('Lectura del observatorio: el escenario lo dice todo junto y aquí se separa para valorar cada afirmación. La predicción completa y la cita, sin cambios, en «Texto original».')}</p>
+      <ol>${items.map(({ pt, v, due }) => `<li><span class="chip ${cls(v?.v)}" aria-hidden="true"></span><div><p class="pt-t">${esc(tr(pt.texto))}${pt.plazo ? ` <span class="pt-when">${t('Para {plazo_texto}.', { plazo_texto: esc(tr(pt.plazo_texto)) })}</span>` : ''}</p>
+        <p><b>${esc(plain(v, due))}.</b> ${esc(v?.texto ? L(v, 'texto') : '')}${v?.fuentes?.length ? ` ${v.fuentes.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(tr(f.texto))}</a>`).join(' · ')}` : ''}</p></div></li>`).join('')}</ol>
+    </details></div>`;
 }
 
 function hito(h, ind, checks, today, a7) {
@@ -82,7 +84,7 @@ function hito(h, ind, checks, today, a7) {
   return `<article class="hito${due && o?.v === 'todavía no evaluable' ? ' overdue' : ''}" id="hito-${esc(h.id)}">
     <div class="verdict ${cls(o?.v)}"><span class="lbl">${t('Valoración del observatorio')}</span><b>${esc(plain(o, due))}</b>${o?.sentido ? `<span class="sentido">${esc(L(o, 'sentido'))}</span>` : ''}${o?.regla ? `<small>${t('Calculada con una regla explícita en cada recogida.')}</small>` : ''}${est ? `<span class="est-line"><i class="chip ${cls(est.v)}"></i><span><span class="lbl">${t('Estimación')}</span>${esc(estLabel(est))}</span></span>` : ''}</div>
     <div class="hito-main">
-      <h4>${esc(tr(h.titulo))}</h4>
+      <div class="hito-title-row"><h4>${esc(tr(h.titulo))}</h4><button type="button" class="copy-btn" data-copy-hash="#ai2027/${esc(h.id)}">${t('Copiar enlace')}</button></div>
       <div class="when">${t('Para')} <b>${esc(tr(h.plazo_texto))}</b> (${esc(fmtDate(h.plazo))}) · ${esc(when(h, today))}</div>
       <div class="hito-cols">
         <div><span class="lbl">${t('Qué predecía')}</span><p>${esc(tr(h.prediccion))}</p></div>

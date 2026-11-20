@@ -8,7 +8,10 @@ import { logoFor } from './logos.js';
 import { renderRace, renderRaceAA, aaRaceFact } from './carrera-anim.js';
 
 const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const state = { raceTab: 'eci', gapsTab: 'aa' };
 let bound = false;
+let lastData = null;
 export const estado = k => ({ abierta: t('Hipótesis abierta'), confirmada: t('Hipótesis confirmada'), debilitada: t('Hipótesis debilitada') }[k] || k);
 const estadoWord = k => ({ abierta: t('abierta'), confirmada: t('confirmada'), debilitada: t('debilitada') }[k] || k);
 const verif = k => ({ 'lectura directa': t('leído en la fuente'), buscador: t('comprobado a través de un buscador: la web de la fuente no admite lectura automática') }[k] || k);
@@ -20,8 +23,8 @@ export function factItem(h) {
   return `<li><p>${esc(tr(h.texto))}</p><div class="prov">${t('Fuente:')} <a href="${esc(h.url)}" target="_blank" rel="noopener">${esc(tr(h.fuente))}</a> · ${t('dato: {fecha}', { fecha: esc(curDate(h.fecha)) })} · ${t('consulta: {fecha}', { fecha: esc(curDate(h.consulta)) })}${h.verificacion ? ` · <span class="verif v-${h.verificacion === 'buscador' ? 'buscador' : 'directa'}">${esc(verif(h.verificacion))}</span>` : ''}</div></li>`;
 }
 
-/* Cabecera de cada frente: qué sabemos (sus indicadores principales), qué ha cambiado (lo que detecta el recolector al
-   comparar recogidas, y los cambios de estado de la hipótesis) y qué cambiaría la lectura. */
+/* Cabecera de cada frente: qué sabemos (sus indicadores principales) y qué ha cambiado (lo que detecta el recolector al
+   comparar recogidas, y los cambios de estado de la hipótesis). */
 function resumen(f, ind, log) {
   const sab = ind ? (f.sabemos || []).map(k => { const r = indicatorBrief(ind, k); return `<li><span class="k">${esc(r.label)}</span><b>${r.value}</b></li>`; }).join('') : '';
   const own = (log?.vigilados || []).filter(v => f.indicadores.includes(v.path));
@@ -37,9 +40,8 @@ function resumen(f, ind, log) {
     ? `<ul class="sum-ev">${ev.slice(0, 4).map(x => `<li><span>${esc(curDate(x.fecha))}</span>${x.html}</li>`).join('')}</ul>${ev.length > 4 ? `<p class="m-sub">${t('Y {p1} cambios anteriores.', { p1: ev.length - 4 })}</p>` : ''}`
     : `<p>${vig.length ? t('Ningún cambio en sus indicadores vigilados desde el {curDate}.', { curDate: esc(curDate(desde)) }) : t('El recolector no vigila todavía ningún indicador de este frente.')}</p>`;
   return `<div class="front-sum">
-    <div><span class="lbl">${t('Qué sabemos')}</span>${sab ? `<ul class="sum-ind">${sab}</ul>` : `<p>${nd()}</p>`}<p class="m-sub">${t('Detalle, fuentes y hechos, más abajo.')}</p></div>
+    <div><span class="lbl">${t('Qué sabemos')}</span>${sab ? `<ul class="sum-ind">${sab}</ul>` : `<p>${nd()}</p>`}</div>
     <div><span class="lbl">${t('Qué ha cambiado')}</span>${cambios}${vig.length ? `<p class="m-sub">${t('Se comparan en cada recogida: {p1}.', { p1: vig.map(v => lab(v)).join('; ') })}</p>` : ''}${stopped.length ? `<p class="m-sub">${t('Ya no se comparan, porque la serie se ha detenido: {p1}.', { p1: stopped.map(v => t('{p1} (último modelo medido, del {curDate})', { p1: lab(v), curDate: esc(curDate(v.detenida)) })).join('; ') })}</p>` : ''}${incomp.length ? `<p class="m-sub">${t('No se comparan mientras su cobertura sea incompleta: {p1}.', { p1: incomp.map(v => lab(v)).join('; ') })}</p>` : ''}</div>
-    <div class="sum-lect"><span class="lbl">${t('Qué cambiaría la lectura · interpretación')}</span><p><b>${t('La reforzaría:')}</b> ${esc(tr(f.lectura.reforzaria))}</p><p><b>${t('La debilitaría:')}</b> ${esc(tr(f.lectura.debilitaria))}</p></div>
   </div>`;
 }
 
@@ -68,8 +70,9 @@ function lectura(f, log) {
       <dt>${t('Quién gana acelerando')}</dt><dd>${esc(tr(l.gana))}</dd>
       <dt>${t('Qué se pierde frenando')}</dt><dd>${esc(tr(l.pierde))}</dd>
       <dt>${t('Qué costes desplaza')}</dt><dd>${esc(tr(l.desplaza))}</dd>
+      <dt>${t('La reforzaría')}</dt><dd>${esc(tr(l.reforzaria))}</dd>
+      <dt>${t('La debilitaría')}</dt><dd>${esc(tr(l.debilitaria))}</dd>
     </dl>
-    <p class="m-sub">${t('Qué la reforzaría o la debilitaría, al principio del frente.')}</p>
     <details class="hist"><summary>${t('Historial de la hipótesis (desde {curDate})', { curDate: esc(curDate(l.desde)) })}</summary><ol>${hist}</ol></details>
   </aside>`;
 }
@@ -253,7 +256,7 @@ const chartsOf = (f, ind) => ind && CHARTS[f.id] ? CHARTS[f.id](ind).filter(Bool
 function front(f, i, ind, log) {
   const n = String(i + 1).padStart(2, '0');
   return `<article class="front" id="frente-${esc(f.id)}" aria-labelledby="fh-${esc(f.id)}">
-    <header class="front-head"><span class="front-n">${n}</span><div><h3 id="fh-${esc(f.id)}">${esc(tr(f.titulo))}</h3><p class="q">${esc(tr(f.pregunta))}</p></div></header>
+    <header class="front-head"><span class="front-n">${n}</span><div class="front-title"><h3 id="fh-${esc(f.id)}">${esc(tr(f.titulo))}</h3><p class="q">${esc(tr(f.pregunta))}</p></div><button type="button" class="copy-btn" data-copy-hash="#carrera/${esc(f.id)}">${t('Copiar enlace')}</button></header>
     ${resumen(f, ind, log)}
     ${chartsOf(f, ind).length ? `<div class="front-charts">${chartsOf(f, ind).map((c, k) => `<figure class="fchart${c.wide ? ' wide' : ''}"><figcaption>${esc(c.title)}</figcaption><div class="chart" id="fc-${esc(f.id)}-${k}"></div><p class="note">${c.note}</p></figure>`).join('')}</div>` : ''}
     <div class="front-body">
@@ -269,34 +272,59 @@ function front(f, i, ind, log) {
   </article>`;
 }
 
-export function renderCarrera(d) {
-  const ind = d.ind?.ind || null, cur = d.carrera;
-  if (!cur) {
-    $('#ca-fronts').innerHTML = `<div class="empty">${t('No se han podido cargar los frentes (data/curated/carrera.json).')}</div>`;
-    return;
+function syncCarreraTabs() {
+  for (const b of $$('#ca-race-tabs [data-tab]')) {
+    const on = b.dataset.tab === state.raceTab;
+    b.setAttribute('aria-selected', String(on));
+    b.setAttribute('aria-pressed', String(on));
   }
-  // Arriba, la carrera animada con los récords de ECI de cada laboratorio.
-  renderRace($('#ca-race'), ind?.eci?.race);
-  // Debajo, la misma carrera con el índice de AA, que puntúa antes los modelos nuevos.
-  renderRaceAA($('#ca-race-aa'), aaRaceFact(d.catalog));
-  // Después, el índice de AA, al día: puntúa un modelo a los pocos días de salir y cuenta laboratorios que Epoch no mide.
+  for (const p of $$('[data-race-pane]')) p.hidden = p.dataset.racePane !== state.raceTab;
+  for (const b of $$('#ca-gaps-tabs [data-tab]')) {
+    const on = b.dataset.tab === state.gapsTab;
+    b.setAttribute('aria-selected', String(on));
+    b.setAttribute('aria-pressed', String(on));
+  }
+  for (const p of $$('[data-gaps-pane]')) p.hidden = p.dataset.gapsPane !== state.gapsTab;
+}
+
+function drawGapsAA(d) {
+  const ind = d.ind?.ind || null;
   const aa = aaRace(d.catalog), cov = d.catalog.epochFrontier?.points?.length ? aaCoverage(d.catalog, aa.from) : null;
   $('#ca-kpis-aa').innerHTML = ind?.aa?.gapUsCn
     ? ['aa.gapUsCn', 'aa.gapClosedOpen', 'aa.gapLabs', 'aa.rate12m'].map(k => indicatorKpi(ind, k)).join('')
     : `<div class="empty">${t('{ND}: la recogida todavía no ha calculado las distancias con el índice de AA.', { ND: nd() })}</div>`;
   if (!gaps($('#ca-gaps-aa'), aa.series, { unit: t('puntos del índice AA'), short: t('puntos AA'), bands: cov?.gaps })) $('#ca-gaps-aa').innerHTML = `<div class="chart-empty">${t('Sin datos suficientes para la serie.')}</div>`;
-  $('#ca-gaps-aa-note').innerHTML = `<span class="lbl">${t('Cómo se calcula')}</span>${t('Hoy y a cada fin de mes, el mejor {aaIndexName} publicado hasta esa fecha por laboratorios de cada país o por modelos con pesos cerrados y abiertos, y su diferencia; los dos primeros laboratorios, con el mejor modelo de cada uno. País del laboratorio y pesos según el catálogo del observatorio: cuenta como abierto un modelo que su descripción en OpenRouter presenta como de pesos abiertos, aunque aún no se puedan descargar. Es una reconstrucción hecha hoy, no una serie medida en cada fecha: cada modelo va en su fecha según AA, con su índice de hoy, y sólo cuentan los {n} del catálogo (los que siguen en OpenRouter y los que AA ya puntúa sin API pública), así que en los meses antiguos faltan los retirados.{coverageText} Las distancias no se convierten en meses, y las escalas AA y ECI no son comparables. Datos de {AA_LINK}, publicados con su permiso.', { aaIndexName: esc(aaIndexName(aa.ver)), n: aa.n, coverageText: esc(coverageText(cov)), AA_LINK })}`;
-  // Debajo, la serie larga del ECI de Epoch: más modelos históricos e intervalos de confianza, pero llega con semanas de retraso.
+  $('#ca-gaps-aa-note').innerHTML = `<span class="lbl">${t('Cómo se calcula')}</span>${t('Reconstrucción al día con el {aaIndexName} ({AA_LINK}, publicado con su permiso). Las distancias no se convierten en meses.', { aaIndexName: esc(aaIndexName(aa.ver)), AA_LINK })}
+    <details class="method-note"><summary>${t('Detalle y metodología')}</summary><p>${t('Hoy y a cada fin de mes, el mejor {aaIndexName} publicado hasta esa fecha por laboratorios de cada país o por modelos con pesos cerrados y abiertos, y su diferencia; los dos primeros laboratorios, con el mejor modelo de cada uno. País del laboratorio y pesos según el catálogo del observatorio: cuenta como abierto un modelo que su descripción en OpenRouter presenta como de pesos abiertos, aunque aún no se puedan descargar. Es una reconstrucción hecha hoy, no una serie medida en cada fecha: cada modelo va en su fecha según AA, con su índice de hoy, y sólo cuentan los {n} del catálogo (los que siguen en OpenRouter y los que AA ya puntúa sin API pública), así que en los meses antiguos faltan los retirados.{coverageText} Las distancias no se convierten en meses, y las escalas AA y ECI no son comparables.', { aaIndexName: esc(aaIndexName(aa.ver)), n: aa.n, coverageText: esc(coverageText(cov)) })}</p></details>`;
+}
+
+function drawGapsECI(d) {
+  const ind = d.ind?.ind || null;
   if (ind) {
     $('#ca-kpis').innerHTML = ['eci.gapUsCn', 'eci.gapClosedOpen', 'eci.gapLabs', 'eci.rate12m'].map(k => indicatorKpi(ind, k)).join('');
     const s = ind.eci?.series;
     const ok = s ? gaps($('#ca-gaps'), s.points) : false;
     if (!ok) $('#ca-gaps').innerHTML = `<div class="chart-empty">${t('Sin datos suficientes para la serie.')}</div>`;
-    $('#ca-gaps-note').innerHTML = `<span class="lbl">${t('Cómo se calcula')}</span>${t('Para cada fin de mes, el mejor ECI publicado hasta esa fecha por organizaciones de cada país (o con pesos cerrados y abiertos, según la clasificación de Epoch), y su diferencia. Epoch trata como misma capacidad dos modelos a menos de 1 punto. Epoch puntúa los modelos semanas después de salir y no mide algunos laboratorios: por eso sus cifras van por detrás de las de arriba. La probabilidad de cada tarjeta sale de las réplicas bootstrap que publica Epoch: repite el ajuste entero remuestreando los resultados de cada modelo, y se cuenta en cuántas réplicas sigue por delante el primero. Las distancias no se convierten en meses. Fuente:')} <a href="https://epoch.ai/benchmarks/eci" target="_blank" rel="noopener">${t('Epoch AI')}</a>, CC BY 4.0.`;
+    $('#ca-gaps-note').innerHTML = `<span class="lbl">${t('Cómo se calcula')}</span>${t('Serie larga mensual con el ECI de Epoch AI (CC BY 4.0) e intervalos bootstrap; las distancias no se convierten en meses. Fuente:')} <a href="https://epoch.ai/benchmarks/eci" target="_blank" rel="noopener">${t('Epoch AI')}</a>.
+      <details class="method-note"><summary>${t('Detalle y metodología')}</summary><p>${t('Para cada fin de mes, el mejor ECI publicado hasta esa fecha por organizaciones de cada país (o con pesos cerrados y abiertos, según la clasificación de Epoch), y su diferencia. Epoch trata como misma capacidad dos modelos a menos de 1 punto. Epoch puntúa los modelos semanas después de salir y no mide algunos laboratorios: por eso sus cifras van por detrás de las del índice AA. La probabilidad de cada tarjeta sale de las réplicas bootstrap que publica Epoch: repite el ajuste entero remuestreando los resultados de cada modelo, y se cuenta en cuántas réplicas sigue por delante el primero.')}</p></details>`;
   } else {
     $('#ca-kpis').innerHTML = `<div class="empty">${t('{ND}: todavía no hay indicadores recogidos.', { ND: nd() })}</div>`;
     $('#ca-gaps').innerHTML = '';
   }
+}
+
+export function renderCarrera(d) {
+  lastData = d;
+  const ind = d.ind?.ind || null, cur = d.carrera;
+  if (!cur) {
+    $('#ca-fronts').innerHTML = `<div class="empty">${t('No se han podido cargar los frentes (data/curated/carrera.json).')}</div>`;
+    return;
+  }
+  syncCarreraTabs();
+  renderRace($('#ca-race'), ind?.eci?.race);
+  renderRaceAA($('#ca-race-aa'), aaRaceFact(d.catalog));
+  drawGapsAA(d);
+  drawGapsECI(d);
   $('#ca-index').innerHTML = cur.frentes.map((f, i) => `<a href="#frente-${esc(f.id)}" data-jump><i>${String(i + 1).padStart(2, '0')}</i>${esc(tr(f.titulo))}</a>`).join('');
   $('#ca-fronts').innerHTML = cur.frentes.map((f, i) => front(f, i, ind, d.evLog)).join('');
   for (const f of cur.frentes) chartsOf(f, ind).forEach((c, k) => c.draw(document.getElementById(`fc-${f.id}-${k}`)));
@@ -304,6 +332,22 @@ export function renderCarrera(d) {
      reemplaza al cambiar de idioma, y se enlaza una sola vez. */
   if (bound) return;
   bound = true;
+  $('#ca-race-tabs')?.addEventListener('click', e => {
+    const b = e.target.closest('[data-tab]'); if (!b || b.dataset.tab === state.raceTab) return;
+    state.raceTab = b.dataset.tab;
+    syncCarreraTabs();
+    if (!lastData) return;
+    if (state.raceTab === 'eci') renderRace($('#ca-race'), lastData.ind?.ind?.eci?.race);
+    else renderRaceAA($('#ca-race-aa'), aaRaceFact(lastData.catalog));
+  });
+  $('#ca-gaps-tabs')?.addEventListener('click', e => {
+    const b = e.target.closest('[data-tab]'); if (!b || b.dataset.tab === state.gapsTab) return;
+    state.gapsTab = b.dataset.tab;
+    syncCarreraTabs();
+    if (!lastData) return;
+    if (state.gapsTab === 'aa') drawGapsAA(lastData);
+    else drawGapsECI(lastData);
+  });
   $('#ca-index').addEventListener('click', e => {
     const a = e.target.closest('a[data-jump]');
     if (!a) return;

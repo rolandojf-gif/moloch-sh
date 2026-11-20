@@ -336,7 +336,7 @@ export function scatter(el, points, { threshold = null, labels = new Set(), fres
     const ord = shown.map((p, i) => [p, i]).sort((a, b) => (key(a[0]) ? 1 : 0) - (key(b[0]) ? 1 : 0));
     for (const [p, i] of ord) s += `<circle data-k="${i}" class="pt-${p.cls}${key(p) ? ' key' : ' faint'}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="6"/>`;
     s += '</g>';
-    const targets = shown.map(p => ({ x: X(p.x), y: Y(p.y), html: p.tip || tip(p.label, []) }));
+    const targets = shown.map(p => ({ x: X(p.x), y: Y(p.y), html: p.tip || tip(p.label, []), go: p.go }));
     const cands = shown.filter(p => labels.has(p.id)).map(p => ({ p })).sort((a, b) => b.p.y - a.p.y)
       .concat(shown.filter(p => fresh.has(p.id) && !labels.has(p.id)).sort((a, b) => b.y - a.y).map(p => ({ p, far: true })))
       .concat(shown.filter(p => pareto.has(p.id) && !labels.has(p.id) && !fresh.has(p.id)).sort((a, b) => b.y - a.y).map(p => ({ p })))
@@ -841,3 +841,67 @@ export function ediMap(el, items, line, opts = {}) {
   zoomable(el, G, full, draw, { minX: 60 * 86400e3, minY: 5 });
   return true;
 }
+
+/* ── Caída del coste por nivel de capacidad (Modelos) ───────────────────── */
+/* series: [{ cls, name, pts: [{ d, p, n, org, v, id }] }]. Eje Y logarítmico en USD por millón de tokens (mezcla 3:1).
+   Cada escalón marca un nuevo mínimo histórico de precio para alcanzar o superar un umbral fijo de capacidad (ECI). */
+export function costCurve(el, series, opts = {}) {
+  const { today = new Date().toISOString().slice(0, 10), yLabel = t('Precio combinado por millón (escala log.)'), yShort = t('USD / M (log.)'), aria = t('Evolución del coste mínimo por nivel de capacidad') } = opts;
+  const active = (series || []).filter(sr => sr.pts?.length);
+  if (!active.length) { el.innerHTML = `<div class="chart-empty">${t('Sin datos suficientes para la serie.')}</div>`; return false; }
+  watchWidth(el, () => costCurve(el, series, opts));
+  const G = { ...frame(el, { W: 860, H: 340, L: 66, R: 165, T: 16, B: 40 }, 300), yShort };
+  const { W, H, L, R, T, B } = G;
+  const allPts = active.flatMap(sr => sr.pts);
+  const tmin = Math.min(...allPts.map(p => ms(p.d)));
+  const tmax = Math.max(ms(today), ...allPts.map(p => ms(p.d)));
+  const prices = allPts.map(p => p.p).filter(p => p > 0);
+  const y0 = Math.log10(Math.min(...prices) / 1.5);
+  const y1 = Math.log10(Math.max(...prices) * 1.5);
+  const X = val => L + (val - tmin) / (tmax - tmin || 1) * (W - L - R);
+  const Y = val => T + (1 - (Math.log10(val) - y0) / (y1 - y0 || 1)) * (H - T - B);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">`;
+  const ticks = logTicks(10 ** y0, 10 ** y1);
+  s += yAxis(ticks, Y, G, v => usd(v), yLabel) + timeAxis(X, tmin, tmax, G) + '</g>';
+  const targets = [];
+  for (const sr of active) {
+    const pts = sr.pts;
+    let d = `M${X(ms(pts[0].d)).toFixed(1)},${Y(pts[0].p).toFixed(1)}`;
+    for (const p of pts.slice(1)) d += ` H${X(ms(p.d)).toFixed(1)} V${Y(p.p).toFixed(1)}`;
+    s += `<path class="${sr.cls}" d="${d} H${X(tmax).toFixed(1)}"/>`;
+    const firstP = pts[0].p;
+    for (const p of pts) {
+      const k = targets.length;
+      const cx = X(ms(p.d)), cy = Y(p.p);
+      s += `<circle data-k="${k}" class="pt-${sr.cls} key" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="5"/>`;
+      const ratio = firstP > p.p ? firstP / p.p : null;
+      targets.push({
+        x: cx, y: cy,
+        go: p.id ? () => { location.hash = `#modelos/${p.id}`; } : null,
+        html: tip(p.n, [
+          [t('Umbral'), sr.name],
+          [t('Fecha'), fmtDate(p.d)],
+          [t('Precio combinado 3:1'), t('{usd} por millón', { usd: usd(p.p) })],
+          [t('Capacidad (ECI)'), num(p.v, 1)],
+          [t('Laboratorio'), p.org],
+          [t('Caída desde el primero'), ratio ? `×${num(ratio, ratio >= 10 ? 0 : 1)}` : null]
+        ], p.id ? t('Pulsa para abrir su ficha en Modelos.') : '', logoFor({ id: p.id, name: p.n, org: p.org }))
+      });
+    }
+  }
+  const ends = active.map(sr => {
+    const last = sr.pts[sr.pts.length - 1];
+    return { y: Y(last.p), text: `${sr.name}: ${usd(last.p)}`, cls: sr.cls };
+  }).sort((a, b) => a.y - b.y);
+  for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 15) ends[i].y = ends[i - 1].y + 15;
+  if (!G.narrow) s += ends.map(e => `<text class="ptlabel" x="${(X(tmax) + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
+  s += `</svg><div class="legend">${active.map(sr => {
+    const a = sr.pts[0].p, b = sr.pts[sr.pts.length - 1].p;
+    const drop = a > b ? ` (÷${num(a / b, a / b >= 10 ? 0 : 1)})` : '';
+    return `<span><i class="sw-${sr.cls}"></i>${esc(G.narrow ? `${sr.name}: ${usd(b)}${drop}` : `${sr.name}${drop}`)}</span>`;
+  }).join('')}</div>`;
+  el.innerHTML = s;
+  interact(el, targets, 22);
+  return true;
+}
+

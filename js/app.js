@@ -44,7 +44,8 @@ function renderFreshness(d) {
   const cls = age <= 1.5 ? 'st-ok' : age <= 7 ? 'st-warn' : 'st-bad';
   const ageTxt = age < 1 ? t('hace {p1} h', { p1: Math.max(1, Math.round(age * 24)) }) : t('hace {p1} d', { p1: Math.floor(age) });
   const warn = age > 7 ? t(' · DATOS DESACTUALIZADOS') : age > 1.5 ? t(' · comprobar la recogida') : '';
-  const st = Object.entries(c.status || {}).filter(([, s]) => !s.optional).map(([k, s]) => {
+  const reqEntries = Object.entries(c.status || {}).filter(([, s]) => !s.optional);
+  const st = reqEntries.map(([k, s]) => {
     const name = c.sources?.[k]?.name || k;
     const home = HOME[k] || HOME[name];
     const lbl = home ? `<a href="${home}" target="_blank" rel="noopener">${esc(tr(name))}</a>` : esc(tr(name));
@@ -54,14 +55,23 @@ function renderFreshness(d) {
   const IND = { epoch_dc: t('Epoch AI · centros de datos'), epoch_chips: t('Epoch AI · chips'), epoch_companies: t('Epoch AI · empresas'), epoch_models: t('Epoch AI · cómputo de entrenamiento'), epoch_eci: t('Epoch AI · datos del ECI'), metr: 'METR' };
   const ist = Object.entries(d.ind?.status || {}).filter(([k]) => k in IND);
   const bad = ist.filter(([, s]) => !s.ok);
+  const badCore = reqEntries.filter(([, s]) => !s.ok).length;
+  const badTotal = badCore + bad.length + (!d.ind ? 1 : 0);
   const indSt = !d.ind ? `<span class="st-bad">${t('○ Indicadores: sin datos')}</span>`
     : bad.length ? bad.map(([k, s]) => `<span class="st-bad" title="${esc(L(s, 'reason', s.reason || ''))}">○ ${esc(IND[k])}: ${esc(s.reason ? L(s, 'reason') : t('sin datos'))}</span>`).join('')
     : `<span class="st-ok" title="${esc(ist.map(([k]) => IND[k]).join(', '))}">${t('● Indicadores')}</span>`;
-  el.innerHTML = `<span>${t('Recogida')} <b>${esc(fmtDateTime(c.generated))}</b> <span class="${cls}">(${ageTxt}${warn})</span></span>${st}${indSt}<a class="refresh" href="https://github.com/rolandojf-gif/moloch-sh/actions/workflows/collect.yml" target="_blank" rel="noopener" title="${t('Consulta el historial de recogidas en GitHub. Solo los colaboradores con permisos pueden iniciar una recogida manual.')}">${t('Ver estado de actualización ↗')}</a>`;
+  const pillCls = badTotal ? 'st-bad' : cls;
+  const pillTxt = badTotal ? tn(badTotal, ['{n} fuente con error', '{n} fuentes con error']) : age > 7 ? t('Datos desactualizados') : age > 1.5 ? t('Comprobar recogida') : t('Datos al día');
+  el.innerHTML = `<details class="fresh-det"><summary>
+    <span class="fresh-pill ${pillCls}">● ${esc(pillTxt)}</span>
+    <span class="fresh-meta">${t('Recogida')} <b>${esc(fmtDateTime(c.generated))}</b> <span class="${cls}">(${ageTxt}${warn})</span></span>
+    <span class="fresh-toggle">${t('Fuentes y estado')}</span>
+  </summary><div class="fresh-body">${st}${indSt}<a class="refresh" href="https://github.com/rolandojf-gif/moloch-sh/actions/workflows/collect.yml" target="_blank" rel="noopener" title="${t('Consulta el historial de recogidas en GitHub. Solo los colaboradores con permisos pueden iniciar una recogida manual.')}">${t('Ver estado de actualización ↗')}</a></div></details>`;
 }
 
 function renderMethod(d) {
   const c = d.catalog;
+  const hasSub = (c.models || []).some(m => m.aa?.coding?.v != null || m.aa?.agentic?.v != null);
   const items = Object.values(c.method || {}).map(m => `<li>${esc(tr(m))}</li>`).join('');
   const srcs = Object.entries(c.sources || {}).filter(([, s]) => s.url).map(([k, s]) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(tr(s.name))}</a> (${esc({ openrouter: 'OR', aa: 'AA', hf: 'HF', epoch: 'EP', metr: 'METR' }[k] || k)})${s.license ? t(', licencia {p1}', { p1: esc(tr(s.license)) }) : ''}${k === 'aa' ? (s.permiso ? t(', publicado con su permiso por escrito del {fmtDate}', { fmtDate: esc(fmtDate(s.permiso.fecha)) }) : t(': no se usa; sin permiso no se pueden republicar sus datos')) : ''}</li>`).join('');
   $('#method-body').innerHTML = `
@@ -69,7 +79,7 @@ function renderMethod(d) {
     <ul>${items}</ul>
     <p>${t('Fuentes:')}</p><ul>${srcs}</ul>
     <p>${t('País, licencia y disponibilidad de pesos son campos independientes. El país es la sede del laboratorio; los modelos anónimos figuran como «identidad sin confirmar» y no se atribuyen a ningún laboratorio.')}</p>
-    <p>${t('Inteligencia, programación, agentes y velocidad de referencia de los modelos:')} <a href="https://artificialanalysis.ai" target="_blank" rel="noopener">${t('Artificial Analysis')}</a>${t(', que autorizó por escrito su uso en esta web personal y no comercial. AA no publica la fecha en que evalúa cada modelo; la fecha del dato es la de consulta.')}</p>
+    <p>${hasSub ? t('Inteligencia, programación, agentes y velocidad de referencia de los modelos:') : t('Inteligencia y velocidad de referencia de los modelos:')} <a href="https://artificialanalysis.ai" target="_blank" rel="noopener">${t('Artificial Analysis')}</a>${t(', que autorizó por escrito su uso en esta web personal y no comercial. AA no publica la fecha en que evalúa cada modelo; la fecha del dato es la de consulta.')}</p>
     <p>${t('ECI y SWE-bench Verified: Epoch AI, ‘Capabilities &amp; benchmarking’. Centros de datos, ventas de chips e ingresos y uso de empresas: conjuntos de datos de Epoch AI. Todo publicado en')} <a href="https://epoch.ai/" target="_blank" rel="noopener">${t('epoch.ai')}</a>${t(', licencia CC BY 4.0.')}</p>
     <p>${t('Horizonte temporal: METR (')}<a href="https://metr.org/time-horizons" target="_blank" rel="noopener">${t('metr.org')}</a>${t('), con todos los derechos reservados; sólo se cita el último punto del modelo puntero. METR dejó de actualizar esa página el 8 sep 2026.')}</p>
     <p>${t('La carrera y AI 2027: los hechos curados llevan fuente, fecha del dato y fecha de consulta, y dicen si se leyeron en la propia fuente o sólo a través de un buscador (la web de la IEA no admite lectura automática). Las lecturas son interpretación y se formulan como hipótesis con historial fechado.')}</p>
@@ -111,6 +121,29 @@ function initTheme() {
     sync();
   }));
   sync();
+}
+
+function initCopyLinks() {
+  document.addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-copy-hash]');
+    if (!btn) return;
+    e.stopPropagation();
+    const url = `${location.origin}${location.pathname}${location.search}${btn.dataset.copyHash}`;
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(url);
+      else {
+        const ta = document.createElement('textarea');
+        ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+      }
+      const prev = btn.dataset.prevLabel || btn.textContent;
+      btn.dataset.prevLabel = prev;
+      btn.textContent = t('Copiado ✓');
+      btn.classList.add('copied');
+      clearTimeout(btn._ct);
+      btn._ct = setTimeout(() => { btn.textContent = prev; btn.classList.remove('copied'); }, 1600);
+    } catch {}
+  });
 }
 
 /* Altura de lo que queda fijo arriba (cabecera y franja; en el móvil, sólo la cabecera), para que los saltos a una ficha
@@ -207,6 +240,7 @@ async function main() {
   const first = initialLang();
   initTheme();
   initLang();
+  initCopyLinks();
   trackTop();
   let ready = false;
   window.addEventListener('hashchange', () => { const r = route(); ensureView(r.view); if (!(ready && showPath(r))) window.scrollTo(0, 0); });
@@ -226,9 +260,11 @@ async function main() {
   D = data.value;
   setSources(D.catalog.sources);
   renderChrome();
-  for (const v of VIEWS) renderView(v);
+  const initial = route();
+  renderView(initial.view);
   ready = true;
-  showPath(route());
+  showPath(initial);
+  for (const v of VIEWS) if (v !== initial.view) idle(() => ensureView(v));
   qa();
 }
 
