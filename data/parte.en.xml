@@ -6,27 +6,27 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Fri, 20 Nov 2026 03:53:49 GMT</lastBuildDate>
+  <lastBuildDate>Fri, 20 Nov 2026 10:20:12 GMT</lastBuildDate>
   <item>
     <title>Epoch raises AI chips delivered to 39.2 million H100e</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera/computo</link>
     <guid isPermaLink="false">indicador|chipsH100e|2026-11-20</guid>
-    <pubDate>Fri, 20 Nov 2026 03:53:49 GMT</pubDate>
-    <description>AI chips delivered, cumulative: from 33.5 to 39.2 million H100e. Chips delivered according to Epoch, not necessarily installed. In AI 2027 it is evidence for “40 million H100e available”. It is in the briefing because the figure changes by 17% (threshold: 10%). Published on 2026-12-31; detected on 2026-11-20. Source: Epoch AI (https://epoch.ai/data/ai-chip-sales).</description>
+    <pubDate>Fri, 20 Nov 2026 10:20:12 GMT</pubDate>
+    <description>AI chips delivered, cumulative: from 33.5 to 39.2 million H100e. Chips delivered according to Epoch, not necessarily installed. In AI 2027 it is evidence for “40 million H100e available”. It is in the briefing because the figure changes by 17% (threshold: 10%). Detected on 2026-11-20. Source: Epoch AI (https://epoch.ai/data/ai-chip-sales).</description>
   </item>
   <item>
     <title>Hy4 flash becomes the most used model on OpenRouter</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/tencent/hy4-flash</link>
     <guid isPermaLink="false">uso|primero|tencent/hy4-flash-20261116|2026-11-20</guid>
-    <pubDate>Fri, 20 Nov 2026 03:53:49 GMT</pubDate>
-    <description>Hy4 flash becomes the most used model on OpenRouter over the last 7 days (24.7% of tokens), ahead of DeepSeek V4.1 Flash 1017. 24.7% of OpenRouter’s tokens from 2026-11-13 to 2026-11-19; before, the first was deepseek/deepseek-v4.1-flash-20261017. This is usage on OpenRouter, not across the whole market. It is in the briefing because the most used model on OpenRouter over the last 7 days changes. Published on 2026-11-19; detected on 2026-11-20. Source: OpenRouter · usage (https://openrouter.ai/rankings).</description>
+    <pubDate>Fri, 20 Nov 2026 10:20:12 GMT</pubDate>
+    <description>Hy4 flash becomes the most used model on OpenRouter over the last 7 days (24.7% of tokens), ahead of DeepSeek V4.1 Flash 1017. 24.7% of OpenRouter’s tokens from 2026-11-13 to 2026-11-19; before, the first was DeepSeek V4.1 Flash 1017. This is usage on OpenRouter, not across the whole market. It is in the briefing because the most used model on OpenRouter over the last 7 days changes. Published on 2026-11-19; detected on 2026-11-20. Source: OpenRouter · usage (https://openrouter.ai/rankings).</description>
   </item>
   <item>
     <title>Gemini 4 Neon (Google) arrives on OpenRouter: rank 3 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/google/gemini-4-neon</link>
     <guid isPermaLink="false">nuevo|google/gemini-4-neon</guid>
     <pubDate>Thu, 19 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Gemini 4 Neon (Google) appears in the OpenRouter catalogue. AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 51. Blended price $3 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 3 of 51). Published on 2026-11-18; detected on 2026-11-19. Source: OpenRouter (https://openrouter.ai/google/gemini-4-neon). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>Gemini 4 Neon (Google) appears in the OpenRouter catalogue. AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 51. Blended price $6 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 3 of 51). Published on 2026-11-18; detected on 2026-11-19. Source: OpenRouter (https://openrouter.ai/google/gemini-4-neon). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>GPT-6.2 Astra (OpenAI) arrives on OpenRouter: rank 2 on the AA index</title>
@@ -50,11 +50,18 @@
     <description>Best model on Epoch’s ECI: from 173.44 to 174.17 points (GPT-6.2 Astra). GPT-6.2 Astra, from OpenAI, with 174.2 points. ECI gaps: between the top two labs, from 3.7 to 0.7 points. A few ECI points do not equate to months of lag. It is in the briefing because the best model on Epoch’s ECI changes. Detected on 2026-11-17. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
   </item>
   <item>
+    <title>The gap between the top two labs on the AA index falls from 4.6 to 2.5 points</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
+    <guid isPermaLink="false">indicador|aaLabs|2026-11-17</guid>
+    <pubDate>Tue, 17 Nov 2026 20:39:40 GMT</pubDate>
+    <description>Gap between the top two labs on the AA index: from 4.6 to 2.5 points (Anthropic versus OpenAI). It is in the briefing because the gap between the top two labs on the AA index changes by at least 2 points. Detected on 2026-11-17. Source: Artificial Analysis (https://artificialanalysis.ai/leaderboards/models). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
+  <item>
     <title>Qwen4 Max (Alibaba (Qwen)) arrives on OpenRouter: rank 18 on the AA index</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/qwen/qwen4-max</link>
     <guid isPermaLink="false">nuevo|qwen/qwen4-max</guid>
     <pubDate>Mon, 16 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Qwen4 Max (Alibaba (Qwen)) appears in the OpenRouter catalogue. AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 18 of 51. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), 1 costs less; the cheapest is GPT-6 Sol, at $2. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 18 of 51). Published on 2026-11-16; detected on 2026-11-16. Source: OpenRouter (https://openrouter.ai/qwen/qwen4-max). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>Qwen4 Max (Alibaba (Qwen)) appears in the OpenRouter catalogue. AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 18 of 51. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), none costs less. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 18 of 51). Published on 2026-11-16; detected on 2026-11-16. Source: OpenRouter (https://openrouter.ai/qwen/qwen4-max). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Baidu makes ERNIE-5.5-Flash-Preview free on OpenRouter</title>
@@ -97,6 +104,13 @@
     <guid isPermaLink="false">lider|closed|anthropic/claude-fable-5.2|2026-11-09</guid>
     <pubDate>Mon, 09 Nov 2026 21:20:46 GMT</pubDate>
     <description>Claude Fable 5.2 becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v5: 64.6 points, 4.6 more than Gemini 4 Carbon (60). The gap between the best closed and the best open-weight model on the AA index stands at 18.1 points (13.5 the day before). It does not equate to months of lag. It is in the briefing because the best closed model changes with the same AA index version and a margin of 4.6 points (minimum 1). Detected on 2026-11-09. Source: Artificial Analysis (https://artificialanalysis.ai/models/claude-fable-5-2). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+  </item>
+  <item>
+    <title>The US − China gap on the AA index rises from 13.5 to 18.1 points</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#carrera/coordinacion</link>
+    <guid isPermaLink="false">indicador|aaUsCn|2026-11-09</guid>
+    <pubDate>Mon, 09 Nov 2026 21:20:46 GMT</pubDate>
+    <description>US − China gap on the AA index: from 13.5 to 18.1 points (Claude Fable 5.2 versus Kimi K3.1 Pro). It is in the briefing because the US − China gap on the AA index changes by at least 2 points. Detected on 2026-11-09. Source: Artificial Analysis (https://artificialanalysis.ai/leaderboards/models). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Anthropic: $81 billion in annualised revenue</title>

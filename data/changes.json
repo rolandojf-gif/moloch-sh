@@ -1,6 +1,6 @@
 {
  "schema": 2,
- "generated": "2026-11-20T03:53:49Z",
+ "generated": "2026-11-20T10:20:12Z",
  "window": 7,
  "since": "2026-11-14",
  "base": "2026-11-19",
@@ -18,7 +18,7 @@
    "Un modelo nuevo (también uno que AA puntúa antes de que tenga API pública), o uno que recibe su primera puntuación de AA, entra en el top 20 del índice de AA. Su llegada posterior a OpenRouter no vuelve a contar.",
    "Publica pesos abiertos un modelo del top 20 del índice de AA.",
    "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa, ni un precio que va y vuelve: el nuevo ya visto en los 14 días anteriores o el anterior que vuelve en los 14 siguientes.",
-   "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos 1 punto ECI, o potencia, chips o ingresos que cambian al menos un 10 %. El récord y las distancias del ECI de una misma recogida cuentan como una sola noticia.",
+   "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos 1 punto ECI o 2 puntos AA, o potencia, chips o ingresos que cambian al menos un 10 %. Los cambios de una misma recogida en el ECI o en las distancias de AA cuentan como una sola noticia.",
    "Cambia el modelo más usado en OpenRouter en los últimos 7 días."
   ],
   "i18n": {
@@ -30,7 +30,7 @@
      "A new model (including one that AA scores before it has a public API), or one that receives its first AA score, enters the top 20 of the AA index. Its later arrival on OpenRouter does not count again.",
      "A top-20 model on the AA index publishes open weights.",
      "The lab itself changes its price on OpenRouter by at least +50% or −33% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count, nor a price that comes and goes: a new one already seen in the previous 14 days or an old one that returns within the next 14.",
-     "The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least 1 ECI point, or power, chips or revenue that change by at least 10%. The ECI record and gaps from the same check count as a single news item.",
+     "The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least 1 ECI point or 2 AA points, or power, chips or revenue that change by at least 10%. Changes from the same check on the ECI or on the AA gaps count as a single news item.",
      "The most used model on OpenRouter over the last 7 days changes."
     ]
    }
@@ -48,7 +48,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/mistralai/pixtral-large-2502",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "Pixtral Large 2502 (Mistral AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -82,13 +82,13 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-neon",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "Gemini 4 Neon (Google) aparece en el catálogo de OpenRouter.",
    "data": {
     "weights": "cerrados",
-    "in": 1.5,
-    "out": 7.5,
+    "in": 3,
+    "out": 15,
     "ii": 61.4,
     "eci": null,
     "identity": "confirmada",
@@ -100,7 +100,7 @@
      "what": "Gemini 4 Neon (Google) appears in the OpenRouter catalogue.",
      "titular": "Gemini 4 Neon (Google) arrives on OpenRouter: rank 3 on the AA index",
      "porque": "it is a new model and enters the top 20 of the AA index (rank 3 of 51)",
-     "consecuencia": "AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 51. Blended price $3 per million tokens."
+     "consecuencia": "AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 51. Blended price $6 per million tokens."
     }
    },
    "titular": "Gemini 4 Neon (Google) llega a OpenRouter: puesto 3 del índice de AA",
@@ -110,7 +110,7 @@
     "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 51)"
    },
    "ficha": "#modelos/google/gemini-4-neon",
-   "consecuencia": "Índice de AA 61,4: a 3,2 puntos del mejor cerrado (Claude Fable 5.2). Puesto 3 de 51. Precio combinado 3 $ por millón de tokens."
+   "consecuencia": "Índice de AA 61,4: a 3,2 puntos del mejor cerrado (Claude Fable 5.2). Puesto 3 de 51. Precio combinado 6 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -123,7 +123,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-astra-pro",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "GPT-6.2 Astra Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -157,7 +157,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-astra",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "GPT-6.2 Astra (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -198,7 +198,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-sol-pro",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "GPT-6.2 Sol Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -232,7 +232,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-sol",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "GPT-6.2 Sol (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -273,7 +273,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4-flash",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "Hy4 flash (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -307,7 +307,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/qwen/qwen4-max",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "Qwen4 Max (Alibaba (Qwen)) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -325,7 +325,7 @@
      "what": "Qwen4 Max (Alibaba (Qwen)) appears in the OpenRouter catalogue.",
      "titular": "Qwen4 Max (Alibaba (Qwen)) arrives on OpenRouter: rank 18 on the AA index",
      "porque": "it is a new model and enters the top 20 of the AA index (rank 18 of 51)",
-     "consecuencia": "AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 18 of 51. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), 1 costs less; the cheapest is GPT-6 Sol, at $2."
+     "consecuencia": "AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 18 of 51. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), none costs less."
     }
    },
    "titular": "Qwen4 Max (Alibaba (Qwen)) llega a OpenRouter: puesto 18 del índice de AA",
@@ -335,81 +335,7 @@
     "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 18 de 51)"
    },
    "ficha": "#modelos/qwen/qwen4-max",
-   "consecuencia": "Índice de AA 42,9: a 21,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 18 de 51. Precio combinado 2,14 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 42,9), 1 cuesta menos; el más barato es GPT-6 Sol, a 2 $."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|chipsH100e|2026-11-20",
-   "published": "2026-12-31",
-   "detected": "2026-11-20",
-   "date": "2026-12-31",
-   "mag": {
-    "v": 5709123,
-    "pct": 17,
-    "unit": "H100e"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/data/ai-chip-sales",
-    "got": "2026-11-20T03:53:49Z"
-   },
-   "what": "Chips de IA entregados, acumulado: de 33,5 a 39,2 millones de H100e.",
-   "data": {
-    "ind": "chipsH100e",
-    "path": "chips.cum",
-    "from": 33499464,
-    "to": 39208587
-   },
-   "i18n": {
-    "en": {
-     "what": "AI chips delivered, cumulative: from 33.5 to 39.2 million H100e.",
-     "titular": "Epoch raises AI chips delivered to 39.2 million H100e",
-     "porque": "the figure changes by 17% (threshold: 10%)",
-     "consecuencia": "Chips delivered according to Epoch, not necessarily installed. In AI 2027 it is evidence for “40 million H100e available”."
-    }
-   },
-   "titular": "Epoch eleva a 39,2 millones de H100e los chips de IA entregados",
-   "importancia": {
-    "tier": 6,
-    "w": 17.04243088784943,
-    "porque": "la cifra cambia un 17 % (umbral: 10 %)"
-   },
-   "ficha": "#carrera/computo",
-   "consecuencia": "Chips entregados según Epoch, no necesariamente instalados. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|tdpGW|2026-11-20",
-   "published": "2026-12-31",
-   "detected": "2026-11-20",
-   "date": "2026-12-31",
-   "mag": {
-    "v": 2.6,
-    "pct": 13.1,
-    "unit": "GW"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/data/ai-chip-sales",
-    "got": "2026-11-20T03:53:49Z"
-   },
-   "what": "Consumo nominal (TDP) de los chips entregados: de 19,8 a 22,4 GW.",
-   "data": {
-    "ind": "tdpGW",
-    "path": "chips.tdp",
-    "from": 19.8,
-    "to": 22.4
-   },
-   "i18n": {
-    "en": {
-     "what": "Nominal consumption (TDP) of the chips delivered: from 19.8 to 22.4 GW.",
-     "titular": "Nominal consumption (TDP) of the chips delivered: from 19.8 to 22.4 GW."
-    }
-   },
-   "titular": "Consumo nominal (TDP) de los chips entregados: de 19,8 a 22,4 GW.",
-   "importancia": null,
-   "ficha": "#carrera/energia",
-   "consecuencia": null
+   "consecuencia": "Índice de AA 42,9: a 21,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 18 de 51. Precio combinado 2,14 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 42,9), ninguno cuesta menos."
   },
   {
    "kind": "retirada",
@@ -422,7 +348,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "North Mini Code deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -451,7 +377,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/models",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "Grok Build 0.1 deja de figurar en el catálogo de OpenRouter.",
    "data": {
@@ -470,6 +396,80 @@
    "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
   },
   {
+   "kind": "indicador",
+   "key": "indicador|chipsH100e|2026-11-20",
+   "published": null,
+   "detected": "2026-11-20",
+   "date": "2026-11-20",
+   "mag": {
+    "v": 5709123,
+    "pct": 17,
+    "unit": "H100e"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/ai-chip-sales",
+    "got": "2026-11-20T10:20:12Z"
+   },
+   "what": "Chips de IA entregados, acumulado: de 33,5 a 39,2 millones de H100e.",
+   "data": {
+    "ind": "chipsH100e",
+    "path": "chips.cum",
+    "from": 33499464,
+    "to": 39208587
+   },
+   "i18n": {
+    "en": {
+     "what": "AI chips delivered, cumulative: from 33.5 to 39.2 million H100e.",
+     "titular": "Epoch raises AI chips delivered to 39.2 million H100e",
+     "porque": "the figure changes by 17% (threshold: 10%)",
+     "consecuencia": "Chips delivered according to Epoch, not necessarily installed. In AI 2027 it is evidence for “40 million H100e available”."
+    }
+   },
+   "titular": "Epoch eleva a 39,2 millones de H100e los chips de IA entregados",
+   "importancia": {
+    "tier": 6,
+    "w": 17.04243088784943,
+    "porque": "la cifra cambia un 17 % (umbral: 10 %)"
+   },
+   "ficha": "#carrera/computo",
+   "consecuencia": "Chips entregados según Epoch, no necesariamente instalados. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|tdpGW|2026-11-20",
+   "published": null,
+   "detected": "2026-11-20",
+   "date": "2026-11-20",
+   "mag": {
+    "v": 2.6,
+    "pct": 13.1,
+    "unit": "GW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/ai-chip-sales",
+    "got": "2026-11-20T10:20:12Z"
+   },
+   "what": "Consumo nominal (TDP) de los chips entregados: de 19,8 a 22,4 GW.",
+   "data": {
+    "ind": "tdpGW",
+    "path": "chips.tdp",
+    "from": 19.8,
+    "to": 22.4
+   },
+   "i18n": {
+    "en": {
+     "what": "Nominal consumption (TDP) of the chips delivered: from 19.8 to 22.4 GW.",
+     "titular": "Nominal consumption (TDP) of the chips delivered: from 19.8 to 22.4 GW."
+    }
+   },
+   "titular": "Consumo nominal (TDP) de los chips entregados: de 19,8 a 22,4 GW.",
+   "importancia": null,
+   "ficha": "#carrera/energia",
+   "consecuencia": null
+  },
+  {
    "kind": "uso",
    "key": "uso|primero|tencent/hy4-flash-20261116|2026-11-20",
    "published": "2026-11-19",
@@ -483,7 +483,7 @@
    "src": {
     "name": "OpenRouter · uso",
     "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "Hy4 flash pasa a ser el modelo más usado en OpenRouter en los últimos 7 días (24,7 % de los tokens), por delante de DeepSeek V4.1 Flash 1017.",
    "data": {
@@ -494,6 +494,7 @@
     "share": 24.7,
     "tokens": 69273358650121,
     "prev": "deepseek/deepseek-v4.1-flash-20261017",
+    "prevName": "DeepSeek V4.1 Flash 1017",
     "window": 7
    },
    "i18n": {
@@ -501,7 +502,7 @@
      "what": "Hy4 flash becomes the most used model on OpenRouter over the last 7 days (24.7% of tokens), ahead of DeepSeek V4.1 Flash 1017.",
      "titular": "Hy4 flash becomes the most used model on OpenRouter",
      "porque": "the most used model on OpenRouter over the last 7 days changes",
-     "consecuencia": "24.7% of OpenRouter’s tokens from 2026-11-13 to 2026-11-19; before, the first was deepseek/deepseek-v4.1-flash-20261017. This is usage on OpenRouter, not across the whole market."
+     "consecuencia": "24.7% of OpenRouter’s tokens from 2026-11-13 to 2026-11-19; before, the first was DeepSeek V4.1 Flash 1017. This is usage on OpenRouter, not across the whole market."
     }
    },
    "titular": "Hy4 flash pasa a ser el modelo más usado en OpenRouter",
@@ -511,7 +512,7 @@
     "porque": "cambia el modelo más usado en OpenRouter en los últimos 7 días"
    },
    "ficha": "#modelos/tencent/hy4-flash",
-   "consecuencia": "24,7 % de los tokens de OpenRouter del 2026-11-13 al 2026-11-19; antes el primero era deepseek/deepseek-v4.1-flash-20261017. Es el uso en OpenRouter, no en todo el mercado."
+   "consecuencia": "24,7 % de los tokens de OpenRouter del 2026-11-13 al 2026-11-19; antes el primero era DeepSeek V4.1 Flash 1017. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "uso",
@@ -861,11 +862,16 @@
    "i18n": {
     "en": {
      "what": "Gap between the top two labs on the AA index: from 4.6 to 2.5 points (Anthropic versus OpenAI).",
-     "titular": "Gap between the top two labs on the AA index: from 4.6 to 2.5 points (Anthropic versus OpenAI)."
+     "titular": "The gap between the top two labs on the AA index falls from 4.6 to 2.5 points",
+     "porque": "the gap between the top two labs on the AA index changes by at least 2 points"
     }
    },
-   "titular": "Distancia entre los dos primeros laboratorios en el índice de AA: de 4,6 a 2,5 puntos (Anthropic frente a OpenAI).",
-   "importancia": null,
+   "titular": "La distancia entre los dos primeros laboratorios en el índice de AA baja de 4,6 a 2,5 puntos",
+   "importancia": {
+    "tier": 6,
+    "w": 42.1,
+    "porque": "la distancia entre los dos primeros laboratorios en el índice de AA cambia al menos 2 puntos"
+   },
    "ficha": "#carrera/coordinacion",
    "consecuencia": null
   },
@@ -1133,7 +1139,7 @@
    "src": {
     "name": "Hugging Face",
     "url": "https://huggingface.co/tencent/Hy4",
-    "got": "2026-11-20T03:53:49Z"
+    "got": "2026-11-20T10:20:12Z"
    },
    "what": "Hy4: pesos descargables en Hugging Face (licencia tencent-hy-license).",
    "data": {
