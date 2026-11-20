@@ -5,10 +5,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fmtDate, fmtDateTime, num, usd, aaRace, aaCoverage } from '../js/fmt.js';
 import { resolve } from '../js/valoracion.js';
-import { importancia, enrich, parte, rss } from '../scripts/parte.mjs';
-import { unzip, raceOf, ediBlock, collectIndicators } from '../scripts/indicadores.mjs';
+import { importancia, enrich, parte, rss, causa } from '../scripts/parte.mjs';
+import { unzip, raceOf, ediBlock, collectIndicators, chipsBlock, companiesBlock, checks } from '../scripts/indicadores.mjs';
 import { sameModelName, aaOnlyCandidates, matchCatalogAA } from '../scripts/emparejar.mjs';
-import { labPrices, vaiven } from '../scripts/cambios.mjs';
+import { labPrices, vaiven, usoVaiven } from '../scripts/cambios.mjs';
+import { endpointTier, openWeightDesc } from '../scripts/collect.mjs';
 
 const fixture = name => new URL(`./fixtures/${name}`, import.meta.url);
 
@@ -334,4 +335,117 @@ test('parte y rss: deduplicación causal agrupa récord y distancias del ECI en 
   assert.deepEqual(guids(feedEs), [`indicador|eci|${D}`, `indicador|dcMW|${D}`, `uso|primero|deepseek/v4|${D}`]);
   assert.deepEqual(guids(feedEn), guids(feedEs));
 });
+
+test('endpointTier y openWeightDesc: niveles de servicio y falsos positivos de pesos abiertos', () => {
+  assert.equal(endpointTier({ tag: 'openai', service_tier: null }), null);
+  assert.equal(endpointTier({ tag: 'google-vertex/global', service_tier: 'standard' }), null);
+  assert.equal(endpointTier({ tag: 'google-vertex/global/flex' }), 'flex');
+  assert.equal(endpointTier({ service_tier: 'flex', tag: 'openai' }), 'flex');
+  assert.equal(endpointTier({ tag: 'openai/fast' }), 'priority');
+  assert.equal(endpointTier({ tag: 'deepinfra/turbo' }), 'priority');
+  assert.equal(endpointTier({ service_tier: 'ultrafast', tag: 'cerebras' }), 'ultrafast');
+
+  assert.ok(openWeightDesc("Kimi K3.1 Pro is Moonshot AI's flagship open-weight multimodal reasoning model."), 'acepta modelo de pesos abiertos');
+  assert.ok(openWeightDesc('This is an open-weight model for models benchmarking.'), 'no rechaza modelo singular seguido de for models');
+  assert.equal(openWeightDesc('ERNIE Light DT 1.0 is a lightweight multimodal model built on open-source GLM models.'), null, 'rechaza built on open-source GLM models');
+  assert.equal(openWeightDesc('Foo is a closed model that outperforms open-weight models.'), null, 'rechaza comparación con otros modelos');
+  assert.equal(openWeightDesc('Bar is derived from open-weight architectures.'), null, 'rechaza derived from');
+});
+
+test('chipsBlock y companiesBlock: asOf acotado a TODAY, trimestres completos y deduplicación de uso', async () => {
+  const parseCSV = t => {
+    const [head, ...lines] = t.trim().split('\n').map(l => l.split(','));
+    return lines.map(r => Object.fromEntries(head.map((h, i) => [h.trim(), (r[i] ?? '').trim()])));
+  };
+  const ctx = {
+    TODAY: '2026-11-20',
+    NOW_ISO: '2026-11-20T05:00:00Z',
+    log: () => {},
+    parseCSV,
+    fact: (v, src, url, asOf, ex = {}) => ({ v, src, url, asOf, got: '2026-11-20T05:00:00Z', ...ex }),
+    getText: async url => {
+      if (url.includes('ai_chip_sales')) {
+        return [
+          'Chip manufacturer,Chip type,Start date,End date,Incomplete,Compute estimate in H100e (median),Total TDP (W),Cost Estimate (USD)',
+          'Nvidia,H100,2025-10-01,2025-12-31,False,1000000,1000000000,1000000000',
+          'Nvidia,B200,2026-01-01,2026-03-31,False,2000000,2000000000,2000000000',
+          'Nvidia,B200,2026-04-01,2026-06-30,False,3000000,3000000000,3000000000',
+          'Nvidia,B200,2026-07-01,2026-09-30,False,4000000,4000000000,4000000000',
+          'Nvidia,B200,2026-10-01,2026-12-31,True,500000,500000000,500000000'
+        ].join('\n');
+      }
+      if (url.includes('organizations')) return 'Name,Country\nNvidia,United States of America';
+      if (url.includes('revenue')) return 'Company,Date,Annualized revenue (USD),Annualized revenue type,Confidence,Source 1,Report date\nOpenAI,2026-10-01,81000000000,Annualized revenue,High,https://sec.gov/x,2026-10-01';
+      if (url.includes('usage')) {
+        return [
+          'Company,Product,Date,Active users,Active users time period,Daily tokens,Source 1,Confidence',
+          'OpenAI,ChatGPT,2024-08-01,200000000,Weekly,,https://a.test,High',
+          'OpenAI,ChatGPT,2026-09-01,900000000,Weekly,,https://b.test,High',
+          'OpenAI,ChatGPT,2024-06-01,180000000,Monthly,,https://c.test,High',
+          'OpenAI,All products,2024-05-01,150000000,Monthly,,https://d.test,Medium',
+          'Google,Gemini,2026-08-01,600000000,Monthly,,https://e.test,High'
+        ].join('\n');
+      }
+      throw new Error(`unexpected ${url}`);
+    }
+  };
+  const ch = await chipsBlock(ctx);
+  assert.equal(ch.cum.asOf, '2026-11-20', 'no emite fechas futuras 2026-12-31 en chips.cum.asOf');
+  assert.equal(ch.cum.incomplete, true);
+  assert.equal(ch.cum.last4, 10000000, 'last4 suma los 4 trimestres completos, excluyendo el trimestre incompleto');
+
+  const co = await companiesBlock(ctx);
+  assert.deepEqual(co.usage.map(u => [u.company, u.product, u.v]), [['OpenAI', 'ChatGPT', 900000000], ['Google', 'Gemini', 600000000]], 'deduplica por producto y descarta filas obsoletas de >1 año');
+});
+
+test('checks: ingresos55, concordancia singular en variosAgent0 y saturación en mirror80', () => {
+  const c1 = checks({
+    companies: { leader: { v: 81e9, company: 'OpenAI', asOf: '2026-10-01' } },
+    eci: { series: { points: [] }, agent0: { closed: { model: 'M1', org: 'OpenAI', eci: 165 }, rivals: [{ model: 'M2', org: 'Anthropic', eci: 165.5, date: '2026-04-10' }] } },
+    bench: { mirrorSeries: { v: [{ d: '2026-09-01', n: 'M1', v: 93.4, rec: true }] } }
+  }, '2026-11-20');
+  assert.equal(c1.ingresos55.v, 'compatible');
+  assert.match(c1.ingresos55.texto, /81 mil millones/);
+  assert.match(c1.ingresos55.i18n.en.texto, /\$81 billion/);
+  assert.match(c1.variosAgent0.texto, /1 laboratorio distinto de OpenAI publicó/, 'concordancia singular en español');
+  assert.match(c1.mirror80.texto, /ya saturada \(mejor resultado actual: 93,4 %\)/);
+  assert.match(c1.mirror80.i18n.en.texto, /now saturated \(current best: 93\.4%\)/);
+
+  const c2 = checks({ companies: { leader: { v: 40e9, company: 'OpenAI', asOf: '2026-10-01' } } }, '2026-11-20');
+  assert.equal(c2.ingresos55.v, 'todavía no evaluable');
+  const c3 = checks({ companies: { leader: { v: 40e9, company: 'OpenAI', asOf: '2026-12-31' } } }, '2027-01-05');
+  assert.equal(c3.ingresos55.v, 'retrasado');
+});
+
+test('usoVaiven y distancias AA en el parte: filtro de vaivén y deduplicación causal', () => {
+  const snaps = [
+    { date: '2026-11-10', uso: ['a/1', 'b/2'] },
+    { date: '2026-11-12', uso: ['b/2', 'a/1'] },
+    { date: '2026-11-14', uso: ['a/1', 'b/2'] }
+  ];
+  assert.equal(usoVaiven({ kind: 'uso', detected: '2026-11-14', data: { sub: 'primero', slug: 'a/1', prev: 'b/2' } }, snaps), true, 'vuelve a ser líder en <7 días');
+  assert.equal(usoVaiven({ kind: 'uso', detected: '2026-11-12', data: { sub: 'primero', slug: 'b/2', prev: 'a/1' } }, snaps), true, 'el líder anterior vuelve en <7 días');
+  assert.equal(usoVaiven({ kind: 'uso', detected: '2026-11-14', data: { sub: 'primero', slug: 'c/3', prev: 'b/2' } }, snaps), false, 'un tercero nuevo sí es cambio');
+
+  const D = '2026-11-20', NOW_ISO = '2026-11-20T05:00:00Z';
+  const src = { name: 'Artificial Analysis', url: 'https://artificialanalysis.ai/leaderboards/models', got: NOW_ISO };
+  const items = [
+    { kind: 'indicador', key: `indicador|aaUsCn|${D}`, detected: D, published: null, src, what: 'AA US-CN', data: { ind: 'aaUsCn', path: 'aa.gapUsCn', from: 10, to: 13.5 }, i18n: { en: { what: 'AA US-CN' } } },
+    { kind: 'indicador', key: `indicador|aaLabs|${D}`, detected: D, published: null, src, what: 'AA Labs', data: { ind: 'aaLabs', path: 'aa.gapLabs', from: 2, to: 4.5 }, i18n: { en: { what: 'AA Labs' } } },
+    { kind: 'indicador', key: `indicador|aaClosedOpen|${D}`, detected: D, published: null, src, what: 'AA C-O', data: { ind: 'aaClosedOpen', path: 'aa.gapClosedOpen', from: 6, to: 7.2 }, i18n: { en: { what: 'AA C-O' } } }
+  ];
+  const C = {
+    byId: new Map(), models: [], hitos: new Map(), carrera: { frentes: [] },
+    ind: { aa: { gapUsCn: { us: { model: 'A', org: 'LabA', ii: 65 }, cn: { model: 'B', org: 'LabB', ii: 51.5 } }, gapLabs: { first: { model: 'A', org: 'LabA', ii: 65 }, second: { model: 'C', org: 'LabC', ii: 60.5 } }, gapClosedOpen: {} } }
+  };
+  enrich(items, C, D);
+  assert.ok(items[0].importancia, 'salto >= 2 pts en AA es noticia');
+  assert.ok(items[1].importancia, 'salto >= 2 pts en AA Labs es noticia');
+  assert.equal(items[2].importancia, null, 'salto < 2 pts en AA no es noticia');
+  assert.equal(causa(items[0]), 'indicador|aa');
+  assert.equal(causa(items[1]), 'indicador|aa');
+  const p = parte(items, D, items);
+  assert.deepEqual(p.noticias, [`indicador|aaUsCn|${D}`], 'agrupa las distancias AA del mismo día en una sola noticia');
+});
+
 

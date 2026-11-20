@@ -104,10 +104,18 @@
     <h2 class="sec" data-t>Indicadores</h2>
     <div class="podio" id="hoy-podio" hidden></div>
     <div class="kpis" id="hoy-kpis"></div>
-    <p class="note" id="hoy-kpi-note"></p>
+    <div class="note-wrap" id="hoy-kpi-note"></div>
 
     <h2 class="sec" data-t>Capacidad frente a precio</h2>
     <div class="panel">
+      <div class="panel-bar">
+        <div class="seg" role="group" aria-label="Mostrar en el gráfico" data-t-attr="aria-label" id="hoy-scatter-ctl">
+          <button type="button" class="seg-btn" data-sf="all" aria-pressed="true" data-t>Todos</button>
+          <button type="button" class="seg-btn" data-sf="abiertos" aria-pressed="false" data-t>Abiertos</button>
+          <button type="button" class="seg-btn" data-sf="cerrados" aria-pressed="false" data-t>Cerrados</button>
+          <button type="button" class="seg-btn" data-sf="top20" aria-pressed="false" data-t>Top 20</button>
+        </div>
+      </div>
       <div class="chart" id="hoy-scatter"></div>
       <div class="reading" id="hoy-reading"></div>
     </div>
@@ -115,7 +123,7 @@
     <h2 class="sec" data-t>Evolución diaria de los líderes</h2>
     <div class="panel">
       <div class="chart" id="hoy-daily"></div>
-      <p class="note" id="hoy-daily-note"></p>
+      <div class="note-wrap" id="hoy-daily-note"></div>
     </div>
   </section>
 
@@ -146,6 +154,8 @@
       </label>
     </div>
 
+    <div class="qfilters" id="mx-qfilters" role="group" aria-label="Filtros rápidos" data-t-attr="aria-label"></div>
+
     <div class="labs" id="mx-labs" role="group" aria-label="Laboratorio" data-t-attr="aria-label"></div>
 
     <div class="compare" id="mx-compare" hidden></div>
@@ -168,28 +178,47 @@
       </table>
     </div>
 
-    <h2 class="sec" data-t>Evolución de la frontera abierta y cerrada, reconstruida con el índice AA actual</h2>
+    <div class="cmp-bar" id="mx-cmp-bar" hidden></div>
+
+    <div class="sec-head">
+      <h2 class="sec" data-t>Frontera y caída de costes</h2>
+      <div class="seg sec-tabs" role="tablist" aria-label="Gráfico de evolución" data-t-attr="aria-label" id="mx-evo-tabs">
+        <button type="button" class="seg-btn" role="tab" data-tab="aa" aria-selected="true" aria-pressed="true" data-t>Índice AA (al día)</button>
+        <button type="button" class="seg-btn" role="tab" data-tab="eci" aria-selected="false" aria-pressed="false" data-t>ECI de Epoch (serie larga)</button>
+        <button type="button" class="seg-btn" role="tab" data-tab="cost" aria-selected="false" aria-pressed="false" data-t>Coste por capacidad (ECI)</button>
+      </div>
+    </div>
     <div class="panel">
-      <div class="chart" id="mx-frontier-aa"></div>
-      <div class="reading" id="mx-frontier-aa-note"></div>
+      <div class="tab-pane" data-evo-pane="aa">
+        <div class="chart" id="mx-frontier-aa"></div>
+        <div class="reading" id="mx-frontier-aa-note"></div>
+      </div>
+      <div class="tab-pane" data-evo-pane="eci" hidden>
+        <div class="chart" id="mx-frontier"></div>
+        <div class="reading" id="mx-frontier-note"></div>
+      </div>
+      <div class="tab-pane" data-evo-pane="cost" hidden>
+        <div class="chart" id="mx-cost-curve"></div>
+        <div class="reading" id="mx-cost-note"></div>
+      </div>
     </div>
 
-    <h2 class="sec" data-t>Evolución de la frontera abierta y cerrada: ECI de Epoch</h2>
-    <div class="panel">
-      <div class="chart" id="mx-frontier"></div>
-      <div class="reading" id="mx-frontier-note"></div>
+    <div class="sec-head">
+      <h2 class="sec" id="mx-uso-h" data-t>Los más usados en OpenRouter</h2>
+      <div class="seg sec-tabs" role="tablist" aria-label="Ventana de uso" data-t-attr="aria-label" id="mx-uso-tabs">
+        <button type="button" class="seg-btn" role="tab" data-tab="7d" aria-selected="true" aria-pressed="true" data-t>Últimos 7 días</button>
+        <button type="button" class="seg-btn" role="tab" data-tab="30d" aria-selected="false" aria-pressed="false" data-t>Últimos 30 días</button>
+      </div>
     </div>
-
-    <h2 class="sec" id="mx-uso-h" data-t>Los más usados en OpenRouter: últimos 7 días</h2>
     <div class="panel">
-      <div class="chart" id="mx-uso"></div>
-      <div class="reading" id="mx-uso-note"></div>
-    </div>
-
-    <h2 class="sec" data-t>Los más usados en OpenRouter: últimos 30 días</h2>
-    <div class="panel">
-      <div class="chart" id="mx-uso-mes"></div>
-      <div class="reading" id="mx-uso-mes-note"></div>
+      <div class="tab-pane" data-uso-pane="7d">
+        <div class="chart" id="mx-uso"></div>
+        <div class="reading" id="mx-uso-note"></div>
+      </div>
+      <div class="tab-pane" data-uso-pane="30d" hidden>
+        <div class="chart" id="mx-uso-mes"></div>
+        <div class="reading" id="mx-uso-mes-note"></div>
+      </div>
     </div>
   </section>
 
@@ -221,24 +250,42 @@
       <p class="lede" data-t>Seis frentes. En cada uno, primero los datos y los hechos con su fuente; después, una «Lectura Moloch» marcada como interpretación y formulada como hipótesis que puede confirmarse, debilitarse o quedar abierta.</p>
     </div>
 
-    <h2 class="sec" data-t>La carrera, en movimiento</h2>
-    <p class="sec-lede" data-t>El mejor modelo de cada laboratorio desde 2023, según el índice de capacidades de Epoch (ECI). Una barra sólo avanza cuando su laboratorio publica un modelo mejor.</p>
-    <div class="panel race-panel" id="ca-race"></div>
-    <h3 class="sub-sec race-sub" data-t>Y con el índice de Artificial Analysis</h3>
-    <p class="sec-lede" data-t>La misma carrera con el índice de AA, que puntúa los modelos a los pocos días de salir. Empieza más tarde: la versión vigente del índice sólo cubre modelos recientes.</p>
-    <div class="panel race-panel" id="ca-race-aa"></div>
-
-    <h2 class="sec" data-t>Distancias en la frontera</h2>
-    <div class="kpis" id="ca-kpis-aa"></div>
-    <div class="panel gap-panel">
-      <div class="chart" id="ca-gaps-aa"></div>
-      <div class="reading" id="ca-gaps-aa-note"></div>
+    <div class="sec-head">
+      <h2 class="sec" data-t>La carrera, en movimiento</h2>
+      <div class="seg sec-tabs" role="tablist" aria-label="Escala de la carrera animada" data-t-attr="aria-label" id="ca-race-tabs">
+        <button type="button" class="seg-btn" role="tab" data-tab="eci" aria-selected="true" aria-pressed="true" data-t>ECI de Epoch (desde 2023)</button>
+        <button type="button" class="seg-btn" role="tab" data-tab="aa" aria-selected="false" aria-pressed="false" data-t>Índice AA (al día)</button>
+      </div>
     </div>
-    <h3 class="sub-sec" data-t>Serie larga: las mismas distancias con el ECI de Epoch</h3>
-    <div class="kpis" id="ca-kpis"></div>
-    <div class="panel gap-panel">
-      <div class="chart" id="ca-gaps"></div>
-      <div class="reading" id="ca-gaps-note"></div>
+    <div class="tab-pane" data-race-pane="eci">
+      <p class="sec-lede" data-t>El mejor modelo de cada laboratorio desde 2023, según el índice de capacidades de Epoch (ECI). Una barra sólo avanza cuando su laboratorio publica un modelo mejor.</p>
+      <div class="panel race-panel" id="ca-race"></div>
+    </div>
+    <div class="tab-pane" data-race-pane="aa" hidden>
+      <p class="sec-lede" data-t>La misma carrera con el índice de AA, que puntúa los modelos a los pocos días de salir. Empieza más tarde: la versión vigente del índice sólo cubre modelos recientes.</p>
+      <div class="panel race-panel" id="ca-race-aa"></div>
+    </div>
+
+    <div class="sec-head">
+      <h2 class="sec" data-t>Distancias en la frontera</h2>
+      <div class="seg sec-tabs" role="tablist" aria-label="Escala de distancias" data-t-attr="aria-label" id="ca-gaps-tabs">
+        <button type="button" class="seg-btn" role="tab" data-tab="aa" aria-selected="true" aria-pressed="true" data-t>Índice AA (al día)</button>
+        <button type="button" class="seg-btn" role="tab" data-tab="eci" aria-selected="false" aria-pressed="false" data-t>ECI de Epoch (serie larga)</button>
+      </div>
+    </div>
+    <div class="tab-pane" data-gaps-pane="aa">
+      <div class="kpis" id="ca-kpis-aa"></div>
+      <div class="panel gap-panel">
+        <div class="chart" id="ca-gaps-aa"></div>
+        <div class="reading" id="ca-gaps-aa-note"></div>
+      </div>
+    </div>
+    <div class="tab-pane" data-gaps-pane="eci" hidden>
+      <div class="kpis" id="ca-kpis"></div>
+      <div class="panel gap-panel">
+        <div class="chart" id="ca-gaps"></div>
+        <div class="reading" id="ca-gaps-note"></div>
+      </div>
     </div>
 
     <h2 class="sec" data-t>Frentes</h2>
@@ -295,7 +342,7 @@
     <summary data-t>Método y fuentes</summary>
     <div id="method-body"></div>
   </details>
-  <p class="foot-line" data-t-html>MOLOCH.SH · las cifras proceden de las fuentes enlazadas; los textos marcados como lectura son interpretación. Inteligencia, programación, agentes y velocidad de los modelos: <a href="https://artificialanalysis.ai" target="_blank" rel="noopener">Artificial Analysis</a>, con su permiso. ECI, chips, centros e ingresos: <a href="https://epoch.ai/" target="_blank" rel="noopener">Epoch AI</a> (CC BY 4.0). Precios: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>. Horizonte temporal: <a href="https://metr.org/time-horizons" target="_blank" rel="noopener">METR</a>. Logos: <a href="https://github.com/lobehub/lobe-icons" target="_blank" rel="noopener">LobeHub Icons</a> (MIT); las marcas son de sus dueños.</p>
+  <p class="foot-line" data-t-html>MOLOCH.SH · las cifras proceden de las fuentes enlazadas; los textos marcados como lectura son interpretación. Inteligencia y velocidad de los modelos: <a href="https://artificialanalysis.ai" target="_blank" rel="noopener">Artificial Analysis</a>, con su permiso. ECI, chips, centros e ingresos: <a href="https://epoch.ai/" target="_blank" rel="noopener">Epoch AI</a> (CC BY 4.0). Precios: <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>. Horizonte temporal: <a href="https://metr.org/time-horizons" target="_blank" rel="noopener">METR</a>. Logos: <a href="https://github.com/lobehub/lobe-icons" target="_blank" rel="noopener">LobeHub Icons</a> (MIT); las marcas son de sus dueños.</p>
 </footer>
 <!-- Cloudflare Web Analytics -->
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2662fc50292e46d1938997b0f3e6f592"}'></script>

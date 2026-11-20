@@ -266,7 +266,7 @@ test('primera recogida tras corregir emparejamiento AA: cero eventos ni noticias
 
   const read = p => JSON.parse(readFileSync(path.join(dir, p), 'utf8'));
   const cat = read('data/catalog.json'), ch = read('data/changes.json'), evl = read('data/events-log.json');
-  assert.equal(cat.schema, 4);
+  assert.equal(cat.schema, 5);
   const byId = new Map(cat.models.map(m => [m.id, m]));
   assert.equal(byId.has('tencent/tencent-hy4'), false, 'desaparece el duplicado aaOnly');
   assert.equal(byId.get('tencent/hy4')?.aa?.intelligence?.v, 34.6, 'Hy4 recibe su índice AA');
@@ -282,7 +282,7 @@ test('primera recogida tras corregir emparejamiento AA: cero eventos ni noticias
   assert.equal(altaHy4?.importancia, null, 'el alta previa de Hy4 no se promociona retroactivamente a noticia');
   assert.equal(keys.has('evaluacion|deepseek/deepseek-v4.1-flash|ii'), true, 'una puntuación genuinamente nueva hoy sí se detecta');
 
-  // También funciona cuando la primera recogida tras el cambio reutiliza AA (< 20 h en ramas, schema < 4 → 4).
+  // También funciona cuando la primera recogida tras el cambio reutiliza AA (< 20 h en ramas, schema < 4 → 5).
   const gotReciente = new Date(nowMs - 2 * 3600e3).toISOString().replace(/\.\d{3}Z$/, 'Z');
   prevCat.status.aa = { ok: true, got: gotReciente };
   writeFileSync(path.join(dir, 'data/catalog.json'), JSON.stringify(prevCat));
@@ -291,7 +291,7 @@ test('primera recogida tras corregir emparejamiento AA: cero eventos ni noticias
   const cReuse = spawnSync(process.execPath, ['scripts/collect.mjs'], { cwd: dir, env: { ...env, AA_TEST_REUSE: '1' }, encoding: 'utf8' });
   assert.equal(cReuse.status, 0, `collect con reutilización y migración termina bien\n${cReuse.stdout}\n${cReuse.stderr}`);
   const vReuse = run('scripts/validate.mjs');
-  assert.equal(vReuse.status, 0, `validate pasa en schema 4 tras reutilización\n${vReuse.stdout}\n${vReuse.stderr}`);
+  assert.equal(vReuse.status, 0, `validate pasa en schema 5 tras reutilización\n${vReuse.stdout}\n${vReuse.stderr}`);
   const catReuse = read('data/catalog.json'), chReuse = read('data/changes.json');
   const byIdReuse = new Map(catReuse.models.map(m => [m.id, m]));
   assert.equal(byIdReuse.has('tencent/tencent-hy4'), false);
@@ -300,5 +300,65 @@ test('primera recogida tras corregir emparejamiento AA: cero eventos ni noticias
   assert.equal(byIdReuse.get('google/gemini-3.1-flash-lite')?.aa, null);
   assert.equal(chReuse.items.some(e => e.key === 'evaluacion|tencent/hy4|ii'), false);
 });
+
+test('transición schema 4 → 5: elige tarifa estándar sobre flex sin emitir falsos cambios de precio', { timeout: 300000 }, t => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'moloch-flex-std-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  for (const d of ['scripts', 'js', 'data']) cpSync(path.join(ROOT, d), path.join(dir, d), { recursive: true });
+  rmSync(path.join(dir, 'data/history'), { recursive: true, force: true });
+  cpSync(path.join(ROOT, 'data/history'), path.join(dir, 'data/history'), { recursive: true, filter: src => src.endsWith('history') });
+
+  const fx = path.join(dir, 'fixtures');
+  cpSync(path.join(ROOT, 'tests/fixtures/recogida'), fx, { recursive: true });
+  const ayer = new Date(Date.now() - 86400e3).toISOString().slice(0, 10);
+  const gotAyer = `${ayer}T05:00:00Z`;
+
+  // Anthropic ofrece tarifa flex (2.5/12.5), estándar (5/25) y priority (10/50); debe elegirse la estándar (5/25).
+  const epPath = path.join(fx, 'openrouter_ai_api_v1_models_anthropic_claude_opus_5_5_endpoints.json');
+  writeFileSync(epPath, JSON.stringify({
+    data: {
+      id: 'anthropic/claude-opus-5.5',
+      endpoints: [
+        { provider_name: 'Anthropic', name: 'Anthropic', tag: 'anthropic/flex', service_tier: 'flex', quantization: 'unknown', context_length: 131072, pricing: { prompt: '0.0000025', completion: '0.0000125' }, status: 0, uptime_last_30m: 99 },
+        { provider_name: 'Anthropic', name: 'Anthropic', tag: 'anthropic', service_tier: null, quantization: null, context_length: 131072, pricing: { prompt: '0.000005', completion: '0.000025' }, status: 0, uptime_last_30m: 99.5 },
+        { provider_name: 'Anthropic', name: 'Anthropic', tag: 'anthropic/fast', service_tier: 'priority', quantization: null, context_length: 131072, pricing: { prompt: '0.00001', completion: '0.00005' }, status: 0, uptime_last_30m: 99.9 }
+      ]
+    }
+  }));
+  // En la víspera (schema 4), el recolector anterior había tomado flex (2.5/12.5) y guardado ambas tarifas en lp.
+  // DeepSeek sí sufre una bajada real hoy (de 1/4 a 0.2/0.8).
+  writeFileSync(path.join(dir, `data/history/${ayer}.json`), JSON.stringify({
+    schema: 4, date: ayer, got: gotAyer, aaIndexVersion: '5',
+    leaders: { open: null, closed: null, aa: { v: '5', open: null, closed: { id: 'anthropic/claude-opus-5.5', ii: 70.1 } } },
+    models: {
+      'anthropic/claude-opus-5.5': { n: 'Claude Opus 5.5', w: 'c', in: 2.5, out: 12.5, pb: 'laboratorio', pp: 'Anthropic', lp: [[2.5, 12.5], [5, 25], [10, 50]], ii: 70.1 },
+      'deepseek/deepseek-v4.1-flash': { n: 'DeepSeek V4.1 Flash', w: 'o', in: 1, out: 4, pb: 'laboratorio', pp: 'DeepSeek', lp: [[1, 4]], ii: null },
+      'moonshotai/kimi-k3.1-pro': { n: 'Kimi K3.1 Pro', w: 'a', in: 1, out: 4, pb: 'laboratorio', pp: 'Moonshot AI', lp: [[1, 4]], ii: null }
+    }
+  }));
+  writeFileSync(path.join(dir, 'data/events-log.json'), JSON.stringify({ events: [] }));
+
+  const env = { ...process.env, FIXTURES: fx, WINDOW_DAYS: '100000', AA_API_KEY: '', OPENROUTER_API_KEY: '', GITHUB_REF: '' };
+  const run = script => spawnSync(process.execPath, [script], { cwd: dir, env, encoding: 'utf8' });
+  const c = run('scripts/collect.mjs');
+  assert.equal(c.status, 0, `collect termina bien\n${c.stdout}\n${c.stderr}`);
+  const v = run('scripts/validate.mjs');
+  assert.equal(v.status, 0, `validate pasa\n${v.stdout}\n${v.stderr}`);
+
+  const read = p => JSON.parse(readFileSync(path.join(dir, p), 'utf8'));
+  const cat = read('data/catalog.json'), ch = read('data/changes.json');
+  const opus = cat.models.find(m => m.id === 'anthropic/claude-opus-5.5');
+  assert.equal(opus.price.in.v, 5, 'elige la tarifa estándar (5 $) y no flex (2.5 $)');
+  assert.equal(opus.price.out.v, 25);
+  assert.equal(opus.price.tier, undefined, 'tarifa estándar sin etiqueta de tier');
+  assert.equal(opus.endpoints.find(e => e.in === 2.5)?.tier, 'flex', 'conserva el tier en endpoints');
+  assert.equal(opus.endpoints.find(e => e.in === 2.5)?.quant, undefined, 'omite quantization unknown');
+  assert.equal(opus.aa.coding, undefined, 'omite aa.coding cuando es null');
+  assert.equal(opus.aa.agentic, undefined, 'omite aa.agentic cuando es null');
+
+  assert.equal(ch.items.some(e => e.kind === 'precio' && e.model === 'anthropic/claude-opus-5.5'), false, 'cero eventos falsos de precio al migrar flex → estándar');
+  assert.equal(ch.items.some(e => e.kind === 'precio' && e.model === 'deepseek/deepseek-v4.1-flash'), true, 'una bajada real sí se detecta');
+});
+
 
 

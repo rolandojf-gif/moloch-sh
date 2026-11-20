@@ -168,7 +168,8 @@
   {
    "key": "indicador|aaUsCn|2026-10-25",
    "what": "US − China gap on the AA index: from 4.9 to 4.4 points (Alfa Uno versus Sino Dos).",
-   "titular": "US − China gap on the AA index: from 4.9 to 4.4 points (Alfa Uno versus Sino Dos)."
+   "titular": "The US − China gap on the AA index falls from 4.9 to 4.4 points",
+   "consecuencia": "Alfa Uno (Alfa Lab) versus Sino Dos (Sino Lab). A few AA index points do not equate to months of lag."
   },
   {
    "key": "indicador|saturated|2026-10-25",
@@ -205,7 +206,7 @@
    "what": "Alfa Dup becomes the most used model on OpenRouter over the last 7 days (12.3% of tokens), ahead of Beta Dos.",
    "titular": "Alfa Dup becomes the most used model on OpenRouter",
    "porque": "the most used model on OpenRouter over the last 7 days changes",
-   "consecuencia": "12.3% of OpenRouter’s tokens from 2026-10-18 to 2026-10-25; before, the first was beta/dos. This is usage on OpenRouter, not across the whole market."
+   "consecuencia": "12.3% of OpenRouter’s tokens from 2026-10-18 to 2026-10-25; before, the first was Beta Dos. This is usage on OpenRouter, not across the whole market."
   },
   {
    "key": "uso|entra|nuevo/tres|2026-10-25",
@@ -249,7 +250,7 @@
    "A new model (including one that AA scores before it has a public API), or one that receives its first AA score, enters the top 20 of the AA index. Its later arrival on OpenRouter does not count again.",
    "A top-20 model on the AA index publishes open weights.",
    "The lab itself changes its price on OpenRouter by at least +50% or −33% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count, nor a price that comes and goes: a new one already seen in the previous 14 days or an old one that returns within the next 14.",
-   "The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least 1 ECI point, or power, chips or revenue that change by at least 10%. The ECI record and gaps from the same check count as a single news item.",
+   "The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least 1 ECI point or 2 AA points, or power, chips or revenue that change by at least 10%. Changes from the same check on the ECI or on the AA gaps count as a single news item.",
    "The most used model on OpenRouter over the last 7 days changes."
   ]
  },
@@ -261,7 +262,7 @@
   "A new model (including one that AA scores before it has a public API), or one that receives its first AA score, enters the top 20 of the AA index. Its later arrival on OpenRouter does not count again.",
   "A top-20 model on the AA index publishes open weights.",
   "The lab itself changes its price on OpenRouter by at least +50% or −33% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count, nor a price that comes and goes: a new one already seen in the previous 14 days or an old one that returns within the next 14.",
-  "The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least 1 ECI point, or power, chips or revenue that change by at least 10%. The ECI record and gaps from the same check count as a single news item.",
+  "The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least 1 ECI point or 2 AA points, or power, chips or revenue that change by at least 10%. Changes from the same check on the ECI or on the AA gaps count as a single news item.",
   "The most used model on OpenRouter over the last 7 days changes."
  ]
 }

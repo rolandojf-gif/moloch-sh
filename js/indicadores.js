@@ -83,6 +83,20 @@ const REG = {
   },
   'aa.rate12m': (I) => {
     const f = I.aa?.rate12m;
+    if (f?.incompleto) {
+      if (f.vComplete != null && f.completeFrom && f.fromComplete && f.to) {
+        return {
+          label: t('Avance de la frontera en 12 meses (índice AA)'),
+          value: fact({ ...f, v: f.vComplete }, v => t('+{n} puntos AA', { n: num(v, 1) })) + incTag(f),
+          sub: t('Tramo con cobertura completa desde el {fecha}: de {a} a {b}. Sin cobertura AA completa a 12 meses; para 12 meses completos véase el ECI de Epoch.{incNote}', { fecha: esc(fmtDate(f.completeFrom)), a: whoAA(f.fromComplete), b: whoAA(f.to), incNote: incNote(f, f.since) })
+        };
+      }
+      return {
+        label: t('Avance de la frontera en 12 meses (índice AA)'),
+        value: nd() + incTag(f),
+        sub: t('Sin dato comparable a 12 meses: la versión vigente del índice AA no cubre los líderes de hace 12 meses; para esa referencia véase el ECI de Epoch.{incNote}', { incNote: incNote(f, f.since) })
+      };
+    }
     return { label: t('Avance de la frontera en 12 meses (índice AA)'), value: fact(f, v => t('+{n} puntos AA', { n: num(v, 1) })) + incTag(f), sub: f?.from && f?.to ? t('De {whoAA}, publicado el {fmtDate}, a {p3}. Cada modelo con su puntuación actual.{incNote}', { whoAA: whoAA(f.from), fmtDate: esc(fmtDate(f.from.date)), p3: whoAA(f.to), incNote: incNote(f, f.since) }) : '' };
   },
   'eci.frontier': (I) => ({ label: t('Mejor modelo (ECI)'), value: fact(I.eci?.frontier, v => num(v, 1)), sub: I.eci?.frontier?.model ? esc(I.eci.frontier.model) : '' }),
@@ -122,6 +136,15 @@ const REG = {
       label: t('Evaluaciones del ECI que el mejor modelo aún no resuelve a medias'),
       value: fact(f, v => t('{num} de {p2}', { num: num(v, 0), p2: num(f.of, 0) })),
       sub: f?.v != null && f.top ? t('{names}Su dificultad, según Epoch, supera el ECI de {model} ({eci}): el modelo de Epoch le prevé menos de la mitad del camino entre el azar y el techo de cada prueba.', { names: f.names.length ? `${f.names.map(esc).join(', ')}. ` : '', model: esc(f.top.model), eci: num(f.top.eci, 1) }) : ''
+    };
+  },
+  'edi.hardest': (I) => {
+    const m = I.edi?.map, top = m?.top;
+    const rows = Array.isArray(m?.v) && top ? m.v.filter(b => b.edi > top.eci).sort((a, b) => b.edi - a.edi).slice(0, 6) : [];
+    return {
+      label: t('Evaluaciones sin saturar por encima del líder (EDI)'),
+      list: rows.map(b => `${esc(b.name)}: <b>EDI ${num(b.edi, 1)}</b>${b.best ? ` · ${t('mejor medido: {n} % ({m})', { n: num(b.best.v, 0), m: esc(b.best.model) })}` : ''}${b.pred?.top != null ? ` · ${t('previsto: {n} %', { n: num(b.pred.top, 0) })}` : ''}${src(like(m, b.edi))}`),
+      sub: rows.length ? t('Evaluaciones cuya dificultad (EDI) supera a {model} ({eci}), con el mejor resultado medido y la nota prevista por Epoch.', { model: esc(top.model), eci: num(top.eci, 1) }) : nd()
     };
   },
   'bench.saturated': (I) => {
@@ -178,7 +201,7 @@ const REG = {
     const f = I.chips?.cum;
     return {
       label: t('Chips de IA entregados, acumulado'), value: fact(f, mh100),
-      sub: f?.v != null ? t('Desde {fmtDate}; {mh100} en los últimos cuatro trimestres. Suma de medianas: entregados no es instalados.{p3}', { fmtDate: esc(fmtDate(f.since)), mh100: mh100(f.last4), p3: f.incomplete ? t(' El último trimestre está incompleto.') : '' }) : ''
+      sub: f?.v != null ? t('Desde {fmtDate}; {mh100} en los últimos cuatro trimestres completos. Suma de medianas: entregados no es instalados.{p3}', { fmtDate: esc(fmtDate(f.since)), mh100: mh100(f.last4), p3: f.incomplete ? t(' El último trimestre está incompleto.') : '' }) : ''
     };
   },
   'chips.tdp': (I) => {

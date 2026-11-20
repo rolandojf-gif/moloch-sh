@@ -9,7 +9,9 @@ const addDays = (d, k) => new Date(Date.parse(d) + k * 86400e3).toISOString().sl
 export function resolve(val, checks) {
   if (!val?.regla) return val;
   const c = checks?.[val.regla];
-  return c ? { ...val, v: c.v, texto: c.texto, fecha: c.fecha, sentido: c.sentido || null, i18n: c.i18n } : { ...val, v: 'sin evidencia suficiente', texto: 'La regla no ha podido calcularse en la última recogida.' };
+  if (c) return { ...val, v: c.v, texto: c.texto, fecha: c.fecha, sentido: c.sentido || null, i18n: c.i18n };
+  if (val.v) return val;
+  return { ...val, v: 'sin evidencia suficiente', texto: 'La regla no ha podido calcularse en la última recogida.' };
 }
 export const valOf = (h, quien, checks) => resolve((h.valoraciones || []).find(v => v.quien === quien), checks) || null;
 

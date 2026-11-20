@@ -164,21 +164,28 @@ function renderKPIs(d, gapPts) {
   }
 
   $('#hoy-kpis').innerHTML = leadCard(lc, 'closed', t('Líder cerrado'), prevAA?.closed) + leadCard(lo, 'open', t('Líder abierto'), prevAA?.open) + gapCard + costCard;
-  $('#hoy-kpi-note').innerHTML = t('Líderes calculados entre los modelos del catálogo con puntuación en el {aaIndexName}: los que se pueden usar por API en OpenRouter y los que AA ya puntúa aunque aún no tengan API pública, marcados «sin API pública». Datos de {AA_LINK}, publicados con su permiso. De cada modelo se toma la configuración de razonamiento de mayor índice. Umbral de capacidad comparable: índice del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con el precio que cobra el propio laboratorio en OpenRouter o, si no lo sirve él, el del proveedor más barato, que se indica.', { aaIndexName: esc(aaIndexName(ver)), AA_LINK });
+  $('#hoy-kpi-note').innerHTML = `<p class="note">${t('Líderes del catálogo en el {aaIndexName} ({AA_LINK}, con su permiso).', { aaIndexName: esc(aaIndexName(ver)), AA_LINK })}</p>
+    <details class="method-note"><summary>${t('Cómo se calculan estos indicadores')}</summary><p class="note">${t('Líderes calculados entre los modelos del catálogo con puntuación en el {aaIndexName}: los que se pueden usar por API en OpenRouter y los que AA ya puntúa aunque aún no tengan API pública, marcados «sin API pública». Datos de {AA_LINK}, publicados con su permiso. De cada modelo se toma la configuración de razonamiento de mayor índice. Umbral de capacidad comparable: índice del mejor modelo menos los puntos elegidos. Precio combinado: (3 × entrada + salida) / 4, con el precio que cobra el propio laboratorio en OpenRouter o, si no lo sirve él, el del proveedor más barato, que se indica.', { aaIndexName: esc(aaIndexName(ver)), AA_LINK })}</p></details>`;
   $('#kpi-pct')?.addEventListener('change', e => { GAP_PTS = Number(e.target.value); renderKPIs(d, GAP_PTS); renderScatter(d, GAP_PTS); });
 }
 
 function renderScatter(d, gapPts) {
-  const models = scored(d.catalog.models);
+  const allScored = scored(d.catalog.models);
   const el = $('#hoy-scatter');
-  if (!models.length) {
+  if (!allScored.length) {
     el.innerHTML = `<div class="chart-empty">${t('Sin datos de capacidad: ningún modelo del catálogo tiene puntuación de Artificial Analysis.')}</div>`;
     $('#hoy-reading').innerHTML = '';
     return;
   }
+  const top20Ids = new Set(allScored.slice().sort((a, b) => ii(b) - ii(a)).slice(0, 20).map(m => m.id));
+  const models = SCATTER_FILTER === 'abiertos' ? allScored.filter(m => m.weights.v === 'abiertos')
+    : SCATTER_FILTER === 'cerrados' ? allScored.filter(m => m.weights.v === 'cerrados')
+    : SCATTER_FILTER === 'top20' ? allScored.filter(m => top20Ids.has(m.id))
+    : allScored;
   const pts = models.filter(m => blended(m) > 0).map(m => ({
     id: m.id, x: blended(m), y: ii(m), cls: m.weights.v === 'abiertos' ? 'open' : m.weights.v === 'cerrados' ? 'closed' : 'unknown',
     label: m.name,
+    go: () => { location.hash = `#modelos/${m.id}`; },
     tip: tip(m.name, [
       [t('Laboratorio'), m.lab.name],
       [t('Índice AA'), `${num(ii(m))}${aaConfigShort(m) ? ` (${aaConfigShort(m)})` : ''}`],
@@ -187,13 +194,13 @@ function renderScatter(d, gapPts) {
       [t('Entrada / salida'), `${usd(m.price.in.v)} / ${usd(m.price.out.v)}`],
       [t('Precio de'), priceBasis(m)],
       [t('Pesos'), m.weights.v ? weightsWord(m.weights.v) : t('sin datos')]
-    ], '', logoFor(m))
+    ], t('Pulsa para abrir su ficha en Modelos.'), logoFor(m))
   }));
-  const sinApi = models.filter(m => m.aaOnly).length, excluded = models.length - pts.length - sinApi;
-  const lo = leader(models, 'abiertos'), lc = leader(models, 'cerrados');
+  const sinApi = allScored.filter(m => m.aaOnly).length, excluded = allScored.length - allScored.filter(m => blended(m) > 0).length - sinApi;
+  const lo = leader(allScored, 'abiertos'), lc = leader(allScored, 'cerrados');
   const top = lc ? ii(lc) : ii(lo);
   const T = Math.round((top - gapPts) * 10) / 10;
-  const best = cheapestAbove(models, T, ii, blended);
+  const best = cheapestAbove(allScored, T, ii, blended);
   const labels = new Set([lo?.id, lc?.id, best?.id].filter(Boolean));
   // Nuevos de la ventana de «Lo detectado» (changes.json), para que un lanzamiento se vea aunque no esté en la frontera.
   const fresh = new Set((d.changes?.items || []).filter(it => it.kind === 'nuevo').map(it => /^#modelos\/(.+)$/.exec(it.ficha || '')?.[1]).filter(Boolean));
@@ -208,12 +215,12 @@ function renderScatter(d, gapPts) {
       dist: gap >= 0 ? t('{num} puntos por debajo', { num: num(gap) }) : t('{num} puntos por encima', { num: num(-gap) }),
       ratio: ratio ? ` ${t('y su precio combinado es {x}', { x: ratio >= 1 ? t('{num} veces menor', { num: num(ratio) }) : t('{num} veces mayor', { num: num(1 / ratio) }) })}` : ''
     }));
-    const dl = downloadable(models, lo);
+    const dl = downloadable(allScored, lo);
     if (dl) bits.push(t('Sus pesos sólo están anunciados; con pesos ya descargables, el mejor es {name} ({num}), {p3} puntos por debajo del mejor cerrado.', { name: esc(dl.name), num: num(ii(dl)), p3: num(Math.round((ii(lc) - ii(dl)) * 10) / 10) }));
   }
   if (best) bits.push(t('Por encima del umbral de {T} puntos del índice AA, la opción más barata es {name} ({tipo}), a {usd} por millón.', { T: num(T), name: esc(best.name), tipo: best.weights.v === 'abiertos' ? t('abierto') : t('cerrado'), usd: usd(blended(best)) }));
   if (excluded) bits.push(tn(excluded, ['{n} modelo con índice pero sin precio positivo no aparece en el gráfico.', '{n} modelos con índice pero sin precio positivo no aparecen en el gráfico.']));
-  if (sinApi) bits.push(tn(sinApi, ['{n} modelo puntuado por AA que aún no tiene API pública, y por tanto precio, tampoco aparece.', '{n} modelos puntuados por AA que aún no tienen API pública, y por tanto precio, tampoco aparecen.']));
+  if (sinApi) bits.push(tn(sinApi, ['{n} modelo puntuado por AA que aún no tiene API pública, y por tanto precio, tampoco aparece.', '{n} modelos puntuados por AA que aún no tiene API pública, y por tanto precio, tampoco aparecen.']));
   $('#hoy-reading').innerHTML = `<span class="lbl">${t('Lectura automática a partir de las cifras')}</span>${bits.join(' ')}<span class="m-sub">${t('Capacidad: {aaIndexName}, datos de {AA_LINK}. Precio:', { aaIndexName: esc(aaIndexName(d.catalog.aaIndexVersion)), AA_LINK })} <a href="https://openrouter.ai/models" target="_blank" rel="noopener">${t('OpenRouter')}</a>${t(', el del propio laboratorio o, si no lo sirve, el del proveedor más barato.')}</span>`;
 }
 
@@ -231,7 +238,8 @@ function renderDaily(d) {
       { cls: 'ln-open', name: t('Mejor abierto'), get: p => p.open?.ii ?? null, who: p => p.open?.n }
     ]
   });
-  $('#hoy-daily-note').innerHTML = t('Un punto por recogida diaria{p1}: el mejor modelo cerrado y el mejor abierto del catálogo según el {aaIndexName} de {AA_LINK}. Cada día queda guardado en el repositorio (data/history), así que la serie crece con cada recogida; los días con otra versión del índice no se mezclan. Es la única serie del observatorio medida día a día con el índice de AA; las de Modelos y La carrera se reconstruyen hoy hacia atrás con las puntuaciones actuales.', { p1: first ? t(', desde el {fmtDate}', { fmtDate: esc(fmtDate(first)) }) : '', aaIndexName: esc(aaIndexName(ver)), AA_LINK });
+  $('#hoy-daily-note').innerHTML = `<p class="note">${t('Un punto por recogida diaria{p1} en el {aaIndexName} de {AA_LINK}.', { p1: first ? t(', desde el {fmtDate}', { fmtDate: esc(fmtDate(first)) }) : '', aaIndexName: esc(aaIndexName(ver)), AA_LINK })}</p>
+    <details class="method-note"><summary>${t('Nota sobre esta serie')}</summary><p class="note">${t('Un punto por recogida diaria{p1}: el mejor modelo cerrado y el mejor abierto del catálogo según el {aaIndexName} de {AA_LINK}. Cada día queda guardado en el repositorio (data/history), así que la serie crece con cada recogida; los días con otra versión del índice no se mezclan. Es la única serie del observatorio medida día a día con el índice de AA; las de Modelos y La carrera se reconstruyen hoy hacia atrás con las puntuaciones actuales.', { p1: first ? t(', desde el {fmtDate}', { fmtDate: esc(fmtDate(first)) }) : '', aaIndexName: esc(aaIndexName(ver)), AA_LINK })}</p></details>`;
 }
 
 /* Podio: los cinco modelos con mayor índice de AA, abiertos o cerrados, con los mismos criterios que los líderes. */
@@ -250,7 +258,23 @@ function renderPodio(d) {
 }
 
 let GAP_PTS = 10;   // umbral elegido en «Coste con capacidad comparable»: se conserva al cambiar de idioma
+let SCATTER_FILTER = 'all';
+let boundHoy = false;
+let lastHoyData = null;
 export function renderHoy(d) {
+  lastHoyData = d;
+  if (!boundHoy) {
+    boundHoy = true;
+    const ctl = $('#hoy-scatter-ctl');
+    ctl?.addEventListener('click', e => {
+      const b = e.target.closest('[data-sf]'); if (!b) return;
+      SCATTER_FILTER = b.dataset.sf;
+      for (const x of ctl.querySelectorAll('[data-sf]')) x.setAttribute('aria-pressed', String(x === b));
+      if (lastHoyData) renderScatter(lastHoyData, GAP_PTS);
+    });
+  }
+  const ctl = $('#hoy-scatter-ctl');
+  if (ctl) for (const x of ctl.querySelectorAll('[data-sf]')) x.setAttribute('aria-pressed', String(x.dataset.sf === SCATTER_FILTER));
   renderNews(d);
   renderPodio(d);
   renderKPIs(d, GAP_PTS);

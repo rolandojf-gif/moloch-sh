@@ -111,7 +111,7 @@ const DAY = /^\d{4}-\d{2}-\d{2}$/, DAYMONTH = /^\d{4}-\d{2}(-\d{2})?$/, URL_RE =
 const IND_KEY = /^(aa|eci|edi|bench|dc|chips|companies|metr)\.[A-Za-z0-9]+$/;
 const ESTADOS = ['abierta', 'confirmada', 'debilitada'];
 const ESCALA = ['adelantado', 'compatible', 'retrasado', 'todavía no evaluable', 'sin evidencia suficiente'];
-const REGLAS = ['swe85', 'openAgent0', 'variosAgent0', 'openaiRev2025', 'rivales39', 'deepcent6', 'mirror80'];
+const REGLAS = ['swe85', 'openAgent0', 'variosAgent0', 'openaiRev2025', 'ingresos55', 'rivales39', 'deepcent6', 'mirror80'];
 const EVID = ['medida', 'declarada', 'valoración de los autores', 'contexto'];
 const need = (o, k, where, re) => { if (!o?.[k] || (re && !re.test(o[k]))) errors.push(`${where}: falta o no es válido «${k}»`); };
 
@@ -169,12 +169,15 @@ if (a7) {
         if (e.indicador) { if (!IND_KEY.test(e.indicador)) errors.push(`${w}: indicador no válido ${e.indicador}`); }
         else { need(e, 'texto', `${w}.evidencia`); need(e, 'url', `${w}.evidencia`, URL_RE); need(e, 'fecha', `${w}.evidencia`, DAYMONTH); }
       }
+      const obsDef = (h.valoraciones || []).find(v => v.quien === 'observatorio');
+      const obsV = obsDef?.regla ? (ind?.checks?.[obsDef.regla]?.v ?? obsDef.v) : obsDef?.v;
+      const estNeeded = !obsV || obsV === 'todavía no evaluable' || obsV === 'sin evidencia suficiente';
       const est = h.estimacion;
       if (est) {
         if (!['regla', 'autores', 'ritmo', 'fuente'].includes(est.metodo)) errors.push(`${w}: método de estimación no válido ${est.metodo}`);
         // Una estimación sin resultado (fuente caída) no bloquea la publicación: la ficha dice «sin estimación».
         if (est.metodo === 'regla' && !/^est_/.test(est.regla || '')) errors.push(`${w}: regla de estimación no válida ${est.regla}`);
-        else if (est.metodo === 'regla' && ind && !ind.checks?.[est.regla]) warnings.push(`${w}: la estimación ${est.regla} no tiene resultado en indicadores.json`);
+        else if (est.metodo === 'regla' && ind && !ind.checks?.[est.regla] && estNeeded) warnings.push(`${w}: la estimación ${est.regla} no tiene resultado en indicadores.json`);
         if (est.metodo === 'fuente') { if (!ESCALA.includes(est.v)) errors.push(`${w}: estimación fuera de la escala ${est.v}`); need(est, 'texto', `${w}.estimacion`); need(est, 'fecha', `${w}.estimacion`, DAYMONTH); }
         if (est.metodo === 'ritmo' && !a7.ritmo?.puntos?.at(-1)?.rango) errors.push(`${w}: la estimación por ritmo necesita «rango» en la última estimación de ritmo`);
         for (const f of est.fuentes || []) need(f, 'url', `${w}.estimacion.fuentes`, URL_RE);
@@ -188,7 +191,7 @@ if (a7) {
         if (pt.plazo) { need(pt, 'plazo', wp, DAY); need(pt, 'plazo_texto', wp); }
         const v = pt.valoracion;
         if (!v) errors.push(`${wp}: sin valoración`);
-        else if (v.regla) { if (!REGLAS.includes(v.regla)) errors.push(`${wp}: regla no válida ${v.regla}`); else if (ind && !ind.checks?.[v.regla]) warnings.push(`${wp}: la regla ${v.regla} no tiene resultado en indicadores.json`); }
+        else if (v.regla) { if (!REGLAS.includes(v.regla)) errors.push(`${wp}: regla no válida ${v.regla}`); else if (ind && !ind.checks?.[v.regla] && !v.v) warnings.push(`${wp}: la regla ${v.regla} no tiene resultado en indicadores.json`); }
         else { if (!ESCALA.includes(v.v)) errors.push(`${wp}: valoración fuera de la escala ${v.v}`); need(v, 'fecha', wp, DAYMONTH); need(v, 'texto', wp); for (const f of v.fuentes || []) need(f, 'url', `${wp}.fuentes`, URL_RE); }
       }
       if ((h.partes || []).length === 1) errors.push(`${w}: una sola parte no divide nada`);

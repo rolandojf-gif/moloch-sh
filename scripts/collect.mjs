@@ -29,9 +29,10 @@
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { collectIndicators } from './indicadores.mjs';
 import { aaRace, aaCoverage } from '../js/fmt.js';
-import { detectChanges, mergeLog, snapshotExtras, indSnapshot, vigilados, labPrices, vaiven, PRICE_BACK_DAYS } from './cambios.mjs';
+import { detectChanges, mergeLog, snapshotExtras, indSnapshot, vigilados, labPrices, vaiven, PRICE_BACK_DAYS, usoVaiven, USO_BACK_DAYS } from './cambios.mjs';
 import { enrich, parte, rss } from './parte.mjs';
 import { AVISOS, failedStatus } from './textos.mjs';
 import { norm, matchCatalogAA, aaBase, aaOnlyCandidates } from './emparejar.mjs';
@@ -394,38 +395,67 @@ async function loadUso(names) {
 }
 
 /* ── Construcción del catálogo ──────────────────────────────────────────── */
+/* Nivel de servicio de un proveedor en OpenRouter (/endpoints): «flex» (mitad de precio, menor prioridad),
+   «priority» / «ultrafast» (más caro, mayor velocidad) o null para la tarifa estándar. */
+export function endpointTier(e) {
+  const raw = String(e?.service_tier || '').trim().toLowerCase();
+  if (raw && raw !== 'standard' && raw !== 'default') {
+    if (/^(fast|turbo|highspeed|prime|priority)$/.test(raw)) return 'priority';
+    return raw;
+  }
+  const parts = String(e?.tag || '').toLowerCase().split('/').slice(1);
+  for (const part of parts) {
+    if (part === 'flex' || part === 'batch') return part;
+    if (part === 'ultrafast') return 'ultrafast';
+    if (/^(fast|turbo|highspeed|prime|priority)$/.test(part)) return 'priority';
+  }
+  return null;
+}
+
 function speedFromEndpoints(endpoints) {
   if (!endpoints) return null;
   const rows = endpoints
     .filter(e => e.status === undefined || e.status === 0 || e.status === 'online' || e.status === null)
-    .map(e => ({
-      provider: e.provider_name || e.name || null,
-      quant: e.quantization || null,
-      in: perMillion(e.pricing && e.pricing.prompt),
-      out: perMillion(e.pricing && e.pricing.completion),
-      cacheRead: perMillion(e.pricing && e.pricing.input_cache_read),
-      ctx: e.context_length || null,
-      tps: pctl(e.throughput_last_30m),
-      ttft: (() => { const v = pctl(e.latency_last_30m); return v === null ? null : (v > 50 ? v / 1000 : v); })(), // ms → s
-      uptime: Number.isFinite(e.uptime_last_30m) ? e.uptime_last_30m : null
-    }));
+    .map(e => {
+      const tier = endpointTier(e);
+      const quant = e.quantization && e.quantization !== 'unknown' ? e.quantization : null;
+      const tps = pctl(e.throughput_last_30m);
+      const lat = pctl(e.latency_last_30m);
+      const ttft = lat === null ? null : (lat > 50 ? lat / 1000 : lat); // ms → s
+      return {
+        provider: e.provider_name || e.name || null,
+        ...(tier ? { tier } : {}),
+        ...(quant ? { quant } : {}),
+        in: perMillion(e.pricing && e.pricing.prompt),
+        out: perMillion(e.pricing && e.pricing.completion),
+        cacheRead: perMillion(e.pricing && e.pricing.input_cache_read),
+        ctx: e.context_length || null,
+        ...(tps !== null ? { tps } : {}),
+        ...(ttft !== null ? { ttft } : {}),
+        uptime: Number.isFinite(e.uptime_last_30m) ? e.uptime_last_30m : null
+      };
+    });
   return rows;
 }
 
 function labTiers(eps, own) {
+  const ownRows = (eps || []).filter(e => own.has(e.provider) && e.in !== null && e.out !== null);
+  const std = ownRows.filter(e => !e.tier);
+  const pool = std.length ? std : ownRows;
   const seen = new Map();
-  for (const e of eps || []) if (own.has(e.provider) && e.in !== null && e.out !== null) seen.set(`${e.in}|${e.out}`, [e.in, e.out]);
+  for (const e of pool) seen.set(`${e.in}|${e.out}`, [e.in, e.out]);
   return [...seen.values()].sort((a, b) => (3 * a[0] + a[1]) - (3 * b[0] + b[1]));
 }
 
 /* Pesos anunciados: la descripción del modelo en OpenRouter lo presenta como de pesos abiertos (no consta quién la redacta:
    no se atribuye al laboratorio), pero aún no hay
    repositorio público. Sólo cuenta si la frase habla del propio modelo (al principio, o tras «is», «are», «'s»), no si lo
-   compara con otros («outperforms open-weight models»). Devuelve el fragmento citado o null. */
+   compara con otros («outperforms open-weight models») o dice que se construyó sobre otros («built on open-source GLM models»).
+   Devuelve el fragmento citado o null. */
 const OPEN_DESC = /\bopen[- ]?(?:weights?|source[d]?)\b/i;
-const NOT_SELF = /\b(?:than|outperform\w*|rival\w*|beat\w*|compar\w*|versus|vs\.?|against|other|leading|top|best|surpass\w*|like|among|for)\b[^.]{0,60}$/i;
-const NOT_MODEL = /^\s*(?:tool\w*|framework\w*|librar\w*|communit\w*|ecosystem\w*|project\w*|software|stack\w*|sdk\w*|harness\w*|code(?:base)?|alternatives?|models|systems|ones|offerings|rivals|competitors|peers|developers)\b/i;
-function openWeightDesc(desc) {
+const NOT_SELF = /\b(?:than|outperform\w*|rival\w*|beat\w*|compar\w*|versus|vs\.?|against|other|leading|top|best|surpass\w*|like|among|for|based\s+on|built\s+(?:on|upon|from)|derived\s+from|fine[- ]?tuned\s+(?:from|on)|distilled\s+from|trained\s+(?:on|from)|adapted\s+from)\b[^.]{0,60}$/i;
+const NOT_MODEL = /^\s*(?:(?:(?!model\b|that\b|which\b|with\b|for\b|and\b|or\b|to\b|of\b|in\b)[a-z0-9.-]+\s+){0,2}(?:models|systems|alternatives?|ones|offerings|rivals|competitors|peers|developers)|tool\w*|framework\w*|librar\w*|communit\w*|ecosystem\w*|project\w*|software|stack\w*|sdk\w*|harness\w*|code(?:base)?)\b/i;
+export function openWeightDesc(desc) {
   const sentences = String(desc || '').replace(/\s+/g, ' ').split(/(?<=[.!?])\s+/).slice(0, 2);
   for (const t of sentences) {
     const mm = OPEN_DESC.exec(t);
@@ -496,22 +526,31 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv, pesosOv) 
   const p = m.pricing || {};
   const params = m.supported_parameters || [];
   const fresh = speedFromEndpoints(endpoints);
-  // Precio: el del propio laboratorio en OpenRouter; si no sirve el modelo, el del proveedor más barato (mezcla 3:1), nombrado.
-  // El precio por modelo de OpenRouter es el de un proveedor de referencia que cambia de un día a otro: sólo se usa sin proveedores.
+  // Precio: la tarifa estándar del propio laboratorio en OpenRouter (sin flex promocional ni priority, salvo si no hay
+  // estándar); si el laboratorio no sirve el modelo, el proveedor estándar más barato (mezcla 3:1), nombrado.
+  // El precio de referencia por modelo de OpenRouter sólo se usa si no se pudieron leer sus proveedores.
   const own = new Set(lab.or_provider || []);
   const priced = (fresh || []).filter(e => e.in !== null && e.out !== null);
   const cheapest = rows => rows.slice().sort((a, b) => (3 * a.in + a.out) - (3 * b.in + b.out))[0] || null;
-  const labEp = cheapest(priced.filter(e => own.has(e.provider)));
-  // Todas las tarifas del laboratorio (entrada, salida): distinguen una subida de precio de la retirada de su tarifa más barata.
+  const ownPriced = priced.filter(e => own.has(e.provider));
+  const stdOwn = ownPriced.filter(e => !e.tier);
+  const labEp = cheapest(stdOwn.length ? stdOwn : ownPriced);
+  // Todas las tarifas estándar del laboratorio (entrada, salida): distinguen una subida de precio de la retirada de una tarifa.
   const tiers = labTiers(fresh, own);
-  const chosen = labEp || cheapest(priced);
+  const stdAll = priced.filter(e => !e.tier);
+  const chosen = labEp || cheapest(stdAll.length ? stdAll : priced);
   let price;
   if (chosen) {
     const quant = chosen.quant && chosen.quant !== 'unknown' ? chosen.quant : null;
-    const note = labEp ? `precio del propio laboratorio (${chosen.provider}) en OpenRouter` : `el laboratorio no lo sirve en OpenRouter: proveedor más barato, ${chosen.provider}${quant ? `, con cuantización ${quant}` : ''}`;
+    const tierSuffix = chosen.tier ? ` (tarifa ${chosen.tier})` : '';
+    const note = labEp
+      ? `precio del propio laboratorio (${chosen.provider}) en OpenRouter${tierSuffix}`
+      : `el laboratorio no lo sirve en OpenRouter: proveedor más barato, ${chosen.provider}${quant ? `, con cuantización ${quant}` : ''}${tierSuffix}`;
     const u = `${orUrl}/providers`;
     price = {
-      basis: labEp ? 'laboratorio' : 'proveedor', provider: chosen.provider, quant, ...(labEp ? { tiers } : {}),
+      basis: labEp ? 'laboratorio' : 'proveedor', provider: chosen.provider, quant,
+      ...(chosen.tier ? { tier: chosen.tier } : {}),
+      ...(labEp ? { tiers } : {}),
       in: fact(chosen.in, 'openrouter', u, TODAY, { note }),
       out: fact(chosen.out, 'openrouter', u, TODAY, { note }),
       cacheRead: fact(chosen.cacheRead ?? null, 'openrouter', u, TODAY, { note }),
@@ -552,8 +591,8 @@ function buildModel(m, lab, endpoints, hf, aaMatch, prev, ep, epochOv, pesosOv) 
     aa = {
       slug: r.slug, name: r.name, how: aaMatch.how, url: aaUrl, version: aaMatch.version ?? null,
       intelligence: fact(ev.artificial_analysis_intelligence_index ?? null, 'aa', aaUrl, TODAY, { note: `Artificial Analysis Intelligence Index${aaMatch.version ? ` v${aaMatch.version}` : ''}, configuración «${r.name}»; ${nowNote}` }),
-      coding: fact(ev.artificial_analysis_coding_index ?? null, 'aa', aaUrl, TODAY, { note: `Artificial Analysis Coding Index; ${nowNote}` }),
-      agentic: fact(ev.artificial_analysis_agentic_index ?? null, 'aa', aaUrl, TODAY, { note: `Artificial Analysis Agentic Index; ${nowNote}` }),
+      ...(ev.artificial_analysis_coding_index != null ? { coding: fact(ev.artificial_analysis_coding_index, 'aa', aaUrl, TODAY, { note: `Artificial Analysis Coding Index; ${nowNote}` }) } : {}),
+      ...(ev.artificial_analysis_agentic_index != null ? { agentic: fact(ev.artificial_analysis_agentic_index, 'aa', aaUrl, TODAY, { note: `Artificial Analysis Agentic Index; ${nowNote}` }) } : {}),
       tps: fact(r.median_output_tokens_per_second || null, 'aa', aaUrl, TODAY, { note: 'mediana de AA para el proveedor de referencia del laboratorio' }),
       ttft: fact(r.median_time_to_first_token_seconds || null, 'aa', aaUrl),
       ttfa: fact(r.median_time_to_first_answer_token_seconds || r.median_time_to_first_answer_token || null, 'aa', aaUrl, TODAY, { note: 'incluye el razonamiento previo a la respuesta' }),
@@ -678,105 +717,124 @@ function rowsFromCatalog(catModels, labs, aaCreators) {
   return [...bySlug.values()];
 }
 
-/* Normaliza en memoria una instantánea previa anterior a schema 4 con las reglas actuales de emparejamiento AA,
-   sin tocar data/history/<fecha>.json en disco, para que corregir colisiones o duplicados aaOnly no genere noticias falsas. */
-function normalizeBaseAA(base, currentModels, prevCatModels, labs, aaCreators, overrides, aaSolo, epFront) {
-  if (!base?.models || (base.schema || 0) >= 4) return { base, repairedAA: new Set() };
+/* Normaliza en memoria una instantánea previa (schema < 4: emparejamiento AA; schema < 5: transición de tarifas
+   flex/promocionales a tarifa estándar) sin tocar data/history/<fecha>.json en disco, para evitar noticias falsas. */
+function normalizeBase(base, currentModels, prevCatModels, labs, aaCreators, overrides, aaSolo, epFront, prevTiers) {
+  if (!base?.models || (base.schema || 0) >= 5) return { base, repairedAA: new Set() };
   const out = structuredClone(base);
   const repairedAA = new Set();
-  const bySlug = new Map();
-  const prevModelById = new Map([...(prevCatModels || []), ...(currentModels || [])].map(m => [m.id, m]));
-  for (const m of [...(prevCatModels || []), ...(currentModels || [])]) {
-    if (!m?.aa?.slug) continue;
-    const author = m.id.split('/')[0];
-    const cSlug = labs[author]?.aa_creator;
-    if (!cSlug || !aaCreators[cSlug]) continue;
-    if (!bySlug.has(m.aa.slug)) {
-      bySlug.set(m.aa.slug, {
-        slug: m.aa.slug,
-        name: m.aa.name,
-        release_date: m.aa.release?.v || null,
-        model_creator: { id: aaCreators[cSlug], slug: cSlug },
-        evaluations: { artificial_analysis_intelligence_index: m.aa.intelligence?.v ?? null },
-        _holders: new Set()
-      });
+  if ((base.schema || 0) < 4) {
+    const bySlug = new Map();
+    const prevModelById = new Map([...(prevCatModels || []), ...(currentModels || [])].map(m => [m.id, m]));
+    for (const m of [...(prevCatModels || []), ...(currentModels || [])]) {
+      if (!m?.aa?.slug) continue;
+      const author = m.id.split('/')[0];
+      const cSlug = labs[author]?.aa_creator;
+      if (!cSlug || !aaCreators[cSlug]) continue;
+      if (!bySlug.has(m.aa.slug)) {
+        bySlug.set(m.aa.slug, {
+          slug: m.aa.slug,
+          name: m.aa.name,
+          release_date: m.aa.release?.v || null,
+          model_creator: { id: aaCreators[cSlug], slug: cSlug },
+          evaluations: { artificial_analysis_intelligence_index: m.aa.intelligence?.v ?? null },
+          _holders: new Set()
+        });
+      }
+      bySlug.get(m.aa.slug)._holders.add(m.id);
     }
-    bySlug.get(m.aa.slug)._holders.add(m.id);
-  }
-  for (const [id, sm] of Object.entries(base.models)) {
-    if (!sm.ao) continue;
-    const author = id.split('/')[0];
-    const cSlug = labs[author]?.aa_creator;
-    const slug = prevModelById.get(id)?.aa?.slug || id.split('/').slice(1).join('/');
-    if (cSlug && aaCreators[cSlug] && !bySlug.has(slug)) {
-      bySlug.set(slug, {
-        slug, name: sm.n || slug, release_date: base.date,
-        model_creator: { id: aaCreators[cSlug], slug: cSlug },
-        evaluations: { artificial_analysis_intelligence_index: sm.ii ?? null },
-        _holders: new Set([id])
-      });
-    } else if (bySlug.has(slug)) {
-      bySlug.get(slug)._holders.add(id);
+    for (const [id, sm] of Object.entries(base.models)) {
+      if (!sm.ao) continue;
+      const author = id.split('/')[0];
+      const cSlug = labs[author]?.aa_creator;
+      const slug = prevModelById.get(id)?.aa?.slug || id.split('/').slice(1).join('/');
+      if (cSlug && aaCreators[cSlug] && !bySlug.has(slug)) {
+        bySlug.set(slug, {
+          slug, name: sm.n || slug, release_date: base.date,
+          model_creator: { id: aaCreators[cSlug], slug: cSlug },
+          evaluations: { artificial_analysis_intelligence_index: sm.ii ?? null },
+          _holders: new Set([id])
+        });
+      } else if (bySlug.has(slug)) {
+        bySlug.get(slug)._holders.add(id);
+      }
     }
-  }
-  const aaList = [...bySlug.values()];
-  const baseOr = Object.entries(base.models).filter(([, sm]) => !sm.ao).map(([id, sm]) => ({
-    id,
-    name: sm.n || prevModelById.get(id)?.name || id,
-    orCreated: { v: prevModelById.get(id)?.orCreated?.v || null }
-  }));
-  const matched = matchCatalogAA(baseOr, labs, aaList, overrides, aaCreators);
-  const slugBaseII = new Map();
-  for (const [slug, row] of bySlug) {
-    for (const hId of row._holders) {
-      const bii = base.models[hId]?.ii;
-      if (bii !== null && bii !== undefined) { slugBaseII.set(slug, bii); break; }
+    const aaList = [...bySlug.values()];
+    const baseOr = Object.entries(base.models).filter(([, sm]) => !sm.ao).map(([id, sm]) => ({
+      id,
+      name: sm.n || prevModelById.get(id)?.name || id,
+      orCreated: { v: prevModelById.get(id)?.orCreated?.v || null }
+    }));
+    const matched = matchCatalogAA(baseOr, labs, aaList, overrides, aaCreators);
+    const slugBaseII = new Map();
+    for (const [slug, row] of bySlug) {
+      for (const hId of row._holders) {
+        const bii = base.models[hId]?.ii;
+        if (bii !== null && bii !== undefined) { slugBaseII.set(slug, bii); break; }
+      }
     }
-  }
-  let changed = false;
-  for (const [id, sm] of Object.entries(out.models)) {
-    if (sm.ao) continue;
-    const hit = matched.get(id);
-    if (!hit && sm.ii !== null && sm.ii !== undefined) {
-      sm.ii = null;
-      changed = true;
-    } else if (hit && (sm.ii === null || sm.ii === undefined) && slugBaseII.has(hit.row.slug)) {
-      sm.ii = slugBaseII.get(hit.row.slug);
-      repairedAA.add(id);
-      changed = true;
-    }
-  }
-  const builtBase = baseOr.map(m => ({ ...m, aa: matched.get(m.id) ? { slug: matched.get(m.id).row.slug } : null }));
-  const validAOSlugs = new Set(aaOnlyCandidates(aaList, builtBase, labs, aaCreators, overrides, aaSolo || {}, '0000-00-00', new Set(bySlug.keys())).map(c => c.row.slug));
-  for (const [id, sm] of Object.entries(out.models)) {
-    if (!sm.ao) continue;
-    const slug = prevModelById.get(id)?.aa?.slug || id.split('/').slice(1).join('/');
-    if (!validAOSlugs.has(slug)) {
-      delete out.models[id];
-      changed = true;
-    }
-  }
-  if (changed) {
-    const baseCatModels = Object.entries(out.models).map(([id, sm]) => {
-      const author = id.split('/')[0], labObj = labs[author] || {}, meta = prevModelById.get(id);
+    let changed = false;
+    for (const [id, sm] of Object.entries(out.models)) {
+      if (sm.ao) continue;
       const hit = matched.get(id);
-      const rel = hit?.row.release_date || meta?.aa?.release?.v || meta?.orCreated?.v || out.date;
-      return {
-        id,
-        name: sm.n || meta?.name || id,
-        identity: labObj.stealth ? 'sin confirmar' : 'confirmada',
-        lab: { id: author, name: labObj.name || author, country: labObj.country || null },
-        weights: { v: sm.w === 'o' || sm.w === 'a' ? 'abiertos' : sm.w === 'c' ? 'cerrados' : null, ...(sm.w === 'a' ? { announced: true } : {}) },
-        orCreated: { v: meta?.orCreated?.v || null },
-        epochPub: meta?.epochPub || null,
-        epoch: meta?.epoch || null,
-        aa: sm.ii !== null && sm.ii !== undefined ? { version: out.aaIndexVersion ?? null, intelligence: { v: sm.ii }, release: { v: rel } } : null
-      };
-    });
-    if (out.leaders?.aa) out.leaders = { ...out.leaders, aa: leaders(baseCatModels, out.aaIndexVersion).aa };
-    if (out.ind) {
-      const baseAAInd = indSnapshot({ aa: aaIndicators(baseCatModels, out.aaIndexVersion, { ok: true, got: out.got || `${out.date}T00:00:00Z` }, epFront) });
-      for (const k of ['aaUsCn', 'aaClosedOpen', 'aaLabs', 'aaRate12m']) if (k in out.ind) out.ind[k] = baseAAInd[k];
+      if (!hit && sm.ii !== null && sm.ii !== undefined) {
+        sm.ii = null;
+        changed = true;
+      } else if (hit && (sm.ii === null || sm.ii === undefined) && slugBaseII.has(hit.row.slug)) {
+        sm.ii = slugBaseII.get(hit.row.slug);
+        repairedAA.add(id);
+        changed = true;
+      }
+    }
+    const builtBase = baseOr.map(m => ({ ...m, aa: matched.get(m.id) ? { slug: matched.get(m.id).row.slug } : null }));
+    const validAOSlugs = new Set(aaOnlyCandidates(aaList, builtBase, labs, aaCreators, overrides, aaSolo || {}, '0000-00-00', new Set(bySlug.keys())).map(c => c.row.slug));
+    for (const [id, sm] of Object.entries(out.models)) {
+      if (!sm.ao) continue;
+      const slug = prevModelById.get(id)?.aa?.slug || id.split('/').slice(1).join('/');
+      if (!validAOSlugs.has(slug)) {
+        delete out.models[id];
+        changed = true;
+      }
+    }
+    if (changed) {
+      const baseCatModels = Object.entries(out.models).map(([id, sm]) => {
+        const author = id.split('/')[0], labObj = labs[author] || {}, meta = prevModelById.get(id);
+        const hit = matched.get(id);
+        const rel = hit?.row.release_date || meta?.aa?.release?.v || meta?.orCreated?.v || out.date;
+        return {
+          id,
+          name: sm.n || meta?.name || id,
+          identity: labObj.stealth ? 'sin confirmar' : 'confirmada',
+          lab: { id: author, name: labObj.name || author, country: labObj.country || null },
+          weights: { v: sm.w === 'o' || sm.w === 'a' ? 'abiertos' : sm.w === 'c' ? 'cerrados' : null, ...(sm.w === 'a' ? { announced: true } : {}) },
+          orCreated: { v: meta?.orCreated?.v || null },
+          epochPub: meta?.epochPub || null,
+          epoch: meta?.epoch || null,
+          aa: sm.ii !== null && sm.ii !== undefined ? { version: out.aaIndexVersion ?? null, intelligence: { v: sm.ii }, release: { v: rel } } : null
+        };
+      });
+      if (out.leaders?.aa) out.leaders = { ...out.leaders, aa: leaders(baseCatModels, out.aaIndexVersion).aa };
+      if (out.ind) {
+        const baseAAInd = indSnapshot({ aa: aaIndicators(baseCatModels, out.aaIndexVersion, { ok: true, got: out.got || `${out.date}T00:00:00Z` }, epFront) });
+        for (const k of ['aaUsCn', 'aaClosedOpen', 'aaLabs', 'aaRate12m']) if (k in out.ind) out.ind[k] = baseAAInd[k];
+      }
+    }
+  }
+  if ((base.schema || 0) < 5) {
+    for (const m of currentModels || []) {
+      const sm = out.models[m.id];
+      if (!sm || sm.pb !== 'laboratorio' || m.price?.basis !== 'laboratorio') continue;
+      if (sm.in == null || sm.out == null || m.price.in.v == null || m.price.out.v == null) continue;
+      if (sm.in === m.price.in.v && sm.out === m.price.out.v) continue;
+      const had = prevTiers?.(m.id) || sm.lp || null;
+      const alreadyOffered = !!had && had.some(([i, o]) => i === m.price.in.v && o === m.price.out.v);
+      const hasNonStd = (m.endpoints || []).some(e => e.tier && e.in === sm.in && e.out === sm.out);
+      const higherBlend = (3 * m.price.in.v + m.price.out.v) > (3 * sm.in + sm.out);
+      if (alreadyOffered && (hasNonStd || higherBlend)) {
+        sm.in = m.price.in.v;
+        sm.out = m.price.out.v;
+        if (m.price.tiers) sm.lp = m.price.tiers;
+      }
     }
   }
   return { base: out, repairedAA };
@@ -817,6 +875,10 @@ function aaIndicators(models, version, st, epFront) {
   const got = st?.ok ? st.got : st?.lastOk || NOW_ISO;
   const f = (v, extra) => ({ v, src: 'aa', url: SOURCES.aa.url, asOf: got.slice(0, 10), got, version, ...(st?.ok ? {} : { stale: true }), ...extra });
   const base = 'índice de inteligencia de Artificial Analysis' + (version ? ` v${version}` : '') + ', con la puntuación actual de cada modelo del catálogo';
+  const inc12 = inc(n.yearAgo, r.today);
+  const completeFrom = inc12.incompleto && cov?.completeFrom && cov.completeFrom < r.today ? cov.completeFrom : null;
+  const fromComplete = completeFrom ? (r.models || []).filter(m => m.d <= completeFrom).sort((a, b) => b.v - a.v)[0] || null : null;
+  const completeExtra = completeFrom && fromComplete && n.to ? { completeFrom, fromComplete: who(fromComplete), vComplete: gap(n.to, fromComplete) } : {};
   return {
     gapUsCn: f(gap(n.us, n.cn), { signed: true, us: who(n.us), cn: who(n.cn), ...inc(r.today), note: `mejor modelo de un laboratorio estadounidense menos el mejor de uno chino; ${base}` }),
     gapClosedOpen: f(gap(n.closed, n.open), { signed: true, closed: who(n.closed), open: who(n.open), ...inc(r.today),
@@ -825,7 +887,7 @@ function aaIndicators(models, version, st, epFront) {
       note: `mejor modelo de pesos cerrados menos el mejor de pesos abiertos (incluidos los anunciados en su descripción de OpenRouter, aún sin repositorio público); ${base}` }),
     gapLabs: f(gap(n.first, n.second), { first: who(n.first), second: who(n.second), ...inc(r.today), note: `mejor modelo del primer laboratorio menos el del segundo; ${base}` }),
     labs: n.labs.slice(0, 10).map(who),
-    rate12m: f(gap(n.to, n.from), { from: who(n.from), to: who(n.to), since: n.yearAgo, ...inc(n.yearAgo, r.today), note: `puntos ganados por la frontera desde el ${n.yearAgo}: mejor modelo publicado hasta hoy menos el mejor publicado hasta esa fecha, los dos con su puntuación actual; modelos del catálogo: los que siguen en OpenRouter y los que AA ya puntúa sin API pública` })
+    rate12m: f(inc12.incompleto ? null : gap(n.to, n.from), { from: who(n.from), to: who(n.to), since: n.yearAgo, ...inc12, ...completeExtra, note: `puntos ganados por la frontera desde el ${n.yearAgo}: mejor modelo publicado hasta hoy menos el mejor publicado hasta esa fecha, los dos con su puntuación actual; modelos del catálogo: los que siguen en OpenRouter y los que AA ya puntúa sin API pública` })
   };
 }
 
@@ -1036,7 +1098,7 @@ async function main() {
   const usoNow = usoRes ? usoRes.semana : null;
 
   const snap = {
-    schema: 4,
+    schema: 5,
     date: TODAY, got: NOW_ISO,
     aaIndexVersion: aaVersion ?? curated.aaIndexVersion ?? null,
     leaders: leaders(models, aaVersion),
@@ -1049,7 +1111,7 @@ async function main() {
   // Serie diaria compacta para los gráficos de evolución: un registro por instantánea guardada.
   const serie = [];
   const firstSeen = new Map();   // primera recogida en la que figura cada modelo: su fecha de detección
-  const snaps = [];              // todas las instantáneas, para el vaivén de precios (scripts/cambios.mjs)
+  const snaps = [];              // todas las instantáneas, para el vaivén de precios y uso (scripts/cambios.mjs)
   for (const f of histFiles.slice().sort()) {
     const h = f === `${TODAY}.json` ? snap : await readJSON(path.join(DATA, 'history', f));
     if (!h?.models) continue;
@@ -1057,9 +1119,23 @@ async function main() {
     for (const id of Object.keys(h.models)) if (!firstSeen.has(id)) firstSeen.set(id, h.date);
     const best = w => Object.entries(h.models).filter(([, x]) => (x.w === w || (w === 'o' && x.w === 'a')) && x.ii !== null && x.ii !== undefined).sort((x, y) => y[1].ii - x[1].ii)[0];
     const lead = (id, w) => { const e = id && h.models[id] ? [id, h.models[id]] : best(w); return e ? { id: e[0], n: e[1].n, ii: e[1].ii } : null; };
-    serie.push({ d: h.date, aaV: h.aaIndexVersion ?? null, open: lead(h.leaders?.aa?.open?.id, 'o'), closed: lead(h.leaders?.aa?.closed?.id, 'c'), eciClosedOpen: h.ind?.closedOpen ?? null, eciUsCn: h.ind?.usCn ?? null });
+    const cheapestAbove = (field, thr) => {
+      let cheap = null;
+      for (const [id, x] of Object.entries(h.models)) {
+        if (x[field] == null || x[field] < thr || x.in == null || x.out == null || x.pb === 'sin-api') continue;
+        const b = (3 * x.in + x.out) / 4;
+        if (b <= 0) continue;
+        if (!cheap || b < cheap.p) cheap = { id, n: x.n, p: Math.round(b * 10000) / 10000, v: x[field] };
+      }
+      return cheap;
+    };
+    serie.push({
+      d: h.date, aaV: h.aaIndexVersion ?? null, open: lead(h.leaders?.aa?.open?.id, 'o'), closed: lead(h.leaders?.aa?.closed?.id, 'c'),
+      eciClosedOpen: h.ind?.closedOpen ?? null, eciUsCn: h.ind?.usCn ?? null,
+      costEci160: cheapestAbove('eci', 160), costAa50: cheapestAbove('ii', 50)
+    });
   }
-  await writeFile(path.join(DATA, 'historia.json'), JSON.stringify({ _doc: 'Serie diaria derivada de data/history/<fecha>.json: líderes por índice de Artificial Analysis (cerrado y abierto) y distancias ECI. Generado; no editar a mano.', generated: NOW_ISO, serie }) + '\n');
+  await writeFile(path.join(DATA, 'historia.json'), JSON.stringify({ _doc: 'Serie diaria derivada de data/history/<fecha>.json: líderes por índice de Artificial Analysis (cerrado y abierto), distancias ECI y coste mínimo por capacidad. Generado; no editar a mano.', generated: NOW_ISO, serie }) + '\n');
   // Cambios frente a la última instantánea de un día anterior. El ranking de uso entró en las instantáneas el 23 oct 2026:
   // hasta que la base lo tenga, se compara con el de la recogida anterior si es de otro día.
   const hoyFrom = new Date(NOW.getTime() - (HOY_DAYS - 1) * 86400e3).toISOString().slice(0, 10);
@@ -1068,7 +1144,7 @@ async function main() {
   // es del mismo día que la base, se sacan de sus proveedores.
   const prevSameDay = base && prevCatalog?.generated?.slice(0, 10) === base.date;
   const prevTiers = id => base?.models?.[id]?.lp ?? (prevSameDay && prevMap.get(id) ? labTiers(prevMap.get(id).endpoints, new Set(labs[id.split('/')[0]]?.or_provider || [])) : null);
-  const { base: baseForDiff, repairedAA } = normalizeBaseAA(base, models, prevCatalog?.models, labs, aaCreators, overrides, ovFile.aaSolo, epFront);
+  const { base: baseForDiff, repairedAA } = normalizeBase(base, models, prevCatalog?.models, labs, aaCreators, overrides, ovFile.aaSolo, epFront, prevTiers);
   const { items: changeItems, novedades } = detectChanges({
     models, base: baseForDiff, repairedAA, listed: orModels.listed, leaders: snap.leaders, ind: indicators.ind, checks: indicators.checks, ai2027,
     uso: usoNow, usoPrev, prevTiers, firstSeen, hoyFrom, TODAY, NOW_ISO
@@ -1076,7 +1152,7 @@ async function main() {
   const baseDate = baseForDiff ? baseForDiff.date : null;
 
   const catalog = {
-    schema: 4,
+    schema: 5,
     generated: NOW_ISO,
     sources: SOURCES,
     status,
@@ -1085,7 +1161,7 @@ async function main() {
     method: {
       capability: `En las vistas de modelos, la capacidad se mide con el Artificial Analysis Intelligence Index${aaVersion ? ` v${aaVersion}` : ''}, que AA calcula con sus propias pruebas y suele puntuar un modelo a los pocos días de salir. AA publica una cifra por configuración de razonamiento; se muestra la de mayor índice y se nombra. Junto a él figura el Epoch Capabilities Index (ECI) de Epoch AI (CC BY 4.0), que combina muchos benchmarks con intervalo de confianza y es la base de las series históricas de «La carrera». Las dos escalas no son comparables entre sí. El emparejamiento con OpenRouter es por laboratorio y nombre normalizado.`,
       blended: 'Precio combinado = (3 × entrada + salida) / 4, en USD por millón de tokens, como Artificial Analysis.',
-      price: 'Precio: el que cobra el propio laboratorio cuando sirve el modelo en OpenRouter; si no lo sirve, el del proveedor más barato, nombrado y con su cuantización cuando OpenRouter la publica (puede no ser la versión que evalúan AA o Epoch). El precio por modelo que publica OpenRouter no se usa porque corresponde a un proveedor de referencia que cambia de un día a otro. Sólo se registran como cambio de precio los del propio laboratorio, y no cuando el precio nuevo ya se vio en los 14 días anteriores o el anterior vuelve en los 14 siguientes: algunos laboratorios cobran distinto según la hora.',
+      price: 'Precio: la tarifa estándar que cobra el propio laboratorio cuando sirve el modelo en OpenRouter (sin contar niveles promocionales como flex ni tarifas prioritarias más caras, salvo si no ofrece tarifa estándar); si no lo sirve, el proveedor estándar más barato, nombrado y con su cuantización cuando OpenRouter la publica (puede no ser la versión que evalúan AA o Epoch). Si no se pueden leer los proveedores de un modelo, se usa temporalmente el precio de referencia de OpenRouter, marcado como tal. Sólo se registran como cambio de precio los del propio laboratorio, y no cuando el precio nuevo ya se vio en los 14 días anteriores o el anterior vuelve en los 14 siguientes: algunos laboratorios cobran distinto según la hora.',
       weights: '«Abiertos» con un repositorio público en Hugging Face, enlazado por OpenRouter o con el mismo nombre en la organización del laboratorio. Sin repositorio, la clasificación de Epoch si la hay; si no, «abiertos · anunciados» cuando su descripción de OpenRouter lo presenta como de pesos abiertos (no consta quién la redacta, así que no se atribuye al laboratorio; cuenta como abierto, aunque aún no se pueda descargar), y si no, «cerrados», marcado como inferido. La licencia procede de la ficha de Hugging Face.',
       speed: 'La velocidad depende de quién sirve el modelo. Se muestra la mediana que mide Artificial Analysis en el proveedor de referencia, con la misma configuración que da su puntuación; con el razonamiento al máximo, la latencia (tiempo hasta el primer token) incluye el tiempo de pensar y puede llegar a minutos. Si AA no la tiene, la del proveedor más rápido de OpenRouter cuando su API la publica.',
       window: `Entran los modelos de los laboratorios seguidos dados de alta en OpenRouter en los últimos ${WINDOW_DAYS} días, y los que Artificial Analysis ya puntúa sin que estén en OpenRouter (publicados en los últimos ${AA_ONLY_DAYS} días), marcados «sin API pública» y sin precio hasta que llegan.`
@@ -1128,6 +1204,11 @@ async function main() {
     evLog.events = evLog.events.filter(e => !vaivenes.includes(e));
     log(`precios que van y vuelven (${PRICE_BACK_DAYS} días), no se registran: ${vaivenes.map(e => `${e.model} ${e.detected}`).join(' | ')}`);
   }
+  const usoVaivenes = evLog.events.filter(e => usoVaiven(e, snaps));
+  if (usoVaivenes.length) {
+    evLog.events = evLog.events.filter(e => !usoVaivenes.includes(e));
+    log(`líder de uso que va y vuelve (${USO_BACK_DAYS} días), no se registran: ${usoVaivenes.map(e => `${e.data?.slug} ${e.detected}`).join(' | ')}`);
+  }
   // Parte diario: titular, importancia según la regla fija y consecuencia de cada cambio (scripts/parte.mjs).
   const carrera = await readJSON(path.join(DATA, 'curated/carrera.json'));
   const P = {
@@ -1150,4 +1231,6 @@ async function main() {
   log(`escrito: ${models.length} modelos (${models.filter(m => m.epoch?.eci?.v).length} con ECI), ${changeItems.length} cambios frente al ${baseDate || '—'} (${Object.entries(changeItems.reduce((a, e) => ({ ...a, [e.kind]: (a[e.kind] || 0) + 1 }), {})).map(([k, n]) => `${k} ${n}`).join(', ') || 'ninguno'}), ${hoyItems.length} en la ventana de Hoy, AA ${status.aa.ok ? 'ok' : status.aa.reason}`);
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch(e => { console.error(e); process.exit(1); });
+}

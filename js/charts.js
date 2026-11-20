@@ -93,17 +93,19 @@ function placeLabels(cands, { W, T, H, B, L, R }, taken = []) {
   const hit = b => boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
   for (const c of cands) {
     const w = c.text.length * CH, h = 13;
+    const ox = c.icon ? 12 : 9, uy = c.icon ? -11 : -8, dy = c.icon ? 18 : 16;
     const near = c.prefer === 'down'
-      ? [['start', 9, 16], ['end', -9, 16], ['start', 9, -8], ['end', -9, -8]]
-      : [['start', 9, -8], ['end', -9, -8], ['start', 9, 16], ['end', -9, 16]];
-    const tries = c.far ? near.concat([['middle', 0, 30], ['middle', 0, -20], ['start', 9, 30], ['end', -9, 30], ['start', 9, -22], ['end', -9, -22]]) : near;
-    for (const [anchor, dx, dy] of tries) {
-      const x = c.x + dx, y = c.y + dy;
+      ? [['start', ox, dy], ['end', -ox, dy], ['start', ox, uy], ['end', -ox, uy], ...(c.icon ? [['end', -ox, 4], ['start', ox, 4]] : [])]
+      : [['start', ox, uy], ['end', -ox, uy], ['start', ox, dy], ['end', -ox, dy], ...(c.icon ? [['end', -ox, 4], ['start', ox, 4]] : [])];
+    const tries = c.far ? near.concat([['middle', 0, 30], ['middle', 0, -20], ['start', ox, 30], ['end', -ox, 30], ['start', ox, -22], ['end', -ox, -22]]) : near;
+    for (const [anchor, dx, dy0] of tries) {
+      const x = c.x + dx, y = c.y + dy0;
       const box = anchor === 'start' ? [x, y - h + 2, x + w, y + 3] : anchor === 'end' ? [x - w, y - h + 2, x, y + 3] : [x - w / 2, y - h + 2, x + w / 2, y + 3];
       if (box[0] < L || box[2] > W - R + 4 || box[1] < T - 4 || box[3] > H - B) continue;
       if (c.minY != null && (box[1] < c.minY || box[3] > c.maxY)) continue;
       if (hit(box)) continue;
       boxes.push(box);
+      if (c.icon) boxes.push([c.x - 10, c.y - 10, c.x + 10, c.y + 10]);
       out.push({ ...c, lx: x, ly: y, anchor });
       break;
     }
@@ -336,7 +338,7 @@ export function scatter(el, points, { threshold = null, labels = new Set(), fres
     const ord = shown.map((p, i) => [p, i]).sort((a, b) => (key(a[0]) ? 1 : 0) - (key(b[0]) ? 1 : 0));
     for (const [p, i] of ord) s += `<circle data-k="${i}" class="pt-${p.cls}${key(p) ? ' key' : ' faint'}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="6"/>`;
     s += '</g>';
-    const targets = shown.map(p => ({ x: X(p.x), y: Y(p.y), html: p.tip || tip(p.label, []) }));
+    const targets = shown.map(p => ({ x: X(p.x), y: Y(p.y), html: p.tip || tip(p.label, []), go: p.go }));
     const cands = shown.filter(p => labels.has(p.id)).map(p => ({ p })).sort((a, b) => b.p.y - a.p.y)
       .concat(shown.filter(p => fresh.has(p.id) && !labels.has(p.id)).sort((a, b) => b.y - a.y).map(p => ({ p, far: true })))
       .concat(shown.filter(p => pareto.has(p.id) && !labels.has(p.id) && !fresh.has(p.id)).sort((a, b) => b.y - a.y).map(p => ({ p })))
@@ -370,7 +372,7 @@ const covLegend = () => `<span><i class="lg-cov"></i>${t('Cobertura incompleta: 
    (p. ej. las novedades); fmtV: cómo se escribe la cifra; bands: tramos con cobertura incompleta [{ from, to }]. */
 export function frontier(el, records, opts = {}) {
   const { models = null, yLabel = '', yShort = '', metric = 'ECI', highlight = null, fmtV = v => num(v, 1), bands = null } = opts;
-  const G = { ...frame(el, { W: 860, H: 360, L: 52, R: 16, T: 16, B: 40 }, 320), yShort };
+  const G = { ...frame(el, { W: 860, H: 360, L: 52, R: 24, T: 18, B: 40 }, 320), yShort };
   const { W, H, L, R, T, B } = G;
   const rec = { open: [], closed: [] };
   for (const g of ['open', 'closed']) {
@@ -386,8 +388,9 @@ export function frontier(el, records, opts = {}) {
   const first = Math.min(...[...rec.open, ...rec.closed].map(r => ms(r.d)));
   const pts = all.filter(m => m.d && ms(m.d) >= first);
   const tmax = Math.max(...pts.map(m => ms(m.d)));
+  const xPad = Math.max(4 * 86400e3, (tmax - first) * 0.035);
   const vals = pts.map(m => m.v);
-  const full = { x0: first, x1: tmax, y0: Math.max(0, Math.floor((Math.min(...vals) - 3) / 5) * 5), y1: Math.ceil((Math.max(...vals) + 3) / 5) * 5 };
+  const full = { x0: first - xPad, x1: tmax + xPad, y0: Math.max(0, Math.floor((Math.min(...vals) - 3) / 5) * 5), y1: Math.ceil((Math.max(...vals) + 6) / 5) * 5 };
   const grp = g => g === 'o' ? 'open' : 'closed';
   // Logo de un récord: se busca el modelo por nombre (y fecha) para tener su id y su laboratorio.
   const iconOf = p => {
@@ -420,7 +423,7 @@ export function frontier(el, records, opts = {}) {
       html: tip(m.n, [
         [t('Fecha de lanzamiento'), fmtDate(m.d)],
         [metric, m.lo != null && m.hi != null ? `${fmtV(m.v)} ${t('(intervalo {lo}–{hi})', { lo: num(m.lo, 1), hi: num(m.hi, 1) })}` : fmtV(m.v)],
-        [t('Pesos'), m.g === 'o' ? (m.anun ? t('abiertos (anunciados en su descripción de OpenRouter; aún no descargables)') : t('abiertos')) : m.inf ? t('cerrados (inferido: no hay pesos publicados)') : t('cerrados')],
+        [t('Pesos'), m.g === 'o' ? (m.anun ? t('abiertos (anunciados en su descripción de OpenRouter; aún no descargables)') : t('abiertos')) : m.inf ? t('cerrados (sin pesos publicados)') : t('cerrados')],
         [t('Organización'), m.org || null],
         [t('Nuevo récord'), m.rec ? t('sí, mejor {g} hasta esa fecha', { g: m.g === 'o' ? t('abierto') : t('cerrado') }) : t('no')]
       ], '', logoFor({ id: m.id, name: m.n, org: m.org }))
@@ -439,7 +442,7 @@ export function frontier(el, records, opts = {}) {
     }
     const marked = highlight ? shown.filter(m => !m.rec && highlight.has(m.n)).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down' })) : [];
     if (zoomed) rest.push(...shown.filter(m => !m.rec && !(highlight && highlight.has(m.n))).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down', faint: true })));
-    const placed = placeLabels([...leaders, ...marked, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G);
+    const placed = placeLabels([...leaders, ...marked, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G, leaders.filter(l => l.icon).map(l => [l.x - 10, l.y - 10, l.x + 10, l.y + 10]));
     // Los récords con nombre llevan el logo del modelo en lugar del punto, con el borde del color de su grupo.
     s += placed.filter(l => l.icon).map(l => `<g class="logo-pt ${l.g}${l.anun ? ' anun' : ''}"><rect x="${(l.x - 9).toFixed(1)}" y="${(l.y - 9).toFixed(1)}" width="18" height="18"/><image href="${esc(l.icon)}" x="${(l.x - 6).toFixed(1)}" y="${(l.y - 6).toFixed(1)}" width="12" height="12"/></g>`).join('');
     s += labelSvg(placed);
@@ -841,3 +844,68 @@ export function ediMap(el, items, line, opts = {}) {
   zoomable(el, G, full, draw, { minX: 60 * 86400e3, minY: 5 });
   return true;
 }
+
+/* ── Caída del coste por nivel de capacidad (Modelos) ───────────────────── */
+/* series: [{ cls, name, pts: [{ d, p, n, org, v, id }] }]. Eje Y logarítmico en USD por millón de tokens (mezcla 3:1).
+   Cada escalón marca un nuevo mínimo histórico de precio para alcanzar o superar un umbral fijo de capacidad (ECI). */
+export function costCurve(el, series, opts = {}) {
+  const { today = new Date().toISOString().slice(0, 10), yLabel = t('Precio combinado por millón (escala log.)'), yShort = t('USD / M (log.)'), aria = t('Evolución del coste mínimo por nivel de capacidad') } = opts;
+  const active = (series || []).filter(sr => sr.pts?.length);
+  if (!active.length) { el.innerHTML = `<div class="chart-empty">${t('Sin datos suficientes para la serie.')}</div>`; return false; }
+  watchWidth(el, () => costCurve(el, series, opts));
+  const G = { ...frame(el, { W: 860, H: 340, L: 66, R: 165, T: 16, B: 40 }, 300), yShort };
+  const { W, H, L, R, T, B } = G;
+  const allPts = active.flatMap(sr => sr.pts);
+  const tmin0 = Math.min(...allPts.map(p => ms(p.d)));
+  const tmax = Math.max(ms(today), ...allPts.map(p => ms(p.d)));
+  const tmin = tmin0 - Math.max(4 * 86400e3, (tmax - tmin0) * 0.03);
+  const prices = allPts.map(p => p.p).filter(p => p > 0);
+  const y0 = Math.log10(Math.min(...prices) / 1.5);
+  const y1 = Math.log10(Math.max(...prices) * 1.5);
+  const X = val => L + (val - tmin) / (tmax - tmin || 1) * (W - L - R);
+  const Y = val => T + (1 - (Math.log10(val) - y0) / (y1 - y0 || 1)) * (H - T - B);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">`;
+  const ticks = logTicks(10 ** y0, 10 ** y1);
+  s += yAxis(ticks, Y, G, v => usd(v), yLabel) + timeAxis(X, tmin, tmax, G) + '</g>';
+  const targets = [];
+  for (const sr of active) {
+    const pts = sr.pts;
+    let d = `M${X(ms(pts[0].d)).toFixed(1)},${Y(pts[0].p).toFixed(1)}`;
+    for (const p of pts.slice(1)) d += ` H${X(ms(p.d)).toFixed(1)} V${Y(p.p).toFixed(1)}`;
+    s += `<path class="${sr.cls}" d="${d} H${X(tmax).toFixed(1)}"/>`;
+    const firstP = pts[0].p;
+    for (const p of pts) {
+      const k = targets.length;
+      const cx = X(ms(p.d)), cy = Y(p.p);
+      s += `<circle data-k="${k}" class="pt-${sr.cls} key" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="5"/>`;
+      const ratio = firstP > p.p ? firstP / p.p : null;
+      targets.push({
+        x: cx, y: cy,
+        go: p.id ? () => { location.hash = `#modelos/${p.id}`; } : null,
+        html: tip(p.n, [
+          [t('Umbral'), sr.name],
+          [t('Fecha'), fmtDate(p.d)],
+          [t('Precio combinado 3:1'), t('{usd} por millón', { usd: usd(p.p) })],
+          [t('Capacidad (ECI)'), num(p.v, 1)],
+          [t('Laboratorio'), p.org],
+          [t('Caída desde el primero'), ratio ? `×${num(ratio, ratio >= 10 ? 0 : 1)}` : null]
+        ], p.id ? t('Pulsa para abrir su ficha en Modelos.') : '', logoFor({ id: p.id, name: p.n, org: p.org }))
+      });
+    }
+  }
+  const ends = active.map(sr => {
+    const last = sr.pts[sr.pts.length - 1];
+    return { y: Y(last.p), text: `${sr.name}: ${usd(last.p)}`, cls: sr.cls };
+  }).sort((a, b) => a.y - b.y);
+  for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 15) ends[i].y = ends[i - 1].y + 15;
+  if (!G.narrow) s += ends.map(e => `<text class="ptlabel" x="${(X(tmax) + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
+  s += `</svg><div class="legend">${active.map(sr => {
+    const a = sr.pts[0].p, b = sr.pts[sr.pts.length - 1].p;
+    const drop = a > b ? ` (÷${num(a / b, a / b >= 10 ? 0 : 1)})` : '';
+    return `<span><i class="sw-${sr.cls}"></i>${esc(G.narrow ? `${sr.name}: ${usd(b)}${drop}` : `${sr.name}${drop}`)}</span>`;
+  }).join('')}</div>`;
+  el.innerHTML = s;
+  interact(el, targets, 22);
+  return true;
+}
+

@@ -57,7 +57,7 @@
       "id": "agentes",
       "titulo": "Fiabilidad de agentes",
       "pregunta": "¿Cuánto trabajo exige todavía supervisión o corrección?",
-      "indicadores": ["bench.mirror", "metr.sota", "metr.ratio", "bench.sweBest"],
+      "indicadores": ["bench.mirror", "edi.hardest", "metr.sota", "metr.ratio", "bench.sweBest"],
       "sabemos": ["bench.mirror", "metr.sota"],
       "hechos": [
         { "texto": "El horizonte temporal mide cuánto le llevarían las tareas a un experto humano, no cuánto tiempo puede trabajar el agente sin supervisión.", "fuente": "METR, «Time horizons» (preguntas frecuentes)", "url": "https://metr.org/time-horizons", "fecha": "2026-09-08", "consulta": "2026-10-20", "verificacion": "lectura directa" },
@@ -81,7 +81,7 @@
       "id": "evaluacion",
       "titulo": "Datos y evaluación",
       "pregunta": "¿Mejoran capacidades transferibles o se saturan las pruebas?",
-      "indicadores": ["edi.open", "bench.saturated", "aa.rate12m", "eci.rate12m"],
+      "indicadores": ["edi.open", "edi.hardest", "bench.saturated", "aa.rate12m", "eci.rate12m"],
       "sabemos": ["edi.open", "aa.rate12m"],
       "hechos": [
         { "texto": "El ECI supone que el resultado en cada evaluación sigue una curva logística de la diferencia entre la capacidad del modelo y la dificultad de la prueba, con una pendiente propia de cada prueba; el ajuste estima a la vez el ECI de cada modelo y la dificultad (EDI) de cada evaluación.", "fuente": "Epoch AI, repositorio público del ajuste del ECI (eci-public)", "url": "https://github.com/epoch-research/eci-public", "fecha": "2026-09-07", "consulta": "2026-10-25", "verificacion": "lectura directa" },

@@ -1,6 +1,6 @@
 /* Vista «Lanzamientos»: por modelo, qué etapas constan (anuncio, acceso restringido, API pública, pesos) y con qué fuente. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, src, weightsTag, provLine, fmtDate, dateFmt, num, ii, eci, aaConfig, nd, quote } from './fmt.js';
+import { esc, src, weightsTag, provLine, fmtDate, dateFmt, num, usd, blended, ii, eci, aaConfig, nd, quote } from './fmt.js';
 import { logo } from './logos.js';
 
 const $ = s => document.querySelector(s);
@@ -34,13 +34,38 @@ function stagesOf(m, curated) {
   return st;
 }
 
+/* Comparación objetiva con el modelo anterior puntuado del mismo laboratorio, cuando no hay nota curada del laboratorio. */
+function autoDelta(m) {
+  if (ii(m) === null || m.identity !== 'confirmada') return null;
+  const myD = m.orCreated.v || m.aa?.release?.v || '';
+  if (!myD) return null;
+  const prev = D.catalog.models
+    .filter(x => x.id !== m.id && x.lab.name === m.lab.name && x.identity === 'confirmada' && ii(x) !== null)
+    .map(x => ({ m: x, d: x.orCreated.v || x.aa?.release?.v || '' }))
+    .filter(x => x.d && x.d < myD)
+    .sort((a, b) => b.d.localeCompare(a.d) || ii(b.m) - ii(a.m))[0];
+  if (!prev) return null;
+  const dII = Math.round((ii(m) - ii(prev.m)) * 10) / 10;
+  const sign = dII > 0 ? '+' : dII < 0 ? '−' : '';
+  const pa = blended(prev.m), pb = blended(m);
+  const priceBit = pa > 0 && pb > 0 ? t(' · precio 3:1 {pb} frente a {pa}', { pb: usd(pb), pa: usd(pa) }) : '';
+  return t('Frente a {name} ({fecha}): {sign}{diff} puntos AA{precio}.', {
+    name: esc(prev.m.name), fecha: esc(fmtDate(prev.d)), sign, diff: num(Math.abs(dII), 1), precio: priceBit
+  });
+}
+
 function cardFor(m, curated) {
   const st = stagesOf(m, curated);
   const STAGES = stages();
-  const missing = STAGES.filter(([k]) => !st[k] && k !== 'sinapi').map(([, label]) => label.toLowerCase());
+  // Sólo se señalan etapas ausentes relevantes: anuncio sin fuente, pesos prometidos aún sin repositorio o API aún ausente.
+  const missing = [];
+  if (!st.anuncio) missing.push(t('Anuncio').toLowerCase());
+  if (m.weights.announced && !st.pesos) missing.push(t('Pesos descargables').toLowerCase());
+  if (m.aaOnly && !st.api) missing.push(t('API pública').toLowerCase());
   const dates = Object.values(st).map(s => s.date).filter(Boolean).sort();
   const latest = dates[dates.length - 1];
   const withDelta = Object.values(st).find(s => s.delta);
+  const calcDelta = withDelta ? null : autoDelta(m);
   const evals = [];
   if (ii(m) !== null) evals.push(t('índice {num}{src} en Artificial Analysis{cfg}', { num: num(ii(m)), src: src(m.aa.intelligence), cfg: aaConfig(m) ? ` (${quote(esc(aaConfig(m)))})` : '' }));
   if (eci(m) !== null) evals.push(t('ECI {num}{src} en Epoch AI', { num: num(eci(m)), src: src(m.epoch.eci) }));
@@ -57,9 +82,10 @@ function cardFor(m, curated) {
         <div class="m-lab">${esc(m.lab.name)}</div>
         <div class="stages">${STAGES.filter(([k]) => st[k]).sort((a, b) => st[a[0]].date.localeCompare(st[b[0]].date)).map(([k, label]) =>
           `<div class="stage yes"><span class="lbl">${label}</span>${esc(fmtDate(st[k].date))}${st[k].html}${st[k].note ? `<span class="m-sub">${esc(st[k].note)}</span>` : ''}</div>`).join('')}</div>
-        ${missing.length ? `<div class="stages-no">${t('No constan: {p1}.', { p1: esc(missing.join(', ')) })}</div>` : ''}
+        ${missing.length ? `<div class="stages-no">${t('Aún no constan: {p1}.', { p1: esc(missing.join(', ')) })}</div>` : ''}
         <div class="extra"><b>${t('Evaluación independiente:')}</b> ${evalTxt}${aaRel}</div>
-        <div class="extra"><b>${t('Qué aporta frente a la versión anterior:')}</b> ${withDelta ? `${esc(tr(withDelta.delta))}${/según/i.test(withDelta.delta) ? '' : ` ${t('(según el laboratorio)')}`}${withDelta.html}` : nd()}</div>
+        ${withDelta ? `<div class="extra"><b>${t('Qué aporta frente a la versión anterior:')}</b> ${esc(tr(withDelta.delta))}${/según/i.test(withDelta.delta) ? '' : ` ${t('(según el laboratorio)')}`}${withDelta.html}</div>`
+          : calcDelta ? `<div class="extra"><b>${t('Frente al modelo anterior del laboratorio:')}</b> ${calcDelta}</div>` : ''}
       </div>
     </article>`
   };
@@ -68,13 +94,16 @@ function cardFor(m, curated) {
 /* El nombre de la fuente va en español: provLine lo traduce (con t() aquí se traducía dos veces y en inglés quedaba «Source» sin traducir en el informe de pruebas). */
 function eventCard(e) {
   const m = D.byId.get(e.model);
+  const title = e.title || (e.model ? e.model.split('/').pop() : '');
+  const desc = [e.what || e.delta, e.nota].filter(Boolean).map(x => esc(tr(x))).join(' · ');
   return {
     date: e.date, weights: m?.weights?.v ?? null,
     html: `<article class="rel evt">
       <div class="rel-date">${esc(fmtDate(e.date))}</div>
       <div><span class="tag k-${esc(e.kind || e.type)}">${esc(evt(e.kind || e.type))}</span>
-        <div class="extra">${esc(tr(e.what || e.title || ''))}</div>
-        ${provLine(e.src || { name: 'Fuente', url: e.url, date: e.date })}</div>
+        ${title ? `<h3>${esc(title)}</h3>` : ''}
+        ${desc ? `<div class="extra">${desc}</div>` : ''}
+        ${provLine(e.src || { name: e.fuente || e.source || 'Fuente', url: e.url, date: e.date })}</div>
     </article>`
   };
 }
@@ -84,7 +113,7 @@ function render() {
   const cutoff = state.days ? new Date(Date.now() - state.days * 86400e3).toISOString().slice(0, 10) : '';
   // Sólo lanzamientos: los cambios de precio están en «Hoy» y las retiradas van aparte, al final.
   let cards = D.catalog.models.map(m => cardFor(m, curated));
-  cards = cards.concat(curated.filter(e => !e.model || !D.byId.has(e.model)).map(e => eventCard({ ...e, kind: e.type, what: e.title, src: { name: e.source || 'Fuente', url: e.url, date: e.date } })));
+  cards = cards.concat(curated.filter(e => !e.model || !D.byId.has(e.model)).map(e => eventCard({ ...e, kind: e.type, src: { name: e.fuente || e.source || 'Fuente', url: e.url, date: e.date } })));
   cards = cards.filter(c => c.date && c.date >= cutoff && (state.w === 'all' || c.weights === state.w))
     .sort((a, b) => b.date.localeCompare(a.date));
   const gone = (D.evLog.events || []).filter(e => e.kind === 'retirada' && e.date >= cutoff);
@@ -96,7 +125,7 @@ function render() {
     html += c.html;
   }
   if (gone.length) html += `<h2 class="sec">${t('Retirados de OpenRouter en el periodo')}</h2><ul class="changes">${gone.map(e => `<li><span>${esc(fmtDate(e.date))}</span><span>${esc(L(e, 'what'))}</span>${provLine(e.src)}</li>`).join('')}</ul>`;
-  html += `<p class="note">${t('«API pública» es la fecha de alta en OpenRouter, que puede ser posterior a la API del laboratorio. «Puntuado por AA, sin API pública» es el día en que el observatorio vio por primera vez su puntuación en Artificial Analysis sin que estuviera en OpenRouter. «Pesos descargables» es la fecha de creación del repositorio en Hugging Face. «Acceso restringido» es una fase en la que sólo podían usarlo organizaciones o personas seleccionadas; «Solo en productos del laboratorio», una fase en la que se podía usar en sus aplicaciones o suscripciones pero no por API. Anuncios y estas dos fases constan cuando se han registrado a mano con enlace a la fuente primaria (blog, documentación o repositorio del laboratorio); si no hay anuncio registrado, se toma la fecha de publicación de la base de modelos de Epoch AI. Las etapas sin dato se agrupan en «No constan».')}</p>`;
+  html += `<details class="method-note"><summary>${t('Qué significa cada etapa')}</summary><p class="note">${t('«API pública» es la fecha de alta en OpenRouter, que puede ser posterior a la API del laboratorio. «Puntuado por AA, sin API pública» es el día en que el observatorio vio por primera vez su puntuación en Artificial Analysis sin que estuviera en OpenRouter. «Pesos descargables» es la fecha de creación del repositorio en Hugging Face. «Acceso restringido» es una fase en la que sólo podían usarlo organizaciones o personas seleccionadas; «Solo en productos del laboratorio», una fase en la que se podía usar en sus aplicaciones o suscripciones pero no por API. Anuncios y estas dos fases constan cuando se han registrado a mano con enlace a la fuente primaria (blog, documentación o repositorio del laboratorio); si no hay anuncio registrado, se toma la fecha de publicación de la base de modelos de Epoch AI.')}</p></details>`;
   $('#ln-list').innerHTML = html;
 }
 

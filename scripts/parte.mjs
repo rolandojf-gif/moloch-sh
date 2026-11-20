@@ -14,6 +14,7 @@ const LIDER_MIN = 1;     // puntos del índice de AA: un relevo por menos no es 
 const TOP = 20;          // «top 20» del índice de AA
 const SUBE = 50, BAJA = -33;   // % del precio combinado del propio laboratorio
 const DIST = 1;          // puntos ECI: por debajo, Epoch habla de la misma capacidad
+const AA_DIST = 2;       // puntos AA: umbral mínimo para que un cambio de distancia en el índice de AA sea noticia
 const CIFRA = 10;        // % de cambio en potencia, chips o ingresos
 const PARECIDO = 2;      // ± puntos de AA para «índice parecido» (convención del observatorio)
 const RSS_DIAS = 30;
@@ -29,8 +30,8 @@ const reglas = F => [
   F.t(`Publica pesos abiertos un modelo del top ${TOP} del índice de AA.`, `A top-${TOP} model on the AA index publishes open weights.`),
   F.t(`El propio laboratorio cambia su precio en OpenRouter al menos un +${SUBE} % o un ${String(BAJA).replace('-', '−')} % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa, ni un precio que va y vuelve: el nuevo ya visto en los 14 días anteriores o el anterior que vuelve en los 14 siguientes.`,
     `The lab itself changes its price on OpenRouter by at least +${SUBE}% or ${String(BAJA).replace('-', '−')}% (blended price), makes it free or starts charging for it. Withdrawing or adding a rate does not count, nor a price that comes and goes: a new one already seen in the previous 14 days or an old one that returns within the next 14.`),
-  F.t(`La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos ${DIST} punto ECI, o potencia, chips o ingresos que cambian al menos un ${CIFRA} %. El récord y las distancias del ECI de una misma recogida cuentan como una sola noticia.`,
-    `The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least ${DIST} ECI point, or power, chips or revenue that change by at least ${CIFRA}%. The ECI record and gaps from the same check count as a single news item.`),
+  F.t(`La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos ${DIST} punto ECI o ${AA_DIST} puntos AA, o potencia, chips o ingresos que cambian al menos un ${CIFRA} %. Los cambios de una misma recogida en el ECI o en las distancias de AA cuentan como una sola noticia.`,
+    `The AI Race: a new best model on Epoch’s ECI, a new METR data point, a new MirrorCode record, a gap that changes by at least ${DIST} ECI point or ${AA_DIST} AA points, or power, chips or revenue that change by at least ${CIFRA}%. Changes from the same check on the ECI or on the AA gaps count as a single news item.`),
   F.t('Cambia el modelo más usado en OpenRouter en los últimos 7 días.', 'The most used model on OpenRouter over the last 7 days changes.')
 ];
 export const REGLAS = reglas(globalF.es), REGLAS_EN = reglas(globalF.en);
@@ -44,6 +45,8 @@ const PLAIN = { adelantado: 'va por delante del escenario', compatible: 'se cump
 const PLAIN_EN = { adelantado: 'is ahead of the scenario', compatible: 'is unfolding as predicted', retrasado: 'is behind the scenario', 'todavía no evaluable': 'cannot be assessed yet', 'sin evidencia suficiente': 'is left without public data to check it' };
 const GAP = { usCn: 'EE. UU. − China', closedOpen: 'cerrados − abiertos', labs: 'entre los dos primeros laboratorios' };
 const GAP_EN = { usCn: 'US − China gap', closedOpen: 'closed − open gap', labs: 'gap between the top two labs' };
+const AA_GAP = { aaUsCn: 'EE. UU. − China', aaClosedOpen: 'cerrados − abiertos', aaLabs: 'entre los dos primeros laboratorios' };
+const AA_GAP_EN = { aaUsCn: 'US − China gap', aaClosedOpen: 'closed − open gap', aaLabs: 'gap between the top two labs' };
 const CIFRAS = new Set(['dcMW', 'chipsH100e', 'revLeader']);   // potencia, chips e ingresos; el resto de indicadores vigilados sólo va a su frente
 const adj = (F, block) => block === 'abiertos' ? F.t('abierto', 'open-weight') : F.t('cerrado', 'closed');
 
@@ -79,6 +82,8 @@ export function importancia(e, F = globalF.es) {
       if (d.ind === 'mirror') return d.to > d.from ? { tier: 6, w: 90, porque: F.t('nuevo récord en MirrorCode, la medida de tareas de semanas con la que el observatorio sustituye a METR', 'a new MirrorCode record, the measure of tasks lasting weeks with which the observatory replaces METR') } : null;
       if (GAP[d.ind]) return Math.abs(d.to - d.from) >= DIST ? { tier: 6, w: 50 + Math.abs(d.to - d.from), porque: F.t(`la distancia ${GAP[d.ind]} cambia al menos ${DIST} punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad`,
         `the ${GAP_EN[d.ind]} changes by at least ${DIST} ECI point, the threshold at which Epoch no longer treats them as having the same capability`) } : null;
+      if (AA_GAP[d.ind]) return Math.abs(d.to - d.from) >= AA_DIST ? { tier: 6, w: 40 + Math.abs(d.to - d.from), porque: F.t(`la distancia ${AA_GAP[d.ind]} en el índice de AA cambia al menos ${AA_DIST} puntos`,
+        `the ${AA_GAP_EN[d.ind]} on the AA index changes by at least ${AA_DIST} points`) } : null;
       return CIFRAS.has(d.ind) && rel >= CIFRA ? { tier: 6, w: rel, porque: F.t(`la cifra cambia un ${pct(rel)} (umbral: ${CIFRA} %)`, `the figure changes by ${pct(rel)} (threshold: ${CIFRA}%)`) } : null;
     }
     case 'uso':
@@ -128,6 +133,7 @@ export function titular(e, C, F = globalF.es) {
       const f = at(C.ind, d.path) || {}, up = d.to > d.from;
       if (d.ind === 'eci') return f.model ? F.t(`${f.model} pasa a ser el mejor modelo según el ECI de Epoch`, `${f.model} becomes the best model on Epoch’s ECI`) : F.t(`El mejor ECI de Epoch ${up ? 'sube' : 'baja'} a ${es(d.to)}`, `Epoch’s best ECI ${up ? 'rises' : 'falls'} to ${n(d.to)}`);
       if (GAP[d.ind]) return F.t(`La distancia ${GAP[d.ind]} en el ECI ${up ? 'sube' : 'baja'} de ${es(d.from, 1)} a ${es(d.to, 1)} puntos`, `The ${GAP_EN[d.ind]} on the ECI ${up ? 'rises' : 'falls'} from ${n(d.from, 1)} to ${n(d.to, 1)} points`);
+      if (AA_GAP[d.ind]) return F.t(`La distancia ${AA_GAP[d.ind]} en el índice de AA ${up ? 'sube' : 'baja'} de ${es(d.from, 1)} a ${es(d.to, 1)} puntos`, `The ${AA_GAP_EN[d.ind]} on the AA index ${up ? 'rises' : 'falls'} from ${n(d.from, 1)} to ${n(d.to, 1)} points`);
       if (d.ind === 'dcMW') return F.t(`La potencia en servicio de los centros que sigue Epoch ${up ? 'sube' : 'baja'} a ${es(d.to, 0)} MW`, `The power in service at the data centres Epoch tracks ${up ? 'rises' : 'falls'} to ${n(d.to, 0)} MW`);
       if (d.ind === 'chipsH100e') return F.t(`Epoch ${up ? 'eleva' : 'rebaja'} a ${es(d.to / 1e6, 1)} millones de H100e los chips de IA entregados`, `Epoch ${up ? 'raises' : 'lowers'} AI chips delivered to ${n(d.to / 1e6, 1)} million H100e`);
       if (d.ind === 'revLeader') return F.t(`${f.company || 'El líder'}: ${es(d.to / 1e9, 1)} mil millones de $ de ingresos anualizados`, `${f.company || 'The leader'}: $${n(d.to / 1e9, 1)} billion in annualised revenue`);
@@ -200,7 +206,9 @@ export function consecuencia(e, C, F = globalF.es) {
     case 'indicador': {
       const f = at(C.ind, d.path) || {};
       const who = x => x ? `${x.model} (${x.org}, ${F.n(x.eci, 1)})` : '';
+      const whoAA = x => x ? `${x.model} (${x.org}${x.ii != null ? `, ${F.n(x.ii, 1)}` : ''})` : '';
       const vs = F.t('frente a', 'versus'), lag = F.t('Unos puntos ECI no equivalen a meses de retraso.', 'A few ECI points do not equate to months of lag.');
+      const lagAA = F.t('Unos puntos del índice de AA no equivalen a meses de retraso.', 'A few AA index points do not equate to months of lag.');
       const eciGaps = () => {
         const prev = C.base?.ind, cur = C.ind?.eci;
         if (!prev || !cur) return '';
@@ -225,6 +233,9 @@ export function consecuencia(e, C, F = globalF.es) {
         usCn: f.us && f.cn ? `${who(f.us)} ${vs} ${who(f.cn)}. ${lag}` : '',
         closedOpen: f.closed && f.open ? `${who(f.closed)} ${vs} ${who(f.open)}. ${lag}` : '',
         labs: f.first && f.second ? `${who(f.first)} ${vs} ${who(f.second)}${f.overlap ? F.t(', con intervalos de confianza solapados', ', with overlapping confidence intervals') : ''}.` : '',
+        aaUsCn: f.us && f.cn ? `${whoAA(f.us)} ${vs} ${whoAA(f.cn)}. ${lagAA}` : '',
+        aaClosedOpen: f.closed && f.open ? `${whoAA(f.closed)} ${vs} ${whoAA(f.open)}. ${lagAA}` : '',
+        aaLabs: f.first && f.second ? `${whoAA(f.first)} ${vs} ${whoAA(f.second)}. ${lagAA}` : '',
         dcMW: F.t(`${f.n ? `${f.n} centros. ` : ''}Potencia de los equipos, sin refrigeración; no es el total mundial.`, `${f.n ? `${f.n} data centres. ` : ''}Power of the equipment, without cooling; it is not the world total.`),
         chipsH100e: F.t('Chips entregados según Epoch, no necesariamente instalados.', 'Chips delivered according to Epoch, not necessarily installed.'),
         revLeader: f.company ? F.t(`${f.company}, ${f.type || 'ingresos'}, confianza de Epoch: ${f.confidence || 'sin datos'}.`, `${f.company}, ${f.type ? F.tm(f.type) : 'revenue'}, Epoch confidence: ${f.confidence || 'no data'}.`) : '',
@@ -237,8 +248,9 @@ export function consecuencia(e, C, F = globalF.es) {
     }
     case 'uso': {
       const u = C.uso;
-      return u ? F.t(`${es(d.share, 1)} % de los tokens de OpenRouter del ${u.from} al ${u.to}${d.sub === 'primero' ? `; antes el primero era ${d.prev}` : ''}. Es el uso en OpenRouter, no en todo el mercado.`,
-        `${F.n(d.share, 1)}% of OpenRouter’s tokens from ${u.from} to ${u.to}${d.sub === 'primero' ? `; before, the first was ${d.prev}` : ''}. This is usage on OpenRouter, not across the whole market.`) : null;
+      const prevLabel = d.prevName || u?.top?.find(r => r.slug === d.prev)?.name || d.prev;
+      return u ? F.t(`${es(d.share, 1)} % de los tokens de OpenRouter del ${u.from} al ${u.to}${d.sub === 'primero' ? `; antes el primero era ${prevLabel}` : ''}. Es el uso en OpenRouter, no en todo el mercado.`,
+        `${F.n(d.share, 1)}% of OpenRouter’s tokens from ${u.from} to ${u.to}${d.sub === 'primero' ? `; before, the first was ${prevLabel}` : ''}. This is usage on OpenRouter, not across the whole market.`) : null;
     }
   }
   return null;
@@ -273,12 +285,14 @@ export function enrich(items, C, TODAY) {
 
 const order = (a, b) => a.importancia.tier - b.importancia.tier || b.importancia.w - a.importancia.w;
 const ECI_CAUSA = new Set(['eci', 'usCn', 'closedOpen', 'labs']);
-/* Clave causal para no dedicar dos plazas del parte o del RSS del mismo día al mismo modelo, hito o vuelco del ECI. */
+const AA_CAUSA = new Set(['aaUsCn', 'aaClosedOpen', 'aaLabs']);
+/* Clave causal para no dedicar dos plazas del parte o del RSS del mismo día al mismo modelo, hito o vuelco del ECI o AA. */
 export function causa(e) {
   if (e.model) return e.model;
   if (e.kind === 'uso' && e.data?.slug) return `uso|${e.data.slug}`;
   if (e.data?.hito) return `hito|${e.data.hito}`;
   if (e.kind === 'indicador' && ECI_CAUSA.has(e.data?.ind)) return 'indicador|eci';
+  if (e.kind === 'indicador' && AA_CAUSA.has(e.data?.ind)) return 'indicador|aa';
   return e.key;
 }
 const oneEach = list => { const seen = new Set(); return list.filter(e => { const k = causa(e); return !seen.has(k) && seen.add(k); }); };
