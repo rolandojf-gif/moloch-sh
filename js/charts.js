@@ -93,17 +93,19 @@ function placeLabels(cands, { W, T, H, B, L, R }, taken = []) {
   const hit = b => boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
   for (const c of cands) {
     const w = c.text.length * CH, h = 13;
+    const ox = c.icon ? 12 : 9, uy = c.icon ? -11 : -8, dy = c.icon ? 18 : 16;
     const near = c.prefer === 'down'
-      ? [['start', 9, 16], ['end', -9, 16], ['start', 9, -8], ['end', -9, -8]]
-      : [['start', 9, -8], ['end', -9, -8], ['start', 9, 16], ['end', -9, 16]];
-    const tries = c.far ? near.concat([['middle', 0, 30], ['middle', 0, -20], ['start', 9, 30], ['end', -9, 30], ['start', 9, -22], ['end', -9, -22]]) : near;
-    for (const [anchor, dx, dy] of tries) {
-      const x = c.x + dx, y = c.y + dy;
+      ? [['start', ox, dy], ['end', -ox, dy], ['start', ox, uy], ['end', -ox, uy], ...(c.icon ? [['end', -ox, 4], ['start', ox, 4]] : [])]
+      : [['start', ox, uy], ['end', -ox, uy], ['start', ox, dy], ['end', -ox, dy], ...(c.icon ? [['end', -ox, 4], ['start', ox, 4]] : [])];
+    const tries = c.far ? near.concat([['middle', 0, 30], ['middle', 0, -20], ['start', ox, 30], ['end', -ox, 30], ['start', ox, -22], ['end', -ox, -22]]) : near;
+    for (const [anchor, dx, dy0] of tries) {
+      const x = c.x + dx, y = c.y + dy0;
       const box = anchor === 'start' ? [x, y - h + 2, x + w, y + 3] : anchor === 'end' ? [x - w, y - h + 2, x, y + 3] : [x - w / 2, y - h + 2, x + w / 2, y + 3];
       if (box[0] < L || box[2] > W - R + 4 || box[1] < T - 4 || box[3] > H - B) continue;
       if (c.minY != null && (box[1] < c.minY || box[3] > c.maxY)) continue;
       if (hit(box)) continue;
       boxes.push(box);
+      if (c.icon) boxes.push([c.x - 10, c.y - 10, c.x + 10, c.y + 10]);
       out.push({ ...c, lx: x, ly: y, anchor });
       break;
     }
@@ -370,7 +372,7 @@ const covLegend = () => `<span><i class="lg-cov"></i>${t('Cobertura incompleta: 
    (p. ej. las novedades); fmtV: cómo se escribe la cifra; bands: tramos con cobertura incompleta [{ from, to }]. */
 export function frontier(el, records, opts = {}) {
   const { models = null, yLabel = '', yShort = '', metric = 'ECI', highlight = null, fmtV = v => num(v, 1), bands = null } = opts;
-  const G = { ...frame(el, { W: 860, H: 360, L: 52, R: 16, T: 16, B: 40 }, 320), yShort };
+  const G = { ...frame(el, { W: 860, H: 360, L: 52, R: 24, T: 18, B: 40 }, 320), yShort };
   const { W, H, L, R, T, B } = G;
   const rec = { open: [], closed: [] };
   for (const g of ['open', 'closed']) {
@@ -386,8 +388,9 @@ export function frontier(el, records, opts = {}) {
   const first = Math.min(...[...rec.open, ...rec.closed].map(r => ms(r.d)));
   const pts = all.filter(m => m.d && ms(m.d) >= first);
   const tmax = Math.max(...pts.map(m => ms(m.d)));
+  const xPad = Math.max(4 * 86400e3, (tmax - first) * 0.035);
   const vals = pts.map(m => m.v);
-  const full = { x0: first, x1: tmax, y0: Math.max(0, Math.floor((Math.min(...vals) - 3) / 5) * 5), y1: Math.ceil((Math.max(...vals) + 3) / 5) * 5 };
+  const full = { x0: first - xPad, x1: tmax + xPad, y0: Math.max(0, Math.floor((Math.min(...vals) - 3) / 5) * 5), y1: Math.ceil((Math.max(...vals) + 6) / 5) * 5 };
   const grp = g => g === 'o' ? 'open' : 'closed';
   // Logo de un récord: se busca el modelo por nombre (y fecha) para tener su id y su laboratorio.
   const iconOf = p => {
@@ -439,7 +442,7 @@ export function frontier(el, records, opts = {}) {
     }
     const marked = highlight ? shown.filter(m => !m.rec && highlight.has(m.n)).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down' })) : [];
     if (zoomed) rest.push(...shown.filter(m => !m.rec && !(highlight && highlight.has(m.n))).sort((a, b) => b.v - a.v).map(m => ({ x: X(ms(m.d)), y: Y(m.v), text: m.n, prefer: m.g === 'c' ? 'up' : 'down', faint: true })));
-    const placed = placeLabels([...leaders, ...marked, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G);
+    const placed = placeLabels([...leaders, ...marked, ...jumps.sort((a, b) => b.jump - a.jump), ...rest].slice(0, zoomed ? 40 : 14), G, leaders.filter(l => l.icon).map(l => [l.x - 10, l.y - 10, l.x + 10, l.y + 10]));
     // Los récords con nombre llevan el logo del modelo en lugar del punto, con el borde del color de su grupo.
     s += placed.filter(l => l.icon).map(l => `<g class="logo-pt ${l.g}${l.anun ? ' anun' : ''}"><rect x="${(l.x - 9).toFixed(1)}" y="${(l.y - 9).toFixed(1)}" width="18" height="18"/><image href="${esc(l.icon)}" x="${(l.x - 6).toFixed(1)}" y="${(l.y - 6).toFixed(1)}" width="12" height="12"/></g>`).join('');
     s += labelSvg(placed);
@@ -853,8 +856,9 @@ export function costCurve(el, series, opts = {}) {
   const G = { ...frame(el, { W: 860, H: 340, L: 66, R: 165, T: 16, B: 40 }, 300), yShort };
   const { W, H, L, R, T, B } = G;
   const allPts = active.flatMap(sr => sr.pts);
-  const tmin = Math.min(...allPts.map(p => ms(p.d)));
+  const tmin0 = Math.min(...allPts.map(p => ms(p.d)));
   const tmax = Math.max(ms(today), ...allPts.map(p => ms(p.d)));
+  const tmin = tmin0 - Math.max(4 * 86400e3, (tmax - tmin0) * 0.03);
   const prices = allPts.map(p => p.p).filter(p => p > 0);
   const y0 = Math.log10(Math.min(...prices) / 1.5);
   const y1 = Math.log10(Math.max(...prices) * 1.5);
