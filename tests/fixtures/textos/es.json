@@ -898,10 +898,10 @@
     "from": 4.9,
     "to": 4.4
    },
-   "titular": "Distancia EE. UU. − China en el índice de AA: de 4,9 a 4,4 puntos (Alfa Uno frente a Sino Dos).",
+   "titular": "La distancia EE. UU. − China en el índice de AA baja de 4,9 a 4,4 puntos",
    "importancia": null,
    "ficha": "#carrera",
-   "consecuencia": null
+   "consecuencia": "Alfa Uno (Alfa Lab) frente a Sino Dos (Sino Lab). Unos puntos del índice de AA no equivalen a meses de retraso."
   },
   {
    "kind": "indicador",
@@ -1069,6 +1069,7 @@
     "share": 12.34,
     "tokens": 1000000000000,
     "prev": "beta/dos",
+    "prevName": "Beta Dos",
     "window": 7
    },
    "titular": "Alfa Dup pasa a ser el modelo más usado en OpenRouter",
@@ -1078,7 +1079,7 @@
     "porque": "cambia el modelo más usado en OpenRouter en los últimos 7 días"
    },
    "ficha": "#modelos/alfa/duplica",
-   "consecuencia": "12,3 % de los tokens de OpenRouter del 2026-10-18 al 2026-10-25; antes el primero era beta/dos. Es el uso en OpenRouter, no en todo el mercado."
+   "consecuencia": "12,3 % de los tokens de OpenRouter del 2026-10-18 al 2026-10-25; antes el primero era Beta Dos. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "uso",
@@ -1244,7 +1245,7 @@
    "Un modelo nuevo (también uno que AA puntúa antes de que tenga API pública), o uno que recibe su primera puntuación de AA, entra en el top 20 del índice de AA. Su llegada posterior a OpenRouter no vuelve a contar.",
    "Publica pesos abiertos un modelo del top 20 del índice de AA.",
    "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa, ni un precio que va y vuelve: el nuevo ya visto en los 14 días anteriores o el anterior que vuelve en los 14 siguientes.",
-   "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos 1 punto ECI, o potencia, chips o ingresos que cambian al menos un 10 %. El récord y las distancias del ECI de una misma recogida cuentan como una sola noticia.",
+   "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos 1 punto ECI o 2 puntos AA, o potencia, chips o ingresos que cambian al menos un 10 %. Los cambios de una misma recogida en el ECI o en las distancias de AA cuentan como una sola noticia.",
    "Cambia el modelo más usado en OpenRouter en los últimos 7 días."
   ]
  },
@@ -1256,7 +1257,7 @@
   "Un modelo nuevo (también uno que AA puntúa antes de que tenga API pública), o uno que recibe su primera puntuación de AA, entra en el top 20 del índice de AA. Su llegada posterior a OpenRouter no vuelve a contar.",
   "Publica pesos abiertos un modelo del top 20 del índice de AA.",
   "El propio laboratorio cambia su precio en OpenRouter al menos un +50 % o un −33 % (precio combinado), lo deja gratis o empieza a cobrarlo. No cuenta que retire o añada una tarifa, ni un precio que va y vuelve: el nuevo ya visto en los 14 días anteriores o el anterior que vuelve en los 14 siguientes.",
-  "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos 1 punto ECI, o potencia, chips o ingresos que cambian al menos un 10 %. El récord y las distancias del ECI de una misma recogida cuentan como una sola noticia.",
+  "La carrera: nuevo mejor modelo según el ECI de Epoch, nuevo punto de METR, nuevo récord en MirrorCode, una distancia que cambia al menos 1 punto ECI o 2 puntos AA, o potencia, chips o ingresos que cambian al menos un 10 %. Los cambios de una misma recogida en el ECI o en las distancias de AA cuentan como una sola noticia.",
   "Cambia el modelo más usado en OpenRouter en los últimos 7 días."
  ]
 }

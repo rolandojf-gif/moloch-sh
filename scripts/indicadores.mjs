@@ -434,7 +434,7 @@ async function dcBlock(ctx) {
 }
 
 /* ── Ventas de chips de IA (estimaciones trimestrales de Epoch) ────────── */
-async function chipsBlock(ctx) {
+export async function chipsBlock(ctx) {
   const { getText, parseCSV, fact, TODAY } = ctx;
   const rows = parseCSV(await getText(URLS.chips)).map(r => ({
     maker: r['Chip manufacturer'] || null, chip: r['Chip type'] || r.Name, start: r['Start date'], end: r['End date'],
@@ -451,13 +451,16 @@ async function chipsBlock(ctx) {
   for (const r of rows) quarters.set(r.end, (quarters.get(r.end) || 0) + r.h100e);
   const qs = [...quarters.entries()].sort((a, b) => a[0].localeCompare(b[0]));
   const lastQ = qs.length ? qs[qs.length - 1][0] : null;
-  const last4 = qs.slice(-4).reduce((a, [, v]) => a + v, 0);
+  const incomplete = rows.some(r => r.incomplete && r.end === lastQ) || (lastQ != null && lastQ > TODAY);
+  const completeQs = incomplete ? qs.slice(0, -1) : qs;
+  const last4 = completeQs.slice(-4).reduce((a, [, v]) => a + v, 0);
   const tdpGW = rows.reduce((a, r) => a + (r.tdp || 0), 0) / 1e9;
+  const asOf = lastQ && lastQ <= TODAY ? lastQ : TODAY;
   return {
-    cum: fact(Math.round(total), 'epoch', PAGES.chips, lastQ || TODAY, {
+    cum: fact(Math.round(total), 'epoch', PAGES.chips, asOf, {
       since: rows.map(r => r.start).sort()[0] || null, last4: Math.round(last4),
       tdpGW: r1(tdpGW), costB: r1(rows.reduce((a, r) => a + (r.cost || 0), 0) / 1e9),
-      incomplete: rows.some(r => r.incomplete && r.end === lastQ),
+      incomplete,
       note: 'suma de medianas trimestrales de H100e entregados (Nvidia desde 2022, Google desde 2023, el resto desde 2024); los intervalos no se suman'
     }),
     makers: [...makers.entries()].map(([maker, v]) => ({ maker, h100e: Math.round(v), country: countryCode(orgs.get(maker)) })).sort((a, b) => b.h100e - a.h100e),
@@ -467,7 +470,7 @@ async function chipsBlock(ctx) {
 }
 
 /* ── Ingresos y uso (informes recopilados por Epoch) ───────────────────── */
-async function companiesBlock(ctx) {
+export async function companiesBlock(ctx) {
   const { getText, parseCSV, fact, TODAY } = ctx;
   const rev = parseCSV(await getText(URLS.revenue)).map(r => ({
     company: r.Company, date: r.Date, v: n(r['Annualized revenue (USD)']) ?? n(r['Revenue amount (normalize to annual)']),
@@ -507,9 +510,17 @@ async function companiesBlock(ctx) {
       company: r.Company, product: r.Product || null, date: r.Date, users: n(r['Active users']), period: r['Active users time period'] || null,
       tokens: n(r['Daily tokens']), url: r['Source 1'] || null, confidence: r.Confidence || null
     })).filter(r => r.company && r.date && r.users !== null);
+    // Un solo dato por empresa y producto (el más reciente, sin duplicar semanal/mensual antiguos); se descartan filas
+    // obsoletas de la misma empresa (>365 días anteriores a un producto suyo ya mayor).
     const last = new Map();
-    for (const r of u) { const k = `${r.company}|${r.product}|${r.period}`; if (!last.has(k) || r.date > last.get(k).date) last.set(k, r); }
-    usage = [...last.values()].sort((a, b) => b.users - a.users).slice(0, 6)
+    for (const r of u) {
+      const k = `${r.company}|${r.product || ''}`;
+      const prev = last.get(k);
+      if (!prev || r.date > prev.date || (r.date === prev.date && r.users > prev.users)) last.set(k, r);
+    }
+    const vals = [...last.values()];
+    const fresh = vals.filter(r => !vals.some(o => o !== r && o.company === r.company && o.users >= r.users && daysBetween(r.date, o.date) > 365));
+    usage = fresh.sort((a, b) => b.users - a.users).slice(0, 6)
       .map(r => fact(r.users, 'epoch', r.url || PAGES.companies, r.date, { company: r.company, product: r.product, period: r.period, note: `usuarios activos (${r.period || 'periodo sin datos'}) · confianza de Epoch: ${r.confidence || 'sin datos'}` }));
   } catch (e) { ctx.log(`informes de uso fallaron: ${e.message}`); }
 
@@ -614,7 +625,7 @@ function checksIn(ind, TODAY, F) {
     const rv = ind.eci.agent0?.rivals;
     if (closed && rv) {
       const list = rv.map(r => T(`${firstOrg(r.org)} (${r.model}, ${es(r.eci)}, publicado el ${dia(r.date)})`, `${firstOrg(r.org)} (${r.model}, ${es(r.eci)}, published on ${dia(r.date)})`)).join('; ');
-      c.variosAgent0 = { v: rv.length >= VARIOS ? 'compatible' : 'retrasado', texto: T(`Hasta el 30 abr 2026, ${rv.length ? `${rv.length} laboratorio${rv.length > 1 ? 's' : ''} distinto${rv.length > 1 ? 's' : ''} de ${firstOrg(closed.org)} publicaron un modelo a menos de ${SAME_ECI} punto ECI de ${closed.model} (${es(closed.eci)}) o por encima: ${list}` : `ningún laboratorio distinto de ${firstOrg(closed.org)} publicó un modelo a menos de ${SAME_ECI} punto ECI de ${closed.model} (${es(closed.eci)})`}. Regla: «varios» son al menos ${VARIOS}.`,
+      c.variosAgent0 = { v: rv.length >= VARIOS ? 'compatible' : 'retrasado', texto: T(`Hasta el 30 abr 2026, ${rv.length ? `${rv.length} laboratorio${rv.length > 1 ? 's' : ''} distinto${rv.length > 1 ? 's' : ''} de ${firstOrg(closed.org)} ${rv.length > 1 ? 'publicaron' : 'publicó'} un modelo a menos de ${SAME_ECI} punto ECI de ${closed.model} (${es(closed.eci)}) o por encima: ${list}` : `ningún laboratorio distinto de ${firstOrg(closed.org)} publicó un modelo a menos de ${SAME_ECI} punto ECI de ${closed.model} (${es(closed.eci)})`}. Regla: «varios» son al menos ${VARIOS}.`,
         `Up to 30 Apr 2026, ${rv.length ? `${rv.length} lab${rv.length > 1 ? 's' : ''} other than ${firstOrg(closed.org)} published a model within ${SAME_ECI} ECI point of ${closed.model} (${es(closed.eci)}) or above it: ${list}` : `no lab other than ${firstOrg(closed.org)} published a model within ${SAME_ECI} ECI point of ${closed.model} (${es(closed.eci)})`}. Rule: “several” means at least ${VARIOS}.`) };
     } else c.variosAgent0 = { v: 'sin evidencia suficiente', texto: T('Faltan datos de ECI hasta el 30 abr 2026.', 'ECI data is missing up to 30 Apr 2026.') };
   }
@@ -626,6 +637,27 @@ function checksIn(ind, TODAY, F) {
       const v = rel > REV_TOLERANCE ? 'adelantado' : rel < -REV_TOLERANCE ? 'retrasado' : 'compatible';
       c.openaiRev2025 = { v, texto: T(`Último dato de Epoch hasta el 31 dic 2025: ${es(Math.round(oa.v / 1e8) / 10)} mil millones de $ anualizados (${oa.asOf}), frente a 18 previstos (${rel >= 0 ? '+' : ''}${Math.round(rel * 100)} %; margen de «compatible»: ±${REV_TOLERANCE * 100} %).`,
         `Latest Epoch figure up to 31 Dec 2025: $${es(Math.round(oa.v / 1e8) / 10)} billion annualised (${oa.asOf}), against 18 predicted (${rel >= 0 ? '+' : ''}${Math.round(rel * 100)}%; margin for “consistent”: ±${REV_TOLERANCE * 100}%).`) };
+    }
+  }
+  const leadRev = ind.companies?.leader;
+  if (leadRev) {
+    if (leadRev.v === null) c.ingresos55 = { v: 'sin evidencia suficiente', texto: T('Epoch no recoge ingresos anualizados suficientes para comprobarlo.', 'Epoch does not collect enough annualised revenue data to check it.') };
+    else {
+      const b = es(Math.round(leadRev.v / 1e8) / 10);
+      if (leadRev.v >= 55e9 && leadRev.asOf <= '2026-12-31') {
+        c.ingresos55 = {
+          v: 'compatible',
+          texto: T(`${leadRev.company} los supera: ${b} mil millones de $ anualizados (${dia(leadRev.asOf)}, según los informes que recoge Epoch). El escenario no dice en qué mes de 2026 se alcanzan, así que no puede decirse que vaya por delante.`,
+            `${leadRev.company} surpasses them: $${b} billion annualised (${dia(leadRev.asOf)}, according to the reports Epoch collects). The scenario does not say in which month of 2026 they are reached, so it cannot be said to be ahead.`)
+        };
+      } else {
+        const over = TODAY > '2026-12-31';
+        c.ingresos55 = {
+          v: over ? 'retrasado' : 'todavía no evaluable',
+          texto: T(`Mayor dato recogido por Epoch: ${leadRev.company}, ${b} mil millones de $ anualizados (${dia(leadRev.asOf)}), frente a 55 previstos.`,
+            `Highest figure collected by Epoch: ${leadRev.company}, $${b} billion annualised (${dia(leadRev.asOf)}), against 55 predicted.`)
+        };
+      }
     }
   }
   // Predicciones escritas en meses: se comparan fechas observadas, nunca una conversión de puntos en meses.
@@ -662,10 +694,11 @@ function checksIn(ind, TODAY, F) {
     const lo = plan?.end2026?.mw ? plan.end2026.mw / 1000 : null, hi = tdp ? tdp * SERVER_OVER_GPU : null;
     const v = hi !== null && hi < 29 ? 'retrasado' : lo !== null && lo > 38 ? 'adelantado' : 'compatible';
     const gw = x => `${es(r1(x))} GW`;
+    const nowTdp = ch?.cum?.tdpGW ? T(` (frente a ${gw(ch.cum.tdpGW)} entregados hasta hoy)`, ` (versus ${gw(ch.cum.tdpGW)} delivered to date)`) : '';
     c.est_potencia2026 = {
       v, sentido: { retrasado: T('Por debajo de lo previsto', 'Below what was predicted'), adelantado: T('Por encima de lo previsto', 'Above what was predicted'), compatible: T('Dentro del rango estimado', 'Within the estimated range') }[v],
-      texto: T(`${lo !== null ? `Cota inferior: según el calendario de Epoch, los ${plan.centres} centros que sigue tendrían ${gw(lo)} a fin de 2026.` : ''}${hi !== null ? ` Cota superior: los chips entregados sumarían unos ${gw(tdp)} de consumo nominal; con el resto del servidor (un DGX H100 consume 10,2 kW para 5,6 kW de GPU), unos ${gw(hi)} si funcionaran todos a la vez, sin contar la refrigeración.` : ''} La predicción, entre 29 y 38 GW, ${v === 'compatible' ? 'cae dentro de ese rango' : v === 'retrasado' ? 'queda por encima del máximo' : 'queda por debajo del mínimo'}.`.trim(),
-        `${lo !== null ? `Lower bound: according to Epoch’s schedule, the ${plan.centres} data centres it tracks would have ${gw(lo)} by the end of 2026.` : ''}${hi !== null ? ` Upper bound: the delivered chips would add up to about ${gw(tdp)} of nominal consumption; with the rest of the server (a DGX H100 draws 10.2 kW for 5.6 kW of GPU), about ${gw(hi)} if they all ran at once, not counting cooling.` : ''} The prediction, between 29 and 38 GW, ${v === 'compatible' ? 'falls within that range' : v === 'retrasado' ? 'lies above the maximum' : 'lies below the minimum'}.`.trim())
+      texto: T(`${lo !== null ? `Cota inferior: según el calendario de Epoch, los ${plan.centres} centros que sigue tendrían ${gw(lo)} a fin de 2026.` : ''}${hi !== null ? ` Cota superior: proyectando las entregas a fin de 2026, los chips acumulados sumarían unos ${gw(tdp)} de consumo nominal${nowTdp}; con el resto del servidor (un DGX H100 consume 10,2 kW para 5,6 kW de GPU), unos ${gw(hi)} si funcionaran todos a la vez, sin contar la refrigeración.` : ''} La predicción, entre 29 y 38 GW, ${v === 'compatible' ? 'cae dentro de ese rango' : v === 'retrasado' ? 'queda por encima del máximo' : 'queda por debajo del mínimo'}.`.trim(),
+        `${lo !== null ? `Lower bound: according to Epoch’s schedule, the ${plan.centres} data centres it tracks would have ${gw(lo)} by the end of 2026.` : ''}${hi !== null ? ` Upper bound: projecting deliveries to the end of 2026, cumulative chips would add up to about ${gw(tdp)} of nominal consumption${nowTdp}; with the rest of the server (a DGX H100 draws 10.2 kW for 5.6 kW of GPU), about ${gw(hi)} if they all ran at once, not counting cooling.` : ''} The prediction, between 29 and 38 GW, ${v === 'compatible' ? 'falls within that range' : v === 'retrasado' ? 'lies above the maximum' : 'lies below the minimum'}.`.trim())
     };
   }
   const y = ind.companies?.y2026;
@@ -686,10 +719,12 @@ function checksIn(ind, TODAY, F) {
     const reach = upto.find(p => p.v >= MIRROR_UMBRAL) || null, over = TODAY > PLAZO3S;
     const v = reach ? byDate(reach.d, PLAZO3S) : over ? 'retrasado' : 'todavía no evaluable';
     const metr = mt?.v != null ? `${mt.detenida ? T(`, y el último modelo que ha medido se publicó el ${dia(mt.ultimo)}`, `, and the last model it has measured was published on ${dia(mt.ultimo)}`) : ''}` : '';
+    const sat = best && best.v >= 90 ? T(` La prueba está ya saturada (mejor resultado actual: ${es(best.v)} %): su techo limita lo que puede decir sobre tareas generales de varias semanas.`,
+      ` The benchmark is now saturated (current best: ${es(best.v)}%): its ceiling limits what it can say about general multi-week tasks.`) : '';
     c.mirror80 = {
       v, sentido: { adelantado: T('Llegó al 80 % mucho antes del plazo', 'Reached 80% well before the deadline'), compatible: T('Llegó al 80 % a tiempo', 'Reached 80% on time'), retrasado: T('No llegó al 80 % a tiempo', 'Did not reach 80% on time') }[v] || null,
-      texto: T(`Los autores lo plantean con el horizonte al 80 % de METR, que no mide con fiabilidad por encima de 16 horas${metr}. El observatorio lo contrasta con MirrorCode, de Epoch y METR: reimplementar programas enteros a partir de su comportamiento, con tareas que a un ingeniero le llevarían semanas. ${reach ? `El primer modelo que llega al ${MIRROR_UMBRAL} % es ${reach.n}, con un ${es(reach.v)} %, publicado el ${dia(reach.d)}.` : `Mejor resultado ${over ? 'hasta el plazo' : 'hasta hoy'}: ${es(best.v)} %, de ${best.n}, publicado el ${dia(best.d)}.`} Regla (lectura del observatorio): «compatible» si al vencer el plazo el mejor resultado llega al ${MIRROR_UMBRAL} %. MirrorCode sólo cubre programación y su puntuación no es el porcentaje de éxito en tareas de tres semanas.`,
-        `The authors frame it with METR’s 80% horizon, which does not measure reliably above 16 hours${metr}. The observatory checks it against MirrorCode, from Epoch and METR: reimplementing whole programs from their behaviour, with tasks that would take an engineer weeks. ${reach ? `The first model to reach ${MIRROR_UMBRAL}% is ${reach.n}, with ${es(reach.v)}%, published on ${dia(reach.d)}.` : `Best result ${over ? 'up to the deadline' : 'to date'}: ${es(best.v)}%, from ${best.n}, published on ${dia(best.d)}.`} Rule (the observatory’s reading): “consistent” if, when the deadline expires, the best result reaches ${MIRROR_UMBRAL}%. MirrorCode only covers programming and its score is not the success rate on three-week tasks.`)
+      texto: T(`Los autores lo plantean con el horizonte al 80 % de METR, que no mide con fiabilidad por encima de 16 horas${metr}. El observatorio lo contrasta con MirrorCode, de Epoch y METR: reimplementar programas enteros a partir de su comportamiento, con tareas que a un ingeniero le llevarían semanas. ${reach ? `El primer modelo que llega al ${MIRROR_UMBRAL} % es ${reach.n}, con un ${es(reach.v)} %, publicado el ${dia(reach.d)}.` : `Mejor resultado ${over ? 'hasta el plazo' : 'hasta hoy'}: ${es(best.v)} %, de ${best.n}, publicado el ${dia(best.d)}.`} Regla (lectura del observatorio): «compatible» si al vencer el plazo el mejor resultado llega al ${MIRROR_UMBRAL} %. MirrorCode sólo cubre programación y su puntuación no es el porcentaje de éxito en tareas de tres semanas.${sat}`,
+        `The authors frame it with METR’s 80% horizon, which does not measure reliably above 16 hours${metr}. The observatory checks it against MirrorCode, from Epoch and METR: reimplementing whole programs from their behaviour, with tasks that would take an engineer weeks. ${reach ? `The first model to reach ${MIRROR_UMBRAL}% is ${reach.n}, with ${es(reach.v)}%, published on ${dia(reach.d)}.` : `Best result ${over ? 'up to the deadline' : 'to date'}: ${es(best.v)}%, from ${best.n}, published on ${dia(best.d)}.`} Rule (the observatory’s reading): “consistent” if, when the deadline expires, the best result reaches ${MIRROR_UMBRAL}%. MirrorCode only covers programming and its score is not the success rate on three-week tasks.${sat}`)
     };
     // Estimación: desde el récord actual, al ritmo de la recta que mejor se ajusta a los récords de los últimos 12 meses
     // (o a todos, si hay menos de dos).

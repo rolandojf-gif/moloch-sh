@@ -281,7 +281,7 @@ export function detectChanges(ctx) {
         model: first.id || undefined, published, mag: { v: 1, unit: 'puesto' }, src,
         what: both(F => F.t(`${name(first)} pasa a ser el modelo más usado en OpenRouter en los últimos ${u.days} días (${es(first.share, 1)} % de los tokens), por delante de ${before ? name(before) : up[0]}.`,
           `${name(first)} becomes the most used model on OpenRouter over the last ${u.days} days (${F.n(first.share, 1)}% of tokens), ahead of ${before ? name(before) : up[0]}.`)),
-        data: { sub: 'primero', slug: first.slug, rank: 1, prevRank: up.indexOf(first.slug) + 1 || null, share: first.share, tokens: first.tokens, prev: up[0], window: u.days }
+        data: { sub: 'primero', slug: first.slug, rank: 1, prevRank: up.indexOf(first.slug) + 1 || null, share: first.share, tokens: first.tokens, prev: up[0], prevName: before ? name(before) : null, window: u.days }
       }));
     }
     for (const r of u.top) {
@@ -367,6 +367,20 @@ export function vaiven(e, seen) {
   const from = new Date(Date.parse(D) - ms).toISOString().slice(0, 10), to = new Date(Date.parse(D) + ms).toISOString().slice(0, 10);
   const a = pk(e.data.from.in, e.data.from.out), b = pk(e.data.to.in, e.data.to.out);
   return (seen.get(e.model) || []).some(s => (s.d >= from && s.d < D && s.pairs.has(b)) || (s.d > D && s.d <= to && s.pairs.has(a)));
+}
+
+/* Vaivén del líder de uso: si dos modelos se alternan en el puesto 1 de OpenRouter en USO_BACK_DAYS días,
+   no se registra cada relevo efímero como cambio. */
+export const USO_BACK_DAYS = 7;
+export function usoVaiven(e, snaps) {
+  if (e.kind !== 'uso' || e.data?.sub !== 'primero' || !e.data?.slug || !e.data?.prev) return false;
+  const D = e.detected, ms = USO_BACK_DAYS * 86400e3;
+  const from = new Date(Date.parse(D) - ms).toISOString().slice(0, 10), to = new Date(Date.parse(D) + ms).toISOString().slice(0, 10);
+  return (snaps || []).some(h => {
+    const top = h?.uso?.[0];
+    if (!top) return false;
+    return (h.date >= from && h.date < D && top === e.data.slug) || (h.date > D && h.date <= to && top === e.data.prev);
+  });
 }
 
 export function mergeLog(events, items, TODAY) {
