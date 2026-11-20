@@ -423,7 +423,7 @@ export function frontier(el, records, opts = {}) {
       html: tip(m.n, [
         [t('Fecha de lanzamiento'), fmtDate(m.d)],
         [metric, m.lo != null && m.hi != null ? `${fmtV(m.v)} ${t('(intervalo {lo}–{hi})', { lo: num(m.lo, 1), hi: num(m.hi, 1) })}` : fmtV(m.v)],
-        [t('Pesos'), m.g === 'o' ? (m.anun ? t('abiertos (anunciados en su descripción de OpenRouter; aún no descargables)') : t('abiertos')) : m.inf ? t('cerrados (inferido: no hay pesos publicados)') : t('cerrados')],
+        [t('Pesos'), m.g === 'o' ? (m.anun ? t('abiertos (anunciados en su descripción de OpenRouter; aún no descargables)') : t('abiertos')) : m.inf ? t('cerrados (sin pesos publicados)') : t('cerrados')],
         [t('Organización'), m.org || null],
         [t('Nuevo récord'), m.rec ? t('sí, mejor {g} hasta esa fecha', { g: m.g === 'o' ? t('abierto') : t('cerrado') }) : t('no')]
       ], '', logoFor({ id: m.id, name: m.n, org: m.org }))

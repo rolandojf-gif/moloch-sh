@@ -375,7 +375,7 @@
   "Fecha de lanzamiento": "Release date",
   "(intervalo {lo}–{hi})": "(interval {lo}–{hi})",
   "abiertos": "open",
-  "cerrados (inferido: no hay pesos publicados)": "closed (inferred: no weights published)",
+  "cerrados (sin pesos publicados)": "closed (no weights published)",
   "cerrados": "closed",
   "Organización": "Organisation",
   "Nuevo récord": "New record",
