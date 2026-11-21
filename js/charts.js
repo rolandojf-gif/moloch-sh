@@ -25,7 +25,7 @@ export function hideTip() { if (tipEl) tipEl.hidden = true; hot?.classList.remov
    icon: ruta del logo del modelo o laboratorio, delante del título. */
 export function tip(title, rows, foot = '', icon = null) {
   const body = rows.filter(r => r && r[1] !== null && r[1] !== undefined && r[1] !== '')
-    .map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(String(v))}</td></tr>`).join('');
+    .map(([k, v, ic]) => `<tr><th>${esc(k)}</th><td>${ic ? `<span class="tt-val"><span class="logo tt-mini"><img src="${esc(ic)}" alt="" width="14" height="14"></span><span>${esc(String(v))}</span></span>` : esc(String(v))}</td></tr>`).join('');
   return `<div class="tt-title">${icon ? `<span class="logo"><img src="${esc(icon)}" alt="" width="16" height="16"></span>` : ''}<span>${esc(title)}</span></div>${body ? `<table>${body}</table>` : ''}${foot ? `<div class="tt-foot">${esc(foot)}</div>` : ''}`;
 }
 
@@ -101,7 +101,7 @@ function placeLabels(cands, { W, T, H, B, L, R }, taken = []) {
     for (const [anchor, dx, dy0] of tries) {
       const x = c.x + dx, y = c.y + dy0;
       const box = anchor === 'start' ? [x, y - h + 2, x + w, y + 3] : anchor === 'end' ? [x - w, y - h + 2, x, y + 3] : [x - w / 2, y - h + 2, x + w / 2, y + 3];
-      if (box[0] < L || box[2] > W - R + 4 || box[1] < T - 4 || box[3] > H - B) continue;
+      if (box[0] < L || box[2] > W - R + 4 || box[1] < T - 4 || box[3] > H - B - 4) continue;
       if (c.minY != null && (box[1] < c.minY || box[3] > c.maxY)) continue;
       if (hit(box)) continue;
       boxes.push(box);
@@ -336,14 +336,24 @@ export function scatter(el, points, { threshold = null, labels = new Set(), fres
     }
     s += `<g clip-path="url(#clip-${el.id})">`;
     const ord = shown.map((p, i) => [p, i]).sort((a, b) => (key(a[0]) ? 1 : 0) - (key(b[0]) ? 1 : 0));
-    for (const [p, i] of ord) s += `<circle data-k="${i}" class="pt-${p.cls}${key(p) ? ' key' : ' faint'}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="6"/>`;
+    const logoPts = shown.filter(p => labels.has(p.id) && p.icon);
+    const logoIds = new Set(logoPts.map(p => p.id));
+    for (const [p, i] of ord) {
+      if (logoIds.has(p.id)) {
+        const cx = X(p.x), cy = Y(p.y);
+        s += `<g data-k="${i}" class="logo-pt logo-hit ${p.cls}"><rect x="${(cx - 10).toFixed(1)}" y="${(cy - 10).toFixed(1)}" width="20" height="20"/><image href="${esc(p.icon)}" x="${(cx - 7).toFixed(1)}" y="${(cy - 7).toFixed(1)}" width="14" height="14"/></g>`;
+      } else {
+        s += `<circle data-k="${i}" class="pt-${p.cls}${key(p) ? ' key' : ' faint'}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="6"/>`;
+      }
+    }
     s += '</g>';
+    for (const p of logoPts) taken.push([X(p.x) - 11, Y(p.y) - 11, X(p.x) + 11, Y(p.y) + 11]);
     const targets = shown.map(p => ({ x: X(p.x), y: Y(p.y), html: p.tip || tip(p.label, []), go: p.go }));
     const cands = shown.filter(p => labels.has(p.id)).map(p => ({ p })).sort((a, b) => b.p.y - a.p.y)
       .concat(shown.filter(p => fresh.has(p.id) && !labels.has(p.id)).sort((a, b) => b.y - a.y).map(p => ({ p, far: true })))
       .concat(shown.filter(p => pareto.has(p.id) && !labels.has(p.id) && !fresh.has(p.id)).sort((a, b) => b.y - a.y).map(p => ({ p })))
       .concat(zoomed ? shown.filter(p => !key(p)).sort((a, b) => b.y - a.y).map(p => ({ p })) : [])
-      .map(({ p, far }) => ({ x: X(p.x), y: Y(p.y), text: p.label, faint: !key(p), far }));
+      .map(({ p, far }) => ({ x: X(p.x), y: Y(p.y), text: p.label, faint: !key(p), far, icon: logoIds.has(p.id) ? p.icon : null }));
     s += labelSvg(placeLabels(cands.slice(0, zoomed ? 30 : 12), G, taken));
     s += '</svg>';
     s += `<div class="legend"><span><i style="background:var(--open)"></i>${t('Pesos abiertos')}</span><span><i style="background:var(--closed)"></i>${t('Cerrado')}</span><span><i class="lg-key"></i>${t('Con nombre: líderes y modelos que ninguno supera a la vez en índice y precio{p1}', { p1: (shown.some(p => fresh.has(p.id)) ? t(', y los nuevos de los últimos 7 días') : '') + (zoomed ? t('; al acercar, también los demás que caben') : '') })}</span>${zoomUi(zoomed)}</div>`;
@@ -507,28 +517,38 @@ export function gaps(el, points, { unit = t('puntos ECI'), short = unit, bands =
 }
 
 /* ── Serie diaria ─────────────────────────────────────────────────────── */
-/* pts: [{ d: 'AAAA-MM-DD', ... }]; series: [{ key, cls, name, get(p) → número|null, who(p) → texto }]. Ejes por días. */
+/* pts: [{ d: 'AAAA-MM-DD', ... }]; series: [{ cls, group?, name, get(p) → número|null, who(p) → texto, icon?(p) → url, id?(p) → id }]. Ejes por días. */
 export function daily(el, pts, opts = {}) {
-  const { series = [], yLabel = '', unit = '', foot = '', aria = '' } = opts;
+  const { series = [], yLabel = '', unit = '', foot = '', aria = '', gap = false } = opts;
   const ok = pts.filter(p => series.some(sr => sr.get(p) !== null));
   if (ok.length < 2) { el.innerHTML = `<div class="chart-empty">${t('La serie necesita al menos dos recogidas diarias.')}</div>`; return false; }
   watchWidth(el, () => daily(el, pts, opts));
-  const G = frame(el, { W: fitWidth(el), H: 280, L: 52, R: 170, T: 16, B: 40 }, 250);
+  const G = frame(el, { W: fitWidth(el), H: 300, L: 52, R: 220, T: 20, B: 40 }, 260);
+  if (G.narrow) G.R = 18;
   const { W, H, L, R, T, B } = G;
   const tmin = ms(ok[0].d), tmax = ms(ok[ok.length - 1].d);
   const vals = ok.flatMap(p => series.map(sr => sr.get(p))).filter(v => v !== null);
   const lo = Math.floor(Math.min(...vals) / 5) * 5 - 5, hi = Math.ceil(Math.max(...vals) / 5) * 5 + 5;
-  const X = t => L + (t - tmin) / (tmax - tmin || 1) * (W - L - R);
+  const X = tv => L + (tv - tmin) / (tmax - tmin || 1) * (W - L - R);
   const Y = v => T + (1 - (v - lo) / (hi - lo || 1)) * (H - T - B);
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">`;
   s += yAxis(niceTicks(lo, hi), Y, G, v => num(v, 0), yLabel);
   const days = Math.round((tmax - tmin) / 864e5), every = Math.max(1, Math.ceil(days / tickCount(G)));
   for (let i = 0; i <= days; i += every) {
-    const t = tmin + i * 864e5, x = X(t);
+    const tv = tmin + i * 864e5, x = X(tv);
     const anchor = x < L + 24 ? 'start' : x > W - R - 24 ? 'end' : 'middle';
-    s += `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${x.toFixed(1)}" y="${H - B + 18}" text-anchor="${anchor}">${esc(fmtDate(new Date(t).toISOString().slice(0, 10)).replace(/ \d{4}$/, ''))}</text>`;
+    s += `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${H - B}" y2="${H - B + 5}"/><text x="${x.toFixed(1)}" y="${H - B + 18}" text-anchor="${anchor}">${esc(fmtDate(new Date(tv).toISOString().slice(0, 10)).replace(/ \d{4}$/, ''))}</text>`;
   }
   s += '</g>';
+  // Banda suave entre las dos líneas para hacer visible la distancia día a día.
+  if (gap && series.length === 2) {
+    const both = ok.filter(p => series[0].get(p) !== null && series[1].get(p) !== null);
+    if (both.length >= 2) {
+      const top = both.map(p => `${X(ms(p.d)).toFixed(1)},${Y(series[0].get(p)).toFixed(1)}`).join(' L');
+      const bot = both.slice().reverse().map(p => `${X(ms(p.d)).toFixed(1)},${Y(series[1].get(p)).toFixed(1)}`).join(' L');
+      s += `<path class="daily-band" d="M${top} L${bot} Z"/>`;
+    }
+  }
   for (const sr of series) {
     let d = '', pen = false;
     for (const p of ok) { const v = sr.get(p); if (v === null) { pen = false; continue; } d += `${pen ? 'L' : 'M'}${X(ms(p.d)).toFixed(1)},${Y(v).toFixed(1)} `; pen = true; }
@@ -538,13 +558,76 @@ export function daily(el, pts, opts = {}) {
   const targets = ok.map((p, i) => {
     const x = X(ms(p.d));
     s += `<g data-k="${i}">${series.map(sr => sr.get(p) === null ? '' : `<circle class="pt-${sr.cls}" cx="${x.toFixed(1)}" cy="${Y(sr.get(p)).toFixed(1)}" r="3.5"/>`).join('')}</g>`;
-    return { box: [x - step / 2, T, x + step / 2, H - B], html: tip(fmtDate(p.d), series.map(sr => [sr.name, sr.get(p) === null ? t('sin datos') : `${num(sr.get(p), 1)}${unit}${sr.who?.(p) ? ` · ${sr.who(p)}` : ''}`]), foot) };
+    const rows = series.map(sr => {
+      const v = sr.get(p), w = sr.who?.(p), ic = sr.icon?.(p);
+      return [sr.name, v === null ? t('sin datos') : `${num(v, 1)}${unit}${w ? ` · ${w}` : ''}`, v !== null ? ic : null];
+    });
+    if (gap && series.length === 2 && series[0].get(p) !== null && series[1].get(p) !== null) {
+      rows.push([t('Distancia'), `${num(Math.abs(series[0].get(p) - series[1].get(p)), 1)} pts`]);
+    }
+    return { box: [x - step / 2, T, x + step / 2, H - B], html: tip(fmtDate(p.d), rows, foot) };
   });
-  const last = ok[ok.length - 1];
-  const ends = series.filter(sr => sr.get(last) !== null).map(sr => ({ y: Y(sr.get(last)), text: `${sr.name}: ${num(sr.get(last), 1)}` }));
-  for (let i = 1; i < ends.length; i++) if (Math.abs(ends[i].y - ends[i - 1].y) < 14) ends[i].y = ends[i - 1].y + 14;
-  if (!G.narrow) s += ends.map(e => `<text class="ptlabel" x="${(X(tmax) + 8).toFixed(1)}" y="${(e.y + 4).toFixed(1)}">${esc(e.text)}</text>`).join('');
-  s += `</svg><div class="legend">${series.map(sr => `<span><i class="sw-${sr.cls}"></i>${esc(G.narrow && sr.get(last) !== null ? `${sr.name}: ${num(sr.get(last), 1)}` : sr.name)}</span>`).join('')}</div>`;
+  // Logos en los cambios de líder a lo largo de la serie y en la posición actual (último día).
+  const last = ok[ok.length - 1], xEnd = X(tmax);
+  for (const sr of series) {
+    const grp = sr.group || (sr.cls === 'ln-open' ? 'open' : 'closed');
+    let prevWho = sr.who?.(ok[0]) || null, lastLogoX = -Infinity;
+    for (let i = 1; i < ok.length - 1; i++) {
+      const p = ok[i], v = sr.get(p), who = sr.who?.(p);
+      if (v === null || !who) continue;
+      if (who !== prevWho) {
+        const cx = X(ms(p.d)), cy = Y(v), ic = sr.icon?.(p);
+        if (ic && xEnd - cx >= 30 && cx - lastLogoX >= 26) {
+          s += `<g class="logo-pt ${grp}"><rect x="${(cx - 9).toFixed(1)}" y="${(cy - 9).toFixed(1)}" width="18" height="18"/><image href="${esc(ic)}" x="${(cx - 6).toFixed(1)}" y="${(cy - 6).toFixed(1)}" width="12" height="12"/></g>`;
+          lastLogoX = cx;
+        }
+      }
+      prevWho = who;
+    }
+  }
+  // Cota vertical con la distancia actual entre ambos líderes.
+  if (gap && series.length === 2 && series[0].get(last) !== null && series[1].get(last) !== null) {
+    const yA = Y(series[0].get(last)), yB = Y(series[1].get(last));
+    const yTop = Math.min(yA, yB), yBot = Math.max(yA, yB), yMid = (yTop + yB + yA - yTop) / 2;
+    const dist = Math.abs(series[0].get(last) - series[1].get(last));
+    if (yBot - yTop >= 28) {
+      const bx = xEnd;
+      s += `<line class="daily-gap-ln" x1="${bx.toFixed(1)}" x2="${bx.toFixed(1)}" y1="${(yTop + 13).toFixed(1)}" y2="${(yBot - 13).toFixed(1)}"/>`;
+      if (!G.narrow) {
+        const pill = `${num(dist, 1)} pts`, pw = Math.max(58, pill.length * 7.2 + 14);
+        s += `<line class="daily-gap-tick" x1="${bx.toFixed(1)}" x2="${(bx + 12).toFixed(1)}" y1="${yMid.toFixed(1)}" y2="${yMid.toFixed(1)}"/>`;
+        s += `<g class="daily-gap-badge"><rect x="${(bx + 12).toFixed(1)}" y="${(yMid - 11).toFixed(1)}" width="${pw.toFixed(1)}" height="22"/><text x="${(bx + 12 + pw / 2).toFixed(1)}" y="${(yMid + 4).toFixed(1)}" text-anchor="middle">${esc(pill)}</text></g>`;
+      }
+    }
+  }
+  const ends = series.filter(sr => sr.get(last) !== null).map(sr => ({
+    sr, grp: sr.group || (sr.cls === 'ln-open' ? 'open' : 'closed'),
+    y: Y(sr.get(last)), val: sr.get(last), who: sr.who?.(last) || sr.name, ic: sr.icon?.(last), id: sr.id?.(last)
+  }));
+  for (const e of ends) {
+    if (e.ic) {
+      s += `<g class="logo-pt daily-end ${e.grp}"><rect x="${(xEnd - 11).toFixed(1)}" y="${(e.y - 11).toFixed(1)}" width="22" height="22"/><image href="${esc(e.ic)}" x="${(xEnd - 8).toFixed(1)}" y="${(e.y - 8).toFixed(1)}" width="16" height="16"/></g>`;
+    }
+  }
+  const sortedEnds = ends.slice().sort((a, b) => a.y - b.y);
+  for (let i = 1; i < sortedEnds.length; i++) if (sortedEnds[i].y - sortedEnds[i - 1].y < 30) sortedEnds[i].y = sortedEnds[i - 1].y + 30;
+  if (!G.narrow) {
+    s += sortedEnds.map(e => {
+      const lx = (xEnd + 17).toFixed(1);
+      return `<text class="ptlabel daily-nm" x="${lx}" y="${(e.y - 1).toFixed(1)}">${esc(fitText(e.who, 25))}</text><text class="ptlabel daily-sc ${e.grp}" x="${lx}" y="${(e.y + 13).toFixed(1)}">${esc(num(e.val, 1))} pts</text>`;
+    }).join('');
+  }
+  const legendItems = series.map(sr => {
+    const v = sr.get(last), who = sr.who?.(last), ic = sr.icon?.(last), id = sr.id?.(last);
+    const logoHtml = ic ? `<span class="logo lg-mini"><img src="${esc(ic)}" alt="" width="14" height="14"></span>` : '';
+    const whoHtml = who ? (id ? ` · <a class="m-open" href="#modelos/${esc(id)}">${esc(who)}</a>` : ` · ${esc(who)}`) : '';
+    const scoreHtml = v !== null ? ` (${esc(num(v, 1))})` : '';
+    return `<span><i class="sw-${sr.cls}"></i>${logoHtml}${esc(sr.name)}${whoHtml}${scoreHtml}</span>`;
+  });
+  if (gap && series.length === 2 && series[0].get(last) !== null && series[1].get(last) !== null) {
+    legendItems.push(`<span class="lg-gap"><strong>${esc(num(Math.abs(series[0].get(last) - series[1].get(last)), 1))} pts</strong> ${esc(t('de distancia actual'))}</span>`);
+  }
+  s += `</svg><div class="legend">${legendItems.join('')}</div>`;
   el.innerHTML = s;
   interact(el, targets);
   return true;

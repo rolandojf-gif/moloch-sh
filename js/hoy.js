@@ -3,7 +3,7 @@ import { t, tn, tr, L } from './i18n.js';
 import { esc, fact, src, usd, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote, sinApiTag } from './fmt.js';
 import { logo, logoFor } from './logos.js';
 import { scatter, daily, tip } from './charts.js';
-import { renderHero } from './hoy-hero.js';
+import { renderHero, eventModel, modelLogo } from './hoy-hero.js';
 
 const $ = s => document.querySelector(s);
 const kind = k => ({ nuevo: t('Nuevo modelo'), pesos: t('Pesos abiertos'), precio: t('Precio del laboratorio'), evaluacion: t('Evaluación independiente'), retirada: t('Retirada'),
@@ -57,7 +57,36 @@ function renderVisit(d, items, p) {
   if (!nuevos.length) { el.innerHTML = `<b>${t('Desde tu última visita')}</b> ${t('(parte del {fmtDate}): nada nuevo.', { fmtDate: esc(fmtDate(ref)) })}`; return; }
   const n = nuevos.filter(it => it.importancia).length;
   const head = tn(nuevos.length, ['(parte del {fecha}): {n} cambio detectado, {noticias}.', '(parte del {fecha}): {n} cambios detectados, {noticias}.'], { fecha: esc(fmtDate(ref)), noticias: n ? t('{n} de ellos noticia', { n }) : t('ninguno noticia') });
-  el.innerHTML = `<b>${t('Desde tu última visita')}</b> ${head}${since && ref < since ? ` ${t('Sólo cuentan los de los últimos {p1} días, desde el {fmtDate}.', { p1: d.changes.window || 7, fmtDate: esc(fmtDate(since)) })}` : ''}${sig.length ? ` ${p.noticias.length ? t('Además de las de arriba') : t('Las noticias')}:<ul>${sig.slice(0, 5).map(it => `<li><span>${esc(fmtDate(it.detected))}</span> ${logo(fichaModel(d, it.ficha))}${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</li>`).join('')}</ul>${sig.length > 5 ? t('Y {p1} más en la lista de abajo.', { p1: sig.length - 5 }) : ''}` : ''}`;
+  el.innerHTML = `<b>${t('Desde tu última visita')}</b> ${head}${since && ref < since ? ` ${t('Sólo cuentan los de los últimos {p1} días, desde el {fmtDate}.', { p1: d.changes.window || 7, fmtDate: esc(fmtDate(since)) })}` : ''}${sig.length ? ` ${p.noticias.length ? t('Además de las de arriba') : t('Las noticias')}:<ul>${sig.slice(0, 5).map(it => `<li><span>${esc(fmtDate(it.detected))}</span> ${modelLogo(eventModel(d, it, fichaModel))}${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</li>`).join('')}</ul>${sig.length > 5 ? t('Y {p1} más en la lista de abajo.', { p1: sig.length - 5 }) : ''}` : ''}`;
+}
+
+function renderWeek(d, items, top, days) {
+  const el = $('#hoy-week');
+  if (!el) return;
+  const topKeys = new Set(top.map(it => it.key));
+  const seen = new Set(top.map(it => it.data?.ind || it.ficha || L(it, 'titular')));
+  const recent = [];
+  for (const it of items) {
+    if (!it.importancia || topKeys.has(it.key)) continue;
+    const dedup = it.data?.ind || it.ficha || L(it, 'titular');
+    if (seen.has(dedup)) continue;
+    seen.add(dedup);
+    recent.push(it);
+    if (recent.length >= 4) break;
+  }
+  el.hidden = !recent.length;
+  if (!recent.length) { el.innerHTML = ''; return; }
+  const cards = recent.map(it => {
+    const m = eventModel(d, it, fichaModel);
+    const tit = L(it, 'titular') || L(it, 'what');
+    const href = it.ficha || (m?.id ? `#modelos/${m.id}` : '');
+    const dt = fmtDate(it.detected || it.date).replace(/ \d{4}$/, '');
+    return `<article class="week-card">
+      <div class="week-top"><span class="tag k-${esc(it.kind)}">${esc(kind(it.kind))}</span><span class="week-d">${esc(dt)}</span></div>
+      <div class="week-h">${modelLogo(m)}<h4>${toFicha(href, tit)}</h4></div>
+    </article>`;
+  }).join('');
+  el.innerHTML = `<div class="week-head"><span>${t('También en los últimos {days} días', { days })}</span></div><div class="week-grid">${cards}</div>`;
 }
 
 function renderNews(d) {
@@ -75,7 +104,7 @@ function renderNews(d) {
   const card = it => `
     <article class="news-card">
       <span class="tag k-${esc(it.kind)}">${esc(kind(it.kind))}</span>
-      <div class="news-h">${logo(fichaModel(d, it.ficha), true)}<h3>${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</h3></div>
+      <div class="news-h">${modelLogo(eventModel(d, it, fichaModel), true)}<h3>${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</h3></div>
       <p><span class="lbl">${t('Qué ocurrió')}</span>${esc(L(it, 'what'))}</p>
       ${it.consecuencia ? `<p><span class="lbl">${t('Qué cambia')}</span>${esc(L(it, 'consecuencia'))}</p>` : ''}
       <p><span class="lbl">${t('Por qué es noticia')}</span>${esc(cap(L(it, 'porque', it.importancia?.porque)))}.</p>
@@ -84,6 +113,7 @@ function renderNews(d) {
   $('#hoy-news').innerHTML = (top.length ? renderHero(d, top[0], { kind, toFicha, foot, cap, fichaModel }) + top.slice(1).map(card).join('')
     : p ? `<div class="empty"><b>${t('Sin cambios significativos en la recogida del {fmtDate}.', { fmtDate: esc(fmtDate(p.fecha)) })}</b> ${today ? tn(today, ['{n} cambio menor, en la lista de abajo.', '{n} cambios menores, en la lista de abajo.']) : t('Ningún cambio detectado.')}${p.ultima ? ` ${t('La última noticia fue del {fmtDate}: {toFicha}.', { fmtDate: esc(fmtDate(p.ultima.fecha)), toFicha: toFicha(p.ultima.ficha, L(p.ultima, 'titular')) })}` : ''}</div>`
     : '');
+  renderWeek(d, items, top, days);
   const rules = $('#hoy-reglas');
   rules.hidden = !p;
   if (p) $('#hoy-reglas-body').innerHTML = `<ol class="reglas">${L(p, 'reglas').map(r => `<li>${esc(r)}</li>`).join('')}</ol>
@@ -94,7 +124,7 @@ function renderNews(d) {
   const sig = items.filter(it => it.importancia).length;
   more.querySelector('summary').textContent = t('Ver todo lo detectado en {days} días ({n}{noticias})', { days, n: items.length, noticias: sig ? ', ' + tn(sig, ['{n} noticia', '{n} noticias']) : '' });
   const link = it => it.ficha ? ` <a href="${esc(it.ficha)}">${/^#modelos/.test(it.ficha) ? t('Abrir el modelo') : t('Ver la ficha')}</a>` : '';
-  $('#hoy-all-list').innerHTML = items.map(it => `<li><span>${esc(fmtDate(it.detected || it.date))}</span><span>${logo(fichaModel(d, it.ficha))}${it.importancia ? `<span class="tag k-noticia">${t('Noticia')}</span> ` : ''}<b>${esc(kind(it.kind))}.</b> ${esc(L(it, 'what'))}${link(it)}</span>${foot(it, [L(it, 'what')])}</li>`).join('');
+  $('#hoy-all-list').innerHTML = items.map(it => `<li><span>${esc(fmtDate(it.detected || it.date))}</span><span>${modelLogo(eventModel(d, it, fichaModel))}${it.importancia ? `<span class="tag k-noticia">${t('Noticia')}</span> ` : ''}<b>${esc(kind(it.kind))}.</b> ${esc(L(it, 'what'))}${link(it)}</span>${foot(it, [L(it, 'what')])}</li>`).join('');
 }
 
 const priceBy = m => priceBasis(m) ? `, ${esc(priceBasis(m))}` : '';
@@ -132,8 +162,13 @@ function renderKPIs(d, gapPts) {
       if (pg !== gap) delta = ` ${t('{p1} desde {num} el {fmtDate}.', { p1: gap < pg ? t('Se reduce') : t('Se amplía'), num: num(pg), fmtDate: fmtDate(prev.date) })}`;
       else delta = ` ${t('Igual que el {fmtDate}.', { fmtDate: fmtDate(prev.date) })}`;
     }
-    gapCard = `<div class="kpi"><span class="k">${t('Diferencia cerrado − abierto')}</span><span class="v">${gap > 0 ? '' : gap < 0 ? '−' : ''}${num(Math.abs(gap))} pts${src(capFact(lc))}</span>
-      <span class="s">${t('Puntos del {idx} entre {a} y {b}.', { idx: esc(aaIndexName(ver)), a: esc(lc.name), b: esc(lo.name) })}${dl ? ` ${t('Con el mejor de pesos ya descargables, {name}, {num} pts.', { name: esc(dl.name), num: num(Math.round((ii(lc) - ii(dl)) * 10) / 10) })}` : ''} ${t('No equivalen a meses de retraso. AA no publica intervalo de confianza para este índice.')}${delta}</span></div>`;
+    const maxV = Math.max(ii(lc), ii(lo), 1);
+    const vs = `<div class="gap-vs">
+      <div class="gv-row closed">${logo(lc)}<span class="gv-nm">${modelLink(d, lc.id, lc.name)}</span><span class="gv-val">${num(ii(lc))}</span><span class="gv-track"><i style="width:${(ii(lc) / maxV * 100).toFixed(1)}%"></i></span></div>
+      <div class="gv-row open">${logo(lo)}<span class="gv-nm">${modelLink(d, lo.id, lo.name)}</span><span class="gv-val">${num(ii(lo))}</span><span class="gv-track"><i style="width:${(ii(lo) / maxV * 100).toFixed(1)}%"></i></span></div>
+    </div>`;
+    gapCard = `<div class="kpi"><span class="k">${t('Diferencia cerrado − abierto')}</span><span class="v">${gap > 0 ? '' : gap < 0 ? '−' : ''}${num(Math.abs(gap))} pts${src(capFact(lc))}</span>${vs}
+      <span class="s">${t('Puntos del {idx}.', { idx: esc(aaIndexName(ver)) })}${dl ? ` ${t('Con el mejor de pesos ya descargables, {name}, {num} pts.', { name: esc(dl.name), num: num(Math.round((ii(lc) - ii(dl)) * 10) / 10) })}` : ''} ${t('No equivalen a meses de retraso.')}${delta}</span></div>`;
   } else {
     gapCard = `<div class="kpi"><span class="k">${t('Diferencia cerrado − abierto')}</span><span class="v">${nd()}</span><span class="s">${reason || t('Falta un líder con índice en algún bloque.')}</span></div>`;
   }
@@ -156,9 +191,10 @@ function renderKPIs(d, gapPts) {
       }
     }
     const sel = `<label>${t('umbral')} <select id="kpi-pct">${GAPS.map(g => `<option value="${g}"${g === gapPts ? ' selected' : ''}>${t('líder − {g} pts', { g })}</option>`).join('')}</select></label>`;
+    const bestWho = best ? `<span class="kpi-who">${logo(best)}<span>${modelLink(d, best.id, best.name)}</span></span>` : '';
     costCard = `<div class="kpi"><span class="k">${t('Coste con capacidad comparable')}</span>
-      <span class="v">${best ? usd(blended(best)) + src(best.price.in) : nd()}</span>
-      <span class="s">${best ? t('{name}: el más barato con índice AA ≥ {num}, precio combinado por millón{priceBy}.', { name: esc(best.name), num: num(T), priceBy: priceBy(best) }) : t('Ningún modelo con índice AA ≥ {num} tiene precio.', { num: num(T) })}${bestOpen && bestOpen !== best ? ` ${t('Abierto más barato: {name}, {usd}.', { name: esc(bestOpen.name), usd: usd(blended(bestOpen)) })}` : ''}${delta}</span>${sel}</div>`;
+      <span class="v">${best ? usd(blended(best)) + src(best.price.in) : nd()}</span>${bestWho}
+      <span class="s">${best ? t('El más barato con índice AA ≥ {num}, precio combinado por millón{priceBy}.', { num: num(T), priceBy: priceBy(best) }) : t('Ningún modelo con índice AA ≥ {num} tiene precio.', { num: num(T) })}${bestOpen && bestOpen !== best ? ` ${t('Abierto más barato: {name}, {usd}.', { name: esc(bestOpen.name), usd: usd(blended(bestOpen)) })}` : ''}${delta}</span>${sel}</div>`;
   } else {
     costCard = `<div class="kpi"><span class="k">${t('Coste con capacidad comparable')}</span><span class="v">${nd()}</span><span class="s">${reason || t('Sin modelos con índice.')}</span></div>`;
   }
@@ -184,7 +220,7 @@ function renderScatter(d, gapPts) {
     : allScored;
   const pts = models.filter(m => blended(m) > 0).map(m => ({
     id: m.id, x: blended(m), y: ii(m), cls: m.weights.v === 'abiertos' ? 'open' : m.weights.v === 'cerrados' ? 'closed' : 'unknown',
-    label: m.name,
+    label: m.name, icon: logoFor(m),
     go: () => { location.hash = `#modelos/${m.id}`; },
     tip: tip(m.name, [
       [t('Laboratorio'), m.lab.name],
@@ -230,12 +266,14 @@ function renderDaily(d) {
   const ver = d.catalog.aaIndexVersion;
   const pts = serie.filter(p => p.aaV === ver && (p.open || p.closed));
   const first = pts[0]?.d;
+  const iconOf = x => x ? logoFor({ id: x.id, name: x.n || '' }) : null;
+  const catId = x => (x?.id && d.byId.has(x.id)) ? x.id : null;
   daily($('#hoy-daily'), pts, {
     aria: t('Índice de Artificial Analysis del mejor modelo cerrado y del mejor abierto, por día'),
-    yLabel: t('Índice AA'), foot: t('Mejor modelo de cada bloque ese día, entre los del catálogo con índice.'),
+    yLabel: t('Índice AA'), foot: t('Mejor modelo de cada bloque ese día, entre los del catálogo con índice.'), gap: true,
     series: [
-      { cls: 'ln-closed', name: t('Mejor cerrado'), get: p => p.closed?.ii ?? null, who: p => p.closed?.n },
-      { cls: 'ln-open', name: t('Mejor abierto'), get: p => p.open?.ii ?? null, who: p => p.open?.n }
+      { cls: 'ln-closed', group: 'closed', name: t('Mejor cerrado'), get: p => p.closed?.ii ?? null, who: p => p.closed?.n, icon: p => iconOf(p.closed), id: p => catId(p.closed) },
+      { cls: 'ln-open', group: 'open', name: t('Mejor abierto'), get: p => p.open?.ii ?? null, who: p => p.open?.n, icon: p => iconOf(p.open), id: p => catId(p.open) }
     ]
   });
   $('#hoy-daily-note').innerHTML = `<p class="note">${t('Un punto por recogida diaria{p1} en el {aaIndexName} de {AA_LINK}.', { p1: first ? t(', desde el {fmtDate}', { fmtDate: esc(fmtDate(first)) }) : '', aaIndexName: esc(aaIndexName(ver)), AA_LINK })}</p>
@@ -249,11 +287,13 @@ function renderPodio(d) {
   el.hidden = !top.length;
   if (!top.length) return;
   const ver = d.catalog.aaIndexVersion;
+  const maxV = ii(top[0]) || 1;
   el.innerHTML = `<div class="podio-h">${t('Los cinco primeros del {aaIndexName}', { aaIndexName: esc(aaIndexName(ver)) })}</div>
-    <ol class="podio-l">${top.map((m, i) => `<li class="${m.weights.v === 'abiertos' ? 'open' : 'closed'}">
+    <ol class="podio-l">${top.map((m, i) => `<li class="${m.weights.v === 'abiertos' ? 'open' : 'closed'}${i === 0 ? ' is-first' : ''}">
       <span class="p-pos">${i + 1}</span>${logo(m, true)}
       <span class="p-who"><span class="p-nm">${modelLink(d, m.id, m.name)}</span><span class="p-lab">${esc(m.lab.name)} · <span class="w ${esc(m.weights.v || 'nd')}">${esc(weightsWord(m.weights.v))}</span>${sinApiTag(m)}</span></span>
-      <span class="p-val">${fact(capFact(m), v => num(v))}</span></li>`).join('')}</ol>
+      <span class="p-val">${fact(capFact(m), v => num(v))}</span>
+      <span class="p-bar" aria-hidden="true"><i style="width:${(ii(m) / maxV * 100).toFixed(1)}%"></i></span></li>`).join('')}</ol>
     <p class="note">${t('Configuración de mayor índice de cada modelo; datos de {AA_LINK}, publicados con su permiso.', { AA_LINK })}</p>`;
 }
 
