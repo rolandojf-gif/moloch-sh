@@ -46,7 +46,7 @@ const estLabel = est => est.sentido ? L(est, 'sentido') : plainOf(est.v) || est.
 const months = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / (30.44 * 86400e3));
 function when(h, today) {
   const m = months(today, h.plazo);
-  if (m > 0) return t('faltan {p1}', { p1: tn(m, ['un mes', '{n} meses']) });
+  if (m > 0) return tn(m, ['falta un mes', 'faltan {n} meses']);
   if (m < 0) return t('venció hace {p1}', { p1: tn(-m, ['un mes', '{n} meses']) });
   return h.plazo < today ? t('acaba de vencer') : t('vence este mes');
 }
@@ -133,34 +133,157 @@ function nextChecks(all, today) {
     .sort((x, y) => x.h.plazo.localeCompare(y.h.plazo) || own(y.h) - own(x.h) || x.i - y.i).slice(0, 3).map(({ h }) => ({ h, own: own(h) }));
 }
 
-/* Resumen a fecha de hoy, en frases. */
+/* Resumen a fecha de hoy: marcador principal de cuatro cajas arriba y lista de próximas citas aparte. */
 const lc = x => x.charAt(0).toLowerCase() + x.slice(1);
-function status(all, checks, today, a7, ind) {
+function estOf(h, checks, a7) {
+  const o = valOf(h, 'observatorio', checks);
+  return OPEN.includes(o?.v) ? estimate(h, checks, a7) : null;
+}
+
+function renderStatusHero(all, checks, today, a7) {
   const ritmo = a7.ritmo;
-  const estOf = h => { const o = valOf(h, 'observatorio', checks); return OPEN.includes(o?.v) ? estimate(h, checks, a7) : null; };
-  const tallyEst = (list, words) => { const n = k => list.filter(h => estOf(h)?.v === k).length, none = list.filter(h => !estOf(h)).length; return [[n('adelantado') + n('compatible'), words[0]], [n('retrasado'), words[1]], [none, t('sin estimación')]].filter(x => x[0]).map(([k, w]) => `<b>${k}</b> ${w}`).join(', '); };
-  const undecidedDue = due => due.filter(h => OPEN.includes(valOf(h, 'observatorio', checks)?.v));
   const due = all.filter(h => h.plazo < today), next = all.filter(h => h.plazo >= today).sort((x, y) => x.plazo.localeCompare(y.plazo));
-  const cnt = k => due.filter(h => valOf(h, 'observatorio', checks)?.v === k).length;
-  const parts = [['adelantado', t('va por delante'), t('van por delante')], ['compatible', t('se cumple como preveía'), t('se cumplen como preveían')], ['retrasado', t('va por detrás'), t('van por detrás')], ['sin evidencia suficiente', t('no se puede comprobar con datos públicos'), t('no se pueden comprobar con datos públicos')], ['todavía no evaluable', t('está sin evaluar'), t('están sin evaluar')]]
-    .map(([k, one, many]) => [k, cnt(k), one, many]).filter(x => x[1]);
-  const lastPace = ritmo?.puntos?.[ritmo.puntos.length - 1];
+  const cnt = (list, k) => list.filter(h => valOf(h, 'observatorio', checks)?.v === k).length;
+  const dueParts = [
+    ['adelantado', t('por delante')],
+    ['compatible', t('en plazo')],
+    ['retrasado', t('por detrás')],
+    ['sin evidencia suficiente', t('sin datos')],
+    ['todavía no evaluable', t('sin evaluar')]
+  ].map(([k, lbl]) => [k, cnt(due, k), lbl]).filter(x => x[1]);
+
+  const undecidedDue = due.filter(h => OPEN.includes(valOf(h, 'observatorio', checks)?.v));
+  const tallyEst = (list, words) => {
+    const n = k => list.filter(h => estOf(h, checks, a7)?.v === k).length;
+    const none = list.filter(h => !estOf(h, checks, a7)).length;
+    return [[n('adelantado') + n('compatible'), words[0]], [n('retrasado'), words[1]], [none, t('sin estimación')]]
+      .filter(x => x[0]).map(([k, w]) => `<b>${k}</b> ${w}`).join(', ');
+  };
+
+  const dueBar = dueParts.map(([k, n, lbl]) => `<span class="seg-${cls(k)}" style="flex:${n}" title="${esc(`${n} ${lbl}`)}">${n}</span>`).join('');
+  const duePills = dueParts.map(([k, n, lbl]) => `<span class="a7-pill"><i class="chip ${cls(k)}"></i><b>${n}</b> ${esc(lbl)}</span>`).join('');
+
+  // Próximas: distingue las que ya se han cumplido antes de plazo de las pendientes con estimación.
+  const nextResolved = next.filter(h => !OPEN.includes(valOf(h, 'observatorio', checks)?.v));
+  const nextOpen = next.filter(h => OPEN.includes(valOf(h, 'observatorio', checks)?.v));
+  const nextBarSegs = [
+    ['adelantado', nextResolved.filter(h => valOf(h, 'observatorio', checks)?.v === 'adelantado').length, false],
+    ['compatible', nextResolved.filter(h => valOf(h, 'observatorio', checks)?.v === 'compatible').length, false],
+    ['adelantado', nextOpen.filter(h => estOf(h, checks, a7)?.v === 'adelantado').length, true],
+    ['compatible', nextOpen.filter(h => estOf(h, checks, a7)?.v === 'compatible').length, true],
+    ['retrasado', nextOpen.filter(h => estOf(h, checks, a7)?.v === 'retrasado').length, true]
+  ].filter(x => x[1]);
+  const nextBar = nextBarSegs.map(([k, n, isEst]) => `<span class="seg-${cls(k)}${isEst ? ' is-est' : ''}" style="flex:${n}">${n}</span>`).join('');
+  const nextNotes = [];
+  if (nextResolved.length) nextNotes.push(tn(nextResolved.length, ['<b>{n}</b> ya cumplida antes de fecha.', '<b>{n}</b> ya cumplidas antes de fecha.']));
+  if (nextOpen.length) nextNotes.push(t('Estimaciones: {tallyEst}.', { tallyEst: tallyEst(nextOpen, [t('a tiempo o antes'), t('tarde')]) }));
+
+  const pts = ritmo?.puntos || [];
+  const lastPace = pts[pts.length - 1];
+  const paceTrail = pts.length > 1 ? pts.map(p => esc(p.valor)).join(' → ') : '';
+
+  const nearest = next[0];
+  const nearMonth = nearest ? nearest.plazo.slice(0, 7) : null;
+  const atNearest = nearMonth ? next.filter(h => h.plazo.slice(0, 7) === nearMonth) : [];
+  const nearLabel = nearest ? dateFmt({ month: 'short', year: 'numeric' }).format(new Date(nearest.plazo + 'T00:00:00Z')) : '—';
+
+  return `<div class="a7-hero-top">
+      <span class="tag k-valoracion">AI 2027</span>
+      <span class="hero-meta-pill">${t('{n} predicciones · {l} líneas', { n: all.length, l: a7.lineas.length })}</span>
+      <span class="hero-date">${t('A {fecha}', { fecha: esc(fmtDate(today)) })}</span>
+    </div>
+    <div class="a7-kpis">
+      <div class="a7-kpi">
+        <span class="k">${t('Plazo vencido')}</span>
+        <div class="a7-num"><b>${due.length}</b><small>${t('de {n}', { n: all.length })}</small></div>
+        <div class="a7-mini-bar" aria-hidden="true">${dueBar}</div>
+        <div class="a7-pills">${duePills}</div>
+        ${undecidedDue.length ? `<p class="a7-sub">${t('Sin datos públicos, según estimaciones: {tallyEst}.', { tallyEst: tallyEst(undecidedDue, [t('se cumplirían'), t('irían por detrás')]) })}</p>` : ''}
+      </div>
+      <div class="a7-kpi">
+        <span class="k">${t('Por llegar')}</span>
+        <div class="a7-num"><b>${next.length}</b><small>${t('de {n}', { n: all.length })}</small></div>
+        <div class="a7-mini-bar" aria-hidden="true">${nextBar}</div>
+        <p class="a7-sub">${nextNotes.join(' ')}</p>
+      </div>
+      ${lastPace ? `<div class="a7-kpi a7-kpi-pace">
+        <span class="k">${t('Ritmo según los autores')}</span>
+        <div class="a7-num"><b>${esc(lastPace.valor)}</b></div>
+        ${paceTrail ? `<p class="a7-trail">${paceTrail}</p>` : ''}
+        <p class="a7-sub">${t('Estimación del {curDate} ({nota}) · ', { curDate: esc(curDate(lastPace.fecha)), nota: esc(t('velocidad frente al relato, no probabilidad')) })}<a href="${esc(lastPace.url)}" target="_blank" rel="noopener">${t('Fuente')}</a></p>
+      </div>` : ''}
+      <div class="a7-kpi">
+        <span class="k">${t('Próximo corte')}</span>
+        <div class="a7-num"><b>${esc(nearLabel)}</b></div>
+        ${nearest ? `<p class="a7-sub"><b>${tn(atNearest.length, ['{n} predicción', '{n} predicciones'])}</b> · ${esc(when(nearest, today))}.</p>
+          <a class="a7-jump-cal" href="#a7-cal-h" data-jump>${t('Ver en el calendario ↓')}</a>` : `<p class="a7-sub">${t('Sin plazos pendientes.')}</p>`}
+      </div>
+    </div>`;
+}
+
+function renderNextChecks(all, checks, today, a7, ind) {
   const nc = nextChecks(all, today);
-  const chips = parts.map(([k, n, one, many]) => `<li><span class="chip ${cls(k)}">${n}</span>${esc(n === 1 ? one : many)}</li>`).join('');
-  return `<div class="st-block"><span class="lbl">${t('A {fecha}', { fecha: esc(fmtDate(today)) })}</span>
-      <p class="st-big">${t('De las')} <b>${due.length}</b> ${t('predicciones cuyo plazo ya ha pasado:')}</p><ul class="st-list">${chips}</ul>
-      ${undecidedDue(due).length ? `<p class="st-est">${t('Las que no se pueden comprobar, según las estimaciones: {tallyEst}.', { tallyEst: tallyEst(undecidedDue(due), [t('se cumplirían'), t('irían por detrás')]) })}</p>` : ''}</div>
-    <div class="st-block"><span class="lbl">${t('Lo que viene')}</span>
-      <p class="st-big"><b>${next.length}</b> ${t('predicciones por llegar.')}</p>
-      <p class="st-est">${t('Según las estimaciones: {tallyEst}.', { tallyEst: tallyEst(next.filter(h => OPEN.includes(valOf(h, 'observatorio', checks)?.v)), [t('llegarían a tiempo o antes'), t('llegarían tarde')]) })}</p>
-      ${nc.length ? `<span class="lbl lbl-next">${t('Las próximas que se podrán comprobar con datos')}</span><ol class="st-next">${nc.map(({ h, own }) => `<li><a href="#hito-${esc(h.id)}" data-jump>${esc(tr(h.titulo))}</a>${t(', para {plazo_texto}.', { plazo_texto: esc(tr(h.plazo_texto)) })} <span class="m-sub">${t('Con {p1}{p2}.', { p1: (h.evidencia || []).filter(e => e.tipo === 'medida' && e.indicador).map(e => esc(lc(indicatorBrief(ind, e.indicador).label))).join('; '), p2: own ? t('; el observatorio la calcula en cada recogida') : '' })}</span></li>`).join('')}</ol>
-      <p class="m-sub">${t('Orden: fecha del plazo; a igual fecha, primero las que el observatorio calcula en cada recogida sólo con datos que recoge, y después el orden de esta página.')}</p>` : ''}</div>
-    ${lastPace ? `<div class="st-block"><span class="lbl">${t('Ritmo según los propios autores')}</span>
-      <p class="st-big"><b>${esc(lastPace.valor)}</b> ${t('de la velocidad del escenario.')}</p>
-      <p>${t('Su última estimación, del {curDate}. {nota}', { curDate: esc(curDate(lastPace.fecha)), nota: esc(tr(ritmo.nota)) })} <a href="${esc(lastPace.url)}" target="_blank" rel="noopener">${t('Fuente')}</a></p></div>` : ''}`;
+  if (!nc.length) return `<span class="lbl">${t('Próximas citas comprobables con datos')}</span><p class="m-sub">${t('No quedan predicciones futuras vinculadas a indicadores automáticos.')}</p>`;
+  const items = nc.map(({ h, own }) => {
+    const o = valOf(h, 'observatorio', checks);
+    const open = OPEN.includes(o?.v);
+    const est = open ? estimate(h, checks, a7) : null;
+    const badgeCls = !open ? cls(o?.v) : est ? `${cls(est.v)} is-est` : 'v-todavia-no-evaluable';
+    const badgeTxt = !open ? plain(o, false) : est ? `${t('Est.')} ${estLabel(est)}` : plain(o, false);
+    const inds = (h.evidencia || []).filter(e => e.tipo === 'medida' && e.indicador).map(e => esc(lc(indicatorBrief(ind, e.indicador).label))).join('; ');
+    return `<li class="next-card">
+      <div class="next-meta">
+        <span class="next-when">${esc(tr(h.plazo_texto))} · ${esc(when(h, today))}</span>
+        <span class="next-badge ${badgeCls}">${esc(badgeTxt)}</span>
+      </div>
+      <h4><a href="#hito-${esc(h.id)}" data-jump>${esc(tr(h.titulo))} →</a></h4>
+      <p class="m-sub">${t('Con {p1}{p2}.', { p1: inds, p2: own ? t(' · cálculo diario automático') : '' })}</p>
+    </li>`;
+  }).join('');
+  return `<span class="lbl">${t('Próximas citas comprobables con datos')}</span>
+    <ol class="next-list">${items}</ol>
+    <details class="method-note"><summary>${t('Cómo se eligen estas tres')}</summary><p>${t('Orden: fecha del plazo; a igual fecha, primero las que el observatorio calcula en cada recogida sólo con datos que recoge, y después el orden de esta página.')}</p></details>`;
+}
+
+let TL_FILTER = 'all';
+let lastA7 = null;
+
+function drawTimeline(d) {
+  const a = d.ai2027;
+  if (!a) return;
+  const checks = d.ind?.checks || {};
+  const today = (d.ind?.generated || d.catalog.generated).slice(0, 10);
+  const all = a.lineas.flatMap(l => l.hitos.map(h => ({ ...h, lane: l.id })));
+  const dates = all.map(h => h.plazo).sort();
+  const to = new Date(Date.UTC(+dates[dates.length - 1].slice(0, 4), +dates[dates.length - 1].slice(5, 7) + 1, 1)).toISOString().slice(0, 10);
+  hitoTimeline($('#a7-timeline'), a.lineas.map(l => ({ id: l.id, title: tr(l.titulo) })), all.map(h => {
+    const o = valOf(h, 'observatorio', checks), au = valOf(h, 'autores', checks), due = h.plazo < today;
+    const open = OPEN.includes(o?.v);
+    const est = open ? estimate(h, checks, a) : null;
+    const mode = !open ? 'verified' : o?.v === 'sin evidencia suficiente' ? 'nodata' : 'upcoming';
+    const pace = !open ? o?.v : (est?.v || 'none');
+    return {
+      lane: h.lane, date: h.plazo, pace, mode, dim: TL_FILTER !== 'all' && TL_FILTER !== mode,
+      short: tr(h.corto || h.titulo),
+      go: () => { const el = document.getElementById(`hito-${h.id}`); el?.scrollIntoView({ behavior: 'smooth', block: 'start' }); el?.classList.add('flash'); setTimeout(() => el?.classList.remove('flash'), 1600); },
+      tip: tip(tr(h.titulo), [[t('Plazo'), `${tr(h.plazo_texto)} (${when(h, today)})`], [t('Qué predecía'), tr(h.prediccion)], [t('Observatorio'), plain(o, due)], [t('Estimación'), est ? estLabel(est) : null], [t('Autores'), au ? escala(au.v) : t('sin valoración publicada')]], t('Pulsa para ir a su ficha.'))
+    };
+  }), { today, from: '2025-04-01', to });
+  $('#a7-tl-legend').innerHTML = `
+    <div class="tl-lg-grp"><span class="tl-lg-h">${t('Ritmo (color y símbolo)')}</span>
+      <span><i class="tl-key solid m-adelantado">▲</i>${t('Por delante')}</span>
+      <span><i class="tl-key solid m-compatible">●</i>${t('En plazo')}</span>
+      <span><i class="tl-key solid m-retrasado">▼</i>${t('Por detrás')}</span>
+    </div>
+    <div class="tl-lg-grp"><span class="tl-lg-h">${t('Certeza (relleno)')}</span>
+      <span><i class="tl-key solid m-adelantado"></i>${t('Comprobada con datos')}</span>
+      <span><i class="tl-key est"></i>${t('Por llegar (barra = estimación)')}</span>
+      <span><i class="tl-key nodata">?</i>${t('Sin datos públicos (barra = estimación)')}</span>
+    </div>`;
 }
 
 export function renderAi2027(d) {
+  lastA7 = d;
   const a = d.ai2027;
   if (!a) { $('#a7-lines').innerHTML = `<div class="empty">${t('No se ha podido cargar el seguimiento (data/curated/ai2027.json).')}</div>`; return; }
   const ind = d.ind?.ind || null, checks = d.ind?.checks || {};
@@ -168,28 +291,20 @@ export function renderAi2027(d) {
   const e = a.escenario;
   const all = a.lineas.flatMap(l => l.hitos.map(h => ({ ...h, lane: l.id })));
 
-  $('#a7-scn').innerHTML = `<span class="lbl">${t('Qué es AI 2027')}</span>
+  $('#a7-status').innerHTML = renderStatusHero(all, checks, today, a);
+
+  $('#a7-scn').innerHTML = `<div class="a7-scn-head"><span class="lbl">${t('Qué es AI 2027')}</span><span class="hero-meta-pill">${esc(fmtDate(e.publicado))}</span></div>
     <p><a href="${esc(e.url)}" target="_blank" rel="noopener"><b>${esc(tr(e.titulo))}</b></a> ${t('es un relato publicado el {fmtDate} por {autores}. Cuenta, periodo a periodo, cómo la IA podría pasar de agentes que todavía tropiezan a mediados de 2025 a un programador sobrehumano en 2027, en una carrera entre una empresa estadounidense y una china, las dos ficticias.', { fmtDate: esc(fmtDate(e.publicado)), autores: esc(tr(e.autores)) })}</p>
     <p>${t('No asigna probabilidades: sus autores lo presentan como uno de varios futuros posibles. {nota}', { nota: esc(tr(e.nota)) })}</p>
     <blockquote lang="en">${quote(esc(e.cita))}</blockquote>
-    <p>${t('Dos desenlaces: {p1}.', { p1: e.desenlaces.map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(tr(x.nombre))}</a>`).join(` ${t('y')} `) })}</p>
+    <div class="a7-outcomes">${e.desenlaces.map(x => `<a class="a7-out-btn" href="${esc(x.url)}" target="_blank" rel="noopener"><span>${t('Final ·')}</span> <b>${esc(tr(x.nombre))} ↗</b></a>`).join('')}</div>
     <p class="st-how"><b>${t('Qué hace esta página.')}</b> ${t('Toma {length} predicciones concretas del relato, cada una con su fecha, y las compara con datos públicos. Cada predicción lleva la valoración del observatorio y, cuando existe, la de los propios autores.', { length: all.length })}</p>`;
 
-  $('#a7-status').innerHTML = status(all, checks, today, a, ind);
+  $('#a7-next').innerHTML = renderNextChecks(all, checks, today, a, ind);
 
-  // Calendario: un carril por línea, cada predicción en su fecha y con el color de la valoración del observatorio.
-  const dates = all.map(h => h.plazo).sort();
-  const to = new Date(Date.UTC(+dates[dates.length - 1].slice(0, 4), +dates[dates.length - 1].slice(5, 7) + 1, 1)).toISOString().slice(0, 10);
-  hitoTimeline($('#a7-timeline'), a.lineas.map(l => ({ id: l.id, title: tr(l.titulo) })), all.map(h => {
-    const o = valOf(h, 'observatorio', checks), au = valOf(h, 'autores', checks), due = h.plazo < today;
-    const est = OPEN.includes(o?.v) ? estimate(h, checks, a) : null;
-    return {
-      lane: h.lane, date: h.plazo, cls: cls(o?.v), est: est ? cls(est.v) : null, short: tr(h.corto || h.titulo),
-      go: () => { const el = document.getElementById(`hito-${h.id}`); el?.scrollIntoView({ behavior: 'smooth', block: 'start' }); el?.classList.add('flash'); setTimeout(() => el?.classList.remove('flash'), 1600); },
-      tip: tip(tr(h.titulo), [[t('Plazo'), `${tr(h.plazo_texto)} (${when(h, today)})`], [t('Qué predecía'), tr(h.prediccion)], [t('Observatorio'), plain(o, due)], [t('Estimación'), est ? estLabel(est) : null], [t('Autores'), au ? escala(au.v) : t('sin valoración publicada')]], t('Pulsa para ir a su ficha.'))
-    };
-  }), { today, from: '2025-04-01', to });
-  $('#a7-tl-legend').innerHTML = ESCALA.map(k => `<span><i class="chip ${cls(k)}"></i>${esc(plainOf(k))}</span>`).join('') + `<span><i class="chip est-key"></i>${t('Anillo: color de la estimación')}</span>`;
+  const ctl = $('#a7-tl-ctl');
+  if (ctl) for (const b of ctl.querySelectorAll('[data-tlf]')) b.setAttribute('aria-pressed', String(b.dataset.tlf === TL_FILTER));
+  drawTimeline(d);
 
   $('#a7-tally').innerHTML = tally(a.lineas, checks);
   $('#a7-pace').innerHTML = `<span class="lbl">${t('Ritmo de la realidad frente al escenario, según los autores')}</span>
@@ -209,10 +324,20 @@ export function renderAi2027(d) {
      de idioma, así que el escuchador se enlaza una sola vez. */
   if (bound) return;
   bound = true;
+  $('#a7-tl-ctl')?.addEventListener('click', ev => {
+    const b = ev.target.closest('[data-tlf]'); if (!b) return;
+    TL_FILTER = b.dataset.tlf;
+    for (const x of $('#a7-tl-ctl').querySelectorAll('[data-tlf]')) x.setAttribute('aria-pressed', String(x === b));
+    if (lastA7) drawTimeline(lastA7);
+  });
   $('#view-ai2027').addEventListener('click', ev => {
     const link = ev.target.closest('a[data-jump]');
     if (!link) return;
     ev.preventDefault();
-    document.querySelector(link.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (target.classList.contains('hito')) { target.classList.remove('flash'); void target.offsetWidth; target.classList.add('flash'); }
+    }
   });
 }

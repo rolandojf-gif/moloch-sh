@@ -776,62 +776,101 @@ export function dotci(el, rows, opts = {}) {
 }
 
 /* ── Calendario de hitos (AI 2027) ──────────────────────────────────────── */
-/* lanes: [{ id, title }]; items: [{ lane, date, cls, short, tip, go }]; today: 'AAAA-MM-DD'. */
+/* lanes: [{ id, title }]; items: [{ lane, date, pace, mode, dim?, short, tip, go }]; today: 'AAAA-MM-DD'.
+   pace: 'adelantado'|'compatible'|'retrasado'|'none'; mode: 'verified'|'upcoming'|'nodata'. */
 export function hitoTimeline(el, lanes, items, opts = {}) {
   const { today, from, to } = opts;
   watchWidth(el, () => hitoTimeline(el, lanes, items, opts));
-  // En estrecho, el título de cada carril va encima de sus puntos, a todo lo ancho, en vez de en una columna a la izquierda.
-  const nw = isNarrow(el), laneH = nw ? 96 : 86;
-  const G = nw ? { W: Math.max(280, el.clientWidth), L: 10, R: 10, T: 26, B: 34, narrow: true, top: 18 } : { W: 860, L: 165, R: 16, T: 26, B: 34, top: 0 };
-  const H = G.T + lanes.length * laneH + G.B;
+  const nw = isNarrow(el);
+  const G = nw
+    ? { W: Math.max(300, el.clientWidth), L: 10, R: 10, T: 42, B: 30, narrow: true }
+    : { W: 960, L: 168, R: 16, T: 46, B: 30, narrow: false };
   const tmin = ms(from), tmax = ms(to);
-  const X = v => G.L + (v - tmin) / (tmax - tmin) * (G.W - G.L - G.R);
+  const X = v => G.L + (v - tmin) / (tmax - tmin || 1) * (G.W - G.L - G.R);
+  const xt = X(ms(today));
+  const rowH = nw ? 25 : 25, padT = nw ? 25 : 10, padB = 9;
+  const labelW = nw ? 155 : 178;
+
+  // Empaquetado por filas dentro de cada carril usando únicamente fechas (determinista e idéntico en ES y EN).
+  // En escritorio, los hitos pasados cercanos a HOY llevan el rótulo a la izquierda y los futuros a la derecha
+  // (salvo cerca del borde derecho), para que ningún texto cruce la línea vertical de hoy.
+  const byLane = lanes.map(l => items.map((it, idx) => ({ ...it, idx })).filter(it => it.lane === l.id).sort((a, b) => a.date.localeCompare(b.date) || a.idx - b.idx));
+  let curY = G.T;
+  const laneMeta = [];
+  const placed = [];
+  for (let li = 0; li < lanes.length; li++) {
+    const rows = [];
+    const laneNodes = [];
+    for (const it of byLane[li]) {
+      const x = X(ms(it.date));
+      const leftSide = nw
+        ? x > (G.L + G.W - G.R) / 2
+        : (x < xt ? (xt - x < labelW && x - G.L >= labelW) : x > G.W - G.R - 155);
+      const span = leftSide ? [x - labelW, x + 14] : [x - 14, x + labelW];
+      let r = rows.findIndex(list => list.every(([a, b]) => span[1] < a || span[0] > b));
+      if (r === -1) { r = rows.length; rows.push([]); }
+      rows[r].push(span);
+      laneNodes.push({ ...it, x, leftSide, r });
+    }
+    const h = padT + Math.max(1, rows.length) * rowH + padB;
+    laneMeta.push({ lane: lanes[li], y: curY, h, count: byLane[li].length });
+    for (const n of laneNodes) placed.push({ ...n, y: curY + padT + n.r * rowH + rowH / 2 });
+    curY += h;
+  }
+  const H = curY + G.B;
+
   let s = `<svg viewBox="0 0 ${G.W} ${H}" role="img" aria-label="${t('Calendario de los hitos de AI 2027 y fecha de hoy')}">`;
   s += `<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="hatch-bg"/><line x1="0" y1="0" x2="0" y2="6" class="hatch-ln"/></pattern></defs>`;
+  // Carriles alternos con título a la izquierda (o encima en móvil).
+  laneMeta.forEach(({ lane, y, h }, i) => {
+    s += `<rect class="lane ${i % 2 ? 'odd' : ''}" x="0" y="${y}" width="${G.W}" height="${h}"/>`;
+    if (i > 0) s += `<line class="tl-sep" x1="0" x2="${G.W}" y1="${y}" y2="${y}"/>`;
+    if (nw) {
+      s += `<text class="lane-t" x="8" y="${y + 16}">${esc(fitText(lane.title, Math.floor((G.W - 16) / 7.2)))}</text>`;
+    } else {
+      const lines = wrap(lane.title, 19), shown = lines.slice(0, 2);
+      if (lines.length > 2) shown[1] += '…';
+      s += `<text class="lane-t" x="10" y="${y + h / 2 + 4 - (shown.length - 1) * 7}">${shown.map((ln, k) => `<tspan x="10" dy="${k ? 14 : 0}">${esc(ln)}</tspan>`).join('')}</text>`;
+    }
+  });
+  // Pasado sombreado, marcas de meses y división vertical de hoy.
+  s += `<rect class="past" x="${G.L}" y="${G.T}" width="${Math.max(0, xt - G.L).toFixed(1)}" height="${curY - G.T}"/>`;
   s += '<g class="axis">';
   for (const tk of monthTicks(tmin, tmax, tickCount(G))) {
     const x = X(tk);
-    s += `<line class="tl-grid" x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${G.T}" y2="${H - G.B}"/><text x="${x.toFixed(1)}" y="${H - G.B + 18}" text-anchor="middle">${esc(monthLabel(tk))}</text>`;
+    s += `<line class="tl-grid" x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${G.T}" y2="${curY}"/><text x="${x.toFixed(1)}" y="${curY + 18}" text-anchor="middle">${esc(monthLabel(tk))}</text>`;
   }
   s += '</g>';
-  lanes.forEach((l, i) => {
-    const y = G.T + i * laneH;
-    s += `<rect class="lane ${i % 2 ? 'odd' : ''}" x="0" y="${y}" width="${G.W}" height="${laneH}"/>`;
-    if (G.narrow) { s += `<text class="lane-t" x="8" y="${y + 14}">${esc(fitText(l.title, Math.floor((G.W - 16) / 7.2)))}</text>`; return; }
-    // Título del carril en dos líneas como mucho.
-    const lines = wrap(l.title, 19), shown = lines.slice(0, 2);
-    if (lines.length > 2) shown[1] += '…';
-    s += `<text class="lane-t" x="8" y="${y + laneH / 2 + 4 - (shown.length - 1) * 7}">${shown.map((t, k) => `<tspan x="8" dy="${k ? 14 : 0}">${esc(t)}</tspan>`).join('')}</text>`;
-  });
-  // Pasado sombreado y línea de hoy.
-  const xt = X(ms(today));
-  s += `<rect class="past" x="${G.L}" y="${G.T}" width="${(xt - G.L).toFixed(1)}" height="${lanes.length * laneH}"/>`;
-  const ta = xt < G.L + 60 ? 'start' : xt > G.W - G.R - 60 ? 'end' : 'middle';
-  s += `<line class="today" x1="${xt.toFixed(1)}" x2="${xt.toFixed(1)}" y1="${G.T - 14}" y2="${H - G.B}"/><text class="today-t" x="${xt.toFixed(1)}" y="${G.T - 16}" text-anchor="${ta}">${t('hoy, {fmtDate}', { fmtDate: esc(fmtDate(today)) })}</text>`;
-  // Hitos de una misma línea y fecha se reparten en horizontal alrededor de su fecha.
-  const group = new Map(), seen = new Map();
-  let dots = '';
-  for (const it of items) { const key = `${it.lane}|${it.date}`; group.set(key, (group.get(key) || 0) + 1); }
-  const targets = items.map((it, i) => {
-    const li = lanes.findIndex(l => l.id === it.lane);
-    const key = `${it.lane}|${it.date}`, k = seen.get(key) || 0, n = group.get(key);
-    seen.set(key, k + 1);
-    const x = X(ms(it.date)) + (k - (n - 1) / 2) * (G.narrow ? 14 : 20), y = G.T + li * laneH + (laneH + G.top) / 2;
-    dots += `<g data-k="${i}" class="hito-pt ${it.cls}">${it.est ? `<circle class="est-ring ${it.est}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="12.5"/>` : ''}<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8"/></g>`;
-    return { x, y, html: it.tip, go: it.go, short: it.short, li };
-  });
-  // Etiquetas: el nombre corto junto a cada punto, dentro de su carril, con una guía hasta su punto.
-  const cands = targets.map(t => ({ x: t.x, y: t.y + 6, px: t.x, py: t.y, text: t.short, prefer: 'down', far: true, minY: G.T + t.li * laneH + G.top + 2, maxY: G.T + (t.li + 1) * laneH - 2 }));
-  const placed = placeLabels(cands, { W: G.W, T: G.T, H, B: G.B, L: G.L, R: G.R }, targets.map(t => [t.x - 9, t.y - 9, t.x + 9, t.y + 9]));
-  for (const l of placed) {
-    const w = l.text.length * CH, x0 = l.anchor === 'start' ? l.lx : l.anchor === 'end' ? l.lx - w : l.lx - w / 2;
-    const ex = Math.min(Math.max(l.px, x0), x0 + w), ey = l.ly < l.py ? l.ly + 3 : l.ly - 11;
-    s += `<line class="leader" x1="${l.px.toFixed(1)}" y1="${l.py.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}"/>`;
+  if (!nw) {
+    if (xt - G.L > 120) s += `<text class="tl-zone" x="${G.L + 8}" y="${G.T - 8}">${t('← Plazo vencido')}</text>`;
+    if (G.W - G.R - xt > 100) s += `<text class="tl-zone" x="${G.W - G.R - 4}" y="${G.T - 8}" text-anchor="end">${t('Por llegar →')}</text>`;
   }
-  s += dots + labelSvg(placed);
+  const todayTxt = t('hoy · {fmtDate}', { fmtDate: fmtDate(today) });
+  const pw = Math.max(114, todayTxt.length * 6.8 + 16);
+  const px = Math.min(Math.max(xt - pw / 2, G.L), G.W - G.R - pw);
+  s += `<line class="today" x1="${xt.toFixed(1)}" x2="${xt.toFixed(1)}" y1="${G.T - 12}" y2="${curY}"/>`;
+  s += `<g class="today-pill"><rect x="${px.toFixed(1)}" y="${G.T - 34}" width="${pw.toFixed(1)}" height="20"/><text x="${(px + pw / 2).toFixed(1)}" y="${G.T - 20}" text-anchor="middle">${esc(todayTxt)}</text></g>`;
+
+  // Símbolo de dirección: ▲ adelantado, ● en plazo, ▼ retrasado; ? cuando no hay datos públicos.
+  const glyph = (mode, pace) => mode === 'nodata' ? '?' : pace === 'adelantado' ? '▲' : pace === 'compatible' ? '●' : pace === 'retrasado' ? '▼' : '·';
+  const targets = placed.map((n, k) => {
+    const x = n.x, y = n.y, tx = n.leftSide ? x - 14 : x + 14, anchor = n.leftSide ? 'end' : 'start';
+    const estW = Math.min(labelW, n.short.length * (nw ? 6.1 : 6.7) + 18);
+    const hitX = n.leftSide ? x - 14 - estW : x - 11, hitW = estW + 24;
+    const g = glyph(n.mode, n.pace);
+    const gx = n.mode === 'verified' ? x : x + 2.5;
+    s += `<g data-k="${k}" class="tl-node m-${n.pace || 'none'} k-${n.mode}${n.dim ? ' is-dim' : ''}">`;
+    s += `<rect class="tl-hit" x="${hitX.toFixed(1)}" y="${(y - 12).toFixed(1)}" width="${hitW.toFixed(1)}" height="24"/>`;
+    s += `<rect class="tl-box" x="${(x - 9).toFixed(1)}" y="${(y - 9).toFixed(1)}" width="18" height="18"/>`;
+    if (n.mode !== 'verified') s += `<rect class="tl-bar" x="${(x - 8).toFixed(1)}" y="${(y - 8).toFixed(1)}" width="5" height="16"/>`;
+    s += `<text class="tl-glyph" x="${gx.toFixed(1)}" y="${(y + 3.5).toFixed(1)}" text-anchor="middle">${g}</text>`;
+    s += `<text class="tl-lbl" x="${tx.toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="${anchor}">${esc(n.short)}</text>`;
+    s += '</g>';
+    return { x, y, box: [hitX, y - 12, hitX + hitW, y + 12], html: n.tip, go: n.go };
+  });
   s += '</svg>';
   el.innerHTML = s;
-  interact(el, targets, 20);
+  interact(el, targets, 22);
   return true;
 }
 
