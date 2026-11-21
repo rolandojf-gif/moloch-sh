@@ -1,14 +1,13 @@
 {
  "schema": 2,
- "generated": "2026-11-20T10:20:12Z",
+ "generated": "2026-11-21T03:54:14Z",
  "window": 7,
- "since": "2026-11-14",
- "base": "2026-11-19",
+ "since": "2026-11-15",
+ "base": "2026-11-20",
  "parte": {
-  "fecha": "2026-11-20",
+  "fecha": "2026-11-21",
   "noticias": [
-   "indicador|chipsH100e|2026-11-20",
-   "uso|primero|tencent/hy4-flash-20261116|2026-11-20"
+   "indicador|eci|2026-11-21"
   ],
   "ultima": null,
   "reglas": [
@@ -48,7 +47,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/mistralai/pixtral-large-2502",
-    "got": "2026-11-20T10:20:12Z"
+    "got": "2026-11-21T03:54:14Z"
    },
    "what": "Pixtral Large 2502 (Mistral AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -82,7 +81,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-neon",
-    "got": "2026-11-20T10:20:12Z"
+    "got": "2026-11-21T03:54:14Z"
    },
    "what": "Gemini 4 Neon (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -123,7 +122,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-astra-pro",
-    "got": "2026-11-20T10:20:12Z"
+    "got": "2026-11-21T03:54:14Z"
    },
    "what": "GPT-6.2 Astra Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -157,7 +156,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-astra",
-    "got": "2026-11-20T10:20:12Z"
+    "got": "2026-11-21T03:54:14Z"
    },
    "what": "GPT-6.2 Astra (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -165,7 +164,7 @@
     "in": 8,
     "out": 40,
     "ii": 62.1,
-    "eci": 174.17,
+    "eci": 172.82,
     "identity": "confirmada",
     "rankAA": 2,
     "of": 51
@@ -198,7 +197,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-sol-pro",
-    "got": "2026-11-20T10:20:12Z"
+    "got": "2026-11-21T03:54:14Z"
    },
    "what": "GPT-6.2 Sol Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -232,7 +231,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-sol",
-    "got": "2026-11-20T10:20:12Z"
+    "got": "2026-11-21T03:54:14Z"
    },
    "what": "GPT-6.2 Sol (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -273,7 +272,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/tencent/hy4-flash",
-    "got": "2026-11-20T10:20:12Z"
+    "got": "2026-11-21T03:54:14Z"
    },
    "what": "Hy4 flash (Tencent) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -307,7 +306,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/qwen/qwen4-max",
-    "got": "2026-11-20T10:20:12Z"
+    "got": "2026-11-21T03:54:14Z"
    },
    "what": "Qwen4 Max (Alibaba (Qwen)) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -336,6 +335,238 @@
    },
    "ficha": "#modelos/qwen/qwen4-max",
    "consecuencia": "Índice de AA 42,9: a 21,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 18 de 51. Precio combinado 2,14 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 42,9), ninguno cuesta menos."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|google/gemini-4-hydrogen|eci",
+   "published": null,
+   "detected": "2026-11-21",
+   "date": "2026-11-21",
+   "mag": {
+    "v": 166.81,
+    "unit": "puntos ECI"
+   },
+   "model": "google/gemini-4-hydrogen",
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-21T03:54:14Z"
+   },
+   "what": "Gemini 4 Hydrogen: primera puntuación en el índice ECI de Epoch AI (166.81).",
+   "data": {
+    "field": "eci",
+    "eci": 166.81,
+    "rankAA": 10,
+    "of": 51
+   },
+   "i18n": {
+    "en": {
+     "what": "Gemini 4 Hydrogen: first score on Epoch AI’s ECI (166.81).",
+     "titular": "Epoch AI scores Gemini 4 Hydrogen on the ECI for the first time",
+     "consecuencia": "AA index 53.9: 10.7 points behind the best closed model (Claude Fable 5.2). Rank 10 of 51. Blended price $3 per million tokens."
+    }
+   },
+   "titular": "Epoch AI puntúa por primera vez Gemini 4 Hydrogen en el ECI",
+   "importancia": null,
+   "ficha": "#modelos/google/gemini-4-hydrogen",
+   "consecuencia": "Índice de AA 53,9: a 10,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 10 de 51. Precio combinado 3 $ por millón de tokens."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|meituan/longcat-2.0|2026-11-21",
+   "published": null,
+   "detected": "2026-11-21",
+   "date": "2026-11-21",
+   "mag": null,
+   "model": "meituan/longcat-2.0",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-21T03:54:14Z"
+   },
+   "what": "LongCat 2.0 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "LongCat 2.0"
+   },
+   "i18n": {
+    "en": {
+     "what": "LongCat 2.0 is no longer listed in the OpenRouter catalogue.",
+     "titular": "LongCat 2.0 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "LongCat 2.0 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|tencent/hy3-preview|2026-11-21",
+   "published": null,
+   "detected": "2026-11-21",
+   "date": "2026-11-21",
+   "mag": null,
+   "model": "tencent/hy3-preview",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-21T03:54:14Z"
+   },
+   "what": "Hy3 preview deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Hy3 preview"
+   },
+   "i18n": {
+    "en": {
+     "what": "Hy3 preview is no longer listed in the OpenRouter catalogue.",
+     "titular": "Hy3 preview is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Hy3 preview deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|usCn|2026-11-21",
+   "published": null,
+   "detected": "2026-11-21",
+   "date": "2026-11-21",
+   "mag": {
+    "v": -0.61,
+    "pct": -4.8,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-21T03:54:14Z"
+   },
+   "what": "Distancia EE. UU. − China en el ECI: de 12,81 a 12,2 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "usCn",
+    "path": "eci.gapUsCn",
+    "from": 12.81,
+    "to": 12.2
+   },
+   "i18n": {
+    "en": {
+     "what": "US − China gap on the ECI: from 12.81 to 12.2 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The US − China gap on the ECI falls from 12.8 to 12.2 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.4) versus Kimi K3.1 Pro (Moonshot, 161.2). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”."
+    }
+   },
+   "titular": "La distancia EE. UU. − China en el ECI baja de 12,8 a 12,2 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,4) frente a Kimi K3.1 Pro (Moonshot, 161,2). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «China, unos seis meses por detrás con el 12 % del cómputo»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|closedOpen|2026-11-21",
+   "published": null,
+   "detected": "2026-11-21",
+   "date": "2026-11-21",
+   "mag": {
+    "v": -0.61,
+    "pct": -4.8,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-21T03:54:14Z"
+   },
+   "what": "Distancia cerrados − abiertos en el ECI: de 12,81 a 12,2 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "closedOpen",
+    "path": "eci.gapClosedOpen",
+    "from": 12.81,
+    "to": 12.2
+   },
+   "i18n": {
+    "en": {
+     "what": "Closed − open gap on the ECI: from 12.81 to 12.2 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The closed − open gap on the ECI falls from 12.8 to 12.2 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.4) versus Kimi K3.1 Pro (Moonshot, 161.2). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”."
+    }
+   },
+   "titular": "La distancia cerrados − abiertos en el ECI baja de 12,8 a 12,2 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,4) frente a Kimi K3.1 Pro (Moonshot, 161,2). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «Un modelo de pesos abiertos iguala a Agent-0»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|labs|2026-11-21",
+   "published": null,
+   "detected": "2026-11-21",
+   "date": "2026-11-21",
+   "mag": {
+    "v": -0.09,
+    "pct": -13.4,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-21T03:54:14Z"
+   },
+   "what": "Distancia entre los dos primeros laboratorios en el ECI: de 0,67 a 0,58 puntos (Anthropic frente a OpenAI).",
+   "data": {
+    "ind": "labs",
+    "path": "eci.gapLabs",
+    "from": 0.67,
+    "to": 0.58
+   },
+   "i18n": {
+    "en": {
+     "what": "Gap between the top two labs on the ECI: from 0.67 to 0.58 points (Anthropic versus OpenAI).",
+     "titular": "The gap between the top two labs on the ECI falls from 0.7 to 0.6 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.4) versus GPT-6.2 Astra (OpenAI, 172.8), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”."
+    }
+   },
+   "titular": "La distancia entre los dos primeros laboratorios en el ECI baja de 0,7 a 0,6 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,4) frente a GPT-6.2 Astra (OpenAI, 172,8), con intervalos de confianza solapados. En AI 2027 es evidencia de «Los rivales, de 3 a 9 meses por detrás»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|rate12m|2026-11-21",
+   "published": null,
+   "detected": "2026-11-21",
+   "date": "2026-11-21",
+   "mag": {
+    "v": -0.7,
+    "pct": -3.3,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-21T03:54:14Z"
+   },
+   "what": "Avance de la frontera del ECI en 12 meses: de 21,1 a 20,4 puntos.",
+   "data": {
+    "ind": "rate12m",
+    "path": "eci.rate12m",
+    "from": 21.1,
+    "to": 20.4
+   },
+   "i18n": {
+    "en": {
+     "what": "Frontier gain on the ECI over 12 months: from 21.1 to 20.4 points.",
+     "titular": "Frontier gain on the ECI over 12 months: from 21.1 to 20.4 points."
+    }
+   },
+   "titular": "Avance de la frontera del ECI en 12 meses: de 21,1 a 20,4 puntos.",
+   "importancia": null,
+   "ficha": "#carrera/evaluacion",
+   "consecuencia": null
   },
   {
    "kind": "retirada",
@@ -678,12 +909,12 @@
    "i18n": {
     "en": {
      "what": "Best model on Epoch’s ECI: from 173.44 to 174.17 points (GPT-6.2 Astra).",
-     "titular": "GPT-6.2 Astra becomes the best model on Epoch’s ECI",
+     "titular": "Claude Fable 5.2 becomes the best model on Epoch’s ECI",
      "porque": "the best model on Epoch’s ECI changes",
      "consecuencia": "GPT-6.2 Astra, from OpenAI, with 174.2 points. ECI gaps: between the top two labs, from 3.7 to 0.7 points. A few ECI points do not equate to months of lag."
     }
    },
-   "titular": "GPT-6.2 Astra pasa a ser el mejor modelo según el ECI de Epoch",
+   "titular": "Claude Fable 5.2 pasa a ser el mejor modelo según el ECI de Epoch",
    "importancia": {
     "tier": 6,
     "w": 100,
@@ -1034,99 +1265,44 @@
    "consecuencia": "1,8 % de los tokens de OpenRouter del 2026-11-09 al 2026-11-15. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
-   "kind": "retirada",
-   "key": "retirada|inclusionai/ling-3.0-flash-sante|2026-11-14",
-   "published": null,
-   "detected": "2026-11-14",
-   "date": "2026-11-14",
-   "mag": null,
-   "model": "inclusionai/ling-3.0-flash-sante",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-14T03:54:19Z"
-   },
-   "what": "Ling 3.0 Flash Sante deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "Ling 3.0 Flash Sante"
-   },
-   "i18n": {
-    "en": {
-     "what": "Ling 3.0 Flash Sante is no longer listed in the OpenRouter catalogue.",
-     "titular": "Ling 3.0 Flash Sante is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "Ling 3.0 Flash Sante deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "retirada",
-   "key": "retirada|inclusionai/ling-3.0-flash-fin|2026-11-14",
-   "published": null,
-   "detected": "2026-11-14",
-   "date": "2026-11-14",
-   "mag": null,
-   "model": "inclusionai/ling-3.0-flash-fin",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-14T03:54:19Z"
-   },
-   "what": "Ling 3.0 Flash Fin deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "Ling 3.0 Flash Fin"
-   },
-   "i18n": {
-    "en": {
-     "what": "Ling 3.0 Flash Fin is no longer listed in the OpenRouter catalogue.",
-     "titular": "Ling 3.0 Flash Fin is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "Ling 3.0 Flash Fin deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "uso",
-   "key": "uso|entra|xiaomi/mimo-v2.6-flash-20260921|2026-11-14",
-   "published": "2026-11-13",
-   "detected": "2026-11-14",
-   "date": "2026-11-13",
+   "kind": "indicador",
+   "key": "indicador|eci|2026-11-21",
+   "published": "2026-11-09",
+   "detected": "2026-11-21",
+   "date": "2026-11-09",
    "mag": {
-    "v": 10,
-    "unit": "puesto"
+    "v": -0.77,
+    "pct": -0.4,
+    "unit": "puntos ECI"
    },
-   "model": "xiaomi/mimo-v2.6-flash",
    "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-14T03:54:19Z"
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-21T03:54:14Z"
    },
-   "what": "MiMo-V2.6-Flash entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,8 % de los tokens.",
+   "what": "Mejor modelo en el ECI de Epoch: de 174,17 a 173,4 puntos (Claude Fable 5.2).",
    "data": {
-    "sub": "entra",
-    "slug": "xiaomi/mimo-v2.6-flash-20260921",
-    "rank": 10,
-    "share": 1.8,
-    "tokens": 3849116642949,
-    "window": 7
+    "ind": "eci",
+    "path": "eci.frontier",
+    "from": 174.17,
+    "to": 173.4
    },
    "i18n": {
     "en": {
-     "what": "MiMo-V2.6-Flash enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.8% of tokens.",
-     "titular": "MiMo-V2.6-Flash enters OpenRouter’s top 10 by usage",
-     "consecuencia": "1.8% of OpenRouter’s tokens from 2026-11-07 to 2026-11-13. This is usage on OpenRouter, not across the whole market."
+     "what": "Best model on Epoch’s ECI: from 174.17 to 173.4 points (Claude Fable 5.2).",
+     "titular": "Claude Fable 5.2 becomes the best model on Epoch’s ECI",
+     "porque": "the best model on Epoch’s ECI changes",
+     "consecuencia": "Claude Fable 5.2, from Anthropic, with 173.4 points."
     }
    },
-   "titular": "MiMo-V2.6-Flash entra en el top 10 de uso de OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/xiaomi/mimo-v2.6-flash",
-   "consecuencia": "1,8 % de los tokens de OpenRouter del 2026-11-07 al 2026-11-13. Es el uso en OpenRouter, no en todo el mercado."
+   "titular": "Claude Fable 5.2 pasa a ser el mejor modelo según el ECI de Epoch",
+   "importancia": {
+    "tier": 6,
+    "w": 100,
+    "porque": "cambia el mejor modelo según el ECI de Epoch"
+   },
+   "ficha": "#carrera",
+   "consecuencia": "Claude Fable 5.2, de Anthropic, con 173,4 puntos."
   },
   {
    "kind": "pesos",

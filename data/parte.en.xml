@@ -6,7 +6,14 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Fri, 20 Nov 2026 10:20:12 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 21 Nov 2026 03:54:14 GMT</lastBuildDate>
+  <item>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
+    <guid isPermaLink="false">indicador|eci|2026-11-21</guid>
+    <pubDate>Sat, 21 Nov 2026 03:54:14 GMT</pubDate>
+    <description>Best model on Epoch’s ECI: from 174.17 to 173.4 points (Claude Fable 5.2). Claude Fable 5.2, from Anthropic, with 173.4 points. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-11-09; detected on 2026-11-21. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
+  </item>
   <item>
     <title>Epoch raises AI chips delivered to 39.2 million H100e</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera/computo</link>
@@ -43,7 +50,7 @@
     <description>GPT-6.2 Sol (OpenAI) appears in the OpenRouter catalogue. AA index 57.3: 7.3 points behind the best closed model (Claude Fable 5.2). Rank 6 of 51. Blended price $4 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 6 of 51). Published on 2026-11-17; detected on 2026-11-17. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.2-sol). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>GPT-6.2 Astra becomes the best model on Epoch’s ECI</title>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-11-17</guid>
     <pubDate>Tue, 17 Nov 2026 20:39:40 GMT</pubDate>
@@ -71,7 +78,7 @@
     <description>Baidu now offers ERNIE-5.5-Flash-Preview for free on OpenRouter. It used to cost $0.28 input and $1.13 output per million tokens. Its blended price on OpenRouter goes from $0.493 to free. It is in the briefing because the lab itself makes it free on OpenRouter. Detected on 2026-11-12. Source: OpenRouter (https://openrouter.ai/baidu/ernie-5.5-flash-preview:free/providers).</description>
   </item>
   <item>
-    <title>GPT-6.2 Astra becomes the best model on Epoch’s ECI</title>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-11-12</guid>
     <pubDate>Thu, 12 Nov 2026 19:30:52 GMT</pubDate>
@@ -85,7 +92,7 @@
     <description>“Horizon of about three weeks of work”: the observatory’s assessment goes from “not yet assessable” to “ahead”. The authors frame it with METR’s 80% horizon, which does not measure reliably above 16 hours, and the last model it has measured was published on 7 Apr 2026. The observatory checks it against MirrorCode, from Epoch and METR: reimplementing whole programs from their behaviour, with tasks that would take an engineer weeks. The first model to reach 80% is Claude Opus 5 (max), with 87.8%, published on 24 Jul 2026. Rule (the observatory’s reading): “consistent” if, when the deadline expires, the best result reaches 80%. MirrorCode only covers programming and its score is not the success rate on three-week tasks. Before: “not yet assessable”. Scenario deadline: late 2026. It is in the briefing because the observatory’s assessment of an AI 2027 milestone changes. Detected on 2026-11-10. Source: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
   </item>
   <item>
-    <title>GPT-6.2 Astra becomes the best model on Epoch’s ECI</title>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-11-10</guid>
     <pubDate>Tue, 10 Nov 2026 21:48:45 GMT</pubDate>
@@ -141,7 +148,7 @@
     <description>Kimi K3.1 Pro: downloadable weights on Hugging Face (licence kimi-k3.1-pro). It can be downloaded and served outside the lab’s API. Licence: kimi-k3.1-pro. AA index 46.5: 13.9 points above the previous best open-weight model (DeepSeek V4.1 Flash 1017). Rank 9 of 43. It is in the briefing because a top-20 model on the AA index publishes open weights (rank 9). Published on 2026-11-02; detected on 2026-11-05. Source: Hugging Face (https://huggingface.co/moonshotai/Kimi-K3.1-Pro). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>GPT-6.2 Astra becomes the best model on Epoch’s ECI</title>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-11-05</guid>
     <pubDate>Thu, 05 Nov 2026 13:29:51 GMT</pubDate>
@@ -169,7 +176,7 @@
     <description>“Horizon of about three weeks of work”: the observatory’s assessment goes from “ahead” to “not yet assessable”. The authors frame it with METR’s 80% horizon, which does not measure reliably above 16 hours, and the last model it has measured was published on 7 Apr 2026. The observatory checks it against MirrorCode, from Epoch and METR: reimplementing whole programs from their behaviour, with tasks that would take an engineer weeks. Best result to date: 78.9%, from Claude Opus 5.5 (high), published on 22 Sept 2026. Rule (the observatory’s reading): “consistent” if, when the deadline expires, the best result reaches 80%. MirrorCode only covers programming and its score is not the success rate on three-week tasks. Before: “ahead”. Scenario deadline: late 2026. It is in the briefing because the observatory’s assessment of an AI 2027 milestone changes. Detected on 2026-11-02. Source: Epoch AI (https://epoch.ai/benchmarks/mirrorcode).</description>
   </item>
   <item>
-    <title>GPT-6.2 Astra becomes the best model on Epoch’s ECI</title>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-10-31</guid>
     <pubDate>Sat, 31 Oct 2026 03:54:09 GMT</pubDate>
@@ -190,7 +197,7 @@
     <description>Mistral cuts the price of Mistral Large 4 on OpenRouter: input from $1.36 to $0.7 and output from $4.18 to $2.1 per million tokens. Its blended price on OpenRouter goes from $2.07 to $1.05 per million tokens. Of the 4 models with a similar AA index (±2 points of its 26), 3 cost less; the cheapest is MiMo-V2.6-Flash, at $0.175. It is in the briefing because the lab itself cuts its blended price by 49% (threshold: +50% or −33%). Detected on 2026-10-30. Source: OpenRouter (https://openrouter.ai/mistralai/mistral-large-4-0/providers). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
-    <title>GPT-6.2 Astra becomes the best model on Epoch’s ECI</title>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
     <guid isPermaLink="false">indicador|eci|2026-10-30</guid>
     <pubDate>Fri, 30 Oct 2026 20:14:30 GMT</pubDate>
