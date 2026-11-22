@@ -218,6 +218,43 @@
  ],
  "events": [
   {
+   "kind": "uso",
+   "key": "uso|entra|moonshotai/kimi-k3.1-pro-20261023|2026-11-22",
+   "published": "2026-11-21",
+   "detected": "2026-11-22",
+   "date": "2026-11-21",
+   "mag": {
+    "v": 9,
+    "unit": "puesto"
+   },
+   "model": "moonshotai/kimi-k3.1-pro",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-22T03:54:16Z"
+   },
+   "what": "Kimi K3.1 Pro entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 9, 1,3 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "moonshotai/kimi-k3.1-pro-20261023",
+    "rank": 9,
+    "share": 1.3,
+    "tokens": 3881902926301,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "Kimi K3.1 Pro enters the ten most used models on OpenRouter over the last 7 days: rank 9, 1.3% of tokens.",
+     "titular": "Kimi K3.1 Pro enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.3% of OpenRouter’s tokens from 2026-11-15 to 2026-11-21. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "Kimi K3.1 Pro entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/moonshotai/kimi-k3.1-pro",
+   "consecuencia": "1,3 % de los tokens de OpenRouter del 2026-11-15 al 2026-11-21. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
    "kind": "evaluacion",
    "key": "evaluacion|google/gemini-4-hydrogen|eci",
    "published": null,
