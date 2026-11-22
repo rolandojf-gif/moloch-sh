@@ -174,10 +174,16 @@ function releaseRow(s, assessments) {
   const kind = TYPES[type];
   const weights = stages?.find(x => x.type === 'pesos');
   const licence = weights ? `<p>${t('Licencia de los pesos: {licencia}', { licencia: fact(model.license, v => esc(tr(v))) })}</p>` : '';
+  const chips = [];
+  if (model && ii(model) !== null) chips.push(`<span class="ln-chip is-aa">${num(ii(model))} AA</span>`);
+  const bp = model ? blended(model) : null;
+  if (bp !== null && bp > 0) chips.push(`<span class="ln-chip">${usd(bp)}/M</span>`);
+  if (model?.weights.v === 'abiertos') chips.push(`<span class="ln-chip is-open">${model.weights.announced ? t('abiertos · anunciados') : t('abiertos')}</span>`);
   return `<details class="ln-row" data-milestone="${esc(s.key)}" data-group="${kind.group}"${opened.has(s.key) ? ' open' : ''}>
     <summary>
       <span class="ln-date">${time(s.date, true)}</span>
       <span class="ln-model">${logo(model)}<span><strong>${esc(s.name)}</strong>${model ? `<small>${esc(model.lab.name)}</small>` : ''}</span></span>
+      <span class="ln-chips">${chips.join('')}</span>
       <span class="ln-stage">${kind.label()}</span>
       <span class="ln-toggle" aria-hidden="true"></span>
     </summary>

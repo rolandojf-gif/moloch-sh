@@ -2,8 +2,15 @@
    Las distancias se dan en puntos ECI; nunca se convierten en meses. */
 import { t, tn, tr, L } from './i18n.js';
 import { esc, fact, src, num, fmtDate, nd } from './fmt.js';
+import { logoFor } from './logos.js';
 
 const sign = v => v > 0 ? '' : v < 0 ? '−' : '';
+const miniLogo = b => {
+  const u = b ? logoFor({ name: b.model || '', org: b.org || '' }) : null;
+  if (u) return `<span class="logo"><img src="${u}" alt="" width="14" height="14" loading="lazy" decoding="async"></span>`;
+  const ini = String(b?.org || b?.model || '?').trim().slice(0, 2).toUpperCase();
+  return `<span class="logo ini" aria-hidden="true">${esc(ini)}</span>`;
+};
 
 const pts = v => `${sign(v)}${t('{n} puntos ECI', { n: num(Math.abs(v), 1) })}`;
 export const mw = v => v >= 1000 ? `${num(v / 1000, 1)} GW` : `${num(v, 0)} MW`;
@@ -71,51 +78,98 @@ function labsOdds(I, f) {
 const REG = {
   'aa.gapUsCn': (I) => {
     const f = I.aa?.gapUsCn;
-    return { label: t('Distancia EE. UU. − China (índice AA)'), value: fact(f, ptsAA) + incTag(f), sub: f?.us && f?.cn ? t('{whoAA} frente a {p2}.{ahead}{incNote}', { whoAA: whoAA(f.us), p2: whoAA(f.cn), ahead: ahead(f, t('China')), incNote: incNote(f) }) : '' };
+    return {
+      label: t('Distancia EE. UU. − China (índice AA)'), value: fact(f, ptsAA) + incTag(f),
+      vs: f?.us && f?.cn ? [{ b: f.us, v: f.us.ii, cls: 'closed', tag: t('EE. UU.') }, { b: f.cn, v: f.cn.ii, cls: 'open', tag: t('China') }] : null,
+      kpiSub: [ahead(f, t('China')).trim(), incNote(f).trim()].filter(Boolean).join(' '),
+      sub: f?.us && f?.cn ? t('{whoAA} frente a {p2}.{ahead}{incNote}', { whoAA: whoAA(f.us), p2: whoAA(f.cn), ahead: ahead(f, t('China')), incNote: incNote(f) }) : ''
+    };
   },
   'aa.gapClosedOpen': (I) => {
     const f = I.aa?.gapClosedOpen;
-    return { label: t('Distancia cerrados − abiertos (índice AA)'), value: fact(f, ptsAA) + incTag(f), sub: f?.closed && f?.open ? t('{a} frente a {b}.{ahead}{dl}{inc}', { a: whoAA(f.closed), b: whoAA(f.open), ahead: ahead(f, t('el mejor abierto')), dl: f.openDl && f.vDl != null ? ` ${t('Con pesos ya descargables, el mejor es {whoAA}: {num} puntos AA.', { whoAA: whoAA(f.openDl), num: num(f.vDl, 1) })}` : '', inc: incNote(f) }) : '' };
+    const dl = f?.openDl && f.vDl != null ? t('Con pesos ya descargables, el mejor es {whoAA}: {num} puntos AA.', { whoAA: whoAA(f.openDl), num: num(f.vDl, 1) }) : '';
+    return {
+      label: t('Distancia cerrados − abiertos (índice AA)'), value: fact(f, ptsAA) + incTag(f),
+      vs: f?.closed && f?.open ? [{ b: f.closed, v: f.closed.ii, cls: 'closed', tag: t('Cerrado') }, { b: f.open, v: f.open.ii, cls: 'open', tag: t('Abierto') }] : null,
+      kpiSub: [ahead(f, t('el mejor abierto')).trim(), dl, incNote(f).trim()].filter(Boolean).join(' '),
+      sub: f?.closed && f?.open ? t('{a} frente a {b}.{ahead}{dl}{inc}', { a: whoAA(f.closed), b: whoAA(f.open), ahead: ahead(f, t('el mejor abierto')), dl: dl ? ` ${dl}` : '', inc: incNote(f) }) : ''
+    };
   },
   'aa.gapLabs': (I) => {
     const f = I.aa?.gapLabs;
-    return { label: t('Distancia entre los dos primeros laboratorios (índice AA)'), value: fact(f, ptsAA) + incTag(f), sub: f?.first && f?.second ? t('{whoAA} frente a {p2}.{incNote}', { whoAA: whoAA(f.first), p2: whoAA(f.second), incNote: incNote(f) }) : '' };
+    return {
+      label: t('Distancia entre los dos primeros laboratorios (índice AA)'), value: fact(f, ptsAA) + incTag(f),
+      vs: f?.first && f?.second ? [{ b: f.first, v: f.first.ii, cls: 'closed', tag: f.first.org?.split(',')[0] }, { b: f.second, v: f.second.ii, cls: 'open', tag: f.second.org?.split(',')[0] }] : null,
+      kpiSub: incNote(f).trim(),
+      sub: f?.first && f?.second ? t('{whoAA} frente a {p2}.{incNote}', { whoAA: whoAA(f.first), p2: whoAA(f.second), incNote: incNote(f) }) : ''
+    };
   },
   'aa.rate12m': (I) => {
     const f = I.aa?.rate12m;
     if (f?.incompleto) {
+      const det = incNote(f, f.since).trim();
       if (f.vComplete != null && f.completeFrom && f.fromComplete && f.to) {
         return {
           label: t('Avance de la frontera en 12 meses (índice AA)'),
           value: fact({ ...f, v: f.vComplete }, v => t('+{n} puntos AA', { n: num(v, 1) })) + incTag(f),
+          vs: [{ b: f.to, v: f.to.ii, cls: 'closed', tag: t('Hoy') }, { b: f.fromComplete, v: f.fromComplete.ii, cls: 'dim', tag: fmtDate(f.completeFrom) }],
+          kpiSub: t('Tramo completo desde el {fecha}. Sin cobertura AA a 12 meses (véase ECI).', { fecha: esc(fmtDate(f.completeFrom)) }),
+          detail: det,
           sub: t('Tramo con cobertura completa desde el {fecha}: de {a} a {b}. Sin cobertura AA completa a 12 meses; para 12 meses completos véase el ECI de Epoch.{incNote}', { fecha: esc(fmtDate(f.completeFrom)), a: whoAA(f.fromComplete), b: whoAA(f.to), incNote: incNote(f, f.since) })
         };
       }
       return {
         label: t('Avance de la frontera en 12 meses (índice AA)'),
         value: nd() + incTag(f),
+        kpiSub: t('Sin dato comparable a 12 meses en AA (véase ECI).'),
+        detail: det,
         sub: t('Sin dato comparable a 12 meses: la versión vigente del índice AA no cubre los líderes de hace 12 meses; para esa referencia véase el ECI de Epoch.{incNote}', { incNote: incNote(f, f.since) })
       };
     }
-    return { label: t('Avance de la frontera en 12 meses (índice AA)'), value: fact(f, v => t('+{n} puntos AA', { n: num(v, 1) })) + incTag(f), sub: f?.from && f?.to ? t('De {whoAA}, publicado el {fmtDate}, a {p3}. Cada modelo con su puntuación actual.{incNote}', { whoAA: whoAA(f.from), fmtDate: esc(fmtDate(f.from.date)), p3: whoAA(f.to), incNote: incNote(f, f.since) }) : '' };
+    return {
+      label: t('Avance de la frontera en 12 meses (índice AA)'), value: fact(f, v => t('+{n} puntos AA', { n: num(v, 1) })) + incTag(f),
+      vs: f?.from && f?.to ? [{ b: f.to, v: f.to.ii, cls: 'closed', tag: t('Hoy') }, { b: f.from, v: f.from.ii, cls: 'dim', tag: fmtDate(f.from.date) }] : null,
+      kpiSub: incNote(f, f?.since).trim(),
+      sub: f?.from && f?.to ? t('De {whoAA}, publicado el {fmtDate}, a {p3}. Cada modelo con su puntuación actual.{incNote}', { whoAA: whoAA(f.from), fmtDate: esc(fmtDate(f.from.date)), p3: whoAA(f.to), incNote: incNote(f, f.since) }) : ''
+    };
   },
   'eci.frontier': (I) => ({ label: t('Mejor modelo (ECI)'), value: fact(I.eci?.frontier, v => num(v, 1)), sub: I.eci?.frontier?.model ? esc(I.eci.frontier.model) : '' }),
   'eci.rate12m': (I) => {
     const f = I.eci?.rate12m;
-    return { label: t('Avance de la frontera en 12 meses (ECI)'), value: fact(f, v => t('+{n} puntos ECI', { n: num(v, 1) })), sub: f?.from && f?.to ? t('De {a}, {ea}, a {b}, {eb}.', { a: who(f.from), ea: num(f.from.eci, 1), b: who(f.to), eb: num(f.to.eci, 1) }) : '' };
+    return {
+      label: t('Avance de la frontera en 12 meses (ECI)'), value: fact(f, v => t('+{n} puntos ECI', { n: num(v, 1) })),
+      vs: f?.from && f?.to ? [{ b: f.to, v: f.to.eci, cls: 'closed', tag: t('Hoy') }, { b: f.from, v: f.from.eci, cls: 'dim', tag: t('Hace 12 m') }] : null,
+      kpiSub: '',
+      sub: f?.from && f?.to ? t('De {a}, {ea}, a {b}, {eb}.', { a: who(f.from), ea: num(f.from.eci, 1), b: who(f.to), eb: num(f.to.eci, 1) }) : ''
+    };
   },
   'eci.gapUsCn': (I) => {
     const f = I.eci?.gapUsCn;
-    return { label: t('Distancia EE. UU. − China (ECI)'), value: fact(f, pts), sub: f?.us && f?.cn ? t('{a} frente a {b}. País de la organización según Epoch.{odds}', { a: who(f.us), b: who(f.cn), odds: f.prob ? ` ${t('EE. UU. sigue por delante en {odds}.', { odds: odds(f.prob) })}` : '' }) : '' };
+    const od = f?.prob ? t('EE. UU. sigue por delante en {odds}.', { odds: odds(f.prob) }) : '';
+    return {
+      label: t('Distancia EE. UU. − China (ECI)'), value: fact(f, pts),
+      vs: f?.us && f?.cn ? [{ b: f.us, v: f.us.eci, cls: 'closed', tag: t('EE. UU.') }, { b: f.cn, v: f.cn.eci, cls: 'open', tag: t('China') }] : null,
+      kpiSub: od,
+      sub: f?.us && f?.cn ? t('{a} frente a {b}. País de la organización según Epoch.{odds}', { a: who(f.us), b: who(f.cn), odds: od ? ` ${od}` : '' }) : ''
+    };
   },
   'eci.gapClosedOpen': (I) => {
     const f = I.eci?.gapClosedOpen;
-    return { label: t('Distancia cerrados − abiertos (ECI)'), value: fact(f, pts), sub: f?.closed && f?.open ? t('{a} frente a {b}.{odds}', { a: who(f.closed), b: who(f.open), odds: f.prob ? ` ${t('El mejor cerrado sigue por delante en {odds}.', { odds: odds(f.prob) })}` : '' }) : '' };
+    const od = f?.prob ? t('El mejor cerrado sigue por delante en {odds}.', { odds: odds(f.prob) }) : '';
+    return {
+      label: t('Distancia cerrados − abiertos (ECI)'), value: fact(f, pts),
+      vs: f?.closed && f?.open ? [{ b: f.closed, v: f.closed.eci, cls: 'closed', tag: t('Cerrado') }, { b: f.open, v: f.open.eci, cls: 'open', tag: t('Abierto') }] : null,
+      kpiSub: od,
+      sub: f?.closed && f?.open ? t('{a} frente a {b}.{odds}', { a: who(f.closed), b: who(f.open), odds: od ? ` ${od}` : '' }) : ''
+    };
   },
   'eci.gapLabs': (I) => {
     const f = I.eci?.gapLabs;
+    const extra = f?.prob ? labsOdds(I, f).trim() : f?.overlap ? t('Sus intervalos de confianza se solapan: no puede afirmarse cuál va primero.') : '';
     return {
       label: t('Distancia entre los dos primeros laboratorios (ECI)'), value: fact(f, pts),
+      vs: f?.first && f?.second ? [{ b: f.first, v: f.first.eci, cls: 'closed', tag: f.first.org?.split(',')[0] }, { b: f.second, v: f.second.eci, cls: 'open', tag: f.second.org?.split(',')[0] }] : null,
+      kpiSub: extra,
       sub: f?.first && f?.second ? t('{who} frente a {p2}.{p3}', { who: who(f.first), p2: who(f.second), p3: f.prob ? labsOdds(I, f) : f.overlap ? t(' Sus intervalos de confianza se solapan: no puede afirmarse cuál va primero.') : '' }) : ''
     };
   },
@@ -267,5 +321,12 @@ export function indicatorRow(ind, key) {
 /* Tarjeta KPI para la cabecera de «La carrera». */
 export function indicatorKpi(ind, key) {
   const r = REG[key](ind || {});
-  return `<div class="kpi"><span class="k">${esc(r.label)}</span><span class="v small">${r.value}</span><span class="s">${r.sub}</span></div>`;
+  let vsHtml = '';
+  if (r.vs?.length) {
+    const maxV = Math.max(...r.vs.map(x => Number(x.v) || 0), 1);
+    vsHtml = `<div class="gap-vs">${r.vs.map(x => `<div class="gv-row ${esc(x.cls || 'closed')}">${miniLogo(x.b)}<span class="gv-nm" title="${esc(x.b?.model || '')}">${esc(x.b?.model || '')}${x.tag ? ` <small>${esc(x.tag)}</small>` : ''}</span><span class="gv-val">${x.v != null ? num(x.v, 1) : '—'}</span><span class="gv-track"><i style="width:${x.v != null ? (x.v / maxV * 100).toFixed(1) : 0}%"></i></span></div>`).join('')}</div>`;
+  }
+  const subTxt = 'kpiSub' in r ? r.kpiSub : r.sub;
+  const detHtml = r.detail ? `<details class="method-note kpi-note"><summary>${t('Por qué está incompleto')}</summary><p>${r.detail}</p></details>` : '';
+  return `<div class="kpi"><span class="k">${esc(r.label)}</span><span class="v small">${r.value}</span>${vsHtml}${subTxt ? `<span class="s">${subTxt}</span>` : ''}${detHtml}</div>`;
 }

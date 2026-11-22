@@ -664,7 +664,7 @@ export function hbars(el, rows, opts = {}) {
   const longest = Math.max(...rows.map(r => String(r.value ?? fmt(r.v)).length));
   const ic = rows.some(r => r.icon), IS = nw ? 16 : 22, IG = ic ? IS + 8 : 0;   // lado del recuadro del logo y hueco que ocupa
   const G = nw ? { W, L: 4, R: Math.min(Math.round(W * 0.4), Math.round(longest * 7.6 + 14)), T: ref ? 22 : 6, B: 8, cw: 7.2 }
-    : { W, L: Math.min(250, Math.round(W * 0.3)) + IG, R: right ?? Math.min(120, Math.round(W * 0.16)), T: ref ? 22 : 6, B: 8, cw: 8 };
+    : { W, L: Math.min(250, Math.round(W * 0.3)) + IG, R: right ?? Math.min(Math.round(W * 0.34), Math.max(Math.round(W * 0.16), Math.round(longest * 8.4 + 16))), T: ref ? 22 : 6, B: 8, cw: 8 };
   const H = G.T + rows.length * rowH + G.B;
   const top = max ?? Math.max(...rows.map(r => r.v), ref?.v ?? 0);
   const X = v => G.L + Math.max(0, v) / (top || 1) * (G.W - G.L - G.R);
