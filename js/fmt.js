@@ -34,9 +34,25 @@ export function fmtDate(iso) {
 export const fmtDateTime = iso => LC.dateTime(lang(), iso);
 export const num = (n, dec = 1) => LC.num(lang(), n, dec);
 export const usd = n => LC.usd(lang(), n);
+/* Dólares compactos para tablas y chips: quita decimales .00 / ,00 / ,0 en enteros («8 $», «40 $», «1,50 $»). */
+export function usdShort(n) {
+  const s = usd(n);
+  return s ? s.replace(/[.,]0+(?=\s*\$|$)/, '') : null;
+}
+/* Par entrada / salida por millón de tokens («8 $ / 40 $» en ES, «$8 / $40» en EN). */
+export function pricePair(m) {
+  const i = m?.price?.in?.v, o = m?.price?.out?.v;
+  if (i === null || i === undefined || o === null || o === undefined) return null;
+  return `${usdShort(i)} / ${usdShort(o)}`;
+}
 export function tokens(n) {
   if (!n) return null;
   return n >= 1e6 ? `${num(n / 1e6, 2)} M` : `${num(Math.round(n / 1000), 0)} K`;
+}
+/* Ventana de contexto compacta («1 M», «0,5 M», «200 K»). */
+export function ctxShort(n) {
+  if (!n) return null;
+  return n >= 5e5 ? `${num(n / 1e6, 1)} M` : `${num(Math.round(n / 1000), 0)} K`;
 }
 export function daysAgo(iso) {
   return (Date.now() - new Date(iso).getTime()) / 86400e3;

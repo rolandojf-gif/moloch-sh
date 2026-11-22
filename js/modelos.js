@@ -1,7 +1,7 @@
 /* Vista «Modelos»: comparador, ficha desplegable (con su posición frente a otros modelos), comparación de hasta tres,
    evolución de la frontera y caída del coste por capacidad. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, fact, src, weightsTag, usd, num, tokens, fmtDate, country, ord, weightsWord, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, aaRace, aaCoverage, coverageText, speed, priceBasis, nd, AA_LINK, sinApiTag, sinApiText } from './fmt.js';
+import { esc, fact, src, weightsTag, usd, usdShort, num, tokens, ctxShort, fmtDate, country, ord, weightsWord, blended, ii, coding, agentic, eci, swe, aaConfig, aaConfigShort, aaIndexName, aaRace, aaCoverage, coverageText, speed, priceBasis, nd, AA_LINK, sinApiTag, sinApiText } from './fmt.js';
 import { logo, logoUrl } from './logos.js';
 import { frontier, costCurve, hbars, tip } from './charts.js';
 
@@ -215,16 +215,25 @@ function renderTable() {
     const checked = state.cmp.includes(m.id);
     const dis = !checked && state.cmp.length >= 3;
     const isPareto = pareto.has(m.id);
-    const bPrice = blended(m);
     const score = ii(m);
+    const ctx = ctxShort(m.ctx?.v);
+    const pin = m.price?.in?.v, pout = m.price?.out?.v;
+    const provExtra = m.price.basis === 'proveedor'
+      ? `${esc(m.price.provider)}${m.price.quant ? ` (${esc(m.price.quant)})` : ''}`
+      : m.price.tier ? esc(m.price.tier) : '';
+    const priceHtml = m.aaOnly
+      ? `<span class="big">${nd()}</span><span class="m-sub">${t('sin API pública')}</span>`
+      : freeOnly(m)
+      ? `<span class="big">${t('gratis')}</span>${src(m.price.in)}<span class="m-sub">${t('solo variante {p1}; sin precio de pago todavía', { p1: esc(m.orVariant.slice(m.orVariant.lastIndexOf(':'))) })}</span>`
+      : `<span class="big price-pair" title="${esc(priceBasis(m) || '')}">${pin !== null && pin !== undefined && pout !== null && pout !== undefined ? `${usdShort(pin)}<span class="sep">/</span>${usdShort(pout)}` : fact(m.price.in, usdShort)}</span>${src(m.price.in)}${provExtra ? `<span class="m-sub" title="${esc(priceBasis(m) || '')}">${provExtra}</span>` : ''}`;
     return `<tr class="row" data-id="${esc(m.id)}" aria-expanded="${open}" tabindex="0">
       <td class="c-sel" data-label="${t('Comparar')}"><input type="checkbox" aria-label="${t('Comparar {name}', { name: esc(m.name) })}" data-cmp="${esc(m.id)}"${checked ? ' checked' : ''}${dis ? ' disabled' : ''}></td>
-      <td class="c-name"><div class="m-id">${logo(m)}<div><div class="m-name">${esc(m.name)}${sinApiTag(m)}${isPareto ? ` <span class="pareto-badge" title="${t('En la frontera calidad-precio: ningún modelo más barato obtiene mayor índice AA')}">${t('Frontera')}</span>` : ''}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></div></div></td>
+      <td class="c-name"><div class="m-id">${logo(m)}<div><div class="m-name">${esc(m.name)}${sinApiTag(m)}${isPareto ? ` <span class="pareto-badge" title="${t('En la frontera calidad-precio: ningún modelo más barato obtiene mayor índice AA')}">${t('Frontera')}</span>` : ''}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}${ctx ? ` · <span class="m-ctx" title="${t('Ventana de contexto')}">${ctx} ctx</span>` : ''}</div></div></div></td>
       <td data-label="${t('Pesos')}">${weightsBadge(m)}${m.license.v && m.weights.v === 'abiertos' ? `<span class="m-sub">${esc(tr(m.license.v))}</span>` : ''}</td>
       <td class="num" data-label="${t('Inteligencia (AA)')}">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${score !== null ? `<span class="mx-bar ${m.weights.v === 'abiertos' ? 'open' : 'closed'}" aria-hidden="true"><i style="width:${(score / maxII * 100).toFixed(1)}%"></i></span>` : ''}${aaConfigShort(m) ? `<span class="m-sub" title="${t('Configuración de AA con mayor índice: {aaConfig}', { aaConfig: esc(aaConfig(m)) })}">${esc(aaConfigShort(m))}</span>` : ''}` : nd()}</td>
       <td class="num" data-label="${t('ECI (Epoch)')}">${m.epoch ? `<span class="big">${fact(m.epoch.eci, v => num(v))}</span>` : nd()}</td>
       <td class="num" data-label="${t('Velocidad')}">${speedCell(m)}</td>
-      <td class="num" data-label="${t('Entrada / salida')}">${m.aaOnly ? `<span class="big">${nd()}</span><span class="m-sub">${t('sin API pública')}</span>` : freeOnly(m) ? `<span class="big">${t('gratis')}</span>${src(m.price.in)}<span class="m-sub">${t('solo variante {p1}; sin precio de pago todavía', { p1: esc(m.orVariant.slice(m.orVariant.lastIndexOf(':'))) })}</span>` : `<span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">${t('salida {fact}', { fact: fact(m.price.out, usd) })}${bPrice !== null ? ` · 3:1 ${usd(bPrice)}` : ''}</span>`}${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.tier ? ` (${esc(m.price.tier)})` : ''}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}${t(', el más barato')}` : ''}</span>` : ''}</td>
+      <td class="num" data-label="${t('Entrada / salida')}">${priceHtml}</td>
     </tr>${open ? `<tr class="detail"><td colspan="7">${detail(m)}</td></tr>` : ''}`;
   }).join('');
 }

@@ -1,6 +1,6 @@
 /* Hitos fechados de disponibilidad, con el historial y la evidencia de cada modelo. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, fact, src, weightsTag, provLine, fmtDate, dateFmt, num, usd, blended, ii, eci, aaConfig, aaIndexName, priceBasis } from './fmt.js';
+import { esc, fact, src, weightsTag, provLine, fmtDate, dateFmt, num, usdShort, pricePair, ctxShort, ii, eci, aaConfig, aaIndexName, priceBasis } from './fmt.js';
 import { logo } from './logos.js';
 
 const $ = s => document.querySelector(s);
@@ -129,16 +129,16 @@ function scoreComparison(model, prev) {
 
 function priceText(model, prev) {
   const price = m => {
-    const value = blended(m);
+    const pair = pricePair(m);
     const basis = priceBasis(m);
-    return value === null ? null : `${usd(value)}${src(m.price.in)}${basis ? ` (${esc(basis)})` : ''}`;
+    return pair === null ? null : `${pair}${src(m.price.in)}${basis ? ` (${esc(basis)})` : ''}`;
   };
   const actual = price(model);
   if (actual === null) return '';
   const anterior = prev && price(prev);
   return anterior
-    ? t('Precio combinado por millón de tokens (3:1): {actual} frente a {anterior}.', { actual, anterior })
-    : t('Precio combinado por millón de tokens (3:1): {actual}.', { actual });
+    ? t('Precio entrada / salida por millón de tokens: {actual} frente a {anterior}.', { actual, anterior })
+    : t('Precio entrada / salida por millón de tokens: {actual}.', { actual });
 }
 
 function assessment(model, models) {
@@ -176,8 +176,10 @@ function releaseRow(s, assessments) {
   const licence = weights ? `<p>${t('Licencia de los pesos: {licencia}', { licencia: fact(model.license, v => esc(tr(v))) })}</p>` : '';
   const chips = [];
   if (model && ii(model) !== null) chips.push(`<span class="ln-chip is-aa">${num(ii(model))} AA</span>`);
-  const bp = model ? blended(model) : null;
-  if (bp !== null && bp > 0) chips.push(`<span class="ln-chip">${usd(bp)}/M</span>`);
+  const ctx = model ? ctxShort(model.ctx?.v) : null;
+  if (ctx) chips.push(`<span class="ln-chip is-ctx" title="${t('Ventana de contexto')}">${ctx} ctx</span>`);
+  const pair = model && (model.price?.in?.v > 0 || model.price?.out?.v > 0) ? pricePair(model) : null;
+  if (pair) chips.push(`<span class="ln-chip" title="${t('Precio entrada / salida por millón de tokens')}">${pair}</span>`);
   if (model?.weights.v === 'abiertos') chips.push(`<span class="ln-chip is-open">${model.weights.announced ? t('abiertos · anunciados') : t('abiertos')}</span>`);
   return `<details class="ln-row" data-milestone="${esc(s.key)}" data-group="${kind.group}"${opened.has(s.key) ? ' open' : ''}>
     <summary>
