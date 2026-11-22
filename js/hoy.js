@@ -148,9 +148,20 @@ function renderKPIs(d, gapPts) {
     if (!m) return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v">${nd()}</span><span class="s">${reason || t('Ningún modelo de este bloque tiene índice.')}</span></div>`;
     let delta = '';
     if (prevLead && prevLead.id !== m.id && prevLead.ii !== undefined) delta = ` ${t('Antes: {name} ({num}).', { name: esc(prev.models[prevLead.id]?.n || prevLead.id), num: num(prevLead.ii) })}`;
-    const ep = eci(m) !== null ? ` ${t('ECI en Epoch AI: {fact}.', { fact: fact(m.epoch.eci, v => num(v)) })}` : '';
+    const bp = blended(m);
+    const stats = `<div class="lead-stats">
+      <div><span>${t('Índice AA')}</span><b>${fact(capFact(m), v => num(v))}</b></div>
+      ${eci(m) !== null ? `<div><span>ECI</span><b>${fact(m.epoch.eci, v => num(v))}</b></div>` : ''}
+      ${bp !== null && bp > 0 ? `<div><span>${t('Precio 3:1')}</span><b>${usd(bp)}/M</b></div>` : ''}
+    </div>`;
+    const notes = [
+      `${esc(m.lab.name)}${aaConfigShort(m) ? ` · ${esc(aaConfigShort(m))}` : ''}.`,
+      m.weights.announced ? t('Pesos anunciados en su descripción de OpenRouter{since}; aún no se pueden descargar.', { since: m.weights.since ? ` ${t('desde el {fmtDate}', { fmtDate: esc(fmtDate(m.weights.since)) })}` : '' }) : '',
+      delta.trim(),
+      dl && m === lo ? t('Con pesos ya descargables, el mejor es {modelLink} ({name}), índice AA {fact}.', { modelLink: modelLink(d, dl.id, dl.name), name: esc(dl.lab.name), fact: fact(capFact(dl), v => num(v)) }) : ''
+    ].filter(Boolean).join(' ');
     return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v small lead">${logo(m, true)}<span>${modelLink(d, m.id, m.name)}${sinApiTag(m)}</span></span>
-      <span class="s">${t('{lab} · índice AA {fact}{cfg}.', { lab: esc(m.lab.name), fact: fact(capFact(m), v => num(v)), cfg: aaConfig(m) ? ` (${quote(esc(aaConfig(m)))})` : '' })}${m.weights.announced ? ` ${t('Pesos anunciados en su descripción de OpenRouter{since}; aún no se pueden descargar.', { since: m.weights.since ? ` ${t('desde el {fmtDate}', { fmtDate: esc(fmtDate(m.weights.since)) })}` : '' })}` : ''}${ep}${delta}${dl && m === lo ? ` ${t('Con pesos ya descargables, el mejor es {modelLink} ({name}), índice AA {fact}.', { modelLink: modelLink(d, dl.id, dl.name), name: esc(dl.lab.name), fact: fact(capFact(dl), v => num(v)) })}` : ''}</span></div>`;
+      ${stats}<span class="s">${notes}</span><a class="lead-go" href="#modelos/${esc(m.id)}">${t('Abrir ficha →')}</a></div>`;
   };
 
   let gapCard;

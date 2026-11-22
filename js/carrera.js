@@ -171,6 +171,11 @@ const CHARTS = {
         }), { fmt: v => v >= 1e6 ? `${num(v / 1e6, 0)} M` : `${num(v / 1e3, 0)} K`, yLabel: 'H100e', every: 4, aria: t('Chips de IA entregados por trimestre') });
       }
     },
+    I.chips?.makers?.length && {
+      title: t('Chips entregados por fabricante, acumulado'),
+      note: t('{EPOCH} Naranja: diseñador estadounidense. Verde: chino.', { EPOCH: EPOCH('«AI chip sales»', I.chips.cum?.url || 'https://epoch.ai/data/ai-chip-sales') }),
+      draw: el => hbars(el, I.chips.makers.map(r => ({ label: r.maker, v: r.h100e, cls: r.country === 'US' ? 'us' : r.country === 'CN' ? 'cn' : 'dim', value: mh100(r.h100e), tip: tip(r.maker, [[t('Acumulado'), mh100(r.h100e)], [t('País del diseñador'), r.country === 'US' ? t('EE. UU.') : r.country === 'CN' ? t('China') : r.country]]) })), { aria: t('Chips por fabricante') })
+    },
     chipsTrend(I.chips) && (() => {
       const trend = chipsTrend(I.chips), x = v => num(v, 1).replace(/,0$/, '');
       return {
@@ -179,12 +184,7 @@ const CHARTS = {
         note: `${t('Extrapolación propia, no una previsión de Epoch: los datos son los de {EPOCH} Cada trimestre futuro repite el crecimiento interanual reciente: ×{x} al año en la barra (los cuatro últimos trimestres completos frente a los cuatro anteriores), y la horquilla va del menor al mayor crecimiento interanual de esos cuatro trimestres (×{p3} a ×{p4}). Escala logarítmica: cada marca es diez veces la anterior. Negro: entregado;', { EPOCH: EPOCH('«AI chip sales»', I.chips.cum?.url || 'https://epoch.ai/data/ai-chip-sales', false), x: x(trend.g), p3: x(trend.lo), p4: x(trend.hi) })} <span class="proj-key"></span>${t('rayado: extrapolado, como en todo el observatorio. En el año en curso, la parte negra es lo ya entregado en trimestres completos. Empieza en 2024, el primer año en que la serie cubre todos los fabricantes. Muestra lo que pasaría si nada frenara la tendencia; no es lo que espera nadie. Al pasar el ratón se ve el consumo nominal que tendrían esos chips con la eficiencia actual, para compararlo con la potencia prevista del frente 02.')}`,
         draw: el => columns(el, trend.rows, { log: true, left: 86, fmt: v => `${num(v / 1e6, 0)} M`, yLabel: t('H100e al año'), aria: t('Chips de IA entregados por año, con la tendencia extrapolada') })
       };
-    })(),
-    I.chips?.makers?.length && {
-      title: t('Chips entregados por fabricante, acumulado'),
-      note: t('{EPOCH} Naranja: diseñador estadounidense. Verde: chino.', { EPOCH: EPOCH('«AI chip sales»', I.chips.cum?.url || 'https://epoch.ai/data/ai-chip-sales') }),
-      draw: el => hbars(el, I.chips.makers.map(r => ({ label: r.maker, v: r.h100e, cls: r.country === 'US' ? 'us' : r.country === 'CN' ? 'cn' : 'dim', value: mh100(r.h100e), tip: tip(r.maker, [[t('Acumulado'), mh100(r.h100e)], [t('País del diseñador'), r.country === 'US' ? t('EE. UU.') : r.country === 'CN' ? t('China') : r.country]]) })), { aria: t('Chips por fabricante') })
-    }
+    })()
   ],
   energia: I => [
     I.dc?.countries?.length && {

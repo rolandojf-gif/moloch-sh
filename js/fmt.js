@@ -239,6 +239,6 @@ export const weightsWord = v => v === 'abiertos' ? t('abiertos') : v === 'cerrad
 export function weightsTag(m) {
   const v = m.weights?.v;
   if (v === 'abiertos' && m.weights.announced) return `<span class="w abiertos anun" title="${esc(anunText(m))}">${t('abiertos · anunciados')}</span>`;
-  if (v === 'cerrados' && m.weights.inferred) return `<span class="w cerrados inf" title="${m.aaOnly ? t('Aún no está en OpenRouter y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; se asume cerrado') : t('OpenRouter no enlaza pesos y no hay un repositorio con su nombre en la organización del laboratorio en Hugging Face; se asume cerrado')}">${t('cerrados · inferido')}</span>`;
+  if (v === 'cerrados' && m.weights.inferred) return `<span class="w cerrados inf" title="${m.aaOnly ? t('Sin pesos publicados: aún no está en OpenRouter y no hay repositorio en Hugging Face') : t('Sin pesos publicados: OpenRouter no enlaza pesos y no hay repositorio en Hugging Face')}">${t('cerrados')}</span>`;
   return `<span class="w ${v || 'nd'}">${esc(weightsWord(v))}</span>`;
 }

@@ -73,7 +73,7 @@ function speedCell(m) {
   const s = speed(m);
   if (!s) return nd();
   const lat = s.lat !== null && s.lat !== undefined ? `${num(s.lat, 2)} s` : t('sin datos');
-  return `<span class="big">${num(s.tps, 0)}</span> ${t('tok/s{src}', { src: src(s.f) })}<span class="m-sub">${s.aa ? t('respuesta en') : t('primer token en')} ${lat}</span><span class="m-sub" title="${esc(s.provider)}">${esc(s.short)}</span>`;
+  return `<span class="big">${num(s.tps, 0)}</span> ${t('tok/s{src}', { src: src(s.f) })}<span class="m-sub" title="${esc(s.provider)}">${s.aa ? t('respuesta en') : t('primer token en')} ${lat}</span>${s.aa ? '' : `<span class="m-sub" title="${esc(s.provider)}">${esc(s.short)}</span>`}`;
 }
 
 /* «Frente a otros modelos»: dónde queda el modelo en la carrera frente a tres referencias del catálogo. Describe su
@@ -206,6 +206,7 @@ function renderTable() {
   }
   if (!list.length) { $('#mx-body').innerHTML = `<tr><td colspan="7"><div class="empty">${t('Ningún modelo coincide con el filtro.')}</div></td></tr>`; return; }
   const shown = state.all || state.q ? list : list.slice(0, PAGE);
+  const maxII = Math.max(...D.catalog.models.map(ii).filter(v => v !== null), 1);
   $('#mx-more')?.remove();
   if (shown.length < list.length) $('.table-wrap').insertAdjacentHTML('afterend', `<button type="button" class="show-all" id="mx-more">${t('Mostrar los {length} modelos', { length: list.length })}</button>`);
   $('#mx-more')?.addEventListener('click', () => { state.all = true; renderTable(); });
@@ -215,11 +216,12 @@ function renderTable() {
     const dis = !checked && state.cmp.length >= 3;
     const isPareto = pareto.has(m.id);
     const bPrice = blended(m);
+    const score = ii(m);
     return `<tr class="row" data-id="${esc(m.id)}" aria-expanded="${open}" tabindex="0">
       <td class="c-sel" data-label="${t('Comparar')}"><input type="checkbox" aria-label="${t('Comparar {name}', { name: esc(m.name) })}" data-cmp="${esc(m.id)}"${checked ? ' checked' : ''}${dis ? ' disabled' : ''}></td>
       <td class="c-name"><div class="m-id">${logo(m)}<div><div class="m-name">${esc(m.name)}${sinApiTag(m)}${isPareto ? ` <span class="pareto-badge" title="${t('En la frontera calidad-precio: ningún modelo más barato obtiene mayor índice AA')}">${t('Frontera')}</span>` : ''}</div><div class="m-lab">${esc(m.lab.name)} · ${esc(country(m.lab.country))}</div></div></div></td>
       <td data-label="${t('Pesos')}">${weightsBadge(m)}${m.license.v && m.weights.v === 'abiertos' ? `<span class="m-sub">${esc(tr(m.license.v))}</span>` : ''}</td>
-      <td class="num" data-label="${t('Inteligencia (AA)')}">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${aaConfigShort(m) ? `<span class="m-sub" title="${t('Configuración de AA con mayor índice: {aaConfig}', { aaConfig: esc(aaConfig(m)) })}">${esc(aaConfigShort(m))}</span>` : ''}` : nd()}</td>
+      <td class="num" data-label="${t('Inteligencia (AA)')}">${m.aa ? `<span class="big">${fact(m.aa.intelligence, v => num(v))}</span>${score !== null ? `<span class="mx-bar ${m.weights.v === 'abiertos' ? 'open' : 'closed'}" aria-hidden="true"><i style="width:${(score / maxII * 100).toFixed(1)}%"></i></span>` : ''}${aaConfigShort(m) ? `<span class="m-sub" title="${t('Configuración de AA con mayor índice: {aaConfig}', { aaConfig: esc(aaConfig(m)) })}">${esc(aaConfigShort(m))}</span>` : ''}` : nd()}</td>
       <td class="num" data-label="${t('ECI (Epoch)')}">${m.epoch ? `<span class="big">${fact(m.epoch.eci, v => num(v))}</span>` : nd()}</td>
       <td class="num" data-label="${t('Velocidad')}">${speedCell(m)}</td>
       <td class="num" data-label="${t('Entrada / salida')}">${m.aaOnly ? `<span class="big">${nd()}</span><span class="m-sub">${t('sin API pública')}</span>` : freeOnly(m) ? `<span class="big">${t('gratis')}</span>${src(m.price.in)}<span class="m-sub">${t('solo variante {p1}; sin precio de pago todavía', { p1: esc(m.orVariant.slice(m.orVariant.lastIndexOf(':'))) })}</span>` : `<span class="big">${fact(m.price.in, usd)}</span><span class="m-sub">${t('salida {fact}', { fact: fact(m.price.out, usd) })}${bPrice !== null ? ` · 3:1 ${usd(bPrice)}` : ''}</span>`}${m.price.provider ? `<span class="m-sub" title="${esc(priceBasis(m))}">${esc(m.price.provider)}${m.price.tier ? ` (${esc(m.price.tier)})` : ''}${m.price.basis === 'proveedor' ? `${m.price.quant ? ` (${esc(m.price.quant)})` : ''}${t(', el más barato')}` : ''}</span>` : ''}</td>
