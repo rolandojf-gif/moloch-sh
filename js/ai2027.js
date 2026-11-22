@@ -75,6 +75,8 @@ function hito(h, ind, checks, today, a7) {
   const a = valOf(h, 'autores', checks), o = valOf(h, 'observatorio', checks);
   const est = OPEN.includes(o?.v) ? estimate(h, checks, a7) : null;
   const due = h.plazo < today;
+  const m = months(today, h.plazo);
+  const dueCls = due ? 'is-past' : m <= 3 ? 'is-soon' : 'is-future';
   const measured = (h.evidencia || []).filter(e => e.tipo === 'medida' && e.indicador);
   // Un hito vencido se valora con lo que había en su fecha; lo de hoy va aparte, como contexto.
   const atDue = measured.filter(e => e.momento === 'plazo'), now = measured.filter(e => e.momento !== 'plazo');
@@ -84,27 +86,35 @@ function hito(h, ind, checks, today, a7) {
   return `<article class="hito${due && o?.v === 'todavía no evaluable' ? ' overdue' : ''}" id="hito-${esc(h.id)}">
     <div class="verdict ${cls(o?.v)}"><span class="lbl">${t('Valoración del observatorio')}</span><b>${esc(plain(o, due))}</b>${o?.sentido ? `<span class="sentido">${esc(L(o, 'sentido'))}</span>` : ''}${o?.regla ? `<small>${t('Calculada con una regla explícita en cada recogida.')}</small>` : ''}${est ? `<span class="est-line"><i class="chip ${cls(est.v)}"></i><span><span class="lbl">${t('Estimación')}</span>${esc(estLabel(est))}</span></span>` : ''}</div>
     <div class="hito-main">
-      <div class="hito-title-row"><h4>${esc(tr(h.titulo))}</h4><button type="button" class="copy-btn" data-copy-hash="#ai2027/${esc(h.id)}">${t('Copiar enlace')}</button></div>
-      <div class="when">${t('Para')} <b>${esc(tr(h.plazo_texto))}</b> (${esc(fmtDate(h.plazo))}) · ${esc(when(h, today))}</div>
-      <div class="hito-cols">
-        <div><span class="lbl">${t('Qué predecía')}</span><p>${esc(tr(h.prediccion))}</p></div>
-        ${due
-          ? `<div><span class="lbl">${t('Al vencer el plazo ({fmtDate})', { fmtDate: esc(fmtDate(h.plazo)) })}</span><p>${esc(o?.texto ? L(o, 'texto') : t('Sin valoración del observatorio.'))}</p>${rows(atDue)}
-          ${now.length ? `<span class="lbl lbl-hoy">${t('Y hoy ({curDate})', { curDate: esc(curDate(today)) })}</span>${rows(now)}` : ''}</div>`
-          : `<div><span class="lbl">${t('Dónde estamos')}${o?.fecha ? ` (${esc(curDate(o.fecha))})` : ''}</span><p>${esc(o?.texto ? L(o, 'texto') : t('Sin valoración del observatorio.'))}</p>${rows(measured)}</div>`}
+      <header class="hito-top">
+        <div class="hito-time">
+          <span class="due-pill ${dueCls}">${esc(when(h, today))}</span>
+          <span class="due-date">${t('Para')} <b>${esc(tr(h.plazo_texto))}</b> <small>(${esc(fmtDate(h.plazo))})</small></span>
+          <button type="button" class="copy-btn" data-copy-hash="#ai2027/${esc(h.id)}">${t('Copiar enlace')}</button>
+        </div>
+        <h4>${esc(tr(h.titulo))}</h4>
+      </header>
+      <div class="hito-body">
+        <div class="hito-cols">
+          <div><span class="lbl">${t('Qué predecía')}</span><p>${esc(tr(h.prediccion))}</p></div>
+          ${due
+            ? `<div><span class="lbl">${t('Al vencer el plazo ({fmtDate})', { fmtDate: esc(fmtDate(h.plazo)) })}</span><p>${esc(o?.texto ? L(o, 'texto') : t('Sin valoración del observatorio.'))}</p>${rows(atDue)}
+            ${now.length ? `<span class="lbl lbl-hoy">${t('Y hoy ({curDate})', { curDate: esc(curDate(today)) })}</span>${rows(now)}` : ''}</div>`
+            : `<div><span class="lbl">${t('Dónde estamos')}${o?.fecha ? ` (${esc(curDate(o.fecha))})` : ''}</span><p>${esc(o?.texto ? L(o, 'texto') : t('Sin valoración del observatorio.'))}</p>${rows(measured)}</div>`}
+        </div>
+        ${partes(h, checks, today)}
+        ${est ? `<div class="est-block"><span class="lbl"><span class="proj-key" aria-hidden="true"></span>${t('Estimación · {p1}', { p1: esc(est.rotulo ? tr(est.rotulo) : estKind(est.metodo)) })}</span><p>${esc(est.ready ? est.texto : L(est, 'texto'))}</p>${est.muros ? `<p class="muros"><b>${t('Qué podría frenarla o invalidarla.')}</b> ${esc(tr(est.muros))}</p>` : ''}${est.fuentes?.length ? `<p class="prov">${est.fuentes.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(tr(f.texto))}</a>`).join(' · ')}</p>` : ''}</div>` : ''}
+        <p class="authors"><span class="lbl">${t('Qué dicen los autores')}</span>${a ? `<span class="val ${cls(a.v)}">${esc(escala(a.v))}</span> ${esc(a.texto ? tr(a.texto) : '')}${a.url ? ` <a href="${esc(a.url)}" target="_blank" rel="noopener">${t('Fuente')}</a>` : ''}` : t('No han publicado una valoración que el observatorio haya encontrado.')}</p>
+        <details class="hito-more">
+          <summary>${t('Texto original, evidencia{p1}', { p1: r ? t(' y revisiones') : '' })}</summary>
+          <p class="op"><span class="lbl">${t('Dónde lo dice el escenario')}</span>${esc(tr(h.seccion))} · <a href="${esc(h.url)}" target="_blank" rel="noopener">${t('fuente de la predicción')}</a></p>
+          ${h.cita ? `<blockquote lang="en">${esc(h.cita)}</blockquote>` : ''}
+          ${h.operacionalizacion ? `<p class="op"><span class="lbl">${t('Cómo se comprueba')}</span>${esc(tr(h.operacionalizacion))}</p>` : ''}
+          ${r ? `<div class="revs"><span class="lbl">${t('Revisiones posteriores de los autores (no sustituyen la predicción original)')}</span><ol>${h.revisiones.map(x => `<li><b>${esc(curDate(x.fecha))}</b> · ${esc(tr(x.texto))} <a href="${esc(x.url)}" target="_blank" rel="noopener">${t('Fuente')}</a></li>`).join('')}</ol></div>` : ''}
+          ${rest.length ? `<div class="evid"><span class="lbl">${t('Otra evidencia')}</span><ul>${rest.map(e => evidence(e, ind)).join('')}</ul></div>` : ''}
+          ${h.comparabilidad ? `<p class="op"><span class="lbl">${t('Comparabilidad')}</span>${esc(tr(h.comparabilidad))}</p>` : ''}
+        </details>
       </div>
-      ${partes(h, checks, today)}
-      ${est ? `<div class="est-block"><span class="lbl"><span class="proj-key" aria-hidden="true"></span>${t('Estimación · {p1}', { p1: esc(est.rotulo ? tr(est.rotulo) : estKind(est.metodo)) })}</span><p>${esc(est.ready ? est.texto : L(est, 'texto'))}</p>${est.muros ? `<p class="muros"><b>${t('Qué podría frenarla o invalidarla.')}</b> ${esc(tr(est.muros))}</p>` : ''}${est.fuentes?.length ? `<p class="prov">${est.fuentes.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(tr(f.texto))}</a>`).join(' · ')}</p>` : ''}</div>` : ''}
-      <p class="authors"><span class="lbl">${t('Qué dicen los autores')}</span>${a ? `<span class="val ${cls(a.v)}">${esc(escala(a.v))}</span> ${esc(a.texto ? tr(a.texto) : '')}${a.url ? ` <a href="${esc(a.url)}" target="_blank" rel="noopener">${t('Fuente')}</a>` : ''}` : t('No han publicado una valoración que el observatorio haya encontrado.')}</p>
-      <details class="hito-more">
-        <summary>${t('Texto original, evidencia{p1}', { p1: r ? t(' y revisiones') : '' })}</summary>
-        <p class="op"><span class="lbl">${t('Dónde lo dice el escenario')}</span>${esc(tr(h.seccion))} · <a href="${esc(h.url)}" target="_blank" rel="noopener">${t('fuente de la predicción')}</a></p>
-        ${h.cita ? `<blockquote lang="en">${esc(h.cita)}</blockquote>` : ''}
-        ${h.operacionalizacion ? `<p class="op"><span class="lbl">${t('Cómo se comprueba')}</span>${esc(tr(h.operacionalizacion))}</p>` : ''}
-        ${r ? `<div class="revs"><span class="lbl">${t('Revisiones posteriores de los autores (no sustituyen la predicción original)')}</span><ol>${h.revisiones.map(x => `<li><b>${esc(curDate(x.fecha))}</b> · ${esc(tr(x.texto))} <a href="${esc(x.url)}" target="_blank" rel="noopener">${t('Fuente')}</a></li>`).join('')}</ol></div>` : ''}
-        ${rest.length ? `<div class="evid"><span class="lbl">${t('Otra evidencia')}</span><ul>${rest.map(e => evidence(e, ind)).join('')}</ul></div>` : ''}
-        ${h.comparabilidad ? `<p class="op"><span class="lbl">${t('Comparabilidad')}</span>${esc(tr(h.comparabilidad))}</p>` : ''}
-      </details>
     </div>
   </article>`;
 }
@@ -314,7 +324,7 @@ export function renderAi2027(d) {
 
   $('#a7-index').innerHTML = a.lineas.map((l, i) => `<a href="#linea-${esc(l.id)}" data-jump><i>${String(i + 1).padStart(2, '0')}</i>${esc(tr(l.titulo))}</a>`).join('');
   $('#a7-lines').innerHTML = a.lineas.map((l, i) => `<section class="linea" id="linea-${esc(l.id)}" aria-labelledby="lh-${esc(l.id)}">
-      <header class="front-head"><span class="front-n">${String(i + 1).padStart(2, '0')}</span><div><h3 id="lh-${esc(l.id)}">${esc(tr(l.titulo))}</h3><p class="q"><span class="lbl">${t('Qué se comprueba')}</span>${esc(tr(l.comprobar))}</p></div></header>
+      <header class="linea-head"><span class="linea-n">${String(i + 1).padStart(2, '0')}</span><div class="linea-title"><h3 id="lh-${esc(l.id)}">${esc(tr(l.titulo))}</h3><p class="q"><span class="lbl">${t('Qué se comprueba')}</span>${esc(tr(l.comprobar))}</p></div><span class="linea-cnt">${tn(l.hitos.length, ['{n} predicción', '{n} predicciones'])}</span></header>
       <div class="hitos">${l.hitos.slice().sort((x, y) => x.plazo.localeCompare(y.plazo)).map(h => hito(h, ind, checks, today, a)).join('')}</div>
     </section>`).join('');
 

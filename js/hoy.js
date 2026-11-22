@@ -1,6 +1,6 @@
 /* Vista «Hoy»: el parte del día, lo detectado en la semana, cuatro indicadores y capacidad frente a precio. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, fact, src, usd, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote, sinApiTag } from './fmt.js';
+import { esc, fact, src, usd, pricePair, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote, sinApiTag } from './fmt.js';
 import { logo, logoFor } from './logos.js';
 import { scatter, daily, tip } from './charts.js';
 import { renderHero, eventModel, modelLogo } from './hoy-hero.js';
@@ -148,11 +148,11 @@ function renderKPIs(d, gapPts) {
     if (!m) return `<div class="kpi ${cls}"><span class="k">${label}</span><span class="v">${nd()}</span><span class="s">${reason || t('Ningún modelo de este bloque tiene índice.')}</span></div>`;
     let delta = '';
     if (prevLead && prevLead.id !== m.id && prevLead.ii !== undefined) delta = ` ${t('Antes: {name} ({num}).', { name: esc(prev.models[prevLead.id]?.n || prevLead.id), num: num(prevLead.ii) })}`;
-    const bp = blended(m);
+    const pair = (m.price?.in?.v > 0 || m.price?.out?.v > 0) ? pricePair(m) : null;
     const stats = `<div class="lead-stats">
       <div><span>${t('Índice AA')}</span><b>${fact(capFact(m), v => num(v))}</b></div>
       ${eci(m) !== null ? `<div><span>ECI</span><b>${fact(m.epoch.eci, v => num(v))}</b></div>` : ''}
-      ${bp !== null && bp > 0 ? `<div><span>${t('Precio 3:1')}</span><b>${usd(bp)}/M</b></div>` : ''}
+      ${pair ? `<div><span>${t('Entrada / salida')}</span><b>${pair}</b></div>` : ''}
     </div>`;
     const notes = [
       `${esc(m.lab.name)}${aaConfigShort(m) ? ` · ${esc(aaConfigShort(m))}` : ''}.`,
