@@ -153,6 +153,32 @@ for (const [w, h] of [[1300, 900], [390, 844]]) {
   check(es.svgs > 0, `${where}: sin gráficos al volver a español`);
   check(!(await run(`return __errs.length`)), `${where}: errores en la consola: ${await run(`return __errs.join(' · ')`)}`);
 
+  // Lanzamientos: cada tipo filtra hitos concretos y el detalle se conserva al volver al filtro y al cambiar de idioma.
+  const releases = await run(`
+    location.hash = '#lanzamientos'; await waitFor(() => $('#ln-list .ln-row'));
+    const initial = $('#ln-range [aria-pressed=true]').dataset.d;
+    $('#ln-range [data-d="90"]').click();
+    $('#ln-kinds [data-kind=api]').click();
+    const apis = $$('#ln-list .ln-row');
+    if (!apis.length) return { initial, filtered: false };
+    apis[0].querySelector('summary').click();
+    const key = apis[0].dataset.milestone;
+    $('#ln-kinds [data-kind=weights]').click();
+    const filtered = apis.every(row => row.dataset.group === 'api')
+      && $$('#ln-list .ln-row').every(row => row.dataset.group === 'weights');
+    $('#ln-kinds [data-kind=api]').click();
+    const reopened = $('#ln-list .ln-row[open]')?.dataset.milestone === key;
+    $('[data-lang-set=en]').click();
+    const ok = await waitFor(() => document.documentElement.lang === 'en');
+    const kept = ok && $('#ln-list .ln-row[open]')?.dataset.milestone === key
+      && $('#ln-range [aria-pressed=true]').dataset.d === '90' && $('#ln-kinds [aria-pressed=true]').dataset.kind === 'api';
+    $('[data-lang-set=es]').click();
+    await waitFor(() => document.documentElement.lang === 'es');
+    return { initial, filtered, reopened, kept };
+  `);
+  check(releases.initial === '30' && releases.filtered && releases.reopened && releases.kept,
+    `${where}: filtros o desplegables de Lanzamientos cambiados (${JSON.stringify(releases)})`);
+
   // 6 · Recarga con el idioma recordado: inglés directo, sin parpadeo de la interfaz en español
   await send('Page.navigate', { url: `${base}?i18n=1&lang=en#ai2027` });
   await sleep(300);

@@ -227,21 +227,44 @@
   <section class="view" id="view-lanzamientos" data-view="lanzamientos" aria-labelledby="h-lanz" hidden>
     <div class="view-head">
       <h1 id="h-lanz" data-t>Qué ha salido realmente</h1>
-      <p class="lede" data-t>Anuncio, acceso restringido, API pública y pesos descargables son acontecimientos distintos. Cada modelo muestra cuáles constan, cuándo y según quién.</p>
+      <p class="lede" data-t>Qué modelos puedes usar ya, dónde conseguirlos y qué sabemos de su rendimiento.</p>
     </div>
-    <div class="controls">
-      <div class="seg" role="group" aria-label="Apertura" data-t-attr="aria-label" id="ln-weights">
-        <button class="seg-btn" data-w="all" aria-pressed="true" data-t>Todos</button>
-        <button class="seg-btn" data-w="abiertos" aria-pressed="false" data-t>Abiertos</button>
-        <button class="seg-btn" data-w="cerrados" aria-pressed="false" data-t>Cerrados</button>
+    <section id="ln-feature" aria-labelledby="ln-feature-title" hidden></section>
+    <section class="ln-timeline" aria-labelledby="ln-title">
+      <div class="ln-head">
+        <div>
+          <h2 id="ln-title" data-t>Últimos hitos</h2>
+          <p id="ln-status" role="status"></p>
+        </div>
+        <div class="ln-options">
+          <div class="seg" role="group" aria-label="Periodo" data-t-attr="aria-label" id="ln-range">
+            <button type="button" class="seg-btn" data-d="30" aria-pressed="true" data-t>30 días</button>
+            <button type="button" class="seg-btn" data-d="90" aria-pressed="false" data-t>90 días</button>
+            <button type="button" class="seg-btn" data-d="0" aria-pressed="false" data-t>Histórico</button>
+          </div>
+          <label class="ctl ln-weights"><span data-t>Pesos del modelo</span>
+            <select id="ln-weights">
+              <option value="all" data-t>Todos</option>
+              <option value="abiertos" data-t>Abiertos</option>
+              <option value="cerrados" data-t>Cerrados</option>
+            </select>
+          </label>
+        </div>
       </div>
-      <div class="seg" role="group" aria-label="Periodo" data-t-attr="aria-label" id="ln-range">
-        <button class="seg-btn" data-d="30" aria-pressed="false" data-t>30 días</button>
-        <button class="seg-btn" data-d="90" aria-pressed="true" data-t>90 días</button>
-        <button class="seg-btn" data-d="0" aria-pressed="false" data-t>Todo</button>
+      <div id="ln-kinds" class="ln-kinds" role="group" aria-label="Tipo de hito" data-t-attr="aria-label">
+        <button type="button" class="qf-chip" data-kind="all" aria-pressed="true"><span data-t>Todos</span><span class="ln-count"></span></button>
+        <button type="button" class="qf-chip" data-kind="api" aria-pressed="false"><span data-t>Por API</span><span class="ln-count"></span></button>
+        <button type="button" class="qf-chip" data-kind="weights" aria-pressed="false"><span data-t>Descarga de pesos</span><span class="ln-count"></span></button>
+        <button type="button" class="qf-chip" data-kind="news" aria-pressed="false"><span data-t>Anuncios y publicaciones</span><span class="ln-count"></span></button>
+        <button type="button" class="qf-chip" data-kind="other" aria-pressed="false"><span data-t>Otros hitos</span><span class="ln-count"></span></button>
       </div>
-    </div>
-    <div id="ln-list" class="timeline"></div>
+      <div id="ln-list"></div>
+      <div id="ln-retired" hidden></div>
+      <details class="method-note ln-method">
+        <summary data-t>Qué significa cada etapa</summary>
+        <p class="note" data-t>El alta en OpenRouter indica cuándo se incorporó ese modelo a su catálogo. La API del laboratorio y el anuncio llevan enlace a la fuente original cuando se han documentado. Si sólo consta una fecha en Epoch AI, figura como publicación. Los pesos descargables llevan al repositorio y las evaluaciones indican quién las publica.</p>
+      </details>
+    </section>
   </section>
 
   <!-- 04 · La carrera -->
