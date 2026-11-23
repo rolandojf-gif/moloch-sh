@@ -6,7 +6,7 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Sun, 22 Nov 2026 03:54:16 GMT</lastBuildDate>
+  <lastBuildDate>Mon, 23 Nov 2026 03:53:59 GMT</lastBuildDate>
   <item>
     <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
@@ -62,13 +62,6 @@
     <guid isPermaLink="false">indicador|aaLabs|2026-11-17</guid>
     <pubDate>Tue, 17 Nov 2026 20:39:40 GMT</pubDate>
     <description>Gap between the top two labs on the AA index: from 4.6 to 2.5 points (Anthropic versus OpenAI). It is in the briefing because the gap between the top two labs on the AA index changes by at least 2 points. Detected on 2026-11-17. Source: Artificial Analysis (https://artificialanalysis.ai/leaderboards/models). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
-    <title>Qwen4 Max (Alibaba (Qwen)) arrives on OpenRouter: rank 18 on the AA index</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/qwen/qwen4-max</link>
-    <guid isPermaLink="false">nuevo|qwen/qwen4-max</guid>
-    <pubDate>Mon, 16 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Qwen4 Max (Alibaba (Qwen)) appears in the OpenRouter catalogue. AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 18 of 51. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), none costs less. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 18 of 51). Published on 2026-11-16; detected on 2026-11-16. Source: OpenRouter (https://openrouter.ai/qwen/qwen4-max). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Baidu makes ERNIE-5.5-Flash-Preview free on OpenRouter</title>
@@ -237,13 +230,6 @@
     <guid isPermaLink="false">uso|primero|deepseek/deepseek-v4.1-flash-20261017|2026-10-24</guid>
     <pubDate>Sat, 24 Oct 2026 06:13:33 GMT</pubDate>
     <description>DeepSeek V4.1 Flash 1017 becomes the most used model on OpenRouter over the last 7 days (14.9% of tokens), ahead of DeepSeek V4.1 Flash. 14.9% of OpenRouter’s tokens from 2026-10-17 to 2026-10-23; before, the first was deepseek/deepseek-v4.1-flash-20260910. This is usage on OpenRouter, not across the whole market. It is in the briefing because the most used model on OpenRouter over the last 7 days changes. Published on 2026-10-23; detected on 2026-10-24. Source: OpenRouter · usage (https://openrouter.ai/rankings).</description>
-  </item>
-  <item>
-    <title>Minimax starts charging for MiniMax M3.1 Flash on OpenRouter</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/minimax/minimax-m3.1-flash</link>
-    <guid isPermaLink="false">precio|minimax/minimax-m3.1-flash|2026-10-23</guid>
-    <pubDate>Fri, 23 Oct 2026 04:25:22 GMT</pubDate>
-    <description>Minimax starts charging for MiniMax M3.1 Flash on OpenRouter: $0.15 input and $0.6 output per million tokens. Until now it was free. Its blended price on OpenRouter goes from free to $0.262 per million tokens. Of the 10 models with a similar AA index (±2 points of its 42.7), 3 cost less; the cheapest is Ling 3.1 Flash, at $0.112. It is in the briefing because the lab itself starts charging for it on OpenRouter, where it was free. Detected on 2026-10-23. Source: OpenRouter (https://openrouter.ai/minimax/minimax-m3.1-flash/providers). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
 </channel>
 </rss>

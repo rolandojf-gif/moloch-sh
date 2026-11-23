@@ -1,11 +1,11 @@
 {
  "schema": 2,
- "generated": "2026-11-22T03:54:16Z",
+ "generated": "2026-11-23T03:53:59Z",
  "window": 7,
- "since": "2026-11-16",
- "base": "2026-11-21",
+ "since": "2026-11-17",
+ "base": "2026-11-22",
  "parte": {
-  "fecha": "2026-11-22",
+  "fecha": "2026-11-23",
   "noticias": [],
   "ultima": {
    "key": "indicador|eci|2026-11-21",
@@ -55,7 +55,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/mistralai/pixtral-large-2502",
-    "got": "2026-11-22T03:54:16Z"
+    "got": "2026-11-23T03:53:59Z"
    },
    "what": "Pixtral Large 2502 (Mistral AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -89,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-neon",
-    "got": "2026-11-22T03:54:16Z"
+    "got": "2026-11-23T03:53:59Z"
    },
    "what": "Gemini 4 Neon (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -130,7 +130,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-astra-pro",
-    "got": "2026-11-22T03:54:16Z"
+    "got": "2026-11-23T03:53:59Z"
    },
    "what": "GPT-6.2 Astra Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -164,7 +164,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-astra",
-    "got": "2026-11-22T03:54:16Z"
+    "got": "2026-11-23T03:53:59Z"
    },
    "what": "GPT-6.2 Astra (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -205,7 +205,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-sol-pro",
-    "got": "2026-11-22T03:54:16Z"
+    "got": "2026-11-23T03:53:59Z"
    },
    "what": "GPT-6.2 Sol Pro (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -239,7 +239,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/openai/gpt-6.2-sol",
-    "got": "2026-11-22T03:54:16Z"
+    "got": "2026-11-23T03:53:59Z"
    },
    "what": "GPT-6.2 Sol (OpenAI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -270,79 +270,41 @@
    "consecuencia": "Índice de AA 57,3: a 7,3 puntos del mejor cerrado (Claude Fable 5.2). Puesto 6 de 51. Precio combinado 4 $ por millón de tokens."
   },
   {
-   "kind": "nuevo",
-   "key": "nuevo|tencent/hy4-flash",
-   "model": "tencent/hy4-flash",
-   "published": "2026-11-16",
-   "detected": "2026-11-17",
-   "date": "2026-11-16",
-   "mag": null,
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/tencent/hy4-flash",
-    "got": "2026-11-22T03:54:16Z"
+   "kind": "uso",
+   "key": "uso|entra|nvidia/nemotron-3-ultra-550b-a55b-20260604:free|2026-11-23",
+   "published": "2026-11-22",
+   "detected": "2026-11-23",
+   "date": "2026-11-22",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
    },
-   "what": "Hy4 flash (Tencent) aparece en el catálogo de OpenRouter.",
+   "model": "nvidia/nemotron-3-ultra-550b-a55b",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-23T03:53:59Z"
+   },
+   "what": "Nemotron 3 Ultra entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,2 % de los tokens.",
    "data": {
-    "weights": "abiertos",
-    "in": 0.035,
-    "out": 0.1405,
-    "ii": null,
-    "eci": null,
-    "identity": "confirmada"
+    "sub": "entra",
+    "slug": "nvidia/nemotron-3-ultra-550b-a55b-20260604:free",
+    "rank": 10,
+    "share": 1.2,
+    "tokens": 3925205838529,
+    "window": 7
    },
    "i18n": {
     "en": {
-     "what": "Hy4 flash (Tencent) appears in the OpenRouter catalogue.",
-     "titular": "Hy4 flash (Tencent) arrives on OpenRouter",
-     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Blended price $0.061 per million tokens."
+     "what": "Nemotron 3 Ultra enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.2% of tokens.",
+     "titular": "Nemotron 3 Ultra enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.2% of OpenRouter’s tokens from 2026-11-16 to 2026-11-22. This is usage on OpenRouter, not across the whole market."
     }
    },
-   "titular": "Hy4 flash (Tencent) llega a OpenRouter",
+   "titular": "Nemotron 3 Ultra entra en el top 10 de uso de OpenRouter",
    "importancia": null,
-   "ficha": "#modelos/tencent/hy4-flash",
-   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 0,061 $ por millón de tokens."
-  },
-  {
-   "kind": "nuevo",
-   "key": "nuevo|qwen/qwen4-max",
-   "model": "qwen/qwen4-max",
-   "published": "2026-11-16",
-   "detected": "2026-11-16",
-   "date": "2026-11-16",
-   "mag": null,
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/qwen/qwen4-max",
-    "got": "2026-11-22T03:54:16Z"
-   },
-   "what": "Qwen4 Max (Alibaba (Qwen)) aparece en el catálogo de OpenRouter.",
-   "data": {
-    "weights": "cerrados",
-    "in": 1.425,
-    "out": 4.275,
-    "ii": 42.9,
-    "eci": null,
-    "identity": "confirmada",
-    "rankAA": 18,
-    "of": 51
-   },
-   "i18n": {
-    "en": {
-     "what": "Qwen4 Max (Alibaba (Qwen)) appears in the OpenRouter catalogue.",
-     "titular": "Qwen4 Max (Alibaba (Qwen)) arrives on OpenRouter: rank 18 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 18 of 51)",
-     "consecuencia": "AA index 42.9: 21.7 points behind the best closed model (Claude Fable 5.2). Rank 18 of 51. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.9), none costs less."
-    }
-   },
-   "titular": "Qwen4 Max (Alibaba (Qwen)) llega a OpenRouter: puesto 18 del índice de AA",
-   "importancia": {
-    "tier": 3,
-    "w": 3,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 18 de 51)"
-   },
-   "ficha": "#modelos/qwen/qwen4-max",
-   "consecuencia": "Índice de AA 42,9: a 21,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 18 de 51. Precio combinado 2,14 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 42,9), ninguno cuesta menos."
+   "ficha": "#modelos/nvidia/nemotron-3-ultra-550b-a55b",
+   "consecuencia": "1,2 % de los tokens de OpenRouter del 2026-11-16 al 2026-11-22. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "uso",
@@ -1184,130 +1146,6 @@
    "importancia": null,
    "ficha": "#carrera/evaluacion",
    "consecuencia": null
-  },
-  {
-   "kind": "retirada",
-   "key": "retirada|stepfun/step-3.5-flash|2026-11-16",
-   "published": null,
-   "detected": "2026-11-16",
-   "date": "2026-11-16",
-   "mag": null,
-   "model": "stepfun/step-3.5-flash",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-16T03:54:21Z"
-   },
-   "what": "Step 3.5 Flash deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "Step 3.5 Flash"
-   },
-   "i18n": {
-    "en": {
-     "what": "Step 3.5 Flash is no longer listed in the OpenRouter catalogue.",
-     "titular": "Step 3.5 Flash is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "Step 3.5 Flash deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "retirada",
-   "key": "retirada|qwen/qwen3-vl-30b-a3b-thinking|2026-11-16",
-   "published": null,
-   "detected": "2026-11-16",
-   "date": "2026-11-16",
-   "mag": null,
-   "model": "qwen/qwen3-vl-30b-a3b-thinking",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-16T03:54:21Z"
-   },
-   "what": "Qwen3 VL 30B A3B Thinking deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "Qwen3 VL 30B A3B Thinking"
-   },
-   "i18n": {
-    "en": {
-     "what": "Qwen3 VL 30B A3B Thinking is no longer listed in the OpenRouter catalogue.",
-     "titular": "Qwen3 VL 30B A3B Thinking is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "Qwen3 VL 30B A3B Thinking deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "retirada",
-   "key": "retirada|tencent/hunyuan-a13b-instruct|2026-11-16",
-   "published": null,
-   "detected": "2026-11-16",
-   "date": "2026-11-16",
-   "mag": null,
-   "model": "tencent/hunyuan-a13b-instruct",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-16T03:54:21Z"
-   },
-   "what": "Hunyuan A13B Instruct deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "Hunyuan A13B Instruct"
-   },
-   "i18n": {
-    "en": {
-     "what": "Hunyuan A13B Instruct is no longer listed in the OpenRouter catalogue.",
-     "titular": "Hunyuan A13B Instruct is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "Hunyuan A13B Instruct deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "uso",
-   "key": "uso|entra|z-ai/glm-5.3-20260816|2026-11-16",
-   "published": "2026-11-15",
-   "detected": "2026-11-16",
-   "date": "2026-11-15",
-   "mag": {
-    "v": 9,
-    "unit": "puesto"
-   },
-   "model": "z-ai/glm-5.3",
-   "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-16T03:54:21Z"
-   },
-   "what": "GLM 5.3 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 9, 1,8 % de los tokens.",
-   "data": {
-    "sub": "entra",
-    "slug": "z-ai/glm-5.3-20260816",
-    "rank": 9,
-    "share": 1.8,
-    "tokens": 3758045975594,
-    "window": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "GLM 5.3 enters the ten most used models on OpenRouter over the last 7 days: rank 9, 1.8% of tokens.",
-     "titular": "GLM 5.3 enters OpenRouter’s top 10 by usage",
-     "consecuencia": "1.8% of OpenRouter’s tokens from 2026-11-09 to 2026-11-15. This is usage on OpenRouter, not across the whole market."
-    }
-   },
-   "titular": "GLM 5.3 entra en el top 10 de uso de OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/z-ai/glm-5.3",
-   "consecuencia": "1,8 % de los tokens de OpenRouter del 2026-11-09 al 2026-11-15. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "indicador",
