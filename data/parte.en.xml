@@ -6,7 +6,7 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Mon, 23 Nov 2026 09:46:31 GMT</lastBuildDate>
+  <lastBuildDate>Tue, 24 Nov 2026 03:54:16 GMT</lastBuildDate>
   <item>
     <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
@@ -33,21 +33,7 @@
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/google/gemini-4-neon</link>
     <guid isPermaLink="false">nuevo|google/gemini-4-neon</guid>
     <pubDate>Thu, 19 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Gemini 4 Neon (Google) appears in the OpenRouter catalogue. AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 51. Blended price $6 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 3 of 51). Published on 2026-11-18; detected on 2026-11-19. Source: OpenRouter (https://openrouter.ai/google/gemini-4-neon). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
-    <title>GPT-6.2 Astra (OpenAI) arrives on OpenRouter: rank 2 on the AA index</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.2-astra</link>
-    <guid isPermaLink="false">nuevo|openai/gpt-6.2-astra</guid>
-    <pubDate>Tue, 17 Nov 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.2 Astra (OpenAI) appears in the OpenRouter catalogue. AA index 62.1: 2.5 points behind the best closed model (Claude Fable 5.2). Rank 2 of 51. Blended price $16 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 2 of 51). Published on 2026-11-17; detected on 2026-11-17. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.2-astra). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
-    <title>GPT-6.2 Sol (OpenAI) arrives on OpenRouter: rank 6 on the AA index</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/openai/gpt-6.2-sol</link>
-    <guid isPermaLink="false">nuevo|openai/gpt-6.2-sol</guid>
-    <pubDate>Tue, 17 Nov 2026 05:00:00 GMT</pubDate>
-    <description>GPT-6.2 Sol (OpenAI) appears in the OpenRouter catalogue. AA index 57.3: 7.3 points behind the best closed model (Claude Fable 5.2). Rank 6 of 51. Blended price $4 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 6 of 51). Published on 2026-11-17; detected on 2026-11-17. Source: OpenRouter (https://openrouter.ai/openai/gpt-6.2-sol). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
+    <description>Gemini 4 Neon (Google) appears in the OpenRouter catalogue. AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 52. Blended price $6 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 3 of 52). Published on 2026-11-18; detected on 2026-11-19. Source: OpenRouter (https://openrouter.ai/google/gemini-4-neon). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
@@ -216,20 +202,6 @@
     <guid isPermaLink="false">version|5</guid>
     <pubDate>Wed, 28 Oct 2026 03:54:19 GMT</pubDate>
     <description>Artificial Analysis moves its Intelligence Index from version 4.3 to 5: scores from the two versions are not comparable. Scores from one version and the other are not comparable: the daily evolution of the leaders starts over with this version. It is in the briefing because Artificial Analysis changes the version of its index. Detected on 2026-10-28. Source: Artificial Analysis (https://artificialanalysis.ai/leaderboards/models). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
-    <title>Kimi K3.1 Pro becomes the best open-weight model on the AA index</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/moonshotai/kimi-k3.1-pro</link>
-    <guid isPermaLink="false">lider|open|moonshotai/kimi-k3.1-pro|2026-10-24</guid>
-    <pubDate>Sat, 24 Oct 2026 06:13:33 GMT</pubDate>
-    <description>Kimi K3.1 Pro becomes the best open-weight model in the catalogue on the Artificial Analysis Intelligence Index v4.3: 55.1 points, 8.8 more than MiMo-V2.6-Pro (46.3). Its weights have been announced by the lab, but cannot be downloaded yet. The gap between the best closed and the best open-weight model on the AA index stands at 2.5 points (11.3 the day before). It does not equate to months of lag. It is in the briefing because the best open-weight model changes with the same AA index version and a margin of 8.8 points (minimum 1). Detected on 2026-10-24. Source: Artificial Analysis (https://artificialanalysis.ai/models/kimi-k3-1-pro). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
-    <title>DeepSeek V4.1 Flash 1017 becomes the most used model on OpenRouter</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/deepseek/deepseek-v4.1-flash-1017</link>
-    <guid isPermaLink="false">uso|primero|deepseek/deepseek-v4.1-flash-20261017|2026-10-24</guid>
-    <pubDate>Sat, 24 Oct 2026 06:13:33 GMT</pubDate>
-    <description>DeepSeek V4.1 Flash 1017 becomes the most used model on OpenRouter over the last 7 days (14.9% of tokens), ahead of DeepSeek V4.1 Flash. 14.9% of OpenRouter’s tokens from 2026-10-17 to 2026-10-23; before, the first was deepseek/deepseek-v4.1-flash-20260910. This is usage on OpenRouter, not across the whole market. It is in the briefing because the most used model on OpenRouter over the last 7 days changes. Published on 2026-10-23; detected on 2026-10-24. Source: OpenRouter · usage (https://openrouter.ai/rankings).</description>
   </item>
 </channel>
 </rss>

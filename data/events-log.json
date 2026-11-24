@@ -218,6 +218,123 @@
  ],
  "events": [
   {
+   "kind": "retirada",
+   "key": "retirada|xiaomi/mimo-v2.5-pro|2026-11-24",
+   "published": null,
+   "detected": "2026-11-24",
+   "date": "2026-11-24",
+   "mag": null,
+   "model": "xiaomi/mimo-v2.5-pro",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-24T03:54:16Z"
+   },
+   "what": "MiMo-V2.5-Pro deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "MiMo-V2.5-Pro"
+   },
+   "i18n": {
+    "en": {
+     "what": "MiMo-V2.5-Pro is no longer listed in the OpenRouter catalogue.",
+     "titular": "MiMo-V2.5-Pro is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "MiMo-V2.5-Pro deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|moonshotai/kimi-k2-thinking|2026-11-24",
+   "published": null,
+   "detected": "2026-11-24",
+   "date": "2026-11-24",
+   "mag": null,
+   "model": "moonshotai/kimi-k2-thinking",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-24T03:54:16Z"
+   },
+   "what": "Kimi K2 Thinking deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Kimi K2 Thinking"
+   },
+   "i18n": {
+    "en": {
+     "what": "Kimi K2 Thinking is no longer listed in the OpenRouter catalogue.",
+     "titular": "Kimi K2 Thinking is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Kimi K2 Thinking deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|moonshotai/kimi-k2|2026-11-24",
+   "published": null,
+   "detected": "2026-11-24",
+   "date": "2026-11-24",
+   "mag": null,
+   "model": "moonshotai/kimi-k2",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-24T03:54:16Z"
+   },
+   "what": "Kimi K2 0711 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Kimi K2 0711"
+   },
+   "i18n": {
+    "en": {
+     "what": "Kimi K2 0711 is no longer listed in the OpenRouter catalogue.",
+     "titular": "Kimi K2 0711 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Kimi K2 0711 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "pesos",
+   "key": "pesos|baidu/ernie-5.5-flash-preview",
+   "published": "2026-11-23",
+   "detected": "2026-11-24",
+   "date": "2026-11-23",
+   "mag": null,
+   "model": "baidu/ernie-5.5-flash-preview",
+   "src": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co/baidu/ERNIE-5.5-Flash-Preview",
+    "got": "2026-11-24T03:54:16Z"
+   },
+   "what": "ERNIE-5.5-Flash-Preview: pesos descargables en Hugging Face (licencia apache-2.0).",
+   "data": {
+    "license": "apache-2.0",
+    "weightsSrc": "hf"
+   },
+   "i18n": {
+    "en": {
+     "what": "ERNIE-5.5-Flash-Preview: downloadable weights on Hugging Face (licence apache-2.0).",
+     "titular": "Open weights for ERNIE-5.5-Flash-Preview",
+     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: apache-2.0. No independent score yet on Artificial Analysis or Epoch AI."
+    }
+   },
+   "titular": "Pesos abiertos de ERNIE-5.5-Flash-Preview",
+   "importancia": null,
+   "ficha": "#modelos/baidu/ernie-5.5-flash-preview",
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: apache-2.0. Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI."
+  },
+  {
    "kind": "uso",
    "key": "uso|entra|nvidia/nemotron-3-ultra-550b-a55b-20260604:free|2026-11-23",
    "published": "2026-11-22",

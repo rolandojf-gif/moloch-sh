@@ -1,11 +1,11 @@
 {
  "schema": 2,
- "generated": "2026-11-23T09:46:31Z",
+ "generated": "2026-11-24T03:54:16Z",
  "window": 7,
- "since": "2026-11-17",
- "base": "2026-11-22",
+ "since": "2026-11-18",
+ "base": "2026-11-23",
  "parte": {
-  "fecha": "2026-11-23",
+  "fecha": "2026-11-24",
   "noticias": [],
   "ultima": {
    "key": "indicador|eci|2026-11-21",
@@ -55,7 +55,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/mistralai/pixtral-large-2502",
-    "got": "2026-11-23T09:46:31Z"
+    "got": "2026-11-24T03:54:16Z"
    },
    "what": "Pixtral Large 2502 (Mistral AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -89,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/google/gemini-4-neon",
-    "got": "2026-11-23T09:46:31Z"
+    "got": "2026-11-24T03:54:16Z"
    },
    "what": "Gemini 4 Neon (Google) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -100,174 +100,178 @@
     "eci": null,
     "identity": "confirmada",
     "rankAA": 3,
-    "of": 51
+    "of": 52
    },
    "i18n": {
     "en": {
      "what": "Gemini 4 Neon (Google) appears in the OpenRouter catalogue.",
      "titular": "Gemini 4 Neon (Google) arrives on OpenRouter: rank 3 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 3 of 51)",
-     "consecuencia": "AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 51. Blended price $6 per million tokens."
+     "porque": "it is a new model and enters the top 20 of the AA index (rank 3 of 52)",
+     "consecuencia": "AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 52. Blended price $6 per million tokens."
     }
    },
    "titular": "Gemini 4 Neon (Google) llega a OpenRouter: puesto 3 del índice de AA",
    "importancia": {
     "tier": 3,
     "w": 18,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 51)"
+    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 52)"
    },
    "ficha": "#modelos/google/gemini-4-neon",
-   "consecuencia": "Índice de AA 61,4: a 3,2 puntos del mejor cerrado (Claude Fable 5.2). Puesto 3 de 51. Precio combinado 6 $ por millón de tokens."
+   "consecuencia": "Índice de AA 61,4: a 3,2 puntos del mejor cerrado (Claude Fable 5.2). Puesto 3 de 52. Precio combinado 6 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
-   "key": "nuevo|openai/gpt-6.2-astra-pro",
-   "model": "openai/gpt-6.2-astra-pro",
-   "published": "2026-11-17",
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
+   "key": "sinapi|inclusionai/ling-3.2-air",
+   "model": "inclusionai/ling-3.2-air",
+   "published": "2026-11-23",
+   "detected": "2026-11-24",
+   "date": "2026-11-23",
    "mag": null,
    "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/openai/gpt-6.2-astra-pro",
-    "got": "2026-11-23T09:46:31Z"
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/ling-3-2-air",
+    "got": "2026-11-24T03:54:16Z"
    },
-   "what": "GPT-6.2 Astra Pro (OpenAI) aparece en el catálogo de OpenRouter.",
+   "what": "Ling-3.2-air (Ant Group (inclusionAI)) aparece puntuado en Artificial Analysis con 23,4 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
-    "weights": "cerrados",
-    "in": 8,
-    "out": 40,
-    "ii": null,
-    "eci": null,
-    "identity": "confirmada"
-   },
-   "i18n": {
-    "en": {
-     "what": "GPT-6.2 Astra Pro (OpenAI) appears in the OpenRouter catalogue.",
-     "titular": "GPT-6.2 Astra Pro (OpenAI) arrives on OpenRouter",
-     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Blended price $16 per million tokens."
-    }
-   },
-   "titular": "GPT-6.2 Astra Pro (OpenAI) llega a OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/openai/gpt-6.2-astra-pro",
-   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 16 $ por millón de tokens."
-  },
-  {
-   "kind": "nuevo",
-   "key": "nuevo|openai/gpt-6.2-astra",
-   "model": "openai/gpt-6.2-astra",
-   "published": "2026-11-17",
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
-   "mag": null,
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/openai/gpt-6.2-astra",
-    "got": "2026-11-23T09:46:31Z"
-   },
-   "what": "GPT-6.2 Astra (OpenAI) aparece en el catálogo de OpenRouter.",
-   "data": {
-    "weights": "cerrados",
-    "in": 8,
-    "out": 40,
-    "ii": 62.1,
-    "eci": 172.82,
-    "identity": "confirmada",
-    "rankAA": 2,
-    "of": 51
-   },
-   "i18n": {
-    "en": {
-     "what": "GPT-6.2 Astra (OpenAI) appears in the OpenRouter catalogue.",
-     "titular": "GPT-6.2 Astra (OpenAI) arrives on OpenRouter: rank 2 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 2 of 51)",
-     "consecuencia": "AA index 62.1: 2.5 points behind the best closed model (Claude Fable 5.2). Rank 2 of 51. Blended price $16 per million tokens."
-    }
-   },
-   "titular": "GPT-6.2 Astra (OpenAI) llega a OpenRouter: puesto 2 del índice de AA",
-   "importancia": {
-    "tier": 3,
-    "w": 19,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 2 de 51)"
-   },
-   "ficha": "#modelos/openai/gpt-6.2-astra",
-   "consecuencia": "Índice de AA 62,1: a 2,5 puntos del mejor cerrado (Claude Fable 5.2). Puesto 2 de 51. Precio combinado 16 $ por millón de tokens."
-  },
-  {
-   "kind": "nuevo",
-   "key": "nuevo|openai/gpt-6.2-sol-pro",
-   "model": "openai/gpt-6.2-sol-pro",
-   "published": "2026-11-17",
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
-   "mag": null,
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/openai/gpt-6.2-sol-pro",
-    "got": "2026-11-23T09:46:31Z"
-   },
-   "what": "GPT-6.2 Sol Pro (OpenAI) aparece en el catálogo de OpenRouter.",
-   "data": {
-    "weights": "cerrados",
-    "in": 2,
-    "out": 10,
-    "ii": null,
-    "eci": null,
-    "identity": "confirmada"
-   },
-   "i18n": {
-    "en": {
-     "what": "GPT-6.2 Sol Pro (OpenAI) appears in the OpenRouter catalogue.",
-     "titular": "GPT-6.2 Sol Pro (OpenAI) arrives on OpenRouter",
-     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Blended price $4 per million tokens."
-    }
-   },
-   "titular": "GPT-6.2 Sol Pro (OpenAI) llega a OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/openai/gpt-6.2-sol-pro",
-   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 4 $ por millón de tokens."
-  },
-  {
-   "kind": "nuevo",
-   "key": "nuevo|openai/gpt-6.2-sol",
-   "model": "openai/gpt-6.2-sol",
-   "published": "2026-11-17",
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
-   "mag": null,
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/openai/gpt-6.2-sol",
-    "got": "2026-11-23T09:46:31Z"
-   },
-   "what": "GPT-6.2 Sol (OpenAI) aparece en el catálogo de OpenRouter.",
-   "data": {
-    "weights": "cerrados",
-    "in": 2,
-    "out": 10,
-    "ii": 57.3,
+    "sub": "sin-api",
+    "weights": "abiertos",
+    "in": null,
+    "out": null,
+    "ii": 23.4,
     "eci": null,
     "identity": "confirmada",
-    "rankAA": 6,
-    "of": 51
+    "rankAA": 39,
+    "of": 52
    },
    "i18n": {
     "en": {
-     "what": "GPT-6.2 Sol (OpenAI) appears in the OpenRouter catalogue.",
-     "titular": "GPT-6.2 Sol (OpenAI) arrives on OpenRouter: rank 6 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 6 of 51)",
-     "consecuencia": "AA index 57.3: 7.3 points behind the best closed model (Claude Fable 5.2). Rank 6 of 51. Blended price $4 per million tokens."
+     "what": "Ling-3.2-air (Ant Group (inclusionAI)) appears scored on Artificial Analysis with 23.4 points, still without a public API: it is not on OpenRouter.",
+     "titular": "Ling-3.2-air (Ant Group (inclusionAI)) enters the AA index at rank 39, still without a public API",
+     "consecuencia": "AA index 23.4: 23.1 points behind the best open-weight model (Kimi K3.1 Pro). Rank 39 of 52. It is not on OpenRouter yet: no public API and no price."
     }
    },
-   "titular": "GPT-6.2 Sol (OpenAI) llega a OpenRouter: puesto 6 del índice de AA",
-   "importancia": {
-    "tier": 3,
-    "w": 15,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 6 de 51)"
+   "titular": "Ling-3.2-air (Ant Group (inclusionAI)) entra en el índice de AA en el puesto 39, aún sin API pública",
+   "importancia": null,
+   "ficha": "#modelos/inclusionai/ling-3.2-air",
+   "consecuencia": "Índice de AA 23,4: a 23,1 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 39 de 52. Aún no está en OpenRouter: sin API pública ni precio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|xiaomi/mimo-v2.5-pro|2026-11-24",
+   "published": null,
+   "detected": "2026-11-24",
+   "date": "2026-11-24",
+   "mag": null,
+   "model": "xiaomi/mimo-v2.5-pro",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-24T03:54:16Z"
    },
-   "ficha": "#modelos/openai/gpt-6.2-sol",
-   "consecuencia": "Índice de AA 57,3: a 7,3 puntos del mejor cerrado (Claude Fable 5.2). Puesto 6 de 51. Precio combinado 4 $ por millón de tokens."
+   "what": "MiMo-V2.5-Pro deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "MiMo-V2.5-Pro"
+   },
+   "i18n": {
+    "en": {
+     "what": "MiMo-V2.5-Pro is no longer listed in the OpenRouter catalogue.",
+     "titular": "MiMo-V2.5-Pro is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "MiMo-V2.5-Pro deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|moonshotai/kimi-k2-thinking|2026-11-24",
+   "published": null,
+   "detected": "2026-11-24",
+   "date": "2026-11-24",
+   "mag": null,
+   "model": "moonshotai/kimi-k2-thinking",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-24T03:54:16Z"
+   },
+   "what": "Kimi K2 Thinking deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Kimi K2 Thinking"
+   },
+   "i18n": {
+    "en": {
+     "what": "Kimi K2 Thinking is no longer listed in the OpenRouter catalogue.",
+     "titular": "Kimi K2 Thinking is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Kimi K2 Thinking deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|moonshotai/kimi-k2|2026-11-24",
+   "published": null,
+   "detected": "2026-11-24",
+   "date": "2026-11-24",
+   "mag": null,
+   "model": "moonshotai/kimi-k2",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-24T03:54:16Z"
+   },
+   "what": "Kimi K2 0711 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Kimi K2 0711"
+   },
+   "i18n": {
+    "en": {
+     "what": "Kimi K2 0711 is no longer listed in the OpenRouter catalogue.",
+     "titular": "Kimi K2 0711 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Kimi K2 0711 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "pesos",
+   "key": "pesos|baidu/ernie-5.5-flash-preview",
+   "published": "2026-11-23",
+   "detected": "2026-11-24",
+   "date": "2026-11-23",
+   "mag": null,
+   "model": "baidu/ernie-5.5-flash-preview",
+   "src": {
+    "name": "Hugging Face",
+    "url": "https://huggingface.co/baidu/ERNIE-5.5-Flash-Preview",
+    "got": "2026-11-24T03:54:16Z"
+   },
+   "what": "ERNIE-5.5-Flash-Preview: pesos descargables en Hugging Face (licencia apache-2.0).",
+   "data": {
+    "license": "apache-2.0",
+    "weightsSrc": "hf"
+   },
+   "i18n": {
+    "en": {
+     "what": "ERNIE-5.5-Flash-Preview: downloadable weights on Hugging Face (licence apache-2.0).",
+     "titular": "Open weights for ERNIE-5.5-Flash-Preview",
+     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: apache-2.0. No independent score yet on Artificial Analysis or Epoch AI."
+    }
+   },
+   "titular": "Pesos abiertos de ERNIE-5.5-Flash-Preview",
+   "importancia": null,
+   "ficha": "#modelos/baidu/ernie-5.5-flash-preview",
+   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: apache-2.0. Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI."
   },
   {
    "kind": "uso",
@@ -889,263 +893,6 @@
    "importancia": null,
    "ficha": "#modelos/tencent/hy4-flash",
    "consecuencia": "9,7 % de los tokens de OpenRouter del 2026-11-11 al 2026-11-17. Es el uso en OpenRouter, no en todo el mercado."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|eci|2026-11-17",
-   "published": null,
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
-   "mag": {
-    "v": 0.73,
-    "pct": 0.4,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-17T20:39:40Z"
-   },
-   "what": "Mejor modelo en el ECI de Epoch: de 173,44 a 174,17 puntos (GPT-6.2 Astra).",
-   "data": {
-    "ind": "eci",
-    "path": "eci.frontier",
-    "from": 173.44,
-    "to": 174.17
-   },
-   "i18n": {
-    "en": {
-     "what": "Best model on Epoch’s ECI: from 173.44 to 174.17 points (GPT-6.2 Astra).",
-     "titular": "Claude Fable 5.2 becomes the best model on Epoch’s ECI",
-     "porque": "the best model on Epoch’s ECI changes",
-     "consecuencia": "GPT-6.2 Astra, from OpenAI, with 174.2 points. ECI gaps: between the top two labs, from 3.7 to 0.7 points. A few ECI points do not equate to months of lag."
-    }
-   },
-   "titular": "Claude Fable 5.2 pasa a ser el mejor modelo según el ECI de Epoch",
-   "importancia": {
-    "tier": 6,
-    "w": 100,
-    "porque": "cambia el mejor modelo según el ECI de Epoch"
-   },
-   "ficha": "#carrera",
-   "consecuencia": "GPT-6.2 Astra, de OpenAI, con 174,2 puntos. Distancias en el ECI: entre los dos primeros laboratorios, de 3,7 a 0,7 puntos. Unos puntos ECI no equivalen a meses de retraso."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|usCn|2026-11-17",
-   "published": null,
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
-   "mag": {
-    "v": 0.74,
-    "pct": 6.1,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-17T20:39:40Z"
-   },
-   "what": "Distancia EE. UU. − China en el ECI: de 12,07 a 12,81 puntos (GPT-6.2 Astra frente a Kimi K3.1 Pro).",
-   "data": {
-    "ind": "usCn",
-    "path": "eci.gapUsCn",
-    "from": 12.07,
-    "to": 12.81
-   },
-   "i18n": {
-    "en": {
-     "what": "US − China gap on the ECI: from 12.07 to 12.81 points (GPT-6.2 Astra versus Kimi K3.1 Pro).",
-     "titular": "The US − China gap on the ECI rises from 12.1 to 12.8 points",
-     "consecuencia": "GPT-6.2 Astra (OpenAI, 174.2) versus Kimi K3.1 Pro (Moonshot, 161.4). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”."
-    }
-   },
-   "titular": "La distancia EE. UU. − China en el ECI sube de 12,1 a 12,8 puntos",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": "GPT-6.2 Astra (OpenAI, 174,2) frente a Kimi K3.1 Pro (Moonshot, 161,4). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «China, unos seis meses por detrás con el 12 % del cómputo»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|closedOpen|2026-11-17",
-   "published": null,
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
-   "mag": {
-    "v": 0.74,
-    "pct": 6.1,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-17T20:39:40Z"
-   },
-   "what": "Distancia cerrados − abiertos en el ECI: de 12,07 a 12,81 puntos (GPT-6.2 Astra frente a Kimi K3.1 Pro).",
-   "data": {
-    "ind": "closedOpen",
-    "path": "eci.gapClosedOpen",
-    "from": 12.07,
-    "to": 12.81
-   },
-   "i18n": {
-    "en": {
-     "what": "Closed − open gap on the ECI: from 12.07 to 12.81 points (GPT-6.2 Astra versus Kimi K3.1 Pro).",
-     "titular": "The closed − open gap on the ECI rises from 12.1 to 12.8 points",
-     "consecuencia": "GPT-6.2 Astra (OpenAI, 174.2) versus Kimi K3.1 Pro (Moonshot, 161.4). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”."
-    }
-   },
-   "titular": "La distancia cerrados − abiertos en el ECI sube de 12,1 a 12,8 puntos",
-   "importancia": null,
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": "GPT-6.2 Astra (OpenAI, 174,2) frente a Kimi K3.1 Pro (Moonshot, 161,4). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «Un modelo de pesos abiertos iguala a Agent-0»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|labs|2026-11-17",
-   "published": null,
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
-   "mag": {
-    "v": -3.01,
-    "pct": -81.8,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-17T20:39:40Z"
-   },
-   "what": "Distancia entre los dos primeros laboratorios en el ECI: de 3,68 a 0,67 puntos (OpenAI frente a Anthropic).",
-   "data": {
-    "ind": "labs",
-    "path": "eci.gapLabs",
-    "from": 3.68,
-    "to": 0.67
-   },
-   "i18n": {
-    "en": {
-     "what": "Gap between the top two labs on the ECI: from 3.68 to 0.67 points (OpenAI versus Anthropic).",
-     "titular": "The gap between the top two labs on the ECI falls from 3.7 to 0.7 points",
-     "porque": "the gap between the top two labs changes by at least 1 ECI point, the threshold at which Epoch no longer treats them as having the same capability",
-     "consecuencia": "GPT-6.2 Astra (OpenAI, 174.2) versus Claude Fable 5.2 (Anthropic, 173.5), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”."
-    }
-   },
-   "titular": "La distancia entre los dos primeros laboratorios en el ECI baja de 3,7 a 0,7 puntos",
-   "importancia": {
-    "tier": 6,
-    "w": 53.01,
-    "porque": "la distancia entre los dos primeros laboratorios cambia al menos 1 punto ECI, el margen con el que Epoch deja de hablar de la misma capacidad"
-   },
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": "GPT-6.2 Astra (OpenAI, 174,2) frente a Claude Fable 5.2 (Anthropic, 173,5), con intervalos de confianza solapados. En AI 2027 es evidencia de «Los rivales, de 3 a 9 meses por detrás»."
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|rate12m|2026-11-17",
-   "published": null,
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
-   "mag": {
-    "v": 0.7,
-    "pct": 3.2,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-17T20:39:40Z"
-   },
-   "what": "Avance de la frontera del ECI en 12 meses: de 22,2 a 22,9 puntos.",
-   "data": {
-    "ind": "rate12m",
-    "path": "eci.rate12m",
-    "from": 22.2,
-    "to": 22.9
-   },
-   "i18n": {
-    "en": {
-     "what": "Frontier gain on the ECI over 12 months: from 22.2 to 22.9 points.",
-     "titular": "Frontier gain on the ECI over 12 months: from 22.2 to 22.9 points."
-    }
-   },
-   "titular": "Avance de la frontera del ECI en 12 meses: de 22,2 a 22,9 puntos.",
-   "importancia": null,
-   "ficha": "#carrera/evaluacion",
-   "consecuencia": null
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|aaLabs|2026-11-17",
-   "published": null,
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
-   "mag": {
-    "v": -2.1,
-    "pct": -45.7,
-    "unit": "puntos AA"
-   },
-   "src": {
-    "name": "Artificial Analysis",
-    "url": "https://artificialanalysis.ai/leaderboards/models",
-    "got": "2026-11-17T20:39:40Z"
-   },
-   "what": "Distancia entre los dos primeros laboratorios en el índice de AA: de 4,6 a 2,5 puntos (Anthropic frente a OpenAI).",
-   "data": {
-    "ind": "aaLabs",
-    "path": "aa.gapLabs",
-    "from": 4.6,
-    "to": 2.5
-   },
-   "i18n": {
-    "en": {
-     "what": "Gap between the top two labs on the AA index: from 4.6 to 2.5 points (Anthropic versus OpenAI).",
-     "titular": "The gap between the top two labs on the AA index falls from 4.6 to 2.5 points",
-     "porque": "the gap between the top two labs on the AA index changes by at least 2 points"
-    }
-   },
-   "titular": "La distancia entre los dos primeros laboratorios en el índice de AA baja de 4,6 a 2,5 puntos",
-   "importancia": {
-    "tier": 6,
-    "w": 42.1,
-    "porque": "la distancia entre los dos primeros laboratorios en el índice de AA cambia al menos 2 puntos"
-   },
-   "ficha": "#carrera/coordinacion",
-   "consecuencia": null
-  },
-  {
-   "kind": "indicador",
-   "key": "indicador|ediOpen|2026-11-17",
-   "published": null,
-   "detected": "2026-11-17",
-   "date": "2026-11-17",
-   "mag": {
-    "v": 1,
-    "pct": 25,
-    "unit": "evaluaciones"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-17T20:39:40Z"
-   },
-   "what": "Evaluaciones del ECI que el mejor modelo aún no resuelve a medias: de 4 a 5 evaluaciones (de 57).",
-   "data": {
-    "ind": "ediOpen",
-    "path": "edi.open",
-    "from": 4,
-    "to": 5
-   },
-   "i18n": {
-    "en": {
-     "what": "ECI evaluations the best model does not yet half-solve: from 4 to 5 evaluations (of 57).",
-     "titular": "ECI evaluations the best model does not yet half-solve: from 4 to 5 evaluations (of 57)."
-    }
-   },
-   "titular": "Evaluaciones del ECI que el mejor modelo aún no resuelve a medias: de 4 a 5 evaluaciones (de 57).",
-   "importancia": null,
-   "ficha": "#carrera/evaluacion",
-   "consecuencia": null
   },
   {
    "kind": "indicador",
