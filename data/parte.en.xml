@@ -6,7 +6,7 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Tue, 24 Nov 2026 03:54:16 GMT</lastBuildDate>
+  <lastBuildDate>Wed, 25 Nov 2026 03:54:11 GMT</lastBuildDate>
   <item>
     <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
     <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
@@ -27,13 +27,6 @@
     <guid isPermaLink="false">uso|primero|tencent/hy4-flash-20261116|2026-11-20</guid>
     <pubDate>Fri, 20 Nov 2026 10:20:12 GMT</pubDate>
     <description>Hy4 flash becomes the most used model on OpenRouter over the last 7 days (24.7% of tokens), ahead of DeepSeek V4.1 Flash 1017. 24.7% of OpenRouter’s tokens from 2026-11-13 to 2026-11-19; before, the first was DeepSeek V4.1 Flash 1017. This is usage on OpenRouter, not across the whole market. It is in the briefing because the most used model on OpenRouter over the last 7 days changes. Published on 2026-11-19; detected on 2026-11-20. Source: OpenRouter · usage (https://openrouter.ai/rankings).</description>
-  </item>
-  <item>
-    <title>Gemini 4 Neon (Google) arrives on OpenRouter: rank 3 on the AA index</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#modelos/google/gemini-4-neon</link>
-    <guid isPermaLink="false">nuevo|google/gemini-4-neon</guid>
-    <pubDate>Thu, 19 Nov 2026 05:00:00 GMT</pubDate>
-    <description>Gemini 4 Neon (Google) appears in the OpenRouter catalogue. AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 52. Blended price $6 per million tokens. It is in the briefing because it is a new model and enters the top 20 of the AA index (rank 3 of 52). Published on 2026-11-18; detected on 2026-11-19. Source: OpenRouter (https://openrouter.ai/google/gemini-4-neon). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
   <item>
     <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>

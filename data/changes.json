@@ -1,11 +1,11 @@
 {
  "schema": 2,
- "generated": "2026-11-24T03:54:16Z",
+ "generated": "2026-11-25T03:54:11Z",
  "window": 7,
- "since": "2026-11-18",
- "base": "2026-11-23",
+ "since": "2026-11-19",
+ "base": "2026-11-24",
  "parte": {
-  "fecha": "2026-11-24",
+  "fecha": "2026-11-25",
   "noticias": [],
   "ultima": {
    "key": "indicador|eci|2026-11-21",
@@ -46,6 +46,40 @@
  "items": [
   {
    "kind": "nuevo",
+   "key": "nuevo|xiaomi/mimo-v2.6-flash-mopd",
+   "model": "xiaomi/mimo-v2.6-flash-mopd",
+   "published": "2026-11-23",
+   "detected": "2026-11-25",
+   "date": "2026-11-23",
+   "mag": null,
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/xiaomi/mimo-v2.6-flash-mopd",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "MiMo-V2.6-Flash-MOPD (Xiaomi) aparece en el catálogo de OpenRouter.",
+   "data": {
+    "weights": "abiertos",
+    "in": 0.15,
+    "out": 0.42,
+    "ii": null,
+    "eci": null,
+    "identity": "confirmada"
+   },
+   "i18n": {
+    "en": {
+     "what": "MiMo-V2.6-Flash-MOPD (Xiaomi) appears in the OpenRouter catalogue.",
+     "titular": "MiMo-V2.6-Flash-MOPD (Xiaomi) arrives on OpenRouter",
+     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Blended price $0.217 per million tokens."
+    }
+   },
+   "titular": "MiMo-V2.6-Flash-MOPD (Xiaomi) llega a OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/xiaomi/mimo-v2.6-flash-mopd",
+   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 0,217 $ por millón de tokens."
+  },
+  {
+   "kind": "nuevo",
    "key": "nuevo|mistralai/pixtral-large-2502",
    "model": "mistralai/pixtral-large-2502",
    "published": "2026-11-20",
@@ -55,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/mistralai/pixtral-large-2502",
-    "got": "2026-11-24T03:54:16Z"
+    "got": "2026-11-25T03:54:11Z"
    },
    "what": "Pixtral Large 2502 (Mistral AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -80,47 +114,6 @@
   },
   {
    "kind": "nuevo",
-   "key": "nuevo|google/gemini-4-neon",
-   "model": "google/gemini-4-neon",
-   "published": "2026-11-18",
-   "detected": "2026-11-19",
-   "date": "2026-11-18",
-   "mag": null,
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/google/gemini-4-neon",
-    "got": "2026-11-24T03:54:16Z"
-   },
-   "what": "Gemini 4 Neon (Google) aparece en el catálogo de OpenRouter.",
-   "data": {
-    "weights": "cerrados",
-    "in": 3,
-    "out": 15,
-    "ii": 61.4,
-    "eci": null,
-    "identity": "confirmada",
-    "rankAA": 3,
-    "of": 52
-   },
-   "i18n": {
-    "en": {
-     "what": "Gemini 4 Neon (Google) appears in the OpenRouter catalogue.",
-     "titular": "Gemini 4 Neon (Google) arrives on OpenRouter: rank 3 on the AA index",
-     "porque": "it is a new model and enters the top 20 of the AA index (rank 3 of 52)",
-     "consecuencia": "AA index 61.4: 3.2 points behind the best closed model (Claude Fable 5.2). Rank 3 of 52. Blended price $6 per million tokens."
-    }
-   },
-   "titular": "Gemini 4 Neon (Google) llega a OpenRouter: puesto 3 del índice de AA",
-   "importancia": {
-    "tier": 3,
-    "w": 18,
-    "porque": "es un modelo nuevo y entra en el top 20 del índice de AA (puesto 3 de 52)"
-   },
-   "ficha": "#modelos/google/gemini-4-neon",
-   "consecuencia": "Índice de AA 61,4: a 3,2 puntos del mejor cerrado (Claude Fable 5.2). Puesto 3 de 52. Precio combinado 6 $ por millón de tokens."
-  },
-  {
-   "kind": "nuevo",
    "key": "sinapi|inclusionai/ling-3.2-air",
    "model": "inclusionai/ling-3.2-air",
    "published": "2026-11-23",
@@ -130,7 +123,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/ling-3-2-air",
-    "got": "2026-11-24T03:54:16Z"
+    "got": "2026-11-25T03:54:11Z"
    },
    "what": "Ling-3.2-air (Ant Group (inclusionAI)) aparece puntuado en Artificial Analysis con 23,4 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -148,13 +141,240 @@
     "en": {
      "what": "Ling-3.2-air (Ant Group (inclusionAI)) appears scored on Artificial Analysis with 23.4 points, still without a public API: it is not on OpenRouter.",
      "titular": "Ling-3.2-air (Ant Group (inclusionAI)) enters the AA index at rank 39, still without a public API",
-     "consecuencia": "AA index 23.4: 23.1 points behind the best open-weight model (Kimi K3.1 Pro). Rank 39 of 52. It is not on OpenRouter yet: no public API and no price."
+     "consecuencia": "AA index 23.4: 23.2 points behind the best open-weight model (Kimi K3.1 Pro). Rank 39 of 52. It is not on OpenRouter yet: no public API and no price."
     }
    },
    "titular": "Ling-3.2-air (Ant Group (inclusionAI)) entra en el índice de AA en el puesto 39, aún sin API pública",
    "importancia": null,
    "ficha": "#modelos/inclusionai/ling-3.2-air",
-   "consecuencia": "Índice de AA 23,4: a 23,1 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 39 de 52. Aún no está en OpenRouter: sin API pública ni precio."
+   "consecuencia": "Índice de AA 23,4: a 23,2 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 39 de 52. Aún no está en OpenRouter: sin API pública ni precio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|xiaomi/mimo-v2.5|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": null,
+   "model": "xiaomi/mimo-v2.5",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "MiMo-V2.5 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "MiMo-V2.5"
+   },
+   "i18n": {
+    "en": {
+     "what": "MiMo-V2.5 is no longer listed in the OpenRouter catalogue.",
+     "titular": "MiMo-V2.5 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "MiMo-V2.5 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|moonshotai/kimi-k2-0905|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": null,
+   "model": "moonshotai/kimi-k2-0905",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Kimi K2 0905 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Kimi K2 0905"
+   },
+   "i18n": {
+    "en": {
+     "what": "Kimi K2 0905 is no longer listed in the OpenRouter catalogue.",
+     "titular": "Kimi K2 0905 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Kimi K2 0905 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|mistralai/mistral-medium-3.1|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": null,
+   "model": "mistralai/mistral-medium-3.1",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Mistral Medium 3.1 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Mistral Medium 3.1"
+   },
+   "i18n": {
+    "en": {
+     "what": "Mistral Medium 3.1 is no longer listed in the OpenRouter catalogue.",
+     "titular": "Mistral Medium 3.1 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Mistral Medium 3.1 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|chipsH100e|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": {
+    "v": -9174,
+    "pct": 0,
+    "unit": "H100e"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/ai-chip-sales",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Chips de IA entregados, acumulado: de 39,2 a 39,2 millones de H100e.",
+   "data": {
+    "ind": "chipsH100e",
+    "path": "chips.cum",
+    "from": 39208587,
+    "to": 39199413
+   },
+   "i18n": {
+    "en": {
+     "what": "AI chips delivered, cumulative: from 39.2 to 39.2 million H100e.",
+     "titular": "Epoch lowers AI chips delivered to 39.2 million H100e",
+     "consecuencia": "Chips delivered according to Epoch, not necessarily installed. In AI 2027 it is evidence for “40 million H100e available”."
+    }
+   },
+   "titular": "Epoch rebaja a 39,2 millones de H100e los chips de IA entregados",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "Chips entregados según Epoch, no necesariamente instalados. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaUsCn|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": {
+    "v": 0.1,
+    "pct": 0.6,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Distancia EE. UU. − China en el índice de AA: de 18,1 a 18,2 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "aaUsCn",
+    "path": "aa.gapUsCn",
+    "from": 18.1,
+    "to": 18.2
+   },
+   "i18n": {
+    "en": {
+     "what": "US − China gap on the AA index: from 18.1 to 18.2 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The US − China gap on the AA index rises from 18.1 to 18.2 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 64.8) versus Kimi K3.1 Pro (Moonshot AI, 46.6). A few AA index points do not equate to months of lag."
+    }
+   },
+   "titular": "La distancia EE. UU. − China en el índice de AA sube de 18,1 a 18,2 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 64,8) frente a Kimi K3.1 Pro (Moonshot AI, 46,6). Unos puntos del índice de AA no equivalen a meses de retraso."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaClosedOpen|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": {
+    "v": 0.1,
+    "pct": 0.6,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Distancia cerrados − abiertos en el índice de AA: de 18,1 a 18,2 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "aaClosedOpen",
+    "path": "aa.gapClosedOpen",
+    "from": 18.1,
+    "to": 18.2
+   },
+   "i18n": {
+    "en": {
+     "what": "Closed − open gap on the AA index: from 18.1 to 18.2 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The closed − open gap on the AA index rises from 18.1 to 18.2 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 64.8) versus Kimi K3.1 Pro (Moonshot AI, 46.6). A few AA index points do not equate to months of lag."
+    }
+   },
+   "titular": "La distancia cerrados − abiertos en el índice de AA sube de 18,1 a 18,2 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 64,8) frente a Kimi K3.1 Pro (Moonshot AI, 46,6). Unos puntos del índice de AA no equivalen a meses de retraso."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaLabs|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": {
+    "v": 0.1,
+    "pct": 4,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Distancia entre los dos primeros laboratorios en el índice de AA: de 2,5 a 2,6 puntos (Anthropic frente a OpenAI).",
+   "data": {
+    "ind": "aaLabs",
+    "path": "aa.gapLabs",
+    "from": 2.5,
+    "to": 2.6
+   },
+   "i18n": {
+    "en": {
+     "what": "Gap between the top two labs on the AA index: from 2.5 to 2.6 points (Anthropic versus OpenAI).",
+     "titular": "The gap between the top two labs on the AA index rises from 2.5 to 2.6 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 64.8) versus GPT-6.2 Astra (OpenAI, 62.2). A few AA index points do not equate to months of lag."
+    }
+   },
+   "titular": "La distancia entre los dos primeros laboratorios en el índice de AA sube de 2,5 a 2,6 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 64,8) frente a GPT-6.2 Astra (OpenAI, 62,2). Unos puntos del índice de AA no equivalen a meses de retraso."
   },
   {
    "kind": "retirada",
@@ -794,40 +1014,6 @@
    "consecuencia": "1,4 % de los tokens de OpenRouter del 2026-11-12 al 2026-11-18. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
-   "kind": "indicador",
-   "key": "indicador|rate12m|2026-11-18",
-   "published": null,
-   "detected": "2026-11-18",
-   "date": "2026-11-18",
-   "mag": {
-    "v": -1.8,
-    "pct": -7.9,
-    "unit": "puntos ECI"
-   },
-   "src": {
-    "name": "Epoch AI",
-    "url": "https://epoch.ai/benchmarks/eci",
-    "got": "2026-11-18T03:54:04Z"
-   },
-   "what": "Avance de la frontera del ECI en 12 meses: de 22,9 a 21,1 puntos.",
-   "data": {
-    "ind": "rate12m",
-    "path": "eci.rate12m",
-    "from": 22.9,
-    "to": 21.1
-   },
-   "i18n": {
-    "en": {
-     "what": "Frontier gain on the ECI over 12 months: from 22.9 to 21.1 points.",
-     "titular": "Frontier gain on the ECI over 12 months: from 22.9 to 21.1 points."
-    }
-   },
-   "titular": "Avance de la frontera del ECI en 12 meses: de 22,9 a 21,1 puntos.",
-   "importancia": null,
-   "ficha": "#carrera/evaluacion",
-   "consecuencia": null
-  },
-  {
    "kind": "pesos",
    "key": "pesos|tencent/hy4-flash",
    "published": "2026-11-17",
@@ -856,43 +1042,6 @@
    "importancia": null,
    "ficha": "#modelos/tencent/hy4-flash",
    "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: tencent-hy-license. Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI."
-  },
-  {
-   "kind": "uso",
-   "key": "uso|entra|tencent/hy4-flash-20261116|2026-11-18",
-   "published": "2026-11-17",
-   "detected": "2026-11-18",
-   "date": "2026-11-17",
-   "mag": {
-    "v": 2,
-    "unit": "puesto"
-   },
-   "model": "tencent/hy4-flash",
-   "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-18T03:54:04Z"
-   },
-   "what": "Hy4 flash entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 2, 9,7 % de los tokens.",
-   "data": {
-    "sub": "entra",
-    "slug": "tencent/hy4-flash-20261116",
-    "rank": 2,
-    "share": 9.7,
-    "tokens": 22814277696173,
-    "window": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "Hy4 flash enters the ten most used models on OpenRouter over the last 7 days: rank 2, 9.7% of tokens.",
-     "titular": "Hy4 flash enters OpenRouter’s top 10 by usage",
-     "consecuencia": "9.7% of OpenRouter’s tokens from 2026-11-11 to 2026-11-17. This is usage on OpenRouter, not across the whole market."
-    }
-   },
-   "titular": "Hy4 flash entra en el top 10 de uso de OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/tencent/hy4-flash",
-   "consecuencia": "9,7 % de los tokens de OpenRouter del 2026-11-11 al 2026-11-17. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "indicador",

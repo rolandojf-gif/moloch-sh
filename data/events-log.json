@@ -219,6 +219,233 @@
  "events": [
   {
    "kind": "retirada",
+   "key": "retirada|xiaomi/mimo-v2.5|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": null,
+   "model": "xiaomi/mimo-v2.5",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "MiMo-V2.5 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "MiMo-V2.5"
+   },
+   "i18n": {
+    "en": {
+     "what": "MiMo-V2.5 is no longer listed in the OpenRouter catalogue.",
+     "titular": "MiMo-V2.5 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "MiMo-V2.5 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|moonshotai/kimi-k2-0905|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": null,
+   "model": "moonshotai/kimi-k2-0905",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Kimi K2 0905 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Kimi K2 0905"
+   },
+   "i18n": {
+    "en": {
+     "what": "Kimi K2 0905 is no longer listed in the OpenRouter catalogue.",
+     "titular": "Kimi K2 0905 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Kimi K2 0905 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|mistralai/mistral-medium-3.1|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": null,
+   "model": "mistralai/mistral-medium-3.1",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Mistral Medium 3.1 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Mistral Medium 3.1"
+   },
+   "i18n": {
+    "en": {
+     "what": "Mistral Medium 3.1 is no longer listed in the OpenRouter catalogue.",
+     "titular": "Mistral Medium 3.1 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Mistral Medium 3.1 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|chipsH100e|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": {
+    "v": -9174,
+    "pct": 0,
+    "unit": "H100e"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/ai-chip-sales",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Chips de IA entregados, acumulado: de 39,2 a 39,2 millones de H100e.",
+   "data": {
+    "ind": "chipsH100e",
+    "path": "chips.cum",
+    "from": 39208587,
+    "to": 39199413
+   },
+   "i18n": {
+    "en": {
+     "what": "AI chips delivered, cumulative: from 39.2 to 39.2 million H100e.",
+     "titular": "Epoch lowers AI chips delivered to 39.2 million H100e",
+     "consecuencia": "Chips delivered according to Epoch, not necessarily installed. In AI 2027 it is evidence for “40 million H100e available”."
+    }
+   },
+   "titular": "Epoch rebaja a 39,2 millones de H100e los chips de IA entregados",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "Chips entregados según Epoch, no necesariamente instalados. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaUsCn|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": {
+    "v": 0.1,
+    "pct": 0.6,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Distancia EE. UU. − China en el índice de AA: de 18,1 a 18,2 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "aaUsCn",
+    "path": "aa.gapUsCn",
+    "from": 18.1,
+    "to": 18.2
+   },
+   "i18n": {
+    "en": {
+     "what": "US − China gap on the AA index: from 18.1 to 18.2 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The US − China gap on the AA index rises from 18.1 to 18.2 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 64.8) versus Kimi K3.1 Pro (Moonshot AI, 46.6). A few AA index points do not equate to months of lag."
+    }
+   },
+   "titular": "La distancia EE. UU. − China en el índice de AA sube de 18,1 a 18,2 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 64,8) frente a Kimi K3.1 Pro (Moonshot AI, 46,6). Unos puntos del índice de AA no equivalen a meses de retraso."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaClosedOpen|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": {
+    "v": 0.1,
+    "pct": 0.6,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Distancia cerrados − abiertos en el índice de AA: de 18,1 a 18,2 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "aaClosedOpen",
+    "path": "aa.gapClosedOpen",
+    "from": 18.1,
+    "to": 18.2
+   },
+   "i18n": {
+    "en": {
+     "what": "Closed − open gap on the AA index: from 18.1 to 18.2 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The closed − open gap on the AA index rises from 18.1 to 18.2 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 64.8) versus Kimi K3.1 Pro (Moonshot AI, 46.6). A few AA index points do not equate to months of lag."
+    }
+   },
+   "titular": "La distancia cerrados − abiertos en el índice de AA sube de 18,1 a 18,2 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 64,8) frente a Kimi K3.1 Pro (Moonshot AI, 46,6). Unos puntos del índice de AA no equivalen a meses de retraso."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|aaLabs|2026-11-25",
+   "published": null,
+   "detected": "2026-11-25",
+   "date": "2026-11-25",
+   "mag": {
+    "v": 0.1,
+    "pct": 4,
+    "unit": "puntos AA"
+   },
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/leaderboards/models",
+    "got": "2026-11-25T03:54:11Z"
+   },
+   "what": "Distancia entre los dos primeros laboratorios en el índice de AA: de 2,5 a 2,6 puntos (Anthropic frente a OpenAI).",
+   "data": {
+    "ind": "aaLabs",
+    "path": "aa.gapLabs",
+    "from": 2.5,
+    "to": 2.6
+   },
+   "i18n": {
+    "en": {
+     "what": "Gap between the top two labs on the AA index: from 2.5 to 2.6 points (Anthropic versus OpenAI).",
+     "titular": "The gap between the top two labs on the AA index rises from 2.5 to 2.6 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 64.8) versus GPT-6.2 Astra (OpenAI, 62.2). A few AA index points do not equate to months of lag."
+    }
+   },
+   "titular": "La distancia entre los dos primeros laboratorios en el índice de AA sube de 2,5 a 2,6 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 64,8) frente a GPT-6.2 Astra (OpenAI, 62,2). Unos puntos del índice de AA no equivalen a meses de retraso."
+  },
+  {
+   "kind": "retirada",
    "key": "retirada|xiaomi/mimo-v2.5-pro|2026-11-24",
    "published": null,
    "detected": "2026-11-24",
