@@ -1,11 +1,11 @@
 {
  "schema": 2,
- "generated": "2026-11-25T03:54:11Z",
+ "generated": "2026-11-26T03:53:58Z",
  "window": 7,
- "since": "2026-11-19",
- "base": "2026-11-24",
+ "since": "2026-11-20",
+ "base": "2026-11-25",
  "parte": {
-  "fecha": "2026-11-25",
+  "fecha": "2026-11-26",
   "noticias": [],
   "ultima": {
    "key": "indicador|eci|2026-11-21",
@@ -55,13 +55,13 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/xiaomi/mimo-v2.6-flash-mopd",
-    "got": "2026-11-25T03:54:11Z"
+    "got": "2026-11-26T03:53:58Z"
    },
    "what": "MiMo-V2.6-Flash-MOPD (Xiaomi) aparece en el catálogo de OpenRouter.",
    "data": {
     "weights": "abiertos",
-    "in": 0.15,
-    "out": 0.42,
+    "in": 0.5,
+    "out": 1,
     "ii": null,
     "eci": null,
     "identity": "confirmada"
@@ -70,13 +70,13 @@
     "en": {
      "what": "MiMo-V2.6-Flash-MOPD (Xiaomi) appears in the OpenRouter catalogue.",
      "titular": "MiMo-V2.6-Flash-MOPD (Xiaomi) arrives on OpenRouter",
-     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Blended price $0.217 per million tokens."
+     "consecuencia": "No independent score yet on Artificial Analysis or Epoch AI. Blended price $0.625 per million tokens."
     }
    },
    "titular": "MiMo-V2.6-Flash-MOPD (Xiaomi) llega a OpenRouter",
    "importancia": null,
    "ficha": "#modelos/xiaomi/mimo-v2.6-flash-mopd",
-   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 0,217 $ por millón de tokens."
+   "consecuencia": "Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI. Precio combinado 0,625 $ por millón de tokens."
   },
   {
    "kind": "nuevo",
@@ -89,7 +89,7 @@
    "src": {
     "name": "OpenRouter",
     "url": "https://openrouter.ai/mistralai/pixtral-large-2502",
-    "got": "2026-11-25T03:54:11Z"
+    "got": "2026-11-26T03:53:58Z"
    },
    "what": "Pixtral Large 2502 (Mistral AI) aparece en el catálogo de OpenRouter.",
    "data": {
@@ -123,7 +123,7 @@
    "src": {
     "name": "Artificial Analysis",
     "url": "https://artificialanalysis.ai/models/ling-3-2-air",
-    "got": "2026-11-25T03:54:11Z"
+    "got": "2026-11-26T03:53:58Z"
    },
    "what": "Ling-3.2-air (Ant Group (inclusionAI)) aparece puntuado en Artificial Analysis con 23,4 puntos, aún sin API pública: no está en OpenRouter.",
    "data": {
@@ -148,6 +148,43 @@
    "importancia": null,
    "ficha": "#modelos/inclusionai/ling-3.2-air",
    "consecuencia": "Índice de AA 23,4: a 23,2 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 39 de 52. Aún no está en OpenRouter: sin API pública ni precio."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|entra|z-ai/glm-5.3-20260816|2026-11-26",
+   "published": "2026-11-25",
+   "detected": "2026-11-26",
+   "date": "2026-11-25",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "z-ai/glm-5.3",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-26T03:53:58Z"
+   },
+   "what": "GLM 5.3 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,3 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "z-ai/glm-5.3-20260816",
+    "rank": 10,
+    "share": 1.3,
+    "tokens": 3850209098173,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "GLM 5.3 enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.3% of tokens.",
+     "titular": "GLM 5.3 enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.3% of OpenRouter’s tokens from 2026-11-19 to 2026-11-25. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "GLM 5.3 entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/z-ai/glm-5.3",
+   "consecuencia": "1,3 % de los tokens de OpenRouter del 2026-11-19 al 2026-11-25. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "retirada",
@@ -975,73 +1012,6 @@
    },
    "ficha": "#modelos/tencent/hy4-flash",
    "consecuencia": "24,7 % de los tokens de OpenRouter del 2026-11-13 al 2026-11-19; antes el primero era DeepSeek V4.1 Flash 1017. Es el uso en OpenRouter, no en todo el mercado."
-  },
-  {
-   "kind": "uso",
-   "key": "uso|entra|minimax/minimax-m3.1-flash-20261019|2026-11-19",
-   "published": "2026-11-18",
-   "detected": "2026-11-19",
-   "date": "2026-11-18",
-   "mag": {
-    "v": 10,
-    "unit": "puesto"
-   },
-   "model": "minimax/minimax-m3.1-flash",
-   "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-19T03:54:08Z"
-   },
-   "what": "MiniMax M3.1 Flash entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,4 % de los tokens.",
-   "data": {
-    "sub": "entra",
-    "slug": "minimax/minimax-m3.1-flash-20261019",
-    "rank": 10,
-    "share": 1.4,
-    "tokens": 3671993607902,
-    "window": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "MiniMax M3.1 Flash enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.4% of tokens.",
-     "titular": "MiniMax M3.1 Flash enters OpenRouter’s top 10 by usage",
-     "consecuencia": "1.4% of OpenRouter’s tokens from 2026-11-12 to 2026-11-18. This is usage on OpenRouter, not across the whole market."
-    }
-   },
-   "titular": "MiniMax M3.1 Flash entra en el top 10 de uso de OpenRouter",
-   "importancia": null,
-   "ficha": "#modelos/minimax/minimax-m3.1-flash",
-   "consecuencia": "1,4 % de los tokens de OpenRouter del 2026-11-12 al 2026-11-18. Es el uso en OpenRouter, no en todo el mercado."
-  },
-  {
-   "kind": "pesos",
-   "key": "pesos|tencent/hy4-flash",
-   "published": "2026-11-17",
-   "detected": "2026-11-19",
-   "date": "2026-11-17",
-   "mag": null,
-   "model": "tencent/hy4-flash",
-   "src": {
-    "name": "Hugging Face",
-    "url": "https://huggingface.co/tencent/Hy4-flash",
-    "got": "2026-11-19T03:54:08Z"
-   },
-   "what": "Hy4 flash: pesos descargables en Hugging Face (licencia tencent-hy-license).",
-   "data": {
-    "license": "tencent-hy-license",
-    "weightsSrc": "hf"
-   },
-   "i18n": {
-    "en": {
-     "what": "Hy4 flash: downloadable weights on Hugging Face (licence tencent-hy-license).",
-     "titular": "Open weights for Hy4 flash",
-     "consecuencia": "It can be downloaded and served outside the lab’s API. Licence: tencent-hy-license. No independent score yet on Artificial Analysis or Epoch AI."
-    }
-   },
-   "titular": "Pesos abiertos de Hy4 flash",
-   "importancia": null,
-   "ficha": "#modelos/tencent/hy4-flash",
-   "consecuencia": "Se puede descargar y servir fuera de la API del laboratorio. Licencia: tencent-hy-license. Sin puntuación independiente todavía en Artificial Analysis ni en Epoch AI."
   },
   {
    "kind": "indicador",

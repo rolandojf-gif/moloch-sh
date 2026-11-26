@@ -218,6 +218,43 @@
  ],
  "events": [
   {
+   "kind": "uso",
+   "key": "uso|entra|z-ai/glm-5.3-20260816|2026-11-26",
+   "published": "2026-11-25",
+   "detected": "2026-11-26",
+   "date": "2026-11-25",
+   "mag": {
+    "v": 10,
+    "unit": "puesto"
+   },
+   "model": "z-ai/glm-5.3",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-26T03:53:58Z"
+   },
+   "what": "GLM 5.3 entra en los diez modelos más usados en OpenRouter en los últimos 7 días: puesto 10, 1,3 % de los tokens.",
+   "data": {
+    "sub": "entra",
+    "slug": "z-ai/glm-5.3-20260816",
+    "rank": 10,
+    "share": 1.3,
+    "tokens": 3850209098173,
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "GLM 5.3 enters the ten most used models on OpenRouter over the last 7 days: rank 10, 1.3% of tokens.",
+     "titular": "GLM 5.3 enters OpenRouter’s top 10 by usage",
+     "consecuencia": "1.3% of OpenRouter’s tokens from 2026-11-19 to 2026-11-25. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "GLM 5.3 entra en el top 10 de uso de OpenRouter",
+   "importancia": null,
+   "ficha": "#modelos/z-ai/glm-5.3",
+   "consecuencia": "1,3 % de los tokens de OpenRouter del 2026-11-19 al 2026-11-25. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
    "kind": "retirada",
    "key": "retirada|xiaomi/mimo-v2.5|2026-11-25",
    "published": null,
