@@ -218,6 +218,121 @@
  ],
  "events": [
   {
+   "kind": "evaluacion",
+   "key": "evaluacion|baidu/ernie-5.5-flash-preview|ii",
+   "published": null,
+   "detected": "2026-11-27",
+   "date": "2026-11-27",
+   "mag": {
+    "v": 31.3,
+    "unit": "puntos AA"
+   },
+   "model": "baidu/ernie-5.5-flash-preview",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/ernie-5-5-flash",
+    "got": "2026-11-27T03:54:17Z"
+   },
+   "what": "ERNIE-5.5-Flash-Preview: primera puntuación en el índice de inteligencia de Artificial Analysis (31.3, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 31.3,
+    "rankAA": 27,
+    "of": 54
+   },
+   "i18n": {
+    "en": {
+     "what": "ERNIE-5.5-Flash-Preview: first score on the Artificial Analysis Intelligence Index (31.3, v5).",
+     "titular": "ERNIE-5.5-Flash-Preview enters the AA index at rank 27",
+     "consecuencia": "AA index 31.3: 15.3 points behind the best open-weight model (Kimi K3.1 Pro). Rank 27 of 54. Free on OpenRouter at the time of the check."
+    }
+   },
+   "titular": "ERNIE-5.5-Flash-Preview entra en el índice de AA en el puesto 27",
+   "importancia": null,
+   "ficha": "#modelos/baidu/ernie-5.5-flash-preview",
+   "consecuencia": "Índice de AA 31,3: a 15,3 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 27 de 54. Gratis en OpenRouter en el momento de la consulta."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|google/gemma-4-26b-a4b-it|ii",
+   "published": null,
+   "detected": "2026-11-27",
+   "date": "2026-11-27",
+   "mag": {
+    "v": 4,
+    "unit": "puntos AA"
+   },
+   "model": "google/gemma-4-26b-a4b-it",
+   "src": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models/gemma-4-26b-a4b",
+    "got": "2026-11-27T03:54:17Z"
+   },
+   "what": "Gemma 4 26B A4B : primera puntuación en el índice de inteligencia de Artificial Analysis (4, v5).",
+   "data": {
+    "field": "ii",
+    "ii": 4,
+    "rankAA": 53,
+    "of": 54
+   },
+   "i18n": {
+    "en": {
+     "what": "Gemma 4 26B A4B : first score on the Artificial Analysis Intelligence Index (4, v5).",
+     "titular": "Gemma 4 26B A4B  enters the AA index at rank 53",
+     "consecuencia": "AA index 4: 42.6 points behind the best open-weight model (Kimi K3.1 Pro). Rank 53 of 54. Blended price $0.262 per million tokens. Of the 5 models with a similar AA index (±2 points of its 4), 3 cost less; the cheapest is Nemotron 3.5 Lightning, at $0.039."
+    }
+   },
+   "titular": "Gemma 4 26B A4B  entra en el índice de AA en el puesto 53",
+   "importancia": null,
+   "ficha": "#modelos/google/gemma-4-26b-a4b-it",
+   "consecuencia": "Índice de AA 4: a 42,6 puntos del mejor abierto (Kimi K3.1 Pro). Puesto 53 de 54. Precio combinado 0,262 $ por millón de tokens. De los 5 modelos con un índice de AA parecido (±2 puntos de su 4), 3 cuestan menos; el más barato es Nemotron 3.5 Lightning, a 0,039 $."
+  },
+  {
+   "kind": "uso",
+   "key": "uso|primero|deepseek/deepseek-v4.1-flash-20261017|2026-11-27",
+   "published": "2026-11-26",
+   "detected": "2026-11-27",
+   "date": "2026-11-26",
+   "mag": {
+    "v": 1,
+    "unit": "puesto"
+   },
+   "model": "deepseek/deepseek-v4.1-flash-1017",
+   "src": {
+    "name": "OpenRouter · uso",
+    "url": "https://openrouter.ai/rankings",
+    "got": "2026-11-27T03:54:17Z"
+   },
+   "what": "DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter en los últimos 7 días (28,7 % de los tokens), por delante de Hy4 flash.",
+   "data": {
+    "sub": "primero",
+    "slug": "deepseek/deepseek-v4.1-flash-20261017",
+    "rank": 1,
+    "prevRank": 2,
+    "share": 28.7,
+    "tokens": 77193681700978,
+    "prev": "tencent/hy4-flash-20261116",
+    "prevName": "Hy4 flash",
+    "window": 7
+   },
+   "i18n": {
+    "en": {
+     "what": "DeepSeek V4.1 Flash 1017 becomes the most used model on OpenRouter over the last 7 days (28.7% of tokens), ahead of Hy4 flash.",
+     "titular": "DeepSeek V4.1 Flash 1017 becomes the most used model on OpenRouter",
+     "porque": "the most used model on OpenRouter over the last 7 days changes",
+     "consecuencia": "28.7% of OpenRouter’s tokens from 2026-11-20 to 2026-11-26; before, the first was Hy4 flash. This is usage on OpenRouter, not across the whole market."
+    }
+   },
+   "titular": "DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter",
+   "importancia": {
+    "tier": 7,
+    "w": 0,
+    "porque": "cambia el modelo más usado en OpenRouter en los últimos 7 días"
+   },
+   "ficha": "#modelos/deepseek/deepseek-v4.1-flash-1017",
+   "consecuencia": "28,7 % de los tokens de OpenRouter del 2026-11-20 al 2026-11-26; antes el primero era Hy4 flash. Es el uso en OpenRouter, no en todo el mercado."
+  },
+  {
    "kind": "uso",
    "key": "uso|entra|z-ai/glm-5.3-20260816|2026-11-26",
    "published": "2026-11-25",
@@ -279,35 +394,6 @@
     }
    },
    "titular": "MiMo-V2.5 deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "retirada",
-   "key": "retirada|moonshotai/kimi-k2-0905|2026-11-25",
-   "published": null,
-   "detected": "2026-11-25",
-   "date": "2026-11-25",
-   "mag": null,
-   "model": "moonshotai/kimi-k2-0905",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-25T03:54:11Z"
-   },
-   "what": "Kimi K2 0905 deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "Kimi K2 0905"
-   },
-   "i18n": {
-    "en": {
-     "what": "Kimi K2 0905 is no longer listed in the OpenRouter catalogue.",
-     "titular": "Kimi K2 0905 is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "Kimi K2 0905 deja de figurar en OpenRouter",
    "importancia": null,
    "ficha": null,
    "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
@@ -535,35 +621,6 @@
     }
    },
    "titular": "Kimi K2 Thinking deja de figurar en OpenRouter",
-   "importancia": null,
-   "ficha": null,
-   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
-  },
-  {
-   "kind": "retirada",
-   "key": "retirada|moonshotai/kimi-k2|2026-11-24",
-   "published": null,
-   "detected": "2026-11-24",
-   "date": "2026-11-24",
-   "mag": null,
-   "model": "moonshotai/kimi-k2",
-   "src": {
-    "name": "OpenRouter",
-    "url": "https://openrouter.ai/models",
-    "got": "2026-11-24T03:54:16Z"
-   },
-   "what": "Kimi K2 0711 deja de figurar en el catálogo de OpenRouter.",
-   "data": {
-    "name": "Kimi K2 0711"
-   },
-   "i18n": {
-    "en": {
-     "what": "Kimi K2 0711 is no longer listed in the OpenRouter catalogue.",
-     "titular": "Kimi K2 0711 is no longer listed on OpenRouter",
-     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
-    }
-   },
-   "titular": "Kimi K2 0711 deja de figurar en OpenRouter",
    "importancia": null,
    "ficha": null,
    "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
@@ -1035,51 +1092,6 @@
    "importancia": null,
    "ficha": "#carrera/energia",
    "consecuencia": null
-  },
-  {
-   "kind": "uso",
-   "key": "uso|primero|tencent/hy4-flash-20261116|2026-11-20",
-   "published": "2026-11-19",
-   "detected": "2026-11-20",
-   "date": "2026-11-19",
-   "mag": {
-    "v": 1,
-    "unit": "puesto"
-   },
-   "model": "tencent/hy4-flash",
-   "src": {
-    "name": "OpenRouter · uso",
-    "url": "https://openrouter.ai/rankings",
-    "got": "2026-11-20T10:20:12Z"
-   },
-   "what": "Hy4 flash pasa a ser el modelo más usado en OpenRouter en los últimos 7 días (24,7 % de los tokens), por delante de DeepSeek V4.1 Flash 1017.",
-   "data": {
-    "sub": "primero",
-    "slug": "tencent/hy4-flash-20261116",
-    "rank": 1,
-    "prevRank": 2,
-    "share": 24.7,
-    "tokens": 69273358650121,
-    "prev": "deepseek/deepseek-v4.1-flash-20261017",
-    "prevName": "DeepSeek V4.1 Flash 1017",
-    "window": 7
-   },
-   "i18n": {
-    "en": {
-     "what": "Hy4 flash becomes the most used model on OpenRouter over the last 7 days (24.7% of tokens), ahead of DeepSeek V4.1 Flash 1017.",
-     "titular": "Hy4 flash becomes the most used model on OpenRouter",
-     "porque": "the most used model on OpenRouter over the last 7 days changes",
-     "consecuencia": "24.7% of OpenRouter’s tokens from 2026-11-13 to 2026-11-19; before, the first was DeepSeek V4.1 Flash 1017. This is usage on OpenRouter, not across the whole market."
-    }
-   },
-   "titular": "Hy4 flash pasa a ser el modelo más usado en OpenRouter",
-   "importancia": {
-    "tier": 7,
-    "w": 0,
-    "porque": "cambia el modelo más usado en OpenRouter en los últimos 7 días"
-   },
-   "ficha": "#modelos/tencent/hy4-flash",
-   "consecuencia": "24,7 % de los tokens de OpenRouter del 2026-11-13 al 2026-11-19; antes el primero era DeepSeek V4.1 Flash 1017. Es el uso en OpenRouter, no en todo el mercado."
   },
   {
    "kind": "uso",

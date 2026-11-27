@@ -6,7 +6,14 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.xml" rel="self" type="application/rss+xml"/>
   <description>Las noticias de la carrera por la IA que detecta cada día el observatorio, elegidas con una regla fija. Cifras de OpenRouter, Artificial Analysis, Epoch AI, Hugging Face y METR, con su fuente.</description>
   <language>es</language>
-  <lastBuildDate>Thu, 26 Nov 2026 03:53:58 GMT</lastBuildDate>
+  <lastBuildDate>Fri, 27 Nov 2026 03:54:17 GMT</lastBuildDate>
+  <item>
+    <title>DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter</title>
+    <link>https://moloch-sh.netlify.app/#modelos/deepseek/deepseek-v4.1-flash-1017</link>
+    <guid isPermaLink="false">uso|primero|deepseek/deepseek-v4.1-flash-20261017|2026-11-27</guid>
+    <pubDate>Fri, 27 Nov 2026 03:54:17 GMT</pubDate>
+    <description>DeepSeek V4.1 Flash 1017 pasa a ser el modelo más usado en OpenRouter en los últimos 7 días (28,7 % de los tokens), por delante de Hy4 flash. 28,7 % de los tokens de OpenRouter del 2026-11-20 al 2026-11-26; antes el primero era Hy4 flash. Es el uso en OpenRouter, no en todo el mercado. Está en el parte porque cambia el modelo más usado en OpenRouter en los últimos 7 días. Publicado el 2026-11-26; detectado el 2026-11-27. Fuente: OpenRouter · uso (https://openrouter.ai/rankings).</description>
+  </item>
   <item>
     <title>Claude Fable 5.2 pasa a ser el mejor modelo según el ECI de Epoch</title>
     <link>https://moloch-sh.netlify.app/#carrera</link>
@@ -20,13 +27,6 @@
     <guid isPermaLink="false">indicador|chipsH100e|2026-11-20</guid>
     <pubDate>Fri, 20 Nov 2026 10:20:12 GMT</pubDate>
     <description>Chips de IA entregados, acumulado: de 33,5 a 39,2 millones de H100e. Chips entregados según Epoch, no necesariamente instalados. En AI 2027 es evidencia de «40 millones de H100e disponibles». Está en el parte porque la cifra cambia un 17 % (umbral: 10 %). Detectado el 2026-11-20. Fuente: Epoch AI (https://epoch.ai/data/ai-chip-sales).</description>
-  </item>
-  <item>
-    <title>Hy4 flash pasa a ser el modelo más usado en OpenRouter</title>
-    <link>https://moloch-sh.netlify.app/#modelos/tencent/hy4-flash</link>
-    <guid isPermaLink="false">uso|primero|tencent/hy4-flash-20261116|2026-11-20</guid>
-    <pubDate>Fri, 20 Nov 2026 10:20:12 GMT</pubDate>
-    <description>Hy4 flash pasa a ser el modelo más usado en OpenRouter en los últimos 7 días (24,7 % de los tokens), por delante de DeepSeek V4.1 Flash 1017. 24,7 % de los tokens de OpenRouter del 2026-11-13 al 2026-11-19; antes el primero era DeepSeek V4.1 Flash 1017. Es el uso en OpenRouter, no en todo el mercado. Está en el parte porque cambia el modelo más usado en OpenRouter en los últimos 7 días. Publicado el 2026-11-19; detectado el 2026-11-20. Fuente: OpenRouter · uso (https://openrouter.ai/rankings).</description>
   </item>
   <item>
     <title>Claude Fable 5.2 pasa a ser el mejor modelo según el ECI de Epoch</title>
