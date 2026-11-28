@@ -336,24 +336,14 @@ export function scatter(el, points, { threshold = null, labels = new Set(), fres
     }
     s += `<g clip-path="url(#clip-${el.id})">`;
     const ord = shown.map((p, i) => [p, i]).sort((a, b) => (key(a[0]) ? 1 : 0) - (key(b[0]) ? 1 : 0));
-    const logoPts = shown.filter(p => labels.has(p.id) && p.icon);
-    const logoIds = new Set(logoPts.map(p => p.id));
-    for (const [p, i] of ord) {
-      if (logoIds.has(p.id)) {
-        const cx = X(p.x), cy = Y(p.y);
-        s += `<g data-k="${i}" class="logo-pt logo-hit ${p.cls}"><rect x="${(cx - 10).toFixed(1)}" y="${(cy - 10).toFixed(1)}" width="20" height="20"/><image href="${esc(p.icon)}" x="${(cx - 7).toFixed(1)}" y="${(cy - 7).toFixed(1)}" width="14" height="14"/></g>`;
-      } else {
-        s += `<circle data-k="${i}" class="pt-${p.cls}${key(p) ? ' key' : ' faint'}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="6"/>`;
-      }
-    }
+    for (const [p, i] of ord) s += `<circle data-k="${i}" class="pt-${p.cls}${key(p) ? ' key' : ' faint'}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="6"/>`;
     s += '</g>';
-    for (const p of logoPts) taken.push([X(p.x) - 11, Y(p.y) - 11, X(p.x) + 11, Y(p.y) + 11]);
     const targets = shown.map(p => ({ x: X(p.x), y: Y(p.y), html: p.tip || tip(p.label, []), go: p.go }));
     const cands = shown.filter(p => labels.has(p.id)).map(p => ({ p })).sort((a, b) => b.p.y - a.p.y)
       .concat(shown.filter(p => fresh.has(p.id) && !labels.has(p.id)).sort((a, b) => b.y - a.y).map(p => ({ p, far: true })))
       .concat(shown.filter(p => pareto.has(p.id) && !labels.has(p.id) && !fresh.has(p.id)).sort((a, b) => b.y - a.y).map(p => ({ p })))
       .concat(zoomed ? shown.filter(p => !key(p)).sort((a, b) => b.y - a.y).map(p => ({ p })) : [])
-      .map(({ p, far }) => ({ x: X(p.x), y: Y(p.y), text: p.label, faint: !key(p), far, icon: logoIds.has(p.id) ? p.icon : null }));
+      .map(({ p, far }) => ({ x: X(p.x), y: Y(p.y), text: p.label, faint: !key(p), far }));
     s += labelSvg(placeLabels(cands.slice(0, zoomed ? 30 : 12), G, taken));
     s += '</svg>';
     s += `<div class="legend"><span><i style="background:var(--open)"></i>${t('Pesos abiertos')}</span><span><i style="background:var(--closed)"></i>${t('Cerrado')}</span><span><i class="lg-key"></i>${t('Con nombre: líderes y modelos que ninguno supera a la vez en índice y precio{p1}', { p1: (shown.some(p => fresh.has(p.id)) ? t(', y los nuevos de los últimos 7 días') : '') + (zoomed ? t('; al acercar, también los demás que caben') : '') })}</span>${zoomUi(zoomed)}</div>`;
