@@ -1,6 +1,6 @@
 /* Vista «Hoy»: el parte del día, lo detectado en la semana, cuatro indicadores y capacidad frente a precio. */
 import { t, tn, tr, L } from './i18n.js';
-import { esc, fact, src, usd, pricePair, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote, sinApiTag } from './fmt.js';
+import { esc, fact, src, usd, pricePair, num, fmtDate, rssUrl, ord, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote, sinApiTag } from './fmt.js';
 import { logo, logoFor } from './logos.js';
 import { scatter, daily, tip } from './charts.js';
 import { renderHero, eventModel, modelLogo } from './hoy-hero.js';
@@ -231,7 +231,7 @@ function renderScatter(d, gapPts) {
     : allScored;
   const pts = models.filter(m => blended(m) > 0).map(m => ({
     id: m.id, x: blended(m), y: ii(m), cls: m.weights.v === 'abiertos' ? 'open' : m.weights.v === 'cerrados' ? 'closed' : 'unknown',
-    label: m.name, icon: logoFor(m),
+    label: m.name,
     go: () => { location.hash = `#modelos/${m.id}`; },
     tip: tip(m.name, [
       [t('Laboratorio'), m.lab.name],
@@ -291,6 +291,19 @@ function renderDaily(d) {
     <details class="method-note"><summary>${t('Nota sobre esta serie')}</summary><p class="note">${t('Un punto por recogida diaria{p1}: el mejor modelo cerrado y el mejor abierto del catálogo según el {aaIndexName} de {AA_LINK}. Cada día queda guardado en el repositorio (data/history), así que la serie crece con cada recogida; los días con otra versión del índice no se mezclan. Es la única serie del observatorio medida día a día con el índice de AA; las de Modelos y La carrera se reconstruyen hoy hacia atrás con las puntuaciones actuales.', { p1: first ? t(', desde el {fmtDate}', { fmtDate: esc(fmtDate(first)) }) : '', aaIndexName: esc(aaIndexName(ver)), AA_LINK })}</p></details>`;
 }
 
+/* Medalla geométrica SVG (oro, plata, bronce) para los tres primeros puestos del podio. */
+function podioMedal(rank) {
+  return `<svg class="p-medal" viewBox="0 0 36 42" width="36" height="42" aria-hidden="true" focusable="false">
+    <path class="m-rib-l" d="M6 1 H15 L20 13 H12 Z"/>
+    <path class="m-rib-r" d="M30 1 H21 L16 13 H24 Z"/>
+    <path class="m-hi" d="M12.4 12.5 H23.6 L31.5 20.4 V31.6 L23.6 39.5 H12.4 L4.5 31.6 V20.4 Z"/>
+    <path class="m-lo" d="M23.6 12.5 L31.5 20.4 V31.6 L23.6 39.5 H12.4 Z"/>
+    <path class="m-rim" d="M12.4 12.5 H23.6 L31.5 20.4 V31.6 L23.6 39.5 H12.4 L4.5 31.6 V20.4 Z"/>
+    <path class="m-face" d="M14.1 16.5 H21.9 L27.5 22.1 V29.9 L21.9 35.5 H14.1 L8.5 29.9 V22.1 Z"/>
+    <text class="m-num" x="18" y="31.2" text-anchor="middle">${rank}</text>
+  </svg>`;
+}
+
 /* Podio: los cinco modelos con mayor índice de AA, abiertos o cerrados, con los mismos criterios que los líderes. */
 function renderPodio(d) {
   const top = scored(d.catalog.models).sort((a, b) => ii(b) - ii(a)).slice(0, 5);
@@ -300,11 +313,18 @@ function renderPodio(d) {
   const ver = d.catalog.aaIndexVersion;
   const maxV = ii(top[0]) || 1;
   el.innerHTML = `<div class="podio-h">${t('Los cinco primeros del {aaIndexName}', { aaIndexName: esc(aaIndexName(ver)) })}</div>
-    <ol class="podio-l">${top.map((m, i) => `<li class="${m.weights.v === 'abiertos' ? 'open' : 'closed'}${i === 0 ? ' is-first' : ''}">
-      <span class="p-pos">${i + 1}</span>${logo(m, true)}
+    <ol class="podio-l">${top.map((m, i) => {
+      const rank = i + 1;
+      const podium = rank <= 3;
+      const pos = podium
+        ? `<span class="p-pos" aria-label="${esc(ord(rank))}">${podioMedal(rank)}</span>`
+        : `<span class="p-pos">${esc(ord(rank))}</span>`;
+      return `<li class="${m.weights.v === 'abiertos' ? 'open' : 'closed'} ${podium ? 'is-podium' : 'is-rest'} rank-${rank}">
+      ${pos}${logo(m, podium)}
       <span class="p-who"><span class="p-nm">${modelLink(d, m.id, m.name)}</span><span class="p-lab">${esc(m.lab.name)} · <span class="w ${esc(m.weights.v || 'nd')}">${esc(weightsWord(m.weights.v))}</span>${sinApiTag(m)}</span></span>
       <span class="p-val">${fact(capFact(m), v => num(v))}</span>
-      <span class="p-bar" aria-hidden="true"><i style="width:${(ii(m) / maxV * 100).toFixed(1)}%"></i></span></li>`).join('')}</ol>
+      <span class="p-bar" aria-hidden="true"><i style="width:${(ii(m) / maxV * 100).toFixed(1)}%"></i></span></li>`;
+    }).join('')}</ol>
     <p class="note">${t('Configuración de mayor índice de cada modelo; datos de {AA_LINK}, publicados con su permiso.', { AA_LINK })}</p>`;
 }
 

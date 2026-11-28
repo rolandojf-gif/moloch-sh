@@ -7,7 +7,7 @@ import { frontier, costCurve, hbars, tip } from './charts.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const state = { w: 'all', lab: null, region: 'all', scored: false, recent: false, reasoning: false, pareto: false, sort: 'ii', dir: -1, q: '', open: new Set(), cmp: [], all: false, evoTab: 'aa', usoTab: '7d' };
+const state = { w: 'all', labs: new Set(), region: 'all', scored: false, recent: false, reasoning: false, pareto: false, sort: 'ii', dir: -1, q: '', open: new Set(), cmp: [], all: false, evoTab: 'aa', usoTab: '7d' };
 /* Sentido por defecto de cada criterio: el precio, de más barato a más caro; el resto, de mayor a menor. */
 const DIR0 = { ii: -1, eci: -1, tps: -1, price: 1, date: -1 };
 const PAGE = 40;
@@ -53,7 +53,7 @@ function rows(pareto = paretoSet()) {
   const cutoff30 = new Date(Date.parse(D.catalog.generated) - 30 * 86400e3).toISOString().slice(0, 10);
   return D.catalog.models
     .filter(m => state.w === 'all' || m.weights.v === state.w)
-    .filter(m => !state.lab || m.lab.name === state.lab)
+    .filter(m => !state.labs.size || state.labs.has(m.lab.name))
     .filter(matchRegion)
     .filter(m => !state.scored || ii(m) !== null || eci(m) !== null)
     .filter(m => !state.recent || (modelDate(m) && modelDate(m) >= cutoff30))
@@ -415,7 +415,7 @@ export function showModelPath(sub) {
     return;
   }
   const m = D.byId.get(id);
-  if (state.lab && m.lab.name !== state.lab) { state.lab = null; renderLabs(); }
+  if (state.labs.size && !state.labs.has(m.lab.name)) { state.labs.clear(); renderLabs(); }
   if (state.w !== 'all' && m.weights.v !== state.w) { state.w = 'all'; $$('#mx-weights [data-w]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.w === 'all'))); }
   if (state.q && !`${m.name} ${m.lab.name} ${m.id}`.toLowerCase().includes(state.q.trim().toLowerCase())) { state.q = ''; $('#mx-q').value = ''; }
   if (!rows().some(x => x.id === id)) { state.region = 'all'; state.scored = false; state.recent = false; state.reasoning = false; state.pareto = false; renderQuickFilters(); }
@@ -428,8 +428,8 @@ export function showModelPath(sub) {
   row?.focus({ preventScroll: true });
 }
 
-/* Filtro por laboratorio: un botón con el logo de cada uno, ordenados por su mejor índice de AA (los que no tienen, al
-   final, por número de modelos). Se agrupan por nombre: algunos publican con más de un autor en OpenRouter. */
+/* Filtro por laboratorio: selección múltiple acumulativa; un botón con el logo de cada uno, ordenados por su mejor
+   índice de AA (los que no tienen, al final, por número de modelos). Pulsar «Todos» limpia la selección. */
 function renderLabs() {
   const by = new Map();
   for (const m of D.catalog.models) {
@@ -439,14 +439,14 @@ function renderLabs() {
   }
   const best = ms => Math.max(...ms.map(m => ii(m) ?? -1));
   const labs = [...by.entries()].sort((a, b) => best(b[1]) - best(a[1]) || b[1].length - a[1].length);
-  const sel = state.lab;
-  $('#mx-labs').innerHTML = `<button type="button" class="lab-all" data-lab="" aria-pressed="${!sel}">${t('Todos')}</button>` +
+  const sel = state.labs;
+  $('#mx-labs').innerHTML = `<button type="button" class="lab-all" data-lab="" aria-pressed="${!sel.size}">${t('Todos')}</button>` +
     labs.map(([name, ms]) => {
       const top = ms.slice().sort((a, b) => (ii(b) ?? -1) - (ii(a) ?? -1))[0];
       const label = tn(ms.length, ['{lab}: {n} modelo', '{lab}: {n} modelos'], { lab: name });
-      return `<button type="button" class="lab-chip" data-lab="${esc(name)}" aria-pressed="${sel === name}" title="${esc(label)}" aria-label="${esc(label)}">${logo(top)}</button>`;
+      return `<button type="button" class="lab-chip" data-lab="${esc(name)}" aria-pressed="${sel.has(name)}" title="${esc(label)}" aria-label="${esc(label)}">${logo(top)}</button>`;
     }).join('') +
-    (sel ? `<span class="lab-sel">${esc(sel)}</span>` : '');
+    (sel.size ? `<span class="lab-sel">${esc([...sel].join(' · '))}</span>` : '');
 }
 
 /* Los escuchadores se enlazan una sola vez; renderModelos() puede volver a llamarse al cambiar de idioma y vuelve a dibujar
@@ -486,9 +486,13 @@ function initModelos(d) {
   });
   $('#mx-labs').addEventListener('click', e => {
     const b = e.target.closest('[data-lab]'); if (!b) return;
-    state.lab = b.dataset.lab && b.dataset.lab !== state.lab ? b.dataset.lab : null;
+    const lab = b.dataset.lab;
+    if (!lab) state.labs.clear();
+    else if (state.labs.has(lab)) state.labs.delete(lab);
+    else state.labs.add(lab);
     state.all = false;
     renderLabs(); renderTable();
+    $(`#mx-labs [data-lab="${CSS.escape(lab)}"]`)?.focus({ preventScroll: true });
   });
   $('#mx-evo-tabs')?.addEventListener('click', e => {
     const b = e.target.closest('[data-tab]'); if (!b || b.dataset.tab === state.evoTab) return;
