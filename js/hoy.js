@@ -3,7 +3,7 @@ import { t, tn, tr, L } from './i18n.js';
 import { esc, fact, src, usd, pricePair, num, fmtDate, rssUrl, weightsWord, blended, ii, capFact, eci, aaConfig, aaConfigShort, aaIndexName, priceBasis, nd, AA_LINK, quote, sinApiTag } from './fmt.js';
 import { logo, logoFor } from './logos.js';
 import { scatter, daily, tip } from './charts.js';
-import { renderHero, eventModel, modelLogo } from './hoy-hero.js';
+import { renderHero, pickHero, eventModel, modelLogo } from './hoy-hero.js';
 
 const $ = s => document.querySelector(s);
 const kind = k => ({ nuevo: t('Nuevo modelo'), pesos: t('Pesos abiertos'), precio: t('Precio del laboratorio'), evaluacion: t('Evaluación independiente'), retirada: t('Retirada'),
@@ -86,7 +86,7 @@ function renderWeek(d, items, top, days) {
       <div class="week-h">${modelLogo(m)}<h4>${toFicha(href, tit)}</h4></div>
     </article>`;
   }).join('');
-  el.innerHTML = `<div class="week-head"><span>${t('También en los últimos {days} días', { days })}</span></div><div class="week-grid">${cards}</div>`;
+  el.innerHTML = `<div class="week-head"><span>${t('También en los últimos {days} días', { days })}</span></div><div class="week-grid w-${recent.length}">${cards}</div>`;
 }
 
 function renderNews(d) {
@@ -101,16 +101,22 @@ function renderNews(d) {
   renderVisit(d, items, p);
   const top = p ? p.noticias.map(k => byKey.get(k)).filter(Boolean) : [];
   const today = p ? items.filter(it => it.detected === p.fecha).length : 0;
+  const { lead, rest } = pickHero(d, top, fichaModel);
   const card = it => `
-    <article class="news-card">
-      <span class="tag k-${esc(it.kind)}">${esc(kind(it.kind))}</span>
+    <article class="news-card k-${esc(it.kind)}">
+      <div class="news-top"><span class="tag k-${esc(it.kind)}">${esc(kind(it.kind))}</span><span class="news-date">${esc(fmtDate(it.detected || it.date))}</span></div>
       <div class="news-h">${modelLogo(eventModel(d, it, fichaModel), true)}<h3>${toFicha(it.ficha, L(it, 'titular') || L(it, 'what'))}</h3></div>
-      <p><span class="lbl">${t('Qué ocurrió')}</span>${esc(L(it, 'what'))}</p>
-      ${it.consecuencia ? `<p><span class="lbl">${t('Qué cambia')}</span>${esc(L(it, 'consecuencia'))}</p>` : ''}
-      <p><span class="lbl">${t('Por qué es noticia')}</span>${esc(cap(L(it, 'porque', it.importancia?.porque)))}.</p>
+      <div class="news-body">
+        <p><span class="lbl">${t('Qué ocurrió')}</span>${esc(L(it, 'what'))}</p>
+        ${it.consecuencia ? `<p><span class="lbl">${t('Qué cambia')}</span>${esc(L(it, 'consecuencia'))}</p>` : ''}
+        <p><span class="lbl">${t('Por qué es noticia')}</span>${esc(cap(L(it, 'porque', it.importancia?.porque)))}.</p>
+      </div>
+      ${it.ficha ? `<a class="news-cta" href="${esc(it.ficha)}">${/^#modelos/.test(it.ficha) ? t('Abrir ficha →') : t('Ver detalle →')}</a>` : ''}
       ${foot(it, [L(it, 'titular'), L(it, 'what'), L(it, 'consecuencia'), L(it, 'porque', it.importancia?.porque)])}
     </article>`;
-  $('#hoy-news').innerHTML = (top.length ? renderHero(d, top[0], { kind, toFicha, foot, cap, fichaModel }) + top.slice(1).map(card).join('')
+  const box = $('#hoy-news');
+  box.className = `news n-${top.length}`;
+  box.innerHTML = (lead ? renderHero(d, lead, { kind, toFicha, foot, cap, fichaModel }) + rest.map(card).join('')
     : p ? `<div class="empty"><b>${t('Sin cambios significativos en la recogida del {fmtDate}.', { fmtDate: esc(fmtDate(p.fecha)) })}</b> ${today ? tn(today, ['{n} cambio menor, en la lista de abajo.', '{n} cambios menores, en la lista de abajo.']) : t('Ningún cambio detectado.')}${p.ultima ? ` ${t('La última noticia fue del {fmtDate}: {toFicha}.', { fmtDate: esc(fmtDate(p.ultima.fecha)), toFicha: toFicha(p.ultima.ficha, L(p.ultima, 'titular')) })}` : ''}</div>`
     : '');
   renderWeek(d, items, top, days);
