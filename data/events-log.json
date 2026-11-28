@@ -219,6 +219,476 @@
  "events": [
   {
    "kind": "evaluacion",
+   "key": "evaluacion|google/gemini-4-neon|eci",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": 171.79,
+    "unit": "puntos ECI"
+   },
+   "model": "google/gemini-4-neon",
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Gemini 4 Neon: primera puntuación en el índice ECI de Epoch AI (171.79).",
+   "data": {
+    "field": "eci",
+    "eci": 171.79,
+    "rankAA": 3,
+    "of": 54
+   },
+   "i18n": {
+    "en": {
+     "what": "Gemini 4 Neon: first score on Epoch AI’s ECI (171.79).",
+     "titular": "Epoch AI scores Gemini 4 Neon on the ECI for the first time",
+     "consecuencia": "AA index 61.5: 3.3 points behind the best closed model (Claude Fable 5.2). Rank 3 of 54. Blended price $6 per million tokens."
+    }
+   },
+   "titular": "Epoch AI puntúa por primera vez Gemini 4 Neon en el ECI",
+   "importancia": null,
+   "ficha": "#modelos/google/gemini-4-neon",
+   "consecuencia": "Índice de AA 61,5: a 3,3 puntos del mejor cerrado (Claude Fable 5.2). Puesto 3 de 54. Precio combinado 6 $ por millón de tokens."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|openai/gpt-6.2-sol|eci",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": 162.63,
+    "unit": "puntos ECI"
+   },
+   "model": "openai/gpt-6.2-sol",
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "GPT-6.2 Sol: primera puntuación en el índice ECI de Epoch AI (162.63).",
+   "data": {
+    "field": "eci",
+    "eci": 162.63,
+    "rankAA": 6,
+    "of": 54
+   },
+   "i18n": {
+    "en": {
+     "what": "GPT-6.2 Sol: first score on Epoch AI’s ECI (162.63).",
+     "titular": "Epoch AI scores GPT-6.2 Sol on the ECI for the first time",
+     "consecuencia": "AA index 57.3: 7.5 points behind the best closed model (Claude Fable 5.2). Rank 6 of 54. Blended price $4 per million tokens."
+    }
+   },
+   "titular": "Epoch AI puntúa por primera vez GPT-6.2 Sol en el ECI",
+   "importancia": null,
+   "ficha": "#modelos/openai/gpt-6.2-sol",
+   "consecuencia": "Índice de AA 57,3: a 7,5 puntos del mejor cerrado (Claude Fable 5.2). Puesto 6 de 54. Precio combinado 4 $ por millón de tokens."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|qwen/qwen4-max|eci",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": 159.97,
+    "unit": "puntos ECI"
+   },
+   "model": "qwen/qwen4-max",
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Qwen4 Max: primera puntuación en el índice ECI de Epoch AI (159.97).",
+   "data": {
+    "field": "eci",
+    "eci": 159.97,
+    "rankAA": 18,
+    "of": 54
+   },
+   "i18n": {
+    "en": {
+     "what": "Qwen4 Max: first score on Epoch AI’s ECI (159.97).",
+     "titular": "Epoch AI scores Qwen4 Max on the ECI for the first time",
+     "consecuencia": "AA index 42.8: 22 points behind the best closed model (Claude Fable 5.2). Rank 18 of 54. Blended price $2.14 per million tokens. Of the 3 models with a similar AA index (±2 points of its 42.8), none costs less."
+    }
+   },
+   "titular": "Epoch AI puntúa por primera vez Qwen4 Max en el ECI",
+   "importancia": null,
+   "ficha": "#modelos/qwen/qwen4-max",
+   "consecuencia": "Índice de AA 42,8: a 22 puntos del mejor cerrado (Claude Fable 5.2). Puesto 18 de 54. Precio combinado 2,14 $ por millón de tokens. De los 3 modelos con un índice de AA parecido (±2 puntos de su 42,8), ninguno cuesta menos."
+  },
+  {
+   "kind": "precio",
+   "key": "precio|inclusionai/ling-3.2-flash|2026-11-28",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": null,
+   "model": "inclusionai/ling-3.2-flash",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/inclusionai/ling-3.2-flash/providers",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Ant Digital empieza a cobrar Ling 3.2 Flash en OpenRouter: 0,3 $ de entrada y 0,9 $ de salida por millón de tokens. Hasta ahora era gratis.",
+   "data": {
+    "basis": "laboratorio",
+    "sub": "cobra",
+    "provider": "Ant Digital",
+    "from": {
+     "in": 0,
+     "out": 0
+    },
+    "to": {
+     "in": 0.3,
+     "out": 0.9
+    },
+    "pct": null,
+    "tiersFrom": [
+     [
+      0,
+      0
+     ]
+    ],
+    "tiersTo": [
+     [
+      0.3,
+      0.9
+     ]
+    ],
+    "since": "2026-11-27"
+   },
+   "i18n": {
+    "en": {
+     "what": "Ant Digital starts charging for Ling 3.2 Flash on OpenRouter: $0.3 input and $0.9 output per million tokens. Until now it was free.",
+     "titular": "Ant Digital starts charging for Ling 3.2 Flash on OpenRouter",
+     "porque": "the lab itself starts charging for it on OpenRouter, where it was free",
+     "consecuencia": "Its blended price on OpenRouter goes from free to $0.45 per million tokens."
+    }
+   },
+   "titular": "Ant Digital empieza a cobrar Ling 3.2 Flash en OpenRouter",
+   "importancia": {
+    "tier": 5,
+    "w": 100,
+    "porque": "el propio laboratorio empieza a cobrarlo en OpenRouter, donde era gratis"
+   },
+   "ficha": "#modelos/inclusionai/ling-3.2-flash",
+   "consecuencia": "Su precio combinado en OpenRouter pasa de gratis a 0,45 $ por millón de tokens."
+  },
+  {
+   "kind": "evaluacion",
+   "key": "evaluacion|meta/muse-ember|eci",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": 158.7,
+    "unit": "puntos ECI"
+   },
+   "model": "meta/muse-ember",
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Muse Ember: primera puntuación en el índice ECI de Epoch AI (158.7).",
+   "data": {
+    "field": "eci",
+    "eci": 158.7,
+    "rankAA": 21,
+    "of": 54
+   },
+   "i18n": {
+    "en": {
+     "what": "Muse Ember: first score on Epoch AI’s ECI (158.7).",
+     "titular": "Epoch AI scores Muse Ember on the ECI for the first time",
+     "consecuencia": "AA index 36.1: 28.7 points behind the best closed model (Claude Fable 5.2). Rank 21 of 54. Blended price $0.2 per million tokens. Of the 4 models with a similar AA index (±2 points of its 36.1), none costs less."
+    }
+   },
+   "titular": "Epoch AI puntúa por primera vez Muse Ember en el ECI",
+   "importancia": null,
+   "ficha": "#modelos/meta/muse-ember",
+   "consecuencia": "Índice de AA 36,1: a 28,7 puntos del mejor cerrado (Claude Fable 5.2). Puesto 21 de 54. Precio combinado 0,2 $ por millón de tokens. De los 4 modelos con un índice de AA parecido (±2 puntos de su 36,1), ninguno cuesta menos."
+  },
+  {
+   "kind": "retirada",
+   "key": "retirada|qwen/qwen3-235b-a22b-thinking-2507|2026-11-28",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": null,
+   "model": "qwen/qwen3-235b-a22b-thinking-2507",
+   "src": {
+    "name": "OpenRouter",
+    "url": "https://openrouter.ai/models",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Qwen3 235B A22B Thinking 2507 deja de figurar en el catálogo de OpenRouter.",
+   "data": {
+    "name": "Qwen3 235B A22B Thinking 2507"
+   },
+   "i18n": {
+    "en": {
+     "what": "Qwen3 235B A22B Thinking 2507 is no longer listed in the OpenRouter catalogue.",
+     "titular": "Qwen3 235B A22B Thinking 2507 is no longer listed on OpenRouter",
+     "consecuencia": "It can no longer be used through OpenRouter. It may still be available through the lab’s own API."
+    }
+   },
+   "titular": "Qwen3 235B A22B Thinking 2507 deja de figurar en OpenRouter",
+   "importancia": null,
+   "ficha": null,
+   "consecuencia": "Deja de poder usarse a través de OpenRouter. Puede seguir disponible en la API del propio laboratorio."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|usCn|2026-11-28",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": -0.15,
+    "pct": -1.2,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Distancia EE. UU. − China en el ECI: de 12,2 a 12,05 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "usCn",
+    "path": "eci.gapUsCn",
+    "from": 12.2,
+    "to": 12.05
+   },
+   "i18n": {
+    "en": {
+     "what": "US − China gap on the ECI: from 12.2 to 12.05 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The US − China gap on the ECI falls from 12.2 to 12.1 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.2) versus Kimi K3.1 Pro (Moonshot, 161.1). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “China, about six months behind with 12% of the compute”."
+    }
+   },
+   "titular": "La distancia EE. UU. − China en el ECI baja de 12,2 a 12,1 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,2) frente a Kimi K3.1 Pro (Moonshot, 161,1). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «China, unos seis meses por detrás con el 12 % del cómputo»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|closedOpen|2026-11-28",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": -0.15,
+    "pct": -1.2,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Distancia cerrados − abiertos en el ECI: de 12,2 a 12,05 puntos (Claude Fable 5.2 frente a Kimi K3.1 Pro).",
+   "data": {
+    "ind": "closedOpen",
+    "path": "eci.gapClosedOpen",
+    "from": 12.2,
+    "to": 12.05
+   },
+   "i18n": {
+    "en": {
+     "what": "Closed − open gap on the ECI: from 12.2 to 12.05 points (Claude Fable 5.2 versus Kimi K3.1 Pro).",
+     "titular": "The closed − open gap on the ECI falls from 12.2 to 12.1 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.2) versus Kimi K3.1 Pro (Moonshot, 161.1). A few ECI points do not equate to months of lag. In AI 2027 it is evidence for “An open-weight model matches Agent-0”."
+    }
+   },
+   "titular": "La distancia cerrados − abiertos en el ECI baja de 12,2 a 12,1 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,2) frente a Kimi K3.1 Pro (Moonshot, 161,1). Unos puntos ECI no equivalen a meses de retraso. En AI 2027 es evidencia de «Un modelo de pesos abiertos iguala a Agent-0»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|labs|2026-11-28",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": 0.79,
+    "pct": 136.2,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Distancia entre los dos primeros laboratorios en el ECI: de 0,58 a 1,37 puntos (Anthropic frente a Google DeepMind).",
+   "data": {
+    "ind": "labs",
+    "path": "eci.gapLabs",
+    "from": 0.58,
+    "to": 1.37
+   },
+   "i18n": {
+    "en": {
+     "what": "Gap between the top two labs on the ECI: from 0.58 to 1.37 points (Anthropic versus Google DeepMind).",
+     "titular": "The gap between the top two labs on the ECI rises from 0.6 to 1.4 points",
+     "consecuencia": "Claude Fable 5.2 (Anthropic, 173.2) versus Gemini 4 Neon (Google DeepMind, 171.8), with overlapping confidence intervals. In AI 2027 it is evidence for “Rivals 3 to 9 months behind”."
+    }
+   },
+   "titular": "La distancia entre los dos primeros laboratorios en el ECI sube de 0,6 a 1,4 puntos",
+   "importancia": null,
+   "ficha": "#carrera/coordinacion",
+   "consecuencia": "Claude Fable 5.2 (Anthropic, 173,2) frente a Gemini 4 Neon (Google DeepMind, 171,8), con intervalos de confianza solapados. En AI 2027 es evidencia de «Los rivales, de 3 a 9 meses por detrás»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|dcMW|2026-11-28",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": 331,
+    "pct": 2.2,
+    "unit": "MW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Potencia de TI en servicio en los centros que sigue Epoch: de 15.122 a 15.453 MW.",
+   "data": {
+    "ind": "dcMW",
+    "path": "dc.now",
+    "from": 15122,
+    "to": 15453
+   },
+   "i18n": {
+    "en": {
+     "what": "IT power in service at the data centres Epoch tracks: from 15,122 to 15,453 MW.",
+     "titular": "The power in service at the data centres Epoch tracks rises to 15,453 MW",
+     "consecuencia": "99 data centres. Power of the equipment, without cooling; it is not the world total. In AI 2027 it is evidence for “40 million H100e available”."
+    }
+   },
+   "titular": "La potencia en servicio de los centros que sigue Epoch sube a 15.453 MW",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "99 centros. Potencia de los equipos, sin refrigeración; no es el total mundial. En AI 2027 es evidencia de «40 millones de H100e disponibles»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|rate12m|2026-11-28",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": -0.3,
+    "pct": -1.5,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Avance de la frontera del ECI en 12 meses: de 20,4 a 20,1 puntos.",
+   "data": {
+    "ind": "rate12m",
+    "path": "eci.rate12m",
+    "from": 20.4,
+    "to": 20.1
+   },
+   "i18n": {
+    "en": {
+     "what": "Frontier gain on the ECI over 12 months: from 20.4 to 20.1 points.",
+     "titular": "Frontier gain on the ECI over 12 months: from 20.4 to 20.1 points."
+    }
+   },
+   "titular": "Avance de la frontera del ECI en 12 meses: de 20,4 a 20,1 puntos.",
+   "importancia": null,
+   "ficha": "#carrera/evaluacion",
+   "consecuencia": null
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|dcPlan26|2026-11-28",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": 688,
+    "pct": 3.1,
+    "unit": "MW"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data_centers/data_center_timelines.csv",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 22.087 a 22.775 MW.",
+   "data": {
+    "ind": "dcPlan26",
+    "path": "dc.plan",
+    "from": 22087,
+    "to": 22775
+   },
+   "i18n": {
+    "en": {
+     "what": "Power planned for the end of 2026 in Epoch’s schedule: from 22,087 to 22,775 MW.",
+     "titular": "Power planned for the end of 2026 in Epoch’s schedule: from 22,087 to 22,775 MW.",
+     "consecuencia": "In AI 2027 it is evidence for “AI power in 2026”."
+    }
+   },
+   "titular": "Potencia prevista para fin de 2026 en el calendario de Epoch: de 22.087 a 22.775 MW.",
+   "importancia": null,
+   "ficha": "#carrera/computo",
+   "consecuencia": "En AI 2027 es evidencia de «Potencia de la IA en 2026»."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|capexB|2026-11-28",
+   "published": null,
+   "detected": "2026-11-28",
+   "date": "2026-11-28",
+   "mag": {
+    "v": 12.5,
+    "pct": 2.2,
+    "unit": "mil millones de $"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Coste de capital de los centros que sigue Epoch: de 573 a 585 mil millones de $.",
+   "data": {
+    "ind": "capexB",
+    "path": "dc.capex",
+    "from": 572.9,
+    "to": 585.4
+   },
+   "i18n": {
+    "en": {
+     "what": "Capital cost of the data centres Epoch tracks: from 573 to 585 billion dollars.",
+     "titular": "Capital cost of the data centres Epoch tracks: from 573 to 585 billion dollars."
+    }
+   },
+   "titular": "Coste de capital de los centros que sigue Epoch: de 573 a 585 mil millones de $.",
+   "importancia": null,
+   "ficha": "#carrera/economia",
+   "consecuencia": null
+  },
+  {
+   "kind": "evaluacion",
    "key": "evaluacion|baidu/ernie-5.5-flash-preview|ii",
    "published": null,
    "detected": "2026-11-27",
@@ -2507,6 +2977,46 @@
    },
    "ficha": "#ai2027/horizonte3s",
    "consecuencia": "Los autores lo plantean con el horizonte al 80 % de METR, que no mide con fiabilidad por encima de 16 horas, y el último modelo que ha medido se publicó el 7 abr 2026. El observatorio lo contrasta con MirrorCode, de Epoch y METR: reimplementar programas enteros a partir de su comportamiento, con tareas que a un ingeniero le llevarían semanas. El primer modelo que llega al 80 % es Claude Opus 5 (max), con un 87,8 %, publicado el 24 jul 2026. Regla (lectura del observatorio): «compatible» si al vencer el plazo el mejor resultado llega al 80 %. MirrorCode sólo cubre programación y su puntuación no es el porcentaje de éxito en tareas de tres semanas. Antes: «todavía no evaluable». Plazo del escenario: finales de 2026."
+  },
+  {
+   "kind": "indicador",
+   "key": "indicador|eci|2026-11-28",
+   "published": "2026-11-09",
+   "detected": "2026-11-28",
+   "date": "2026-11-09",
+   "mag": {
+    "v": -0.24,
+    "pct": -0.1,
+    "unit": "puntos ECI"
+   },
+   "src": {
+    "name": "Epoch AI",
+    "url": "https://epoch.ai/benchmarks/eci",
+    "got": "2026-11-28T03:54:07Z"
+   },
+   "what": "Mejor modelo en el ECI de Epoch: de 173,4 a 173,16 puntos (Claude Fable 5.2).",
+   "data": {
+    "ind": "eci",
+    "path": "eci.frontier",
+    "from": 173.4,
+    "to": 173.16
+   },
+   "i18n": {
+    "en": {
+     "what": "Best model on Epoch’s ECI: from 173.4 to 173.16 points (Claude Fable 5.2).",
+     "titular": "Claude Fable 5.2 becomes the best model on Epoch’s ECI",
+     "porque": "the best model on Epoch’s ECI changes",
+     "consecuencia": "Claude Fable 5.2, from Anthropic, with 173.2 points."
+    }
+   },
+   "titular": "Claude Fable 5.2 pasa a ser el mejor modelo según el ECI de Epoch",
+   "importancia": {
+    "tier": 6,
+    "w": 100,
+    "porque": "cambia el mejor modelo según el ECI de Epoch"
+   },
+   "ficha": "#carrera",
+   "consecuencia": "Claude Fable 5.2, de Anthropic, con 173,2 puntos."
   },
   {
    "kind": "indicador",

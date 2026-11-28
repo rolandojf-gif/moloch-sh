@@ -6,7 +6,21 @@
   <atom:link href="https://moloch-sh.netlify.app/data/parte.en.xml" rel="self" type="application/rss+xml"/>
   <description>The AI-race news that the observatory detects every day, chosen with a fixed rule. Figures from OpenRouter, Artificial Analysis, Epoch AI, Hugging Face and METR, with their source.</description>
   <language>en</language>
-  <lastBuildDate>Fri, 27 Nov 2026 03:54:17 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 28 Nov 2026 03:54:07 GMT</lastBuildDate>
+  <item>
+    <title>Ant Digital starts charging for Ling 3.2 Flash on OpenRouter</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#modelos/inclusionai/ling-3.2-flash</link>
+    <guid isPermaLink="false">precio|inclusionai/ling-3.2-flash|2026-11-28</guid>
+    <pubDate>Sat, 28 Nov 2026 03:54:07 GMT</pubDate>
+    <description>Ant Digital starts charging for Ling 3.2 Flash on OpenRouter: $0.3 input and $0.9 output per million tokens. Until now it was free. Its blended price on OpenRouter goes from free to $0.45 per million tokens. It is in the briefing because the lab itself starts charging for it on OpenRouter, where it was free. Detected on 2026-11-28. Source: OpenRouter (https://openrouter.ai/inclusionai/ling-3.2-flash/providers).</description>
+  </item>
+  <item>
+    <title>Claude Fable 5.2 becomes the best model on Epoch’s ECI</title>
+    <link>https://moloch-sh.netlify.app/?lang=en#carrera</link>
+    <guid isPermaLink="false">indicador|eci|2026-11-28</guid>
+    <pubDate>Sat, 28 Nov 2026 03:54:07 GMT</pubDate>
+    <description>Best model on Epoch’s ECI: from 173.4 to 173.16 points (Claude Fable 5.2). Claude Fable 5.2, from Anthropic, with 173.2 points. It is in the briefing because the best model on Epoch’s ECI changes. Published on 2026-11-09; detected on 2026-11-28. Source: Epoch AI (https://epoch.ai/benchmarks/eci).</description>
+  </item>
   <item>
     <title>DeepSeek V4.1 Flash 1017 becomes the most used model on OpenRouter</title>
     <link>https://moloch-sh.netlify.app/?lang=en#modelos/deepseek/deepseek-v4.1-flash-1017</link>
@@ -188,13 +202,6 @@
     <guid isPermaLink="false">lider|closed|google/gemini-4-carbon|2026-10-29</guid>
     <pubDate>Thu, 29 Oct 2026 15:05:11 GMT</pubDate>
     <description>Gemini 4 Carbon becomes the best closed model in the catalogue on the Artificial Analysis Intelligence Index v5: 59.4 points, 1 more than Claude Opus 5.5 (58.4). It has no public API yet: it is not on OpenRouter. The gap between the best closed and the best open-weight model on the AA index stands at 13.4 points (12.4 the day before). It does not equate to months of lag. It is in the briefing because the best closed model changes with the same AA index version and a margin of 1 points (minimum 1). Detected on 2026-10-29. Source: Artificial Analysis (https://artificialanalysis.ai/models/gemini-4-carbon). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
-  </item>
-  <item>
-    <title>Artificial Analysis launches version 5 of its Intelligence Index</title>
-    <link>https://moloch-sh.netlify.app/?lang=en#hoy</link>
-    <guid isPermaLink="false">version|5</guid>
-    <pubDate>Wed, 28 Oct 2026 03:54:19 GMT</pubDate>
-    <description>Artificial Analysis moves its Intelligence Index from version 4.3 to 5: scores from the two versions are not comparable. Scores from one version and the other are not comparable: the daily evolution of the leaders starts over with this version. It is in the briefing because Artificial Analysis changes the version of its index. Detected on 2026-10-28. Source: Artificial Analysis (https://artificialanalysis.ai/leaderboards/models). Artificial Analysis data (https://artificialanalysis.ai), published with its permission.</description>
   </item>
 </channel>
 </rss>
