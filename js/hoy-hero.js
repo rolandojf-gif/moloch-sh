@@ -128,7 +128,33 @@ function figs(h, it) {
     ];
     return `<dl class="hero-figs hero-figs-3">${cells.map(([k, v, s]) => `<div><dt>${k}</dt><dd><b>${v}</b>${s ? `<small>${s}</small>` : ''}</dd></div>`).join('')}</dl>`;
   }
+  if (it.kind === 'precio' && it.data?.from && it.data?.to) {
+    const f = it.data.from, to = it.data.to;
+    const isFree = x => x.in === 0 && x.out === 0;
+    const fmtPair = x => isFree(x) ? t('gratis') : `<span>${usd(x.in)}</span><span class="sep">/</span><span>${usd(x.out)}</span>`;
+    const bTo = to.in != null && to.out != null ? (3 * to.in + to.out) / 4 : null;
+    const bFrom = f.in != null && f.out != null ? (3 * f.in + f.out) / 4 : null;
+    const sub = it.data.pct != null ? `${it.data.pct > 0 ? '+' : ''}${num(it.data.pct)} %` : (bFrom === 0 ? t('entrada / salida') : '');
+    const cells = [
+      [t('Precio anterior'), fmtPair(f), isFree(f) ? '' : t('entrada / salida'), isFree(f) ? '' : 'price'],
+      [t('Precio actual'), fmtPair(to), isFree(to) ? '' : t('entrada / salida'), isFree(to) ? '' : 'price'],
+      [t('Combinado 3:1'), bTo === 0 ? t('gratis') : bTo != null ? usd(bTo) : '—', sub, '']
+    ];
+    return `<dl class="hero-figs hero-figs-3">${cells.map(([k, v, s, cls]) => `<div${cls ? ` class="${cls}"` : ''}><dt>${k}</dt><dd><b>${v}</b>${s ? `<small>${s}</small>` : ''}</dd></div>`).join('')}</dl>`;
+  }
   return '';
+}
+
+const LVL_RANK = { alta: 2, media: 1, normal: 0 };
+/* Elige como portada la noticia de mayor relevancia del parte (alta > media > normal), conservando el orden en empates. */
+export function pickHero(d, top, fichaModel) {
+  if (top.length <= 1) return { lead: top[0] || null, rest: [] };
+  let bestIdx = 0, bestScore = -1;
+  for (let i = 0; i < top.length; i++) {
+    const sc = LVL_RANK[heroData(d, top[i], fichaModel).level] ?? 0;
+    if (sc > bestScore) { bestScore = sc; bestIdx = i; }
+  }
+  return { lead: top[bestIdx], rest: top.filter((_, i) => i !== bestIdx) };
 }
 
 const lvlWhy = (h, it) => h.eci

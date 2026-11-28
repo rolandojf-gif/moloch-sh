@@ -983,6 +983,8 @@
   "Ventaja en ECI": "ECI lead",
   "Valor actual": "Current value",
   "Valor anterior": "Previous value",
+  "Precio actual": "Current price",
+  "Precio anterior": "Previous price",
   "Cambio": "Change",
   "Cambia el mejor modelo del mundo en el ECI de Epoch AI.": "The world’s best model on Epoch AI’s ECI changes.",
   "Abrir ficha de {name} →": "Open {name} profile →",
